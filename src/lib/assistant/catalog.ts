@@ -289,12 +289,20 @@ export const ASSISTANT_CAPABILITIES: AssistantCapability[] = [
     id: 'profile',
     name: 'Profiles',
     status: 'implemented',
-    description: 'Member and linked business profiles with identity, education, experience, skills, endorsements, and Score.',
+    description:
+      'Member and linked business profiles with identity, education, experience, skills, endorsements, and Score. Optional Identity verification from Settings → Edit Profile uploads an ID photo and face photo for staff review when stronger trust is needed (not at signup; not a government ID).',
+    howTo:
+      'Open Profile from the menu. To verify identity when needed: Open Settings > Edit Profile, then use Identity verification to upload an ID photo and a face photo and submit for review.',
     routes: ['/profile', '/settings/profile'],
     roles: ['member'],
-    relatedCapabilities: ['score', 'my_contributions'],
-    aliases: ['account', 'edit profile'],
-    sourceRefs: ['src/lib/feature-registry.ts'],
+    relatedCapabilities: ['score', 'my_contributions', 'governance'],
+    aliases: ['account', 'edit profile', 'identity verification', 'verify identity'],
+    sourceRefs: [
+      'src/lib/feature-registry.ts',
+      'src/lib/identity-verification.ts',
+      'docs/04-operations/dev/identity-verification-manual.md',
+      'docs/assistant/civizen-assistant-cheatsheet.md',
+    ],
   },
   {
     id: 'score',

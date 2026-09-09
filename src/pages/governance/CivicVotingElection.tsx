@@ -44,6 +44,7 @@ import {
   buildDuressVoidBallot,
   buildVotingManifestFromRelease,
   canSubmitChallenge,
+  castConsultationBallot,
   checkBoothUnlockPin,
   computeCoolingOffUntil,
   deriveDefaultChallengeWindow,
@@ -52,16 +53,30 @@ import {
   evaluateCivicVotingEligibility,
   evaluateSessionGates,
   isCoolingOffActive,
+  isOrdinaryConsultationElection,
+  loadCivicElectionCountryStats,
   loadCivicElectionDetail,
+  loadCivicElectionPublicDirectory,
+  loadCivicElectionPublicTallies,
+  myConsultationBallotOption,
+  myConsultationPublicPresence,
   openVoteWindow,
   remainingCoolingOffHours,
   remainingWindowSeconds,
   securityClassGatePolicy,
+  setConsultationPublicPresence,
+  withdrawConsultationBallot,
+  type CivicCountryStatRow,
   type CivicElectionSecurityClass,
+  type CivicPublicDirectoryRow,
+  type CivicPublicTallyRow,
   type CivicVerificationCheckKind,
   type CivicElectionDetail,
 } from '@/lib/civic-voting';
+import { getCountryName } from '@/lib/countries';
 import { MIN_GOVERNANCE_SCORE, isNativeGovernanceApp } from '@/lib/governance-eligibility';
+import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 
 type DemoGateState = Record<CivicVerificationCheckKind, boolean>;
 
@@ -79,6 +94,40 @@ export default function CivicVotingElection() {
   const [detail, setDetail] = useState<CivicElectionDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(true);
   const [detailError, setDetailError] = useState<string | null>(null);
+  const [tallies, setTallies] = useState<CivicPublicTallyRow[]>([]);
+  const [tallyTotal, setTallyTotal] = useState(0);
+  const [tallyError, setTallyError] = useState<string | null>(null);
+  const [countryStats, setCountryStats] = useState<CivicCountryStatRow[]>([]);
+  const [directory, setDirectory] = useState<CivicPublicDirectoryRow[]>([]);
+  const [directoryVisible, setDirectoryVisible] = useState(false);
+  const [directoryBusy, setDirectoryBusy] = useState(false);
+  const [myOption, setMyOption] = useState<string | null>(null);
+  const [casting, setCasting] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
+
+  const refreshPublicParticipation = async (id: string, signedIn: boolean) => {
+    const [tallyResult, countryResult, directoryResult] = await Promise.all([
+      loadCivicElectionPublicTallies(id),
+      loadCivicElectionCountryStats(id),
+      loadCivicElectionPublicDirectory(id),
+    ]);
+    setTallies(tallyResult.tallies);
+    setTallyTotal(tallyResult.totalCountable);
+    setTallyError(tallyResult.error);
+    setCountryStats(countryResult.rows);
+    setDirectory(directoryResult.rows);
+    if (signedIn) {
+      const [option, visible] = await Promise.all([
+        myConsultationBallotOption(id),
+        myConsultationPublicPresence(id),
+      ]);
+      setMyOption(option);
+      setDirectoryVisible(visible);
+    } else {
+      setMyOption(null);
+      setDirectoryVisible(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -89,13 +138,84 @@ export default function CivicVotingElection() {
       setDetail(result.detail);
       setDetailError(result.error);
       setDetailLoading(false);
+      if (result.detail) {
+        await refreshPublicParticipation(electionId, Boolean(user));
+      }
     })();
     return () => {
       cancelled = true;
     };
-  }, [electionId]);
+  }, [electionId, user]);
 
   const securityClass: CivicElectionSecurityClass = detail?.election.securityClass ?? 'ordinary';
+  const optionKeys = detail?.contests.flatMap((contest) =>
+    contest.candidates.map((candidate) => candidate.optionKey),
+  );
+  const isConsultation = detail
+    ? isOrdinaryConsultationElection(detail.election, optionKeys)
+    : false;
+  const votingOpen = detail?.election.status === 'open';
+  const votingClosed =
+    detail?.election.status === 'closed' ||
+    detail?.election.status === 'certified' ||
+    detail?.election.status === 'cancelled';
+
+  const castConsultation = async (optionKey: 'support' | 'oppose' | 'abstain') => {
+    if (!electionId || casting || withdrawing) return;
+    setCasting(true);
+    try {
+      await castConsultationBallot(electionId, optionKey);
+      setMyOption(optionKey);
+      toast.success(t('civicVoting.proposals.castSaved'));
+      await refreshPublicParticipation(electionId, true);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : t('civicVoting.proposals.castFailed'),
+      );
+    } finally {
+      setCasting(false);
+    }
+  };
+
+  const withdrawConsultation = async () => {
+    if (!electionId || casting || withdrawing) return;
+    setWithdrawing(true);
+    try {
+      await withdrawConsultationBallot(electionId);
+      setMyOption(null);
+      setDirectoryVisible(false);
+      toast.success(t('civicVoting.proposals.withdrawn'));
+      await refreshPublicParticipation(electionId, true);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : t('civicVoting.proposals.withdrawFailed'),
+      );
+    } finally {
+      setWithdrawing(false);
+    }
+  };
+
+  const toggleDirectoryPresence = async (next: boolean) => {
+    if (!electionId || directoryBusy) return;
+    setDirectoryBusy(true);
+    try {
+      const visible = await setConsultationPublicPresence(electionId, next);
+      setDirectoryVisible(visible);
+      const directoryResult = await loadCivicElectionPublicDirectory(electionId);
+      setDirectory(directoryResult.rows);
+      toast.success(
+        visible
+          ? t('civicVoting.participation.directoryEnabled')
+          : t('civicVoting.participation.directoryWithdrawn'),
+      );
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : t('civicVoting.participation.directoryFailed'),
+      );
+    } finally {
+      setDirectoryBusy(false);
+    }
+  };
   const title = detail?.election.title ?? t('civicVoting.unknownElection');
   const displayTitle = electionTitleWithoutCountryLabel(
     title,
@@ -318,6 +438,9 @@ export default function CivicVotingElection() {
           <Card className="rounded-2xl border-border/60 p-4 shadow-sm space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="outline">{CIVIC_ELECTION_TIER_LABELS[detail.election.tier]}</Badge>
+              {isConsultation ? (
+                <Badge variant="secondary">{t('civicVoting.consultation.badge')}</Badge>
+              ) : null}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Badge variant="outline">
@@ -338,34 +461,252 @@ export default function CivicVotingElection() {
                 <Badge variant="outline">{detail.scopeLocalityCode}</Badge>
               ) : null}
               <Badge variant={detail.election.status === 'certified' ? 'default' : 'secondary'}>
-                {detail.election.status}
+                {t(`civicVoting.status.${detail.election.status}`)}
               </Badge>
             </div>
+
+            {isConsultation ? (
+              <p className="text-xs text-muted-foreground">{t('civicVoting.consultation.bodyHint')}</p>
+            ) : null}
 
             {detail.contests.map((contest) => (
               <div key={contest.id} className="space-y-3">
                 <h2 className="text-base font-semibold text-foreground">{contest.title}</h2>
-                <ul className="space-y-2">
-                  {contest.candidates.map((candidate) => (
-                    <li
-                      key={candidate.id}
-                      className="rounded-xl border border-border/50 bg-muted/30 px-3 py-3"
-                    >
-                      <p className="font-medium text-foreground">{candidate.displayName}</p>
-                      {candidate.statement ? (
-                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                          {candidate.statement}
-                        </p>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
+                {!isConsultation ? (
+                  <ul className="space-y-2">
+                    {contest.candidates.map((candidate) => (
+                      <li
+                        key={candidate.id}
+                        className="rounded-xl border border-border/50 bg-muted/30 px-3 py-3"
+                      >
+                        <p className="font-medium text-foreground">{candidate.displayName}</p>
+                        {candidate.statement ? (
+                          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                            {candidate.statement}
+                          </p>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </div>
             ))}
+
+            <div className="space-y-2 rounded-xl border border-border/50 bg-muted/20 p-3">
+              <h3 className="text-sm font-semibold text-foreground">{t('civicVoting.tallies.title')}</h3>
+              {tallyError ? (
+                <p className="text-xs text-muted-foreground">{t('civicVoting.tallies.unavailable')}</p>
+              ) : tallyTotal === 0 ? (
+                <p className="text-xs text-muted-foreground">{t('civicVoting.tallies.noneYet')}</p>
+              ) : (
+                <ul className="space-y-2">
+                  {tallies.map((row) => {
+                    const pct = tallyTotal > 0 ? Math.round((row.voteCount / tallyTotal) * 100) : 0;
+                    return (
+                      <li key={row.candidateId} className="space-y-1">
+                        <div className="flex items-center justify-between gap-2 text-sm">
+                          <span className="font-medium text-foreground">{row.displayName}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {row.voteCount} · {pct}%
+                          </span>
+                        </div>
+                        <Progress value={pct} className="h-1.5" />
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+              <p className="text-xs text-muted-foreground">
+                {t('civicVoting.tallies.total', { count: String(tallyTotal) })}
+              </p>
+              <p className="text-xs text-muted-foreground">{t('civicVoting.tallies.validOnly')}</p>
+            </div>
+
+            {isConsultation ? (
+              <div className="space-y-2 rounded-xl border border-border/50 bg-muted/20 p-3">
+                <h3 className="text-sm font-semibold text-foreground">
+                  {t('civicVoting.participation.countryTitle')}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {t('civicVoting.participation.countryHint')}
+                </p>
+                {countryStats.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">
+                    {t('civicVoting.participation.countrySuppressed')}
+                  </p>
+                ) : (
+                  <ul className="space-y-1.5">
+                    {countryStats.map((row) => (
+                      <li
+                        key={row.countryCode}
+                        className="flex items-center justify-between gap-2 text-sm"
+                      >
+                        <span className="font-medium text-foreground">
+                          {getCountryName(row.countryCode, language)}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {row.participantCount}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : null}
+
+            {isConsultation ? (
+              <div className="space-y-2 rounded-xl border border-border/50 bg-muted/20 p-3">
+                <h3 className="text-sm font-semibold text-foreground">
+                  {t('civicVoting.participation.directoryTitle')}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {t('civicVoting.participation.directoryHint')}
+                </p>
+                {directory.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">
+                    {t('civicVoting.participation.directoryEmpty')}
+                  </p>
+                ) : (
+                  <ul className="max-h-48 space-y-1.5 overflow-y-auto">
+                    {directory.map((row, index) => (
+                      <li
+                        key={`${row.displayName}-${row.countryCode ?? ''}-${index}`}
+                        className="flex items-center justify-between gap-2 text-sm"
+                      >
+                        <span className="truncate font-medium text-foreground">
+                          {row.displayName}
+                        </span>
+                        <span className="shrink-0 text-xs text-muted-foreground">
+                          {row.countryCode
+                            ? getCountryName(row.countryCode, language)
+                            : t('civicVoting.participation.countryUnknown')}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : null}
+
+            {isConsultation ? (
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground">
+                  {t('civicVoting.proposals.changeUntilClose')}
+                </p>
+                {!user ? (
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">{t('civicVoting.proposals.guestCta')}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button type="button" size="sm" asChild>
+                        <Link to="/login">{t('civicVoting.publicLanding.signIn')}</Link>
+                      </Button>
+                      <Button type="button" size="sm" variant="outline" asChild>
+                        <Link to="/signup">{t('civicVoting.publicLanding.signUp')}</Link>
+                      </Button>
+                    </div>
+                  </div>
+                ) : votingClosed ? (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      {t('civicVoting.proposals.votingClosed')}
+                    </p>
+                    {myOption ? (
+                      <div className="flex items-start justify-between gap-3 rounded-xl border border-border/50 p-3">
+                        <div className="min-w-0 space-y-1">
+                          <p className="text-sm font-medium text-foreground">
+                            {t('civicVoting.participation.directoryToggle')}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('civicVoting.participation.directoryToggleHint')}
+                          </p>
+                        </div>
+                        <Switch
+                          checked={directoryVisible}
+                          disabled={directoryBusy}
+                          onCheckedChange={(checked) => void toggleDirectoryPresence(checked)}
+                          aria-label={t('civicVoting.participation.directoryToggle')}
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                ) : votingOpen ? (
+                  <div className="space-y-2">
+                    {myOption ? (
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-xs text-muted-foreground">
+                          {t('civicVoting.proposals.yourChoice')}:{' '}
+                          <span className="font-medium text-foreground">
+                            {myOption === 'support'
+                              ? t('civicVoting.proposals.castSupport')
+                              : myOption === 'oppose'
+                                ? t('civicVoting.proposals.castOppose')
+                                : t('civicVoting.proposals.castAbstain')}
+                          </span>
+                        </p>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          disabled={casting || withdrawing}
+                          onClick={() => void withdrawConsultation()}
+                        >
+                          {withdrawing ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : null}
+                          {t('civicVoting.proposals.withdrawBallot')}
+                        </Button>
+                      </div>
+                    ) : null}
+                    <div className="flex flex-wrap gap-2">
+                      {(
+                        [
+                          ['support', 'castSupport'],
+                          ['oppose', 'castOppose'],
+                          ['abstain', 'castAbstain'],
+                        ] as const
+                      ).map(([key, labelKey]) => (
+                        <Button
+                          key={key}
+                          type="button"
+                          size="sm"
+                          variant={myOption === key ? 'default' : 'outline'}
+                          disabled={casting || withdrawing}
+                          onClick={() => void castConsultation(key)}
+                        >
+                          {t(`civicVoting.proposals.${labelKey}`)}
+                        </Button>
+                      ))}
+                    </div>
+                    {myOption ? (
+                      <div className="flex items-start justify-between gap-3 rounded-xl border border-border/50 p-3">
+                        <div className="min-w-0 space-y-1">
+                          <p className="text-sm font-medium text-foreground">
+                            {t('civicVoting.participation.directoryToggle')}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('civicVoting.participation.directoryToggleHint')}
+                          </p>
+                        </div>
+                        <Switch
+                          checked={directoryVisible}
+                          disabled={directoryBusy || withdrawing}
+                          onCheckedChange={(checked) => void toggleDirectoryPresence(checked)}
+                          aria-label={t('civicVoting.participation.directoryToggle')}
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    {t(`civicVoting.status.${detail.election.status}`)}
+                  </p>
+                )}
+              </div>
+            ) : null}
           </Card>
         ) : null}
 
-        {!user ? (
+        {!user && !isConsultation ? (
           <Card className="rounded-2xl border-dashed border-border/70 p-4 shadow-none space-y-3">
             <p className="text-sm text-muted-foreground">{t('civicVoting.publicBrowseOnly')}</p>
             <div className="flex flex-wrap gap-2">
@@ -387,10 +728,17 @@ export default function CivicVotingElection() {
               </AccordionTrigger>
               <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
                 {detail.body}
+                {isConsultation ? (
+                  <p className="mt-3 text-xs">{t('civicVoting.proposals.limitations')}</p>
+                ) : null}
+                {isConsultation ? (
+                  <p className="mt-2 text-xs">{t('civicVoting.participation.privacyNote')}</p>
+                ) : null}
               </AccordionContent>
             </AccordionItem>
           ) : null}
 
+          {!isConsultation ? (
           <AccordionItem value="session" className="border-border/40">
             <AccordionTrigger className="text-left text-sm font-semibold hover:no-underline">
               {t('civicVoting.folds.sessionTools')}
@@ -609,6 +957,7 @@ export default function CivicVotingElection() {
               )}
             </AccordionContent>
           </AccordionItem>
+          ) : null}
         </Accordion>
       </div>
     </CivicVotingPageShell>

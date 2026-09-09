@@ -129,6 +129,9 @@ function mapMatter(row: Record<string, unknown>): Matter {
   const visibility = isMatterVisibility(str(row.visibility))
     ? (row.visibility as MatterVisibility)
     : 'participants';
+  const scopeRaw = str(row.scope_kind).toLowerCase();
+  const scopeKind: Matter['scopeKind'] =
+    scopeRaw === 'country' || scopeRaw === 'region' || scopeRaw === 'locality' ? scopeRaw : 'global';
   return {
     id: str(row.id),
     title: str(row.title),
@@ -137,6 +140,10 @@ function mapMatter(row: Record<string, unknown>): Matter {
     lifecycleStatus: lifecycle,
     visibility,
     areaNodeId: strOrNull(row.area_node_id),
+    scopeKind,
+    scopeCountryCode: strOrNull(row.scope_country_code),
+    scopeRegionCode: strOrNull(row.scope_region_code),
+    scopeLocalityCode: strOrNull(row.scope_locality_code),
     initiator: actorFrom(
       row.initiator_kind,
       row.initiator_profile_id,
@@ -655,6 +662,10 @@ export type CreateMatterInput = {
   addresseeUnitLabel?: string | null;
   visibility: MatterVisibility;
   areaNodeId?: string | null;
+  scopeKind?: Matter['scopeKind'];
+  scopeCountryCode?: string | null;
+  scopeRegionCode?: string | null;
+  scopeLocalityCode?: string | null;
   evidenceUrl?: string | null;
   evidenceLabel?: string | null;
   submit?: boolean;
@@ -750,6 +761,13 @@ export async function createMatterRecord(
       addressee_unit_label: input.addresseeUnitLabel ?? null,
       visibility: input.visibility,
       area_node_id: input.areaNodeId ?? null,
+      scope_kind: input.scopeKind ?? 'global',
+      scope_country_code: input.scopeKind === 'global' || !input.scopeKind ? null : input.scopeCountryCode ?? null,
+      scope_region_code:
+        input.scopeKind === 'region' || input.scopeKind === 'locality'
+          ? input.scopeRegionCode ?? null
+          : null,
+      scope_locality_code: input.scopeKind === 'locality' ? input.scopeLocalityCode ?? null : null,
       evidence_url: input.evidenceUrl ?? null,
       evidence_label: input.evidenceLabel ?? null,
       submit: input.submit !== false,

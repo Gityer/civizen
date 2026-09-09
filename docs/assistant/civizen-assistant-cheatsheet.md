@@ -174,7 +174,7 @@ Propose, then sign in Civizen (typed name + explicit consent) or record paper/ex
 
 ## Governance
 
-Public landing `/governance`. Member proposal hub `/governance/workspace`. Civic voting `/governance/voting` (elections catalog; public browsing).
+Public landing `/governance`. Member proposal hub `/governance/workspace`. Civic voting `/governance/voting` (Proposals and Elections; public browsing; History beside each label for past/demo items).
 
 Current public community instrument: **Civizen Community Governance Charter** (`/governance/charter`). It is **not** the legal constitution of a government or company.
 
@@ -188,9 +188,11 @@ Working institutional design (not adopted public policy, not fully implemented a
 
 ## Voting
 
-Civic elections and contests at `/governance/voting`. Community proposals/votes exist in the governance workspace under Charter rules. Token ownership or wealth alone does not create voting authority. Voting may be advisory or binding only within a delegated scope.
+Civic elections and contests at `/governance/voting`. A Matter can draft a **voting proposal** (does not cast ballots). Geographic scope on a Matter (`Global` by default; optional country) is separate from subject **Area** (optional domain taxonomy). Voting proposals inherit the Matter’s geographic scope; founders/admins publish to an ordinary nonbinding consultation ballot (Support / Oppose / Abstain) at `/governance/voting/:electionId`. Public surfaces show aggregate option counts, suppressed country-of-residence participant stats (≥25 with country overall; ≥5 per country), and an optional consented participant directory (display name + country only). Casting does not require public listing. Until closing, participants may withdraw their effective consultation ballot (it leaves valid counts, country stats, and the directory) and cast again if eligible. Individual ballot choices, emails, and account IDs are not shown publicly. Demo/sample elections stay in History, not the live list. Global contests remain visible under local country filters. Community proposals/votes also exist in the governance workspace under Charter rules. Token ownership or wealth alone does not create voting authority. Voting may be advisory or binding only within a delegated scope.
 
-Who can create proposals: eligible participants through the platform’s proposal surfaces (`/governance/workspace`, `/governance/new`). Exact eligibility follows published platform rules and role permissions.
+Who can draft a voting proposal from a Matter: the Matter initiator or responsible party, or founder/admin/system. Who can publish the ballot: founder/admin/system only. Other proposals: eligible participants through `/governance/workspace` and `/governance/new`. Exact eligibility follows published platform rules and role permissions.
+
+Voluntary Civizen consultations do not create legal citizenship, replace public-law elections, or imply a predetermined world government. Public framing stays inclusive (a more united world; respect for rights, diversity, and local autonomy).
 
 ## Messaging
 
@@ -208,7 +210,7 @@ Person-to-person threads: **Hide chat** removes it from your inbox only; the oth
 
 ## Profiles
 
-Profiles include identity, bio, education, experience, skills, endorsements, and Score. Business/organization presence uses **linked accounts** on a profile (no separate organizations table in Phase 1). A member may link **more than one** business account from the profile menu Accounts `+`. While signed into one organization, the other organizations stay listed so you can switch. Swipe or scroll the account cards — the current account stays in the center, with the others visible on the sides — and tap a card to switch. If the company already exists, Add business becomes **Connect** instead of **Register**.
+Profiles include identity, bio, education, experience, skills, endorsements, and Score. When stronger trust is needed, members can start **Identity verification** from Settings → Edit Profile: upload a photo of an ID and a photo of their face for staff review. Verification is optional at signup and is not a government ID check. Business/organization presence uses **linked accounts** on a profile (no separate organizations table in Phase 1). A member may link **more than one** business account from the profile menu Accounts `+`. While signed into one organization, the other organizations stay listed so you can switch. Swipe or scroll the account cards — the current account stays in the center, with the others visible on the sides — and tap a card to switch. If the company already exists, Add business becomes **Connect** instead of **Register**.
 
 ## Score
 

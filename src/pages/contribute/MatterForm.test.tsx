@@ -45,8 +45,16 @@ vi.mock('@/lib/classification', () => ({
   listCurrentAreas: () => [],
 }));
 
+vi.mock('@/lib/geo-locations', () => ({
+  listGeoCountryCodes: () => ['US', 'AM'],
+}));
+
+vi.mock('@/lib/countries', () => ({
+  getCountryName: (code: string) => code,
+}));
+
 describe('Matter pages', () => {
-  it('renders the create form with outlined title and recipient fields', async () => {
+  it('renders the create form with outlined title, recipient, and geographic scope fields', async () => {
     render(
       <MemoryRouter>
         <MatterForm />
@@ -55,6 +63,9 @@ describe('Matter pages', () => {
     expect(await screen.findByText('contribute.matters.newTitle')).toBeInTheDocument();
     expect(screen.getByLabelText('contribute.matters.titleLabel')).toBeInTheDocument();
     expect(screen.getByLabelText('contribute.matters.recipientLabel')).toBeInTheDocument();
+    expect(screen.getByText('contribute.matters.scopeLabel')).toBeInTheDocument();
+    expect(screen.getByText('contribute.matters.scope.global')).toBeInTheDocument();
+    expect(screen.getByText('contribute.matters.areaNone')).toBeInTheDocument();
   });
 
   it('renders a missing-state detail page without crashing', async () => {

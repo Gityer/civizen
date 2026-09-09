@@ -70,6 +70,7 @@ const StudyTests = lazyWithChunkReload(() => import('@/pages/study/StudyTests'))
 const Governance = lazyWithChunkReload(() => import('@/pages/Governance'));
 const PublicGovernanceLanding = lazyWithChunkReload(() => import('@/pages/governance/PublicGovernanceLanding'));
 const CivicVotingHub = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingHub'));
+const CivicVotingProposal = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingProposal'));
 const CivicVotingElection = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingElection'));
 const CivicVotingObserver = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingObserver'));
 const SolutionsHub = lazyWithChunkReload(() => import('@/pages/governance/SolutionsHub'));
@@ -282,6 +283,7 @@ const App = () => (
                   <Route path="/governance/charter" element={<InstitutionalDocRoute />} />
                   <Route path="/governance" element={<PublicGovernanceLanding />} />
                   <Route path="/governance/voting" element={<CivicVotingHub />} />
+                  <Route path="/governance/voting/proposals/:proposalId" element={<CivicVotingProposal />} />
                   <Route path="/governance/voting/:electionId" element={<CivicVotingElection />} />
                   <Route path="/governance/voting/:electionId/observe" element={<CivicVotingObserver />} />
                   <Route path="/transparency" element={<InstitutionalDocRoute />} />

@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Globe2,
   Check,
+  History,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
@@ -31,6 +32,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
   Command,
@@ -41,6 +43,13 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { SlowRunningText } from '@/components/ui/slow-running-text';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -60,11 +69,16 @@ import {
   CIVIC_ELECTION_TIER_LABELS,
   CIVIC_SECURITY_CLASS_LABELS,
   electionTitleWithoutCountryLabel,
+  isCivicElectionActiveCatalog,
+  isCivicElectionHistoryCatalog,
+  isCivicElectionSample,
   listCivicElections,
+  listVotingProposals,
   type CivicElection,
   type CivicElectionSecurityClass,
   type CivicElectionStatus,
   type CivicElectionTier,
+  type VotingProposal,
 } from '@/lib/civic-voting';
 import { cn } from '@/lib/utils';
 
@@ -242,8 +256,11 @@ export default function CivicVotingHub() {
   const { t, language } = useLanguage();
   const { profile, refreshProfile } = useAuth();
   const [elections, setElections] = useState<CivicElection[]>([]);
+  const [proposals, setProposals] = useState<VotingProposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [proposalHistoryOpen, setProposalHistoryOpen] = useState(false);
   const [activeTier, setActiveTier] = useState<CivicElectionTier>(TIER_ORDER[0]);
   const [filterCountry, setFilterCountry] = useState<string | null>(null);
   const [filterRegion, setFilterRegion] = useState<string | null>(null);
@@ -263,16 +280,43 @@ export default function CivicVotingHub() {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const result = await listCivicElections();
+      const [electionResult, proposalRows] = await Promise.all([
+        listCivicElections(),
+        listVotingProposals().catch(() => [] as VotingProposal[]),
+      ]);
       if (cancelled) return;
-      setElections(result.elections);
-      setError(result.error);
+      setElections(electionResult.elections);
+      setError(electionResult.error);
+      setProposals(proposalRows);
       setLoading(false);
     })();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const activeElections = useMemo(
+    () => elections.filter(isCivicElectionActiveCatalog),
+    [elections],
+  );
+  const historyElections = useMemo(
+    () =>
+      elections
+        .filter(isCivicElectionHistoryCatalog)
+        .sort((a, b) => Date.parse(b.votingClosesAt) - Date.parse(a.votingClosesAt)),
+    [elections],
+  );
+  const activeProposals = useMemo(
+    () => proposals.filter((item) => item.status === 'draft'),
+    [proposals],
+  );
+  const historyProposals = useMemo(
+    () =>
+      proposals
+        .filter((item) => item.status !== 'draft')
+        .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt)),
+    [proposals],
+  );
 
   const countryOptions = useMemo(() => listGeoCountryCodes(language), [language]);
 
@@ -362,12 +406,18 @@ export default function CivicVotingHub() {
   }, [filterCountry, filterRegion, elections]);
 
   const filteredElections = useMemo(() => {
-    return elections.filter((election) => {
+    return activeElections.filter((election) => {
       if (filterCountry === GLOBAL_COUNTRY_FILTER) {
         if (!isGlobalScopeCountry(election.scopeCountryCode)) return false;
-      } else if (filterCountry && election.scopeCountryCode !== filterCountry) {
+      } else if (
+        filterCountry &&
+        !isGlobalScopeCountry(election.scopeCountryCode) &&
+        election.scopeCountryCode !== filterCountry
+      ) {
         return false;
       }
+      // Global contests stay visible under local country / region / city filters.
+      if (isGlobalScopeCountry(election.scopeCountryCode)) return true;
       if (filterRegion && election.scopeRegionCode !== filterRegion) return false;
       if (filterLocality) {
         if (!election.scopeLocalityCode) {
@@ -379,7 +429,7 @@ export default function CivicVotingHub() {
       }
       return true;
     });
-  }, [elections, filterCountry, filterRegion, filterLocality]);
+  }, [activeElections, filterCountry, filterRegion, filterLocality]);
 
   const byTier = useMemo(() => {
     const map = new Map<CivicElectionTier, CivicElection[]>();
@@ -401,16 +451,16 @@ export default function CivicVotingHub() {
   );
 
   useEffect(() => {
-    if (elections.length === 0 || didApplyDefaultTier.current) return;
-    const nearest = pickNearestDeadlineElection(elections);
+    if (activeElections.length === 0 || didApplyDefaultTier.current) return;
+    const nearest = pickNearestDeadlineElection(activeElections);
     if (nearest) {
       setActiveTier(nearest.tier);
       didApplyDefaultTier.current = true;
     }
-  }, [elections]);
+  }, [activeElections]);
 
   useEffect(() => {
-    if (didApplyLocationDefaults.current || elections.length === 0 || countryOptions.length === 0) {
+    if (didApplyLocationDefaults.current || activeElections.length === 0 || countryOptions.length === 0) {
       return;
     }
 
@@ -423,9 +473,22 @@ export default function CivicVotingHub() {
       });
       if (!preferredCountry || cancelled) return;
 
-      const inCountry = elections.filter(
+      const inCountry = activeElections.filter(
         (election) => election.scopeCountryCode === preferredCountry,
       );
+      if (inCountry.length === 0) {
+        const globalOnes = activeElections.filter((election) =>
+          isGlobalScopeCountry(election.scopeCountryCode),
+        );
+        if (globalOnes.length > 0) {
+          setFilterCountry(GLOBAL_COUNTRY_FILTER);
+          setFilterRegion(null);
+          setFilterLocality(null);
+          didApplyLocationDefaults.current = true;
+          return;
+        }
+      }
+
       const profileRegion = profile?.region_code?.trim().toUpperCase() || null;
       const profileCity = profile?.city?.trim() || null;
 
@@ -494,7 +557,7 @@ export default function CivicVotingHub() {
       cancelled = true;
     };
   }, [
-    elections,
+    activeElections,
     countryOptions,
     profile?.country_code,
     profile?.country,
@@ -611,11 +674,86 @@ export default function CivicVotingHub() {
           <div className="flex min-w-0 items-center gap-2">
             <div className="flex min-w-0 items-center gap-1.5">
               <h2 className="text-sm font-semibold text-foreground">
+                {t('civicVoting.proposals.title')}
+              </h2>
+              <Badge variant="outline" className="h-5 min-w-5 justify-center px-1.5 text-[10px]">
+                {activeProposals.length}
+              </Badge>
+              {historyProposals.length > 0 ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7 shrink-0 text-muted-foreground"
+                      aria-label={t('civicVoting.history.proposalsTitle')}
+                      onClick={() => setProposalHistoryOpen(true)}
+                    >
+                      <History className="h-3.5 w-3.5" aria-hidden />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    {t('civicVoting.history.proposalsTitle')}
+                  </TooltipContent>
+                </Tooltip>
+              ) : null}
+            </div>
+          </div>
+
+          {!loading && activeProposals.length === 0 ? (
+            <Card className="rounded-2xl border-border/60 p-4 text-sm text-muted-foreground">
+              {t('civicVoting.proposals.empty')}
+            </Card>
+          ) : null}
+
+          {activeProposals.map((proposal) => (
+            <Link
+              key={proposal.id}
+              to={`/governance/voting/proposals/${proposal.id}`}
+              className="flex items-center gap-2 rounded-2xl border border-border/60 bg-card/60 px-3 py-3 text-sm transition-colors hover:bg-muted/30"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex flex-wrap items-center gap-1.5">
+                  <Badge variant="outline">{t('civicVoting.proposals.status.draft')}</Badge>
+                  <Badge variant="secondary">{t('civicVoting.proposals.nonbinding')}</Badge>
+                </div>
+                <p className="truncate font-medium text-foreground">{proposal.title}</p>
+                {proposal.summary ? (
+                  <p className="truncate text-xs text-muted-foreground">{proposal.summary}</p>
+                ) : null}
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+            </Link>
+          ))}
+        </section>
+
+        <section className="space-y-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="flex min-w-0 items-center gap-1.5">
+              <h2 className="text-sm font-semibold text-foreground">
                 {t('civicVoting.openElections')}
               </h2>
               <Badge variant="outline" className="h-5 min-w-5 justify-center px-1.5 text-[10px]">
                 {filteredElections.length}
               </Badge>
+              {historyElections.length > 0 ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7 shrink-0 text-muted-foreground"
+                      aria-label={t('civicVoting.history.title')}
+                      onClick={() => setHistoryOpen(true)}
+                    >
+                      <History className="h-3.5 w-3.5" aria-hidden />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">{t('civicVoting.history.title')}</TooltipContent>
+                </Tooltip>
+              ) : null}
             </div>
 
             <div className="ml-auto flex min-w-0 items-center gap-1.5">
@@ -679,13 +817,25 @@ export default function CivicVotingHub() {
             </Card>
           ) : null}
 
-          {!loading && !error && elections.length === 0 ? (
-            <Card className="rounded-2xl border-border/60 p-4 text-sm text-muted-foreground">
-              {t('civicVoting.emptyElections')}
+          {!loading && !error && activeElections.length === 0 ? (
+            <Card className="rounded-2xl border-border/60 p-4 text-sm text-muted-foreground space-y-2">
+              <p>{t('civicVoting.emptyElections')}</p>
+              {historyElections.length > 0 ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5"
+                  onClick={() => setHistoryOpen(true)}
+                >
+                  <History className="h-3.5 w-3.5" aria-hidden />
+                  {t('civicVoting.history.open')}
+                </Button>
+              ) : null}
             </Card>
           ) : null}
 
-          {!loading && !error && elections.length > 0 && filteredElections.length === 0 ? (
+          {!loading && !error && activeElections.length > 0 && filteredElections.length === 0 ? (
             <Card className="rounded-2xl border-border/60 p-4 text-sm text-muted-foreground">
               {t('civicVoting.filters.empty')}
             </Card>
@@ -758,7 +908,7 @@ export default function CivicVotingHub() {
             </AccordionTrigger>
             <AccordionContent className="space-y-3 text-sm text-muted-foreground">
               <p>{t('civicVoting.institutionalNotice')}</p>
-              <p className="text-xs">{t('civicVoting.sampleDataNotice')}</p>
+              <p className="text-xs">{t('civicVoting.history.catalogHint')}</p>
             </AccordionContent>
           </AccordionItem>
 
@@ -793,6 +943,70 @@ export default function CivicVotingHub() {
           </AccordionItem>
         </Accordion>
       </div>
+
+      <Sheet open={historyOpen} onOpenChange={setHistoryOpen}>
+        <SheetContent side="bottom" className="max-h-[80vh] rounded-t-2xl px-3 pb-8">
+          <SheetHeader className="text-left">
+            <SheetTitle>{t('civicVoting.history.title')}</SheetTitle>
+            <SheetDescription>{t('civicVoting.history.description')}</SheetDescription>
+          </SheetHeader>
+          <div className="mt-4 max-h-[60vh] space-y-2 overflow-y-auto">
+            {historyElections.map((election) => (
+              <Link
+                key={election.id}
+                to={`/governance/voting/${election.id}`}
+                className="flex items-center gap-2 rounded-xl border border-border/50 bg-muted/20 px-3 py-2.5 text-sm transition-colors hover:bg-muted/40"
+                onClick={() => setHistoryOpen(false)}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium text-foreground">{election.title}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {isCivicElectionSample(election)
+                      ? t('civicVoting.history.sampleBadge')
+                      : t(`civicVoting.status.${election.status}`)}
+                  </p>
+                </div>
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+              </Link>
+            ))}
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      <Sheet open={proposalHistoryOpen} onOpenChange={setProposalHistoryOpen}>
+        <SheetContent side="bottom" className="max-h-[80vh] rounded-t-2xl px-3 pb-8">
+          <SheetHeader className="text-left">
+            <SheetTitle>{t('civicVoting.history.proposalsTitle')}</SheetTitle>
+            <SheetDescription>{t('civicVoting.history.proposalsDescription')}</SheetDescription>
+          </SheetHeader>
+          <div className="mt-4 max-h-[60vh] space-y-2 overflow-y-auto">
+            {historyProposals.length === 0 ? (
+              <p className="text-sm text-muted-foreground">{t('civicVoting.history.proposalsEmpty')}</p>
+            ) : (
+              historyProposals.map((proposal) => (
+                <Link
+                  key={proposal.id}
+                  to={
+                    proposal.electionId
+                      ? `/governance/voting/${proposal.electionId}`
+                      : `/governance/voting/proposals/${proposal.id}`
+                  }
+                  className="flex items-center gap-2 rounded-xl border border-border/50 bg-muted/20 px-3 py-2.5 text-sm transition-colors hover:bg-muted/40"
+                  onClick={() => setProposalHistoryOpen(false)}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-foreground">{proposal.title}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {t(`civicVoting.proposals.status.${proposal.status}`)}
+                    </p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+                </Link>
+              ))
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </CivicVotingPageShell>
   );
 }

@@ -25,6 +25,10 @@ export const MATTER_VISIBILITIES = [
 ] as const;
 export type MatterVisibility = (typeof MATTER_VISIBILITIES)[number];
 
+/** Geographic scope — distinct from subject Area (`areaNodeId`). */
+export const MATTER_SCOPE_KINDS = ['global', 'country', 'region', 'locality'] as const;
+export type MatterScopeKind = (typeof MATTER_SCOPE_KINDS)[number];
+
 export const MATTER_ACTOR_KINDS = ['person', 'organization', 'group', 'system', 'ai_agent'] as const;
 export type MatterActorKind = (typeof MATTER_ACTOR_KINDS)[number];
 
@@ -347,6 +351,10 @@ export type Matter = {
   lifecycleStatus: MatterLifecycle;
   visibility: MatterVisibility;
   areaNodeId: string | null;
+  scopeKind: MatterScopeKind;
+  scopeCountryCode: string | null;
+  scopeRegionCode: string | null;
+  scopeLocalityCode: string | null;
   initiator: MatterActorRef;
   addressee: MatterActorRef;
   responsible: MatterActorRef;

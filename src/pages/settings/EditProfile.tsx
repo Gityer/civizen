@@ -51,6 +51,7 @@ import {
   type ProfileDraft,
 } from '@/lib/edit-profile-helpers';
 import { WorldCitizenshipStatusNotice } from '@/components/institutional/WorldCitizenshipStatusNotice';
+import { IdentityVerificationSettingsSection } from '@/components/profile/IdentityVerificationSettingsSection';
 
 const EditProfileSocialCard = lazy(() =>
   import('@/components/profile/EditProfileSocialCard').then((module) => ({
@@ -743,6 +744,9 @@ export default function EditProfile() {
               </div>
             </TooltipProvider>
             <WorldCitizenshipStatusNotice variant="credential" className="mt-3" />
+            <div className="mt-4">
+              <IdentityVerificationSettingsSection />
+            </div>
           </div>
 
           <div

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
@@ -12,6 +13,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  canManageVotingProposals,
+  createVotingProposalFromMatter,
+  listVotingProposalsForMatter,
+  type VotingProposal,
+} from '@/lib/civic-voting';
 import { listCurrentAreas } from '@/lib/classification';
 import {
   REOPEN_REASONS,
@@ -59,6 +66,7 @@ export default function MatterDetail() {
   const tRef = useRef(t);
   tRef.current = t;
   const { profile } = useAuth();
+  const navigate = useNavigate();
   const profileId = profile?.id ?? '';
   const areas = useMemo(() => listCurrentAreas(), []);
 
@@ -80,6 +88,8 @@ export default function MatterDetail() {
   const [file, setFile] = useState<File | null>(null);
   const [section, setSection] = useState<'overview' | 'discussion' | 'work' | 'decisions' | 'ai' | 'resolution' | 'outcome' | 'activity'>('overview');
   const [outstandingReason, setOutstandingReason] = useState('');
+  const [votingProposals, setVotingProposals] = useState<VotingProposal[]>([]);
+  const [creatingProposal, setCreatingProposal] = useState(false);
 
   const load = useCallback(async () => {
     if (!matterId) {
@@ -92,8 +102,15 @@ export default function MatterDetail() {
       setLinkedIds(linked);
       const row = await getMatterDetail(matterId);
       setBundle(row);
+      try {
+        const proposals = await listVotingProposalsForMatter(matterId);
+        setVotingProposals(proposals);
+      } catch {
+        setVotingProposals([]);
+      }
     } catch {
       setBundle(null);
+      setVotingProposals([]);
     } finally {
       setLoading(false);
     }
@@ -144,6 +161,10 @@ export default function MatterDetail() {
   const viewerIsResponsible = matter
     ? viewerRepresents(profileId, matter.responsible, linkedIds)
     : false;
+  const canDraftVotingProposal =
+    Boolean(profileId) &&
+    (viewerIsInitiator || viewerIsResponsible || canManageVotingProposals(profile?.role));
+  const openVotingDraft = votingProposals.find((item) => item.status === 'draft') ?? null;
   const hasWork = Boolean(matter?.collaborativeWorkStartedAt);
   const workSummary = bundle?.workSummary ?? null;
   const outstandingTasks = workSummary?.outstandingTasks ?? [];
@@ -201,6 +222,27 @@ export default function MatterDetail() {
       toast.error(error instanceof Error ? error.message : tRef.current('contribute.matters.actionFailed'));
     } finally {
       setBusy(false);
+    }
+  };
+
+  const createVotingProposal = async () => {
+    if (!matter || !matterId || !canDraftVotingProposal || openVotingDraft) return;
+    setCreatingProposal(true);
+    try {
+      const proposalId = await createVotingProposalFromMatter({
+        matterId,
+        title: matter.title.slice(0, 160),
+        summary: (matter.description || '').slice(0, 280),
+        body: matter.description || '',
+      });
+      toast.success(tRef.current('civicVoting.proposals.openProposal'));
+      navigate(`/governance/voting/proposals/${proposalId}`);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : tRef.current('civicVoting.proposals.createFailed'),
+      );
+    } finally {
+      setCreatingProposal(false);
     }
   };
 
@@ -294,6 +336,11 @@ export default function MatterDetail() {
         <p className="text-sm text-muted-foreground">
           {t('contribute.matters.fromLabel')} {actorLabel(matter.initiator)} · {t('contribute.matters.toLabel')}{' '}
           {actorLabel(matter.responsible)} · {formatWhen(matter.createdAt)}
+          {matter.scopeKind === 'global'
+            ? ` · ${t('contribute.matters.scope.global')}`
+            : matter.scopeCountryCode
+              ? ` · ${matter.scopeCountryCode}`
+              : ''}
           {areaName ? ` · ${areaName}` : ''}
         </p>
 
@@ -546,6 +593,55 @@ export default function MatterDetail() {
             </ul>
           ) : null}
         </section>
+        ) : null}
+
+        {(!hasWork || section === 'overview') && (canDraftVotingProposal || votingProposals.length > 0) ? (
+          <section className="space-y-2">
+            <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              {t('civicVoting.proposals.title')}
+            </h2>
+            <p className="text-xs text-muted-foreground">{t('civicVoting.proposals.limitations')}</p>
+            {votingProposals.length > 0 ? (
+              <ul className="space-y-2">
+                {votingProposals.map((proposal) => (
+                  <li key={proposal.id}>
+                    <Card className="flex flex-wrap items-center gap-2 p-3">
+                      <Badge variant="outline">
+                        {t(`civicVoting.proposals.status.${proposal.status}`)}
+                      </Badge>
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                        {proposal.title}
+                      </span>
+                      <Button type="button" size="sm" variant="outline" asChild>
+                        <Link to={`/governance/voting/proposals/${proposal.id}`}>
+                          {t('civicVoting.proposals.openProposal')}
+                        </Link>
+                      </Button>
+                      {proposal.electionId ? (
+                        <Button type="button" size="sm" asChild>
+                          <Link to={`/governance/voting/${proposal.electionId}`}>
+                            {t('civicVoting.proposals.openBallot')}
+                          </Link>
+                        </Button>
+                      ) : null}
+                    </Card>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {canDraftVotingProposal && !openVotingDraft ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={creatingProposal}
+                onClick={() => void createVotingProposal()}
+              >
+                {creatingProposal ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {t('civicVoting.proposals.createFromMatter')}
+              </Button>
+            ) : null}
+          </section>
         ) : null}
 
         {bundle && bundle.parties.length > 0 && (!hasWork || section === 'overview') ? (

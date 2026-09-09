@@ -808,9 +808,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.197",
     "appReleaseId": "20260817-v0.1.197",
     "androidVersionCode": 199,
-    "gitSha": "193da4a6919d23c6710dc0e84543bcd37556b283",
-    "generatedAt": "2026-09-03T04:44:36.764Z",
-    "sourceFingerprint": "5af3e9396cd47faf93b1183a497376f9e8592b8a15eca153bd4985a3a3d83391",
+    "gitSha": "edc54a292725b7fe6ae1f3cd06551b19c8898749",
+    "generatedAt": "2026-09-07T19:00:54.288Z",
+    "sourceFingerprint": "8653b04be4426c6e01f08ea690ba988e0387ed7cc360fdeb2db0c8bcc333d1a7",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370
@@ -1343,7 +1343,8 @@ var KNOWLEDGE_PACK = {
       "id": "profile",
       "name": "Profiles",
       "status": "implemented",
-      "description": "Member and linked business profiles with identity, education, experience, skills, endorsements, and Score.",
+      "description": "Member and linked business profiles with identity, education, experience, skills, endorsements, and Score. Optional Identity verification from Settings \u2192 Edit Profile uploads an ID photo and face photo for staff review when stronger trust is needed (not at signup; not a government ID).",
+      "howTo": "Open Profile from the menu. To verify identity when needed: Open Settings > Edit Profile, then use Identity verification to upload an ID photo and a face photo and submit for review.",
       "routes": [
         "/profile",
         "/settings/profile"
@@ -1353,14 +1354,20 @@ var KNOWLEDGE_PACK = {
       ],
       "relatedCapabilities": [
         "score",
-        "my_contributions"
+        "my_contributions",
+        "governance"
       ],
       "aliases": [
         "account",
-        "edit profile"
+        "edit profile",
+        "identity verification",
+        "verify identity"
       ],
       "sourceRefs": [
-        "src/lib/feature-registry.ts"
+        "src/lib/feature-registry.ts",
+        "src/lib/identity-verification.ts",
+        "docs/04-operations/dev/identity-verification-manual.md",
+        "docs/assistant/civizen-assistant-cheatsheet.md"
       ]
     },
     {
@@ -2760,7 +2767,7 @@ var KNOWLEDGE_PACK = {
       "id": "capability:profile",
       "title": "Profiles",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Profiles status=implemented. Member and linked business profiles with identity, education, experience, skills, endorsements, and Score.  Routes: /profile, /settings/profile.",
+      "text": "Profiles status=implemented. Member and linked business profiles with identity, education, experience, skills, endorsements, and Score. Optional Identity verification from Settings \u2192 Edit Profile uploads an ID photo and face photo for staff review when stronger trust is needed (not at signup; not a government ID). Open Profile from the menu. To verify identity when needed: Open Settings > Edit Profile, then use Identity verification to upload an ID photo and a face photo and submit for review. Routes: /profile, /settings/profile.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"

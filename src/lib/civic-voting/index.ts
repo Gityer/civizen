@@ -13,3 +13,5 @@ export * from './client-attestation';
 export * from './canvass';
 export * from './load-elections';
 export * from './election-title';
+export * from './public-tallies';
+export * from './voting-proposals';

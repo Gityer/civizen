@@ -39,6 +39,10 @@ vi.mock('@/components/profile/EditProfileSocialCard', () => ({
   ),
 }));
 
+vi.mock('@/components/profile/IdentityVerificationSettingsSection', () => ({
+  IdentityVerificationSettingsSection: () => <div>Identity verification</div>,
+}));
+
 class MockIntersectionObserver {
   observe() {}
   unobserve() {}
@@ -148,6 +152,7 @@ describe('Edit Profile identity block', () => {
 
     expect(screen.queryByText('Identity')).not.toBeInTheDocument();
     expect(await screen.findByText('ID')).toBeInTheDocument();
+    expect(screen.getByText('Identity verification')).toBeInTheDocument();
     expect(screen.getByText('Member ID')).toBeInTheDocument();
     expect(screen.getAllByText(/World Citizen ID/).length).toBeGreaterThan(0);
     expect(screen.getAllByText('Social Card').length).toBeGreaterThan(0);

@@ -70,6 +70,11 @@ export type CivicElectionDetail = {
 function mapElection(row: ElectionRow): CivicElection {
   const securityClass = row.security_class as CivicElectionSecurityClass;
   const policy = securityClassGatePolicy(securityClass);
+  const metadata = (row.metadata || {}) as Record<string, unknown>;
+  const sampleBatch =
+    typeof metadata.sample_batch === 'string' && metadata.sample_batch.trim()
+      ? metadata.sample_batch.trim()
+      : null;
   return {
     id: row.id,
     title: row.title,
@@ -88,6 +93,8 @@ function mapElection(row: ElectionRow): CivicElection {
     requireHomePresence: row.require_home_presence,
     requireSolitude: row.require_solitude,
     requireFaceLiveness: row.require_face_liveness,
+    sampleBatch,
+    metadata,
   };
 }
 
@@ -190,6 +197,7 @@ export async function loadCivicElectionDetail(electionId: string): Promise<{
             displayName: candidate.display_name,
             statement: candidate.statement,
             profileId: candidate.profile_id,
+            optionKey: candidate.option_key,
             sortOrder: candidate.sort_order,
           })),
       })),
