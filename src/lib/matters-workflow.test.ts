@@ -104,7 +104,7 @@ describe('Scenario B — clarification', () => {
     expect(state.currentAction?.actionType).toBe('clarify');
     expect(state.currentAction?.assignedActor.profileId).toBe('a');
     expect(state.currentAction?.timingPolicyId).toBe('clarification_response');
-    expect(deriveMatterStatus(state.matter, state.currentAction)).toBe('clarification_needed');
+    expect(deriveMatterStatus(state.matter, state.currentAction, ctx.now)).toBe('clarification_needed');
 
     ctx.now = new Date('2026-09-03T12:00:00.000Z');
     state = performFormalAction(state, ctx, {
@@ -148,7 +148,7 @@ describe('Scenario C — Issue accepted and addressed', () => {
     });
     expect(state.currentAction?.actionType).toBe('review_resolution');
     expect(state.currentAction?.timeoutAction).toBe('auto_close');
-    expect(deriveMatterStatus(state.matter, state.currentAction)).toBe('resolution_proposed');
+    expect(deriveMatterStatus(state.matter, state.currentAction, ctx.now)).toBe('resolution_proposed');
 
     const ballA = buildBallIsWithCopy({
       matter: state.matter,

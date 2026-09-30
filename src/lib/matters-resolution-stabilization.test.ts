@@ -86,7 +86,7 @@ describe('Partial resolution semantics', () => {
     expect(state.matter.lifecycleStatus).toBe('active');
     expect(state.resolutions[0].resolutionStatus).toBe('partially_accepted');
     expect(state.resolutions[0].closureKind).toBeNull();
-    expect(deriveMatterStatus(state.matter, state.currentAction)).toBe('partial_resolution');
+    expect(deriveMatterStatus(state.matter, state.currentAction, ctx.now)).toBe('partial_resolution');
   });
 
   it('follow-up path closes with partial closure wording and allows new proposal later on follow-up matter separately', () => {

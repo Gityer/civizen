@@ -63,6 +63,7 @@
     "verify:matters-coding-detail": "node scripts/verify-matters-coding-detail.mjs",
     "verify:matter-agent-auth": "node scripts/verify-matter-agent-auth.mjs",
     "verify:matter-agent-activation": "node scripts/verify-matter-agent-activation.mjs",
+    "verify:single-world-citizenship": "node scripts/verify-single-world-citizenship.mjs",
     "verify:ci": "node scripts/verify-ci.mjs",
     "verify:pre-push": "node scripts/verify-pre-push.mjs",
     "verify:post-dev": "npm run verify:agent-context && npm run verify:dev-load && npm run verify:arc-carousel-layout && npm run verify:arc-carousel-visible && npm run verify:home-post-composer && npm run verify:home-post-format && npm run verify:post-likes-rls && npm run verify:post-reposts && npm run verify:post-edit && npm run verify:home-happiness-shortcut && npm run verify:profile-score-dial && npm run verify:happiness-foundation && npm run verify:work-fulfillment && npm run verify:fulfillment-plans && npm run verify:wellbeing-aggregate-privacy && npm run verify:wellbeing-insights && npm run verify:human-outcome-loop && npm run verify:matters-foundation && npm run verify:matters-auth && npm run verify:matters-detail && npm run verify:matters-work-detail && npm run verify:matters-resolution-detail && npm run verify:matter-agent-auth && npm run verify:matters-ai-detail && npm run verify:matters-coding-detail",
@@ -156,11 +157,13 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^7.3.3",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "nanoid": "3.3.18",
     "browserslist": "4.28.8",
-    "postcss-selector-parser": "6.1.4"
+    "postcss-selector-parser": "6.1.4",
+    "js-yaml": "4.3.2",
+    "brace-expansion": "1.1.21"
   }
 }

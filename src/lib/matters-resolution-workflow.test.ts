@@ -79,7 +79,7 @@ describe('Phase 3 — primary acceptance scenario (§34)', () => {
       actionsTaken: 'Revised copy and deployed.',
     });
     expect(state.resolutions).toHaveLength(1);
-    expect(deriveMatterStatus(state.matter, state.currentAction)).toBe('resolution_proposed');
+    expect(deriveMatterStatus(state.matter, state.currentAction, ctx.now)).toBe('resolution_proposed');
 
     const review1 = pendingFor(state, userA)[0];
     state = performResolutionReview(state, ctx, {
@@ -122,7 +122,7 @@ describe('Phase 3 — primary acceptance scenario (§34)', () => {
       continueMatter: true,
     });
     expect(state.resolutions[1].resolutionStatus).toBe('partially_accepted');
-    expect(deriveMatterStatus(state.matter, state.currentAction)).toBe('partial_resolution');
+    expect(deriveMatterStatus(state.matter, state.currentAction, ctx.now)).toBe('partial_resolution');
 
     state = proposeResolution(state, ctx, {
       actor: product,

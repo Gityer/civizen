@@ -299,7 +299,7 @@ describe('Phase 2 additional scenarios', () => {
   it('derived status becomes work in progress without claiming the Matter is resolved', () => {
     const { ctx, state: opened } = startIssue();
     const state = startCollaborativeWork(opened, ctx, product);
-    expect(deriveMatterStatus(state.matter, state.currentAction)).toBe('work_in_progress');
+    expect(deriveMatterStatus(state.matter, state.currentAction, ctx.now)).toBe('work_in_progress');
   });
 });
 
