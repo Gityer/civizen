@@ -808,9 +808,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.197",
     "appReleaseId": "20260817-v0.1.197",
     "androidVersionCode": 199,
-    "gitSha": "edc54a292725b7fe6ae1f3cd06551b19c8898749",
-    "generatedAt": "2026-09-07T19:00:54.288Z",
-    "sourceFingerprint": "8653b04be4426c6e01f08ea690ba988e0387ed7cc360fdeb2db0c8bcc333d1a7",
+    "gitSha": "2fd1ccb3d402212ab5a4cfcb337b9d6dd42b52dd",
+    "generatedAt": "2026-09-30T20:34:36.217Z",
+    "sourceFingerprint": "0599edb309994bd7ab90f0d82b6e86073249e4b52341db39a6c8776ea1b81999",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370
@@ -1526,7 +1526,7 @@ var KNOWLEDGE_PACK = {
       "id": "civic_voting",
       "name": "Civic voting",
       "status": "implemented",
-      "description": "Elections catalog and election detail/observe. Public browsing is available. Token wealth does not create voting power.",
+      "description": "Elections catalog and election detail/observe at /governance/voting. Public browsing is available. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.",
       "routes": [
         "/governance/voting"
       ],
@@ -2821,7 +2821,7 @@ var KNOWLEDGE_PACK = {
       "id": "capability:civic_voting",
       "title": "Civic voting",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Civic voting status=implemented. Elections catalog and election detail/observe. Public browsing is available. Token wealth does not create voting power.  Routes: /governance/voting.",
+      "text": "Civic voting status=implemented. Elections catalog and election detail/observe at /governance/voting. Public browsing is available. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.  Routes: /governance/voting.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"

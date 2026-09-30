@@ -385,7 +385,8 @@ export const ASSISTANT_CAPABILITIES: AssistantCapability[] = [
     id: 'civic_voting',
     name: 'Civic voting',
     status: 'implemented',
-    description: 'Elections catalog and election detail/observe. Public browsing is available. Token wealth does not create voting power.',
+    description:
+      'Elections catalog and election detail/observe at /governance/voting. Public browsing is available. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.',
     routes: ['/governance/voting'],
     roles: ['guest', 'member'],
     relatedCapabilities: ['governance'],

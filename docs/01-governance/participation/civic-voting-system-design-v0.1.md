@@ -255,3 +255,27 @@ Existing proposal voting (`governance_proposals` / `governance_proposal_votes`) 
 - Hub UI: `src/pages/Governance.tsx`
 - New module: `src/lib/civic-voting/`
 - New routes: `/governance/voting`, `/governance/voting/:electionId`
+
+## 12. First public consultation
+
+**A Single World Citizenship** is the first real public Civizen consultation. It is not demo, sample, or test data.
+
+| | |
+| --- | --- |
+| Stable key | `single-world-citizenship` (`civic_elections.metadata.consultation_key`) |
+| Title | A Single World Citizenship |
+| Ballot question | Should humanity work toward establishing a single world citizenship, shared by all people regardless of nationality? |
+| Options | Support · Oppose · Abstain |
+| Scope | Global |
+| Type | Ordinary nonbinding consultation (`consultation_kind = nonbinding`, `catalog = live`) |
+| Routes | `/governance/voting` and `/governance/voting/:electionId` |
+| Published | 2026-09-30. Voting opened then and closes 2027-09-30, using the existing one-year default. |
+| Publication | Existing path only: Matter → voting proposal → `publish_voting_proposal` (founder/admin/system). Not a schema seed. |
+
+A Support vote expresses support for working toward such a citizenship. An Oppose vote expresses opposition to that direction. Abstain records participation without supporting either position.
+
+The consultation does not create a citizenship, replace any nationality, establish a government, or confer legal status. Voting Support does not enroll anyone.
+
+Later consultations, if opened, stay separate. This ballot does not ask about shared land or resources, a common currency, cashless finance, a specific government or constitution, or common legal, economic, health, or education standards.
+
+Canonical copy: `src/lib/civic-voting/single-world-citizenship.ts`. Idempotent publication: `scripts/publish-single-world-citizenship.ts`.

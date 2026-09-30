@@ -72,6 +72,7 @@ import {
   isCivicElectionActiveCatalog,
   isCivicElectionHistoryCatalog,
   isCivicElectionSample,
+  isOrdinaryConsultationElection,
   listCivicElections,
   listVotingProposals,
   type CivicElection,
@@ -1367,6 +1368,11 @@ function ElectionCard({ election }: { election: CivicElection }) {
           </Tooltip>
         </div>
 
+        {isOrdinaryConsultationElection(election) ? (
+          <p className="text-[11px] font-medium leading-tight text-muted-foreground">
+            {t('civicVoting.proposals.nonbinding')}
+          </p>
+        ) : null}
         <div className="flex min-w-0 items-center gap-1">
           <p className="min-w-0 flex-1 line-clamp-1 text-xs leading-tight text-muted-foreground">
             {election.summary}

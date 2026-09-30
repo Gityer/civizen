@@ -7011,7 +7011,7 @@ export const baseTranslations = {
       "notFound": "Voting proposal not found.",
       "limitations": "This is a voluntary, nonbinding consultation on Civizen. It does not create legal citizenship, replace public-law elections, or imply a predetermined form of world government. Identity assurance is limited to the Civizen account and eligibility rules in force when you cast.",
       "changeUntilClose": "You can change your choice until voting closes. Only one effective ballot counts.",
-      "guestCta": "Create an account or sign in to cast Support, Oppose, or Abstain.",
+      "guestCta": "Sign in to participate in this consultation.",
       "yourChoice": "Your current choice",
       "castSupport": "Support",
       "castOppose": "Oppose",
@@ -7031,6 +7031,7 @@ export const baseTranslations = {
     },
     "consultation": {
       "badge": "Consultation",
+      "participate": "Participate in the consultation",
       "bodyHint": "Voluntary network consultation. Respect for rights, diversity, and local autonomy remains. Public counts show valid ballots only."
     },
     "participation": {

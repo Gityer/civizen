@@ -2,6 +2,8 @@
 
 ## Current focus
 
+**First public consultation (2026-09-30):** A Single World Citizenship (`single-world-citizenship`) is the first real global nonbinding consultation, published through Matter → voting proposal → `publish_voting_proposal`. Question: should humanity work toward establishing a single world citizenship, shared by all people regardless of nationality? Support does not create or grant citizenship. Shared land, currency, institutions, and standards stay off this ballot. Copy: `src/lib/civic-voting/single-world-citizenship.ts`. Record: `docs/01-governance/participation/civic-voting-system-design-v0.1.md` §12.
+
 **Manual identity verification (2026-09-07):** Members verify only when needed (not at signup). Settings → Edit Profile uploads ID + face photo into `identity_verification_*`; stewards approve/reject from Steward Console. Private bucket `identity-verification`. Vendor liveness deferred. Spec: `docs/04-operations/dev/identity-verification-manual.md`. SQL: `20260907120000_identity_verification_storage.sql`.
 
 **Consultation ballot withdrawal (2026-09-07):** Until close, ordinary nonbinding consultation voters can withdraw their effective ballot. Withdrawal sets `is_countable=false`, clears selection choice (keeps `prior_choice_hash` audit only), removes public directory listing, and drops the ballot from option tallies and country stats. Re-cast allowed before close. SQL: `20260907010000_withdraw_consultation_ballot.sql`. Verify: `node scripts/verify-consultation-withdraw.mjs`. Do not publish United World without explicit approval.

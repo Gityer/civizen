@@ -378,7 +378,11 @@ export default function CivicVotingElection() {
     >
       <div className="mx-auto max-w-3xl space-y-4 px-1 py-2 pb-8">
         <div className="space-y-1">
-          <h1 className="sr-only">{displayTitle}</h1>
+          {isConsultation ? (
+            <h1 className="text-lg font-semibold leading-snug text-foreground">{displayTitle}</h1>
+          ) : (
+            <h1 className="sr-only">{displayTitle}</h1>
+          )}
           <div className="flex min-w-0 items-center gap-2">
             {detail?.election.scopeCountryCode &&
             /^(GLOBAL|WW|XZ|UN)$/i.test(detail.election.scopeCountryCode) ? (
@@ -396,7 +400,7 @@ export default function CivicVotingElection() {
                 size="sm"
               />
             ) : null}
-            {detail?.election.summary ? (
+            {!isConsultation && detail?.election.summary ? (
               <SlowRunningText
                 text={detail.election.summary}
                 onlyWhenOverflow
@@ -439,7 +443,12 @@ export default function CivicVotingElection() {
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="outline">{CIVIC_ELECTION_TIER_LABELS[detail.election.tier]}</Badge>
               {isConsultation ? (
-                <Badge variant="secondary">{t('civicVoting.consultation.badge')}</Badge>
+                <Badge variant="secondary">{t('civicVoting.proposals.nonbinding')}</Badge>
+              ) : null}
+              {isConsultation &&
+              detail.election.scopeCountryCode &&
+              /^(GLOBAL|WW|XZ|UN)$/i.test(detail.election.scopeCountryCode) ? (
+                <Badge variant="outline">{t('civicVoting.filters.global')}</Badge>
               ) : null}
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -465,13 +474,25 @@ export default function CivicVotingElection() {
               </Badge>
             </div>
 
+            {isConsultation && detail.election.summary ? (
+              <p className="text-base leading-relaxed text-foreground">{detail.election.summary}</p>
+            ) : null}
+
+            {isConsultation && detail.body ? (
+              <div className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                {detail.body}
+              </div>
+            ) : null}
+
             {isConsultation ? (
               <p className="text-xs text-muted-foreground">{t('civicVoting.consultation.bodyHint')}</p>
             ) : null}
 
             {detail.contests.map((contest) => (
               <div key={contest.id} className="space-y-3">
-                <h2 className="text-base font-semibold text-foreground">{contest.title}</h2>
+                {!(isConsultation && contest.title === detail.election.title) ? (
+                  <h2 className="text-base font-semibold text-foreground">{contest.title}</h2>
+                ) : null}
                 {!isConsultation ? (
                   <ul className="space-y-2">
                     {contest.candidates.map((candidate) => (
@@ -631,6 +652,9 @@ export default function CivicVotingElection() {
                   </div>
                 ) : votingOpen ? (
                   <div className="space-y-2">
+                    <p className="text-sm font-medium text-foreground">
+                      {t('civicVoting.consultation.participate')}
+                    </p>
                     {myOption ? (
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <p className="text-xs text-muted-foreground">
@@ -721,15 +745,15 @@ export default function CivicVotingElection() {
         ) : null}
 
         <Accordion type="multiple" className="rounded-2xl border border-border/60 bg-card/40 px-4">
-          {detail?.body ? (
+          {detail?.body || isConsultation ? (
             <AccordionItem value="about" className="border-border/40">
               <AccordionTrigger className="text-left text-sm font-semibold hover:no-underline">
                 {t('civicVoting.folds.aboutElection')}
               </AccordionTrigger>
               <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                {detail.body}
+                {isConsultation ? null : detail?.body}
                 {isConsultation ? (
-                  <p className="mt-3 text-xs">{t('civicVoting.proposals.limitations')}</p>
+                  <p className="text-xs">{t('civicVoting.proposals.limitations')}</p>
                 ) : null}
                 {isConsultation ? (
                   <p className="mt-2 text-xs">{t('civicVoting.participation.privacyNote')}</p>

@@ -194,6 +194,8 @@ Who can draft a voting proposal from a Matter: the Matter initiator or responsib
 
 Voluntary Civizen consultations do not create legal citizenship, replace public-law elections, or imply a predetermined world government. Public framing stays inclusive (a more united world; respect for rights, diversity, and local autonomy).
 
+The first real public consultation is **A Single World Citizenship** (`single-world-citizenship`) on `/governance/voting`. The question is: should humanity work toward establishing a single world citizenship, shared by all people regardless of nationality? Options are Support, Oppose, and Abstain, with equal treatment. It is a global, ordinary, nonbinding consultation. A Support vote does not create, grant, or enroll anyone in a world citizenship, and it does not replace existing nationality. It does not ask about shared land or resources, a common currency, cashless systems, a specific government or constitution, or common legal, economic, health, or education standards. Those would be separate future consultations. Demo and sample elections are not this consultation.
+
 ## Messaging
 
 **Civi** is Civizen’s AI assistant. The name appears as **Civi. Your AI Assistant**.

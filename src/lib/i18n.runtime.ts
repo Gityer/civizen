@@ -19,7 +19,7 @@ export const bootstrapTranslations = {
 const FALLBACK_LANGUAGE = 'en' as LanguageCode;
 const LANGUAGE_PACK_PREFIX = 'civizen-i18n-pack';
 /** Bump when English brand copy changes so stale machine-translated packs are discarded. */
-const LANGUAGE_PACK_VERSION = '227';
+const LANGUAGE_PACK_VERSION = '228';
 const rtlLanguages = new Set<LanguageCode | string>([
   'ar',
   'fa',
