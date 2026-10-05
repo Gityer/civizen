@@ -65,14 +65,18 @@ export default function Contribute() {
                       transition={{ delay: 0.06 + sectionIndex * 0.05 + index * 0.03 }}
                     >
                       <Card
-                        className="cursor-pointer border-border/70 bg-card/95 p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-md"
+                        className="flex cursor-pointer items-start gap-3 border-border/70 bg-card/95 p-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-md sm:block sm:p-4"
                         onClick={() => navigate(lane.path)}
                       >
-                        <Icon className={`mb-3 h-8 w-8 ${lane.iconClassName}`} />
-                        <h3 className="font-semibold text-foreground">{t(lane.titleKey)}</h3>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {t(lane.descriptionKey)}
-                        </p>
+                        <Icon
+                          className={`h-6 w-6 shrink-0 sm:mb-3 sm:h-8 sm:w-8 ${lane.iconClassName}`}
+                        />
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-foreground">{t(lane.titleKey)}</h3>
+                          <p className="mt-0.5 text-sm text-muted-foreground sm:mt-1">
+                            {t(lane.descriptionKey)}
+                          </p>
+                        </div>
                       </Card>
                     </motion.div>
                   );
