@@ -1296,6 +1296,7 @@ export const baseTranslations = {
       "workersSubtitle": "People looking for work. Unlock contact details when you are ready.",
       "loading": "Loading listings…",
       "empty": "No listings yet. Submit above to post the first one.",
+      "emptyWork": "No openings posted yet. Check back soon.",
       "loadError": "Could not load listings.",
       "unlockError": "Could not unlock contact details.",
       "signInToUnlock": "Sign in to unlock contact details.",

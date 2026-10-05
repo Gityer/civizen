@@ -125,4 +125,31 @@ describe('MarketJobsBoard', () => {
     expect(await screen.findByText('Cafe Ararat')).toBeInTheDocument();
     expect(screen.getByText('+374 55112233')).toBeInTheDocument();
   });
+
+  it('explains an empty openings list to job seekers without telling them to post one', async () => {
+    listMock.mockResolvedValue([]);
+
+    render(
+      <MemoryRouter>
+        <MarketJobsBoard viewerMode="seeker" jobTypes={[]} countryCode="" city="" refreshKey={0} />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByText('No openings posted yet. Check back soon.')).toBeInTheDocument();
+    expect(screen.queryByText(/post the first one/i)).not.toBeInTheDocument();
+  });
+
+  it('keeps the original empty message for employers browsing workers', async () => {
+    listMock.mockResolvedValue([]);
+
+    render(
+      <MemoryRouter>
+        <MarketJobsBoard viewerMode="employer" jobTypes={[]} countryCode="" city="" refreshKey={0} />
+      </MemoryRouter>,
+    );
+
+    expect(
+      await screen.findByText('No listings yet. Submit above to post the first one.'),
+    ).toBeInTheDocument();
+  });
 });

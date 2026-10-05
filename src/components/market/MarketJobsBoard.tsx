@@ -134,7 +134,7 @@ export function MarketJobsBoard({
         <p className="py-6 text-center text-sm text-muted-foreground">{t('market.jobsBoard.loading')}</p>
       ) : visibleListings.length === 0 ? (
         <p className="rounded-xl border border-border/60 bg-muted/15 px-4 py-8 text-center text-sm text-muted-foreground">
-          {t('market.jobsBoard.empty')}
+          {viewerMode === 'seeker' ? t('market.jobsBoard.emptyWork') : t('market.jobsBoard.empty')}
         </p>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border/60">
