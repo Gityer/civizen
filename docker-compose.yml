@@ -1,0 +1,27 @@
+# Local development server for Civizen (Vite). Not a production deployment.
+#
+#   docker compose up -d            # start (restarts automatically with Docker)
+#   docker compose logs -f web      # follow logs
+#   docker compose down             # stop
+#
+# Host port defaults to 8080; override when it is taken: CIVIZEN_PORT=8090 docker compose up -d
+# The app talks to the Supabase backend configured in .env (VITE_SUPABASE_URL); no database runs here.
+services:
+  web:
+    # Debian (glibc) image: the repo's node_modules hold glibc builds of esbuild/swc/rollup.
+    # Keep the major version in step with .nvmrc.
+    image: node:24-bookworm-slim
+    container_name: civizen-web
+    working_dir: /app
+    command: ["npx", "vite", "--host", "0.0.0.0", "--port", "8080"]
+    ports:
+      - "${CIVIZEN_PORT:-8080}:8080"
+    volumes:
+      - .:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s

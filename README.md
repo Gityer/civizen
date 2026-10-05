@@ -70,6 +70,13 @@ npm install
 npm run dev
 ```
 
+Or run the dev server in Docker (restarts with Docker; uses the Supabase backend from `.env`). After `npm install`:
+
+```bash
+docker compose up -d                       # http://localhost:8080
+CIVIZEN_PORT=8090 docker compose up -d     # if 8080 is taken
+```
+
 ### Technical direction (short)
 
 Local-first identity (DIDs), sync and storage toward P2P/decentralized backends, community governance of upgrades, and a staged path from testing builds to production. Deep architecture notes live under `docs/` — start with [docs/README.md](./docs/README.md) and [Sovereign Architecture](./docs/03-platform/architecture/sovereign-civizen-architecture.md).
