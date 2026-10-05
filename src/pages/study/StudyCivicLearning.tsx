@@ -895,7 +895,7 @@ export default function StudyCivicLearning() {
                           'mt-1 block text-sm text-muted-foreground',
                           isDomainExpanded
                             ? 'whitespace-normal break-words'
-                            : 'overflow-hidden text-ellipsis whitespace-nowrap',
+                            : 'line-clamp-2 break-words',
                         )}
                         title={domainDescription}
                       >
@@ -952,10 +952,11 @@ export default function StudyCivicLearning() {
 
                       {!domain.availableNow && (
                         <span
-                          className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border/70 bg-background/80"
+                          className="inline-flex h-7 items-center gap-1 rounded-full border border-border/70 bg-background/80 px-2 text-xs text-muted-foreground"
                           title={t('study.comingSoon')}
                         >
-                          <Clock3 className="h-4 w-4 text-muted-foreground" />
+                          <Clock3 className="h-3.5 w-3.5" aria-hidden="true" />
+                          {t('study.comingSoon')}
                         </span>
                       )}
 
