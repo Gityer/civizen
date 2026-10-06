@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -15,7 +15,12 @@ describe('Home Score Details tooltip', () => {
   });
 
   it('renders both lines in the Home Score Details tooltip', () => {
-    const homeSource = readFileSync(path.join(repoRoot, 'src/pages/Home.tsx'), 'utf8');
+    // Home is split into src/pages/Home.tsx plus section components under src/pages/home/.
+    const homeDir = path.join(repoRoot, 'src/pages/home');
+    const homeSource = [
+      readFileSync(path.join(repoRoot, 'src/pages/Home.tsx'), 'utf8'),
+      ...readdirSync(homeDir).map((file) => readFileSync(path.join(homeDir, file), 'utf8')),
+    ].join('\n');
     expect(homeSource).toContain("t('home.viewScoreDetails')");
     expect(homeSource).toContain("t('home.viewScoreDetailsFormationNote')");
     expect(homeSource).toMatch(/max-w-\[16rem\][\s\S]*viewScoreDetailsFormationNote/);

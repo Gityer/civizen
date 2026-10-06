@@ -35,6 +35,7 @@ export default tseslint.config(
       "src/pages/EndorseFlow.tsx",
       "src/pages/EndorseSelect.tsx",
       "src/pages/Home.tsx",
+      "src/pages/home/**/*.{ts,tsx}",
       "src/pages/Profile.tsx",
       "src/pages/UserProfile.tsx",
       "src/pages/settings/EditProfile.tsx",

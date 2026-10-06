@@ -2102,7 +2102,7 @@ export function BuildOverlay() {
 
     const handlePointerDown = (event: PointerEvent) => {
       if (event.button !== 0) return;
-      if (event.target.closest('[data-build-resize-handle="true"]')) return;
+      if (event.target instanceof Element && event.target.closest('[data-build-resize-handle="true"]')) return;
 
       const selectedElement = document.querySelector(selectedSelector);
       if (!isBuildElement(selectedElement)) return;

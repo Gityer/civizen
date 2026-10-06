@@ -38,12 +38,15 @@ export function AppTopChrome({ beforeSearch }: AppTopChromeProps) {
     <div
       data-testid="app-top-chrome"
       className={cn(
-        'pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-end pt-[max(0.5rem,var(--safe-area-top))] transition-transform duration-300 ease-out motion-reduce:transition-none',
+        'pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-end pt-[max(0.5rem,var(--safe-area-top))] transition-transform duration-300 ease-out motion-reduce:transition-none lg:left-56 lg:z-[46] lg:pt-0',
         visible ? 'translate-y-0' : '-translate-y-full',
-        scrolled ? 'bg-gradient-to-b from-background/90 via-background/40 to-transparent' : 'bg-transparent',
+        scrolled
+          ? 'bg-gradient-to-b from-background/90 via-background/40 to-transparent lg:bg-none'
+          : 'bg-transparent',
       )}
     >
-      <div className="pointer-events-auto flex items-center gap-2 px-4 pb-3 pt-2">
+      {/* On lg the buttons sit inside the secondary tab bar's band (above it, vertically centred). */}
+      <div className="pointer-events-auto flex items-center gap-2 px-4 pb-3 pt-2 lg:pb-0 lg:pt-[5px]">
         {beforeSearch}
         <Button
           type="button"

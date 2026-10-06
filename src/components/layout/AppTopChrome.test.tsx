@@ -32,7 +32,7 @@ vi.mock('@/components/layout/UserPageMenu', () => ({
 describe('AppTopChrome', () => {
   it('shows Search and Profile without a chrome Back control', async () => {
     render(
-      <MemoryRouter initialEntries={['/settings']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/settings']}>
         <AppTopChrome />
       </MemoryRouter>,
     );

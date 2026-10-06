@@ -26,7 +26,7 @@ function LocationProbe() {
 describe('AppPageHeader', () => {
   it('puts Back and title on the same row and navigates back', () => {
     render(
-      <MemoryRouter initialEntries={['/settings']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/settings']}>
         <Routes>
           <Route
             path="*"
@@ -56,7 +56,7 @@ describe('AppPageHeader', () => {
 
   it('hides Back on bottom-nav hubs', () => {
     render(
-      <MemoryRouter initialEntries={['/']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/']}>
         <AppPageHeader title="Home" />
       </MemoryRouter>,
     );
@@ -68,7 +68,7 @@ describe('AppPageHeader', () => {
   it('calls onBack instead of navigating when provided', () => {
     const onBack = vi.fn();
     render(
-      <MemoryRouter initialEntries={['/endorse/abc']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/endorse/abc']}>
         <Routes>
           <Route
             path="*"

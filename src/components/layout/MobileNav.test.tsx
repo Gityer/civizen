@@ -53,7 +53,7 @@ describe('MobileNav', () => {
 
   it('shows Home Study Contribute Market Messaging and omits Settings', () => {
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <PageSecondaryNavProvider>
           <MobileNav />
         </PageSecondaryNavProvider>
@@ -75,7 +75,7 @@ describe('MobileNav', () => {
   it('hides on scroll down and shows again on scroll up', () => {
     setScrollY(0);
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <PageSecondaryNavProvider>
           <MobileNav />
         </PageSecondaryNavProvider>

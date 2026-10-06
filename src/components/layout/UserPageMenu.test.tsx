@@ -85,7 +85,7 @@ vi.mock('@/contexts/LanguageContext', async () => {
 function renderMenu(size?: 'sm' | 'md') {
   return render(
     <TooltipProvider>
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <UserPageMenu size={size} />
       </MemoryRouter>
     </TooltipProvider>,

@@ -96,3 +96,20 @@ Includes:
 | `PageSecondaryNavContext` | Visibility + config |
 | `src/pages/Market.tsx` | Market items + FAB |
 | `memory-bank/activeContext.md` | Current focus pointer |
+
+---
+
+## Large screens (`lg` / 1024px+)
+
+Phone bottom bar + arc remain the canonical interaction below `lg`.
+
+On large screens:
+
+- Primary destinations move to the left **AppSideNav** (`src/components/layout/AppSideNav.tsx`).
+- Bottom nav, FAB, and arc/strip mount only below `lg` via `useIsDesktopLayout`.
+- Secondary sections render as a sticky top strip via **NavSecondaryDesktop** (same section ids / onChange as the phone arc).
+- Market keeps `persistCarousel: true` so the phone arc stays open when the bottom bar is visible; desktop always shows the secondary strip while a registering page is active.
+- Arc geometry verify scripts stay phone-width (`390px`) — do not retarget them to desktop.
+
+Tokens: `src/lib/responsive-layout.ts`. Spec overview: `large-screen-layout.md`.
+

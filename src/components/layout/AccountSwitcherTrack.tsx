@@ -1,17 +1,9 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
+import { accountSwitcherWheelDelta, accountSwitcherDragScrollLeft } from '@/components/layout/account-switcher-scroll';
 
 const DRAG_THRESHOLD_PX = 12;
-
-/** Prefer the dominant axis so a vertical mouse wheel still moves the strip. */
-export function accountSwitcherWheelDelta(deltaX: number, deltaY: number) {
-  return Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
-}
-
-export function accountSwitcherDragScrollLeft(startScroll: number, startX: number, clientX: number) {
-  return startScroll - (clientX - startX);
-}
 
 export function AccountSwitcherTrack({
   children,

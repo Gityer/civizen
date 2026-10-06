@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { AccountSwitcherTrack, accountSwitcherDragScrollLeft, accountSwitcherWheelDelta } from '@/components/layout/AccountSwitcherTrack';
+import { AccountSwitcherTrack } from '@/components/layout/AccountSwitcherTrack';
+import { accountSwitcherDragScrollLeft, accountSwitcherWheelDelta } from '@/components/layout/account-switcher-scroll';
 
 describe('AccountSwitcherTrack', () => {
   it('uses vertical wheel distance when it is the dominant axis', () => {
