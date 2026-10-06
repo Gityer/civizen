@@ -304,7 +304,7 @@ export default function UserProfile() {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => navigate(`/report/user/${profile.id}`)}
+                onClick={() => navigate(`/report/user/${profile.id}`)} aria-label={t('settings.reportUser.title')}
               >
                 <Flag className="h-4 w-4" />
               </Button>

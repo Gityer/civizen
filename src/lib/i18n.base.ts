@@ -2,6 +2,7 @@ import { m_messages_01 } from './i18n/base/messages-01';
 import { m_messages_02 } from './i18n/base/messages-02';
 import { m_messages_settings_01 } from './i18n/base/messages-settings-01';
 import { m_messages_settings_02 } from './i18n/base/messages-settings-02';
+import { m_messages_settings_03 } from './i18n/base/messages-settings-03';
 import { m_messages_03 } from './i18n/base/messages-03';
 import { m_messages_04 } from './i18n/base/messages-04';
 import { m_messages_05 } from './i18n/base/messages-05';
@@ -33,7 +34,7 @@ import { m_messages_15 } from './i18n/base/messages-15';
 export const baseTranslations = {
   ...m_messages_01,
   ...m_messages_02,
-  "settings": { ...m_messages_settings_01, ...m_messages_settings_02, },
+  "settings": { ...m_messages_settings_01, ...m_messages_settings_02, ...m_messages_settings_03, },
   ...m_messages_03,
   ...m_messages_04,
   ...m_messages_05,

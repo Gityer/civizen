@@ -792,12 +792,14 @@ Deno.serve(async (request) => {
     });
   }
 
-  const { data: rows, error: msgError } = await admin
+  // Newest 40 messages, then back to chronological order: long threads must answer the latest turn.
+  const { data: newestRows, error: msgError } = await admin
     .from('private_messages')
     .select('id, sender_id, content, created_at')
     .eq('conversation_id', conversationId)
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: false })
     .limit(40);
+  const rows = newestRows ? [...newestRows].reverse() : newestRows;
 
   if (msgError) {
     return new Response(JSON.stringify({ error: 'Failed to load messages' }), {

@@ -14,6 +14,7 @@ import { permissionListHas } from "@/lib/access-control";
 import { lazyWithChunkReload } from "@/lib/lazy-with-chunk-reload";
 import { appRoutes1 } from "@/app-routes/app-routes-1";
 import { appRoutes2 } from "@/app-routes/app-routes-2";
+import { appRoutesSupport } from "@/app-routes/app-routes-support";
 import { NotFound } from "@/app-routes/lazy-pages";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -147,6 +148,7 @@ const App = () => (
                   <Routes>
                     {appRoutes1}
                     {appRoutes2}
+                    {appRoutesSupport}
                   {/* Fallback */}
                   <Route path="*" element={<NotFound />} />
                   </Routes>

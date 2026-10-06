@@ -24,8 +24,6 @@ import { GLOBAL_COUNTRY_FILTER, TIER_ORDER, TIER_TAB_LABELS, TIER_TAB_TONES, isG
 import { CountryFilterMenu, ScopeTextMenu } from '@/pages/governance/CivicVotingHubMenus';
 import { ElectionCard } from '@/pages/governance/CivicVotingElectionCard';
 
-
-
 /** Prefer soonest upcoming close; otherwise most recently closed. */
 function pickNearestDeadlineElection(
   elections: CivicElection[],
@@ -123,7 +121,6 @@ function resolvePreferredCountryCode(input: {
 
   return input.available[0] ?? null;
 }
-
 
 export default function CivicVotingHub() {
   const { t, language } = useLanguage();
