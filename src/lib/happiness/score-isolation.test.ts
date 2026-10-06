@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 describe('happiness must not feed Civizen Score', () => {
@@ -18,7 +18,10 @@ describe('happiness must not feed Civizen Score', () => {
   });
 
   it('keeps Home Score wiring free of Happiness calculation', () => {
-    const home = readFileSync('src/pages/Home.tsx', 'utf8');
+    // Home is split into src/pages/Home.tsx plus the hooks and sections under src/pages/home/.
+    const home = ['src/pages/Home.tsx', ...readdirSync('src/pages/home').map((file) => `src/pages/home/${file}`)]
+      .map((file) => readFileSync(file, 'utf8'))
+      .join('\n');
     expect(home).toMatch(/HomeHappinessShortcut/);
     expect(home).not.toMatch(/deriveHappinessView|levelFromInternal|overallInternal/);
     expect(home).not.toMatch(/from ['"]@\/lib\/happiness\//);

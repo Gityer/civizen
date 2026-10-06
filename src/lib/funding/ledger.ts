@@ -8,7 +8,7 @@ import type {
   RecordFundingCommitmentResult,
 } from '@/lib/funding/types';
 
-type Result<T> = { ok: true; data: T } | { ok: false; message: string };
+type Result<T> = { ok: true; data: T; message?: undefined } | { ok: false; message: string };
 
 export async function listFundingCommitments(limit = 200): Promise<Result<FundingCommitmentRow[]>> {
   const { data, error } = await supabase

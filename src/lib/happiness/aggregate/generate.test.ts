@@ -74,16 +74,16 @@ describe('privileged wellbeing aggregate generation', () => {
 
   it('rejects raw/unsuppressed flags and still suppresses small cohorts', () => {
     expect(rejectUnsafeAggregateFlags({ raw: true })).toBe('bypass_not_permitted');
-    expect(generate(syntheticObservations({ participating: 25, relevant: 25 }), DEMO_QUERY, { unsuppressed: true }).result.reason).toBe(
-      'bypass_not_permitted',
-    );
+    expect(
+      generate(syntheticObservations({ participating: 25, relevant: 25 }), DEMO_QUERY, { unsuppressed: true }).result,
+    ).toMatchObject({ reason: 'bypass_not_permitted' });
     expect(generate(syntheticObservations({ participating: 10, relevant: 10 })).result).toMatchObject({
       kind: 'suppressed',
       reason: 'cohort_too_small',
     });
-    expect(generate(syntheticObservations({ participating: 40, relevant: 20, inScope: 40 })).result.reason).toBe(
-      'not_enough_observations',
-    );
+    expect(generate(syntheticObservations({ participating: 40, relevant: 20, inScope: 40 })).result).toMatchObject({
+      reason: 'not_enough_observations',
+    });
     const cells = generate(tinyCellObservations());
     expect(cells.result.kind).toBe('insight');
     if (cells.result.kind === 'insight') {
@@ -130,7 +130,7 @@ describe('privileged wellbeing aggregate generation', () => {
       scope: DEMO_SCOPE,
       snapshot: generated.result,
     });
-    expect(stranger.result.reason).toBe('unauthorized');
+    expect(stranger.result).toMatchObject({ reason: 'unauthorized' });
   });
 
   it('builds systemic candidates from snapshots only and never auto-publishes', () => {

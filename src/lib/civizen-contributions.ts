@@ -10,6 +10,7 @@ export {
   demonstratedProjectsFromContributionEvents,
 } from '@/lib/civizen-contribution-score';
 import { supabase } from '@/integrations/supabase/client';
+import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
 import {
   groupDevelopmentStoriesToContributions,
   storyFromDevelopmentRow,
@@ -208,7 +209,7 @@ function asNumber(value: unknown): number | null {
   return null;
 }
 
-type DbClient = typeof supabase;
+type DbClient = UntypedSupabaseClient;
 
 /**
  * Fan-out collect + estimate from live domain tables for one profile.
@@ -219,7 +220,7 @@ export async function collectContributionSources(
   client: DbClient = supabase,
 ): Promise<ContributionEvent[]> {
   const events: ContributionEvent[] = [];
-  const db = client as any;
+  const db = client;
 
   const [
     lawRes,
@@ -705,7 +706,7 @@ export async function syncContributionEvents(
 
   const promise = (async () => {
     const events = await collectContributionSources(profileId, userId, client);
-    const db = client as any;
+    const db = client;
     const eligibleDevelopmentSourceIds = events
       .filter((event) => event.sourceTable === 'development_stories')
       .map((event) => event.sourceId);
@@ -815,7 +816,7 @@ export async function loadContributionEvents(
   profileId: string,
   client: DbClient = supabase,
 ): Promise<ContributionEvent[]> {
-  const { data, error } = await (client as any)
+  const { data, error } = await client
     .from('profile_contribution_events')
     .select('*')
     .eq('profile_id', profileId)

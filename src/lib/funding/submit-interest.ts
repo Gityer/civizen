@@ -1,7 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { FundingInterestPayload } from '@/lib/funding/types';
 
-type InsertResult = { ok: true } | { ok: false; message: string };
+type InsertResult = { ok: true; message?: undefined } | { ok: false; message: string };
 
 export async function submitFundingInterest(payload: FundingInterestPayload): Promise<InsertResult> {
   const fullName = payload.fullName.trim();

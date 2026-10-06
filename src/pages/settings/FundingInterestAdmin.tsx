@@ -87,8 +87,8 @@ export default function FundingInterestAdmin(_props: FundingInterestAdminProps =
       overrideRaw != null && overrideRaw.trim() !== '' ? Number(overrideRaw) : undefined;
 
     const result = await convertFundingInterestToCommitment({
-      interestId: row.id,
-      amountUsdOverride: overrideAmount,
+      inquiryId: row.id,
+      amountUsd: overrideAmount,
       status: 'pledged',
     });
 

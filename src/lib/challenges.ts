@@ -216,7 +216,7 @@ export function canSubmitProposal(args: {
   currentProfileId: string | null | undefined;
   ownedLinkedProfileIds?: readonly string[];
   existingProposal?: Pick<ChallengeProposal, 'id'> | null;
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (!args.currentProfileId) return { ok: false, reason: 'not_authenticated' };
   if (args.challenge.status !== 'active') return { ok: false, reason: 'challenge_not_open_for_proposals' };
   if (
@@ -233,7 +233,7 @@ export function canSelectProposal(args: {
   challenge: Pick<CommunityChallenge, 'status'>;
   proposal: Pick<ChallengeProposal, 'status' | 'challengeId'>;
   challengeId: string;
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (args.proposal.challengeId !== args.challengeId) {
     return { ok: false, reason: 'proposal_not_on_challenge' };
   }
@@ -247,7 +247,7 @@ export function canSelectProposal(args: {
 export function canCompleteChallenge(args: {
   challenge: Pick<CommunityChallenge, 'status' | 'selectedProposalId' | 'outcomeSummary'>;
   project?: Pick<ImplementationProject, 'id'> | null;
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (args.challenge.status !== 'implementation') {
     return { ok: false, reason: 'challenge_not_in_implementation' };
   }
@@ -260,7 +260,7 @@ export function canCompleteChallenge(args: {
 export function canCreateSolutionRecord(args: {
   challenge: Pick<CommunityChallenge, 'status'>;
   existing?: Pick<SolutionRecord, 'id'> | null;
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (args.challenge.status !== 'completed') return { ok: false, reason: 'challenge_not_completed' };
   if (args.existing) return { ok: false, reason: 'solution_record_exists' };
   return { ok: true };

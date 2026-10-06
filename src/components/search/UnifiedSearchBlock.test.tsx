@@ -57,7 +57,7 @@ function LocationProbe() {
 
 function renderSearch(initialEntry = '/search') {
   return render(
-    <MemoryRouter initialEntries={[initialEntry]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
         <Route
           path="/search"

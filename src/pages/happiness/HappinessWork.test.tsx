@@ -3,7 +3,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
 
-const saveWorkContext = vi.fn(async () => ({
+const saveWorkContext = vi.fn(async (..._args: unknown[]) => ({
   id: 'ctx-1',
   profileId: 'profile-1',
   roleTitle: 'Facilitator',
@@ -18,10 +18,10 @@ const saveWorkContext = vi.fn(async () => ({
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 }));
-const saveWorkAssessment = vi.fn(async () => ({ id: 'a1' }));
-const saveWorkJoyEntry = vi.fn(async () => ({ id: 'j1' }));
-const saveWorkFulfillmentProfile = vi.fn(async () => undefined);
-const updateWorkInterventionStatus = vi.fn(async () => undefined);
+const saveWorkAssessment = vi.fn(async (..._args: unknown[]) => ({ id: 'a1' }));
+const saveWorkJoyEntry = vi.fn(async (..._args: unknown[]) => ({ id: 'j1' }));
+const saveWorkFulfillmentProfile = vi.fn(async (..._args: unknown[]) => undefined);
+const updateWorkInterventionStatus = vi.fn(async (..._args: unknown[]) => undefined);
 
 vi.mock('@/lib/work-fulfillment/api', () => ({
   saveWorkContext: (...args: unknown[]) => saveWorkContext(...args),

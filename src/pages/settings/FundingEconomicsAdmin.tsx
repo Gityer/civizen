@@ -132,7 +132,7 @@ export default function FundingEconomicsAdmin(_props: FundingEconomicsAdminProps
         holderVestedUnits: 10,
         totalVestedUnits: 100,
       }),
-    [waterfall.pools.contributorPoolUsdM],
+    [waterfall.pools.contributorUsdM],
   );
 
   const contextLine = `${summary.scopeLabel} · ${scenarioLabel(commercialScenario)} · ${horizonYears} years · Projection`;

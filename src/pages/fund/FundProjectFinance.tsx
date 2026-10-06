@@ -44,6 +44,8 @@ export default function FundProjectFinance() {
     <FundPageShell
       title={t('fund.projectFinance.title')}
       description={t('fund.projectFinance.description')}
+      pageTitle={t('fund.projectFinance.title')}
+      pageDescription={t('fund.projectFinance.description')}
     >
       <div className="space-y-6" data-build-key="fundProjectFinance" data-build-label="Public project finance">
         <p className="text-sm text-muted-foreground">

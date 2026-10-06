@@ -33,9 +33,9 @@ export type GetWellbeingAggregateOptions = {
 function domainLabel(query: AggregateQuery): string {
   if (query.domain === 'time_life_balance') return 'Time & Life Balance';
   if (query.domain === 'work_fulfillment') return 'Work Fulfillment';
-  if (query.domain === 'health_energy') return 'Health & Energy';
+  if (query.domain === 'health_vitality') return 'Health & Energy';
   if (query.domain === 'relationships_belonging') return 'Relationships & Belonging';
-  if (query.domain === 'purpose_contribution') return 'Purpose & Contribution';
+  if (query.domain === 'meaning_purpose') return 'Purpose & Contribution';
   return 'this area';
 }
 

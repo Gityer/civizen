@@ -83,7 +83,7 @@ export function canPerformAllocationOverride(
   overrideReason: string | null | undefined,
   amountMinor: number,
   availableMinor: number,
-): { ok: true } | { ok: false; message: string } {
+): { ok: true; message?: undefined } | { ok: false; message: string } {
   if (!requiresAllocationOverride(amountMinor, availableMinor)) return { ok: true };
   if (!canFinanceAdmin(permissions) && !hasFinanceLegacyCompat(permissions)) {
     return { ok: false, message: 'allocation override requires finance.admin permission' };

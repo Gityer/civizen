@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PEACE_COOPERATION_REPLY } from '@/lib/assistant/peace';
 import { askCiviPublic, sanitizeCiviPublicHistory } from '@/lib/civi-public';
 
-const invoke = vi.fn(async () => ({
+const invoke = vi.fn(async (..._args: unknown[]) => ({
   data: { reply: 'Humanity often unites only when disaster forces us to.' },
   error: null,
 }));

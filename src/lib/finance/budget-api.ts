@@ -2,7 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { BudgetLifecycle } from '@/lib/finance/budget-rules';
 import { canEditBudgetLifecycle } from '@/lib/finance/budget-rules';
 
-type Result<T> = { ok: true; data: T } | { ok: false; message: string };
+type Result<T> = { ok: true; data: T; message?: undefined } | { ok: false; message: string };
 
 export type ProjectBudgetRow = {
   id: string;
@@ -125,7 +125,7 @@ export async function createBudgetGroup(input: {
   displayOrder?: number;
 }): Promise<Result<BudgetGroupRow>> {
   const budget = await getBudget(input.budgetId);
-  if (!budget.ok) return budget;
+  if (!budget.ok) return { ok: false, message: budget.message };
   if (!canEditBudgetLifecycle(budget.data.lifecycle_status)) {
     return { ok: false, message: 'Approved budgets are immutable; create a revision draft first' };
   }
@@ -171,7 +171,7 @@ export async function upsertBudgetLine(input: {
   publishFlag?: boolean;
 }): Promise<Result<BudgetLineRow>> {
   const budget = await getBudget(input.budgetId);
-  if (!budget.ok) return budget;
+  if (!budget.ok) return { ok: false, message: budget.message };
   if (!canEditBudgetLifecycle(budget.data.lifecycle_status)) {
     return { ok: false, message: 'Approved budgets are immutable; create a revision draft first' };
   }
@@ -323,9 +323,9 @@ export async function reviseApprovedBudget(budgetId: string, reason: string): Pr
   const draft = created as ProjectBudgetRow;
 
   const groups = await listBudgetGroups(budgetId);
-  if (!groups.ok) return groups;
+  if (!groups.ok) return { ok: false, message: groups.message };
   const lines = await listBudgetLines(groups.data.map((g) => g.id));
-  if (!lines.ok) return lines;
+  if (!lines.ok) return { ok: false, message: lines.message };
 
   for (const group of groups.data) {
     if (group.archived_at) continue;

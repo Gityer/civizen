@@ -97,7 +97,7 @@ const sampleOrg = {
 
 function wrap(node: React.ReactNode) {
   return (
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter>
       <TooltipProvider>{node}</TooltipProvider>
     </MemoryRouter>
   );

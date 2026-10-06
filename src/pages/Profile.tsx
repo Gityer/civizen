@@ -15,7 +15,7 @@ import {
   type ScoreCategoryId,
 } from '@/lib/civizen-score';
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type PointerEvent as ReactPointerEvent } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
 import {
   BadgeCheck,
   Briefcase,
@@ -172,21 +172,21 @@ export default function Profile() {
         `)
         .eq('endorsed_id', profile.id)
         .eq('is_hidden', false),
-      (supabase as any)
+      supabaseUntyped
         .from('profile_education_entries')
         .select('id, education_level, verification_status')
         .eq('profile_id', profile.id),
-      (supabase as any)
+      supabaseUntyped
         .from('profile_training_entries')
         .select('training_names')
         .eq('profile_id', profile.id)
         .maybeSingle(),
-      (supabase as any)
+      supabaseUntyped
         .from('profile_skills_entries')
         .select('hard_skill_names, soft_skill_names, skill_names')
         .eq('profile_id', profile.id)
         .maybeSingle(),
-      (supabase as any)
+      supabaseUntyped
         .from('profile_experience_entries')
         .select('experiences')
         .eq('profile_id', profile.id)

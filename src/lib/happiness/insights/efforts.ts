@@ -11,7 +11,7 @@ function tokensFrom(text: string): string[] {
     .toLowerCase()
     .split(/[^a-z0-9]+/)
     .filter((token) => token.length > 3);
-  return [...new Set(base.flatMap((token) => [token, ...((RELATED as Record<string, string[]>)[token] ?? [])]))];
+  return [...new Set(base.flatMap((token) => [token, ...((RELATED as Record<string, readonly string[]>)[token] ?? [])]))];
 }
 
 export function matchExistingEfforts(input: {

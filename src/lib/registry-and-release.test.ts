@@ -45,7 +45,7 @@ describe('app-release', () => {
 
 describe('app-pages', () => {
   it('exposes navigable links and filters by permissions', () => {
-    expect(appPageLinks.some((page) => page.id === 'home')).toBe(false);
+    expect(appPageLinks.some((page) => (page.id as string) === 'home')).toBe(false);
     expect(appPageLinks.some((page) => page.id === 'earnings')).toBe(true);
     const filtered = getAccessiblePageLinks(['settings.manage', 'role.assign']);
     expect(filtered.some((page) => page.id === 'adminUsers')).toBe(true);

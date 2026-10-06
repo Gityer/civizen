@@ -18,6 +18,7 @@ import {
   type CategoryObservation,
 } from '@/lib/civizen-score-model';
 import { supabase } from '@/integrations/supabase/client';
+import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
 
 export type PerformancePeerRating = {
   id?: string;
@@ -52,7 +53,7 @@ const PLATFORM_DIRECT_TYPES = new Set([
   'opportunity_participation',
 ]);
 
-type DbClient = typeof supabase;
+type DbClient = UntypedSupabaseClient;
 
 function mean(values: number[]): number {
   if (values.length === 0) return 0;
@@ -110,7 +111,7 @@ export async function loadPerformanceRatings(
   subjectProfileId: string,
   client: DbClient = supabase,
 ): Promise<PerformancePeerRating[]> {
-  const { data, error } = await (client as any)
+  const { data, error } = await client
     .from('profile_performance_ratings')
     .select('*')
     .eq('subject_profile_id', subjectProfileId)
@@ -139,7 +140,7 @@ export async function upsertPerformanceRating(
   }
 
   const score = clampScore(args.score);
-  const { error } = await (client as any).from('profile_performance_ratings').upsert(
+  const { error } = await client.from('profile_performance_ratings').upsert(
     {
       contribution_event_id: args.contributionEventId,
       subject_profile_id: args.subjectProfileId,

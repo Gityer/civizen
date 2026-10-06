@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 
-type Result<T> = { ok: true; data: T } | { ok: false; message: string };
+type Result<T> = { ok: true; data: T; message?: undefined } | { ok: false; message: string };
 
 export type FundingComplianceCase = {
   id: string;

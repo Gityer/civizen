@@ -319,8 +319,8 @@ export function permissionListHas(
 }
 
 export function permissionListHasAny(
-  permissions: AppPermission[],
-  requestedPermissions: AppPermission[],
+  permissions: readonly string[],
+  requestedPermissions: readonly string[],
 ) {
   return requestedPermissions.some((permission) => permissions.includes(permission));
 }

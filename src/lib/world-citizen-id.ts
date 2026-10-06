@@ -31,7 +31,7 @@ export function getWorldCitizenStatusPrefix(role?: AppRole | null, isVerified?: 
 }
 
 export function getWorldCitizenStatusLabel(
-  role: AppRole | null | undefined,
+  role: string | null | undefined,
   prefix: string,
   t: (key: string) => string,
 ) {

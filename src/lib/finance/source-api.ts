@@ -6,7 +6,7 @@ import type {
   RelationshipStatus,
 } from '@/lib/finance/source-rules';
 
-type Result<T> = { ok: true; data: T } | { ok: false; message: string };
+type Result<T> = { ok: true; data: T; message?: undefined } | { ok: false; message: string };
 
 export type FinanceSourceRow = {
   id: string;

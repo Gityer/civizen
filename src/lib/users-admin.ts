@@ -256,7 +256,7 @@ export function getEffectiveCitizenshipStatus(user: Pick<ProfileRow, 'citizenshi
 
 export function getEffectiveVerificationStatus(
   user: Pick<ProfileRow, 'is_verified'>,
-  verificationCase?: Pick<VerificationCaseRow, 'status'> | null,
+  verificationCase?: Partial<Pick<VerificationCaseRow, 'status'>> | null,
 ) {
   if (verificationCase?.status) return verificationCase.status;
   return user.is_verified ? ('approved' satisfies IdentityVerificationCaseStatus) : ('draft' satisfies IdentityVerificationCaseStatus);

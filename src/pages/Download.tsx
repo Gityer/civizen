@@ -32,13 +32,15 @@ export default function DownloadPage() {
 
   return (
     <PublicPageShell
-      contentClassName="px-6 py-8 sm:py-12"
+      contentClassName="px-4 py-8 sm:px-6 sm:py-12"
+      layout="directory"
+      showFooter
       sectionTrail={[{ label: t('downloads.title') }]}
     >
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-auto max-w-3xl space-y-8"
+        className="space-y-8"
       >
         <div className="space-y-3 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1 text-sm font-medium text-primary">

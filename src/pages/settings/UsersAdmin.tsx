@@ -32,7 +32,7 @@ import {
 } from '@/lib/governance-sanctions';
 import { pageRegistry, type PageId, type SectionId } from '@/lib/feature-registry';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, supabaseUntyped, type Database } from '@/integrations/supabase/untyped';
 import { toast } from 'sonner';
 import {
   readGovernancePublicAuditExternalExecutionPageBoardRows,
@@ -297,21 +297,21 @@ export default function UsersAdmin() {
       supabase.from('identity_verification_cases').select('*'),
       supabase.from('governance_sanctions').select('*').order('created_at', { ascending: false }),
       supabase.from('governance_sanction_appeals').select('*').order('created_at', { ascending: false }),
-      supabase.rpc('governance_emergency_access_request_board', {
+      supabaseUntyped.rpc('governance_emergency_access_request_board', {
         requested_status: null,
         max_requests: 120,
       }),
-      supabase.rpc('governance_emergency_access_event_summary', {
+      supabaseUntyped.rpc('governance_emergency_access_event_summary', {
         requested_lookback_hours: 168,
       }),
-      supabase.rpc('governance_emergency_access_ops_summary', {
+      supabaseUntyped.rpc('governance_emergency_access_ops_summary', {
         requested_pending_max_age_hours: policyForOps ? policyForOps.pending_max_age_hours : 24,
         requested_near_expiry_window_minutes: policyForOps ? policyForOps.near_expiry_window_minutes : 15,
       }),
-      supabase.rpc('governance_emergency_access_ops_policy_summary', {
+      supabaseUntyped.rpc('governance_emergency_access_ops_policy_summary', {
         requested_policy_key: 'default',
       }),
-      supabase.rpc('governance_emergency_access_ops_policy_event_eligibility', {
+      supabaseUntyped.rpc('governance_emergency_access_ops_policy_event_eligibility', {
         requested_policy_key: 'default',
         requested_lookback_hours: 336,
         max_events: 120,
@@ -321,7 +321,7 @@ export default function UsersAdmin() {
       supabase.rpc('governance_public_audit_external_execution_page_board', {
         max_pages: 120,
       }),
-      supabase.rpc('governance_public_audit_external_execution_page_history', {
+      supabaseUntyped.rpc('governance_public_audit_external_execution_page_history', {
         requested_page_key_substring: 'governance_emergency_access_ops_escalation',
         requested_lookback_hours: 168,
         max_pages: 240,
@@ -403,7 +403,7 @@ export default function UsersAdmin() {
       ]),
     ) as Record<AppRole, AppPermission[]>;
 
-    const nextUsers = (usersData ?? []).sort((a, b) => Number(b.is_admin) - Number(a.is_admin));
+    const nextUsers = ((usersData ?? []) as ProfileRow[]).sort((a, b) => Number(b.is_admin) - Number(a.is_admin));
     const groupedProfessions = (profileProfessionsData ?? []).reduce<Record<string, ProfileProfessionRow[]>>(
       (accumulator, assignment) => {
         if (!accumulator[assignment.profile_id]) {
@@ -738,7 +738,7 @@ export default function UsersAdmin() {
 
     setSwitchingUserId(targetUser.id);
 
-    const { data, error } = await supabase.rpc('request_governance_emergency_access', {
+    const { data, error } = await supabaseUntyped.rpc('request_governance_emergency_access', {
       target_profile_id: targetUser.id,
       request_reason: reason.trim(),
     });
@@ -792,7 +792,7 @@ export default function UsersAdmin() {
       approvedTtlMinutes = parsedTtl;
     }
 
-    const { error } = await supabase.rpc('review_governance_emergency_access_request', {
+    const { error } = await supabaseUntyped.rpc('review_governance_emergency_access_request', {
       target_request_id: request.request_id,
       next_status: nextStatus,
       review_notes: reviewNotes || null,
@@ -821,7 +821,7 @@ export default function UsersAdmin() {
     if (emergencyEventsByRequest[requestId]) return;
 
     setLoadingEmergencyEventsRequestId(requestId);
-    const { data, error } = await supabase.rpc('governance_emergency_access_request_event_board', {
+    const { data, error } = await supabaseUntyped.rpc('governance_emergency_access_request_event_board', {
       target_request_id: requestId,
       max_events: 40,
     });
@@ -844,7 +844,7 @@ export default function UsersAdmin() {
     setAcknowledgingEmergencyEscalationPageId(pageId);
     const notes = window.prompt('Optional acknowledgement notes for this emergency-access escalation page:', '');
 
-    const { error } = await supabase.rpc('acknowledge_governance_public_audit_external_execution_page', {
+    const { error } = await supabaseUntyped.rpc('acknowledge_governance_public_audit_external_execution_page', {
       target_page_id: pageId,
       acknowledgement_notes: notes?.trim() || null,
     });
@@ -896,7 +896,7 @@ export default function UsersAdmin() {
       return;
     }
 
-    const { error } = await supabase.rpc('set_governance_emergency_access_ops_policy', {
+    const { error } = await supabaseUntyped.rpc('set_governance_emergency_access_ops_policy', {
       requested_policy_key: 'default',
       requested_policy_name: 'Default emergency access operations policy',
       requested_pending_max_age_hours: pendingMaxAgeHours,
@@ -929,7 +929,7 @@ export default function UsersAdmin() {
       return;
     }
 
-    const { error } = await supabase.rpc('rollback_governance_emergency_access_ops_policy_to_event', {
+    const { error } = await supabaseUntyped.rpc('rollback_governance_emergency_access_ops_policy_to_event', {
       target_event_id: eventId,
       max_rollback_age_hours: EMERGENCY_OPS_POLICY_MAX_ROLLBACK_AGE_HOURS,
       required_policy_schema_version: EMERGENCY_OPS_POLICY_SCHEMA_VERSION,

@@ -8,7 +8,7 @@ import { PillarBadge } from '@/components/ui/PillarBadge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
 import { PILLARS, type PillarId } from '@/lib/constants';
 import { calculateCivizenScore, type Endorsement } from '@/lib/scoring';
 import { buildScoreFromProfileActivity, formatScoreValue, type CategoryScoreInput } from '@/lib/civizen-score';
@@ -94,21 +94,21 @@ export default function UserProfile() {
         .select('*')
         .eq('endorsed_id', userId)
         .eq('is_hidden', false),
-      (supabase as any)
+      supabaseUntyped
         .from('profile_education_entries')
         .select('id, education_level, verification_status')
         .eq('profile_id', userId),
-      (supabase as any)
+      supabaseUntyped
         .from('profile_training_entries')
         .select('training_names')
         .eq('profile_id', userId)
         .maybeSingle(),
-      (supabase as any)
+      supabaseUntyped
         .from('profile_skills_entries')
         .select('hard_skill_names, soft_skill_names, skill_names')
         .eq('profile_id', userId)
         .maybeSingle(),
-      (supabase as any)
+      supabaseUntyped
         .from('profile_experience_entries')
         .select('experiences')
         .eq('profile_id', userId)

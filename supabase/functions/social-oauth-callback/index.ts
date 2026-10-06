@@ -24,8 +24,7 @@ function redirectToSettings(params: Record<string, string>) {
 }
 
 async function assertOfficialCivizenOrgProfile(
-  // deno-lint-ignore no-explicit-any
-  adminClient: any,
+  adminClient: ReturnType<typeof createClient>,
   profileId: string,
 ): Promise<boolean> {
   const { data: link } = await adminClient

@@ -433,7 +433,7 @@ Deno.serve(async (req) => {
           turns,
         });
 
-        let raw = await callAgent(speaker, system, prompt);
+        const raw = await callAgent(speaker, system, prompt);
         let stance: Stance;
         if (!raw) {
           stance = {

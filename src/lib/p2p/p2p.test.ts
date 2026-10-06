@@ -71,7 +71,7 @@ describe('P2P Module Tests', () => {
       await gunClient.put('users/bob', { name: 'Bob', score: 90 });
       await gunClient.put('users/charlie', { name: 'Charlie', score: 75 });
 
-      const results = await gunClient.search('users', (item) => item.score > 80);
+      const results = await gunClient.search('users', (item) => (item as { score: number }).score > 80);
 
       expect(results.length).toBeGreaterThanOrEqual(2);
     });

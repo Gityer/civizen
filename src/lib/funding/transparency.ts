@@ -6,7 +6,7 @@ import type {
   RecordFundingCommitmentResult,
 } from '@/lib/funding/types';
 
-type Result<T> = { ok: true; data: T } | { ok: false; message: string };
+type Result<T> = { ok: true; data: T; message?: undefined } | { ok: false; message: string };
 
 export type ConvertInterestInput = {
   inquiryId: string;

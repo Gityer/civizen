@@ -239,7 +239,7 @@ export function canApplyToOpportunity(args: {
   currentProfileId: string | null | undefined;
   ownedLinkedProfileIds?: readonly string[];
   existingParticipation?: Pick<OpportunityParticipation, 'id'> | null;
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (!args.currentProfileId) {
     return { ok: false, reason: 'not_authenticated' };
   }

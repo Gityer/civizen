@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
 import { getSeedDevelopmentStories, type DevelopmentStory } from '@/lib/development-stories';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -74,7 +74,7 @@ export function useDevelopmentStories(options: UseDevelopmentStoriesOptions = {}
     (async () => {
       for (const story of seedStories) {
         if (cancelled) return;
-        const { error } = await supabase.rpc('ingest_development_story', {
+        const { error } = await supabaseUntyped.rpc('ingest_development_story', {
           p_source_story_key: story.id,
           p_title: story.title,
           p_original_instruction: story.originalInstruction,
@@ -116,7 +116,7 @@ export function useDevelopmentStories(options: UseDevelopmentStoriesOptions = {}
         let rows: unknown[] = [];
         // Call supabase.rpc on the client instance — never assign `const rpc = supabase.rpc`
         // and invoke it unbound; that throws (undefined `this`) and falls through to seeds.
-        const { data: rpcData, error: rpcError } = await supabase.rpc('list_published_development_stories');
+        const { data: rpcData, error: rpcError } = await supabaseUntyped.rpc('list_published_development_stories');
         if (rpcError) {
           const { data, error } = await supabase
             .from('development_stories')

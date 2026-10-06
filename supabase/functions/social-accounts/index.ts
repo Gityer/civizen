@@ -79,8 +79,7 @@ function xAuthorizeUrl(state: string): string {
 }
 
 async function assertOfficialCivizenOrgProfile(
-  // deno-lint-ignore no-explicit-any
-  adminClient: any,
+  adminClient: ReturnType<typeof createClient>,
   profileId: string,
 ): Promise<boolean> {
   const { data: link } = await adminClient
@@ -103,8 +102,7 @@ async function assertOfficialCivizenOrgProfile(
 }
 
 async function refreshLinkedInToken(
-  // deno-lint-ignore no-explicit-any
-  adminClient: any,
+  adminClient: ReturnType<typeof createClient>,
   connection: Record<string, unknown>,
 ): Promise<string | null> {
   const accessToken = String(connection.access_token || '');

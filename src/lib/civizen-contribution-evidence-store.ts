@@ -1,6 +1,7 @@
 /** Persist live contribution evidence, evaluation history, and score history. */
 
 import { supabase } from '@/integrations/supabase/client';
+import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
 import type { ContributionEvent } from '@/lib/civizen-contributions';
 import { scoreContributionsFromEvents } from '@/lib/civizen-contribution-score';
 import { evaluateContributionLifecycle } from '@/lib/civizen-contribution-lifecycle';
@@ -15,7 +16,7 @@ import {
 import { SCORE_CALCULATION_VERSION } from '@/lib/civizen-score-model';
 import type { RatingConflict } from '@/lib/civizen-evaluator-reputation';
 
-type DbClient = { from: (table: string) => any };
+type DbClient = Pick<UntypedSupabaseClient, 'from'>;
 
 export type NewContributionEvidence = {
   contributionSourceTable: string;

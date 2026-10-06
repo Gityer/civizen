@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -65,7 +65,7 @@ describe('purpose-alignment correction v0.5', () => {
   it('rejects permanent-sounding prohibited phrases in active user-facing sources', () => {
     const sources = [
       readRepo('README.md'),
-      readRepo('src/lib/i18n.base.ts'),
+      ...readdirSync(path.join(repoRoot, 'src/lib/i18n/base')).map((file) => readRepo('src/lib/i18n/base/' + file)),
       worldCitizenship!.markdown,
       pathway!.markdown,
       communityCharter!.markdown,

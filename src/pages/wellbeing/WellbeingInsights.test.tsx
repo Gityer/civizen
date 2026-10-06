@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
 
-const recordInsightAction = vi.fn(async () => undefined);
+const recordInsightAction = vi.fn(async (..._args: unknown[]) => undefined);
 
 const fixtures = vi.hoisted(() => ({
   mode: 'qualifying' as 'qualifying' | 'suppressed' | 'unauthorized' | 'empty',

@@ -32,7 +32,7 @@ vi.mock('@/components/ui/chat-bar', () => ({
 describe('Messaging', () => {
   it('hides app-wide top chrome so page Search and Profile are not duplicated', async () => {
     render(
-      <MemoryRouter initialEntries={['/messaging']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/messaging']}>
         <Routes>
           <Route path="/messaging" element={<Messaging />} />
           <Route path="/messaging/:conversationId" element={<Messaging />} />

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { applyWellbeingAggregatePrivacy, getWellbeingAggregate, snapshotHasPrivateLeak } from './engine';
+import {
+  applyWellbeingAggregatePrivacy,
+  getWellbeingAggregate,
+  snapshotHasPrivateLeak,
+  type AggregatePrivacyOptions,
+} from './engine';
 import { DEMO_QUERY, DEMO_REQUESTER, DEMO_SCOPE, syntheticObservations, tinyCellObservations } from './harness';
 import { WELLBEING_AGGREGATE_PRIVACY_V1, dimensionMeta } from './policy';
 import { assertDimensionAllowed, fingerprintQuery, validateAggregateQuery } from './query-guard';
@@ -9,7 +14,7 @@ import { toCiviAggregateContext } from './civi-context';
 import { WELLBEING_AGGREGATE_PRIVACY_VERSION, WELLBEING_AGGREGATE_MODEL_VERSION } from './types';
 import type { AggregateQuery, WellbeingAggregateResult } from './types';
 
-function run(query: AggregateQuery = DEMO_QUERY, extra?: Parameters<typeof applyWellbeingAggregatePrivacy>[2]) {
+function run(query: AggregateQuery = DEMO_QUERY, extra?: Partial<AggregatePrivacyOptions>) {
   const fingerprint = fingerprintQuery(query);
   const finish = (result: WellbeingAggregateResult) => ({
     result,

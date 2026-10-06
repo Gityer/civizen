@@ -289,7 +289,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq('user_id', userId)
         .is('deleted_at', null)
         .single(),
-      supabase.rpc('current_app_permissions'),
+      (supabase as unknown as import('@/integrations/supabase/untyped').UntypedSupabaseClient).rpc('current_app_permissions'),
     ]);
 
     if (error) {

@@ -139,7 +139,7 @@ export function historicalHumanRolesFromProvenance(
     [commitInstruction, ...linkedInstructions].join(' '),
     { assisted: true },
   );
-  return [...new Set(['founder', ...inferred])];
+  return [...new Set<DevelopmentContributionRole>(['founder', ...inferred])];
 }
 
 export function enrichHumanRolesForEvaluation(args: {
@@ -161,7 +161,13 @@ export function enrichHumanRolesForEvaluation(args: {
     storedSet.has('founder') &&
     storedSet.has('product_direction');
   if (defaultHistorical && inferred.length > 0) {
-    return [...new Set(['founder', ...inferred, ...stored.filter((role) => role !== 'implementation' || !assisted)])];
+    return [
+      ...new Set<DevelopmentContributionRole>([
+        'founder',
+        ...inferred,
+        ...stored.filter((role) => role !== 'implementation' || !assisted),
+      ]),
+    ];
   }
   return stored;
 }

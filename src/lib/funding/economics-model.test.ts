@@ -121,11 +121,11 @@ describe('economics-model v0.1.4 — selected model + deficit recovery', () => {
     expect(cons15.pools.ecosystemUsdM).toBeLessThan(base15.pools.ecosystemUsdM);
 
     const contrib = buildContributorIllustration({
-      contributorPoolUsdM: base15.pools.contributorPoolUsdM,
+      contributorPoolUsdM: base15.pools.contributorUsdM,
       holderVestedUnits: 10,
       totalVestedUnits: 100,
     });
-    expect(contrib.amountUsdM).toBe(round3(base15.pools.contributorPoolUsdM * 0.1));
+    expect(contrib.amountUsdM).toBe(round3(base15.pools.contributorUsdM * 0.1));
   });
 
   it('validates vehicle capacity and uses FPP-eligible units as denominator', () => {

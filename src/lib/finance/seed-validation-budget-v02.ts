@@ -2,14 +2,14 @@
  * Client-side idempotent seed for Civizen Pre-Major-Build Validation Program v0.2.
  * Does not overwrite v0.1. Creates no commitments/receipts/allocations.
  */
-import { supabase } from '@/integrations/supabase/client';
+import { supabaseUntyped } from '@/integrations/supabase/untyped';
 import {
   VALIDATION_BUDGET_GROUPS_V02,
   VALIDATION_BUDGET_LINES_V02,
   VALIDATION_BUDGET_V02,
 } from '@/lib/finance/validation-budget-v02';
 
-type Result<T> = { ok: true; data: T } | { ok: false; message: string };
+type Result<T> = { ok: true; data: T; message?: undefined } | { ok: false; message: string };
 
 export type SeedValidationBudgetV02Result = {
   budgetId: string;
@@ -20,8 +20,8 @@ export type SeedValidationBudgetV02Result = {
 };
 
 export async function seedValidationBudgetV02(): Promise<Result<SeedValidationBudgetV02Result>> {
-  const existing = await supabase
-    .from('project_budgets' as never)
+  const existing = await supabaseUntyped
+    .from('project_budgets')
     .select('id')
     .eq('name', VALIDATION_BUDGET_V02.name)
     .eq('version', VALIDATION_BUDGET_V02.version)
@@ -42,19 +42,19 @@ export async function seedValidationBudgetV02(): Promise<Result<SeedValidationBu
     };
   }
 
-  const prior = await supabase
-    .from('project_budgets' as never)
+  const prior = await supabaseUntyped
+    .from('project_budgets')
     .select('id')
     .eq('name', VALIDATION_BUDGET_V02.supersedesName)
     .eq('version', 1)
     .maybeSingle();
 
   const supersedesId = prior.data ? (prior.data as { id: string }).id : null;
-  const { data: userData } = await supabase.auth.getUser();
+  const { data: userData } = await supabaseUntyped.auth.getUser();
   const actor = userData.user?.id ?? null;
 
-  const inserted = await supabase
-    .from('project_budgets' as never)
+  const inserted = await supabaseUntyped
+    .from('project_budgets')
     .insert({
       name: VALIDATION_BUDGET_V02.name,
       purpose: VALIDATION_BUDGET_V02.purpose,
@@ -66,7 +66,7 @@ export async function seedValidationBudgetV02(): Promise<Result<SeedValidationBu
       supersedes_budget_id: supersedesId,
       created_by: actor,
       updated_by: actor,
-    } as never)
+    })
     .select('id')
     .single();
 
@@ -79,14 +79,14 @@ export async function seedValidationBudgetV02(): Promise<Result<SeedValidationBu
   const groupIdByKey = new Map<string, string>();
 
   for (const group of VALIDATION_BUDGET_GROUPS_V02) {
-    const g = await supabase
-      .from('budget_expense_groups' as never)
+    const g = await supabaseUntyped
+      .from('budget_expense_groups')
       .insert({
         budget_id: budgetId,
         name: group.name,
         description: group.description,
         display_order: group.displayOrder,
-      } as never)
+      })
       .select('id')
       .single();
     if (g.error) return { ok: false, message: g.error.message };
@@ -96,7 +96,7 @@ export async function seedValidationBudgetV02(): Promise<Result<SeedValidationBu
   for (const line of VALIDATION_BUDGET_LINES_V02) {
     const groupId = groupIdByKey.get(line.groupKey);
     if (!groupId) return { ok: false, message: `Missing group ${line.groupKey}` };
-    const li = await supabase.from('budget_line_items' as never).insert({
+    const li = await supabaseUntyped.from('budget_line_items').insert({
       group_id: groupId,
       title: line.title,
       description: line.description,
@@ -111,22 +111,22 @@ export async function seedValidationBudgetV02(): Promise<Result<SeedValidationBu
       owner_label: line.ownerLabel,
       created_by: actor,
       updated_by: actor,
-    } as never);
+    });
     if (li.error) return { ok: false, message: li.error.message };
   }
 
-  await supabase.from('budget_revisions' as never).insert({
+  await supabaseUntyped.from('budget_revisions').insert({
     budget_id: budgetId,
     change_summary: 'Seeded Validation Budget v0.2 (exact $530,200,000.00 Base)',
     changed_fields: ['seed', 'validation-budget-v0.2', 'base-530.2'],
     reason: 'Provisional working draft from docs 29/30 reconciliation. No commitments/receipts/publication.',
     actor_user_id: actor,
-  } as never);
+  });
 
   if (supersedesId) {
-    await supabase
-      .from('project_budgets' as never)
-      .update({ lifecycle_status: 'superseded' } as never)
+    await supabaseUntyped
+      .from('project_budgets')
+      .update({ lifecycle_status: 'superseded' })
       .eq('id', supersedesId)
       .eq('lifecycle_status', 'draft');
   }

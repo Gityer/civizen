@@ -218,7 +218,7 @@ export function canManageKnowledgeSpace(args: {
 
 export function canConvertGapToOpportunity(args: {
   gap: Pick<KnowledgeGap, 'status' | 'opportunityId'>;
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (args.gap.opportunityId) return { ok: false, reason: 'gap_already_has_opportunity' };
   if (args.gap.status === 'resolved') return { ok: false, reason: 'gap_already_resolved' };
   return { ok: true };
@@ -226,7 +226,7 @@ export function canConvertGapToOpportunity(args: {
 
 export function canConvertGapToChallenge(args: {
   gap: Pick<KnowledgeGap, 'status' | 'challengeId'>;
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (args.gap.challengeId) return { ok: false, reason: 'gap_already_has_challenge' };
   if (args.gap.status === 'resolved') return { ok: false, reason: 'gap_already_resolved' };
   return { ok: true };
@@ -237,7 +237,7 @@ export function canResolveKnowledgeGap(args: {
   resultResourceId?: string | null;
   resultSolutionRecordId?: string | null;
   resolutionStatus: 'resolved' | 'partially_resolved';
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (args.gap.status === 'resolved') return { ok: false, reason: 'gap_already_resolved' };
   if (args.resolutionStatus === 'resolved' && !args.resultResourceId && !args.resultSolutionRecordId) {
     return { ok: false, reason: 'result_required' };
@@ -247,7 +247,7 @@ export function canResolveKnowledgeGap(args: {
 
 export function canPublishSolutionRecordAsResource(args: {
   existingResourceId?: string | null;
-}): { ok: true } | { ok: false; reason: string } {
+}): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (args.existingResourceId) return { ok: false, reason: 'solution_already_published' };
   return { ok: true };
 }

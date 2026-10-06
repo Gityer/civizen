@@ -441,6 +441,6 @@ export function ActivityByDomainSection({ pillarScores }: DomainsSectionProps) {
   );
 }
 
-export function scoreCategoryShortLabels(): Array<{ id: ScoreCategoryId; shortLabel: string }> {
+function scoreCategoryShortLabels(): Array<{ id: ScoreCategoryId; shortLabel: string }> {
   return SCORE_CATEGORIES.map((c) => ({ id: c.id, shortLabel: c.shortLabel }));
 }

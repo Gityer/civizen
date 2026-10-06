@@ -101,7 +101,7 @@ export function signMessage(
   const messageBuffer = Buffer.from(message, 'utf-8');
   const signature = crypto.sign(null, messageBuffer, {
     key: crypto.createPrivateKey({
-      key: privateKey,
+      key: Buffer.from(privateKey),
       format: 'der',
       type: 'pkcs8',
     }),

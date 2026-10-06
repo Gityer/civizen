@@ -63,7 +63,7 @@ describe('users-admin helpers', () => {
   });
 
   it('prefers verification case status when present', () => {
-    expect(getEffectiveVerificationStatus({ is_verified: false }, { status: 'pending_review' })).toBe('pending_review');
+    expect(getEffectiveVerificationStatus({ is_verified: false }, { status: 'pending_review' as never })).toBe('pending_review');
     expect(getEffectiveVerificationStatus({ is_verified: true }, { status: 'rejected' })).toBe('rejected');
   });
 
