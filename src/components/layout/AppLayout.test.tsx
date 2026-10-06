@@ -3,6 +3,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { AppLayout } from '@/components/layout/AppLayout';
 
+vi.mock('@/components/layout/SkipToContentLink', () => ({
+  SkipToContentLink: () => null,
+  MAIN_CONTENT_ID: 'main-content',
+}));
+
 vi.mock('@/components/layout/AppTopChrome', () => ({
   AppTopChrome: () => <div data-testid="app-top-chrome" />,
 }));

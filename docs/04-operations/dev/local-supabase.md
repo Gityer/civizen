@@ -66,6 +66,10 @@ Every table named in `types.ts` exists locally (about 100 of about 300); functio
 
 `scripts/local-supabase/run-sql-tests.sh [name-filter]` runs every `supabase/tests/*_test.sql` against the local database only. Each file wraps itself in `BEGIN … ROLLBACK`, impersonates members with `SET LOCAL ROLE authenticated` + `request.jwt.claims`, and raises on any failed assertion, so nothing persists. The consultation ballot and proposal-support tests need the production-derived data (election `single-world-citizenship`, profiles `member` and `citizen`).
 
+## End-to-end tests
+
+`npm run e2e` runs the Playwright specs in `e2e/` (`npm run e2e:install` once for Chromium). They need a web server that points at the local stack (`CIVIZEN_E2E_BASE_URL`, default `http://localhost:8081`); the first step of every signed-in spec asserts that the page's Supabase URL is local and fails otherwise, so they can never write to production. Accounts sign in with the local password; override with `CIVIZEN_E2E_EMAIL` / `CIVIZEN_E2E_PASSWORD`.
+
 ## Which backend does the app use?
 
 The web app (`npm run dev`, the `civizen-web` container on port 8080) reads `VITE_SUPABASE_URL` from `.env` / `.env.local`. By default that is the **live production backend**, not this local stack (kong on `127.0.0.1:56321`). Sign-ups, votes, withdrawals and account deletions made in the browser therefore change real data.

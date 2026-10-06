@@ -8,6 +8,7 @@ import {
   isChunkLoadError,
   reloadForNewDeployment,
 } from "@/lib/chunk-load-recovery";
+import { reportError } from "@/lib/error-reporting";
 import "./index.css";
 
 declare global {
@@ -63,13 +64,17 @@ function renderFatalBootScreen(reason: unknown) {
 window.addEventListener("error", (event) => {
   if (attemptBootRecovery(event.error || event.message)) {
     event.preventDefault();
+    return;
   }
+  reportError(event.error || event.message, "window");
 });
 
 window.addEventListener("unhandledrejection", (event) => {
   if (attemptBootRecovery(event.reason)) {
     event.preventDefault();
+    return;
   }
+  reportError(event.reason, "promise");
 });
 
 async function bootstrapApp() {

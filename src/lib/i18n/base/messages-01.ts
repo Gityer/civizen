@@ -1,6 +1,7 @@
 export const m_messages_01 = {
   "common": {
     "appName": "Civizen",
+    "skipToContent": "Skip to content",
     "loading": "Loading...",
     "front": "Front",
     "back": "Back",

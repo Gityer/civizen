@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
 import { AppSideNav } from './AppSideNav';
+import { MAIN_CONTENT_ID, SkipToContentLink } from '@/components/layout/SkipToContentLink';
 import { AppTopChrome } from './AppTopChrome';
 import { MobileNav } from './MobileNav';
 import { NavSecondaryDesktop } from './NavSecondaryDesktop';
@@ -32,9 +33,12 @@ export function AppLayout({
 
   return (
     <div className="min-h-screen bg-background">
+      <SkipToContentLink />
       {showDesktopNav ? <AppSideNav /> : null}
       {hideTopChrome ? null : <AppTopChrome beforeSearch={topChromeBeforeSearch} />}
       <main
+        id={MAIN_CONTENT_ID}
+        tabIndex={-1}
         data-build-root="true"
         className={cn(
           showPhoneNav && 'pb-20',

@@ -44,3 +44,4 @@ docs/civizen_institutional_correction_specification*.md
 *:Zone.Identifier
 docs/civizen_remaining_remediation*.md
 docs/civizen_project_purpose_alignment*.md
+playwright-report/

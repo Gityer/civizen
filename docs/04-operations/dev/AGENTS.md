@@ -461,3 +461,7 @@ Do **not** start a Cursor `/loop` or `while true; sleep …; echo AGENT_LOOP_TIC
   - confirm boot-failure fallback UI appears in failure scenarios and the stable-download action points to the Production manifest/APK
 - Stop condition:
   - do not ship startup/bootstrap changes that remove or regress the fallback-to-stable path for Testing users
+
+## Error reporting
+
+`src/lib/error-reporting.ts` records render errors (crash boundary), uncaught window errors and unhandled rejections. It always logs to the console; when `VITE_ERROR_REPORT_ENDPOINT` is set it also POSTs a small JSON report (message, first stack lines, pathname without query, app version, release id, time) with `keepalive`, deduplicated per message for one minute. No user data is included. Point the variable at a collector when one exists; leave it unset otherwise.

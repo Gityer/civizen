@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { MAIN_CONTENT_ID, SkipToContentLink } from '@/components/layout/SkipToContentLink';
 
 import { PublicPageFooter } from '@/components/public/PublicPageFooter';
 import { PublicPageHeader } from '@/components/public/PublicPageHeader';
@@ -45,8 +46,9 @@ export function PublicPageShell({
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SkipToContentLink />
       <PublicPageHeader maxWidthClass={PUBLIC_CHROME_MAX_CLASS} sectionTrail={sectionTrail} />
-      <div className={cn('mx-auto w-full flex-1', contentMax, contentClassName)}>
+      <div id={MAIN_CONTENT_ID} tabIndex={-1} className={cn('mx-auto w-full flex-1 outline-none', contentMax, contentClassName)}>
         {children}
       </div>
       {showFooter ? (

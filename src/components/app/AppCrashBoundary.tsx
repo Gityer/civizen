@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
+import { reportError } from '@/lib/error-reporting';
 import {
   clearChunkRecoveryFlag,
   getErrorMessage,
@@ -56,6 +57,7 @@ export class AppCrashBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught app error:', error, errorInfo);
+    reportError(error, 'render');
 
     // Stale hashed chunks after a web deploy — recover without trapping the user.
     if (isChunkLoadError(error)) {
