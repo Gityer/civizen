@@ -36,7 +36,7 @@ export function CivicVotingElectionAccordion({ model }: { model: CivicVotingElec
         </AccordionItem>
       ) : null}
 
-      {!isConsultation ? (
+      {detail && !isConsultation ? (
       <AccordionItem value="session" className="border-border/40">
         <AccordionTrigger className="text-left text-sm font-semibold hover:no-underline">
           {t('civicVoting.folds.sessionTools')}

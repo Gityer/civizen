@@ -279,3 +279,12 @@ The consultation does not create a citizenship, replace any nationality, establi
 Later consultations, if opened, stay separate. This ballot does not ask about shared land or resources, a common currency, cashless finance, a specific government or constitution, or common legal, economic, health, or education standards.
 
 Canonical copy: `src/lib/civic-voting/single-world-citizenship.ts`. Idempotent publication: `scripts/publish-single-world-citizenship.ts`.
+
+### 12.1 Joining and voting (ordinary consultations)
+
+- The vote block (Support / Oppose / Abstain, or "Create account to vote" and "Sign in" for guests) sits directly under the question so it is visible without scrolling on a phone.
+- Guest buttons carry the ballot page as the return path. Sign-in returns there; sign-up returns there too (immediately when the account is active, otherwise through the confirmation link and a remembered path kept for 24 hours).
+- Arriving at sign-up from a ballot shows a short form: phone or email, password and the terms. Name, date of birth and language are asked later in the profile.
+- A voter can change the choice until close, or withdraw the ballot (`withdraw_consultation_ballot`).
+- A member can delete their own account from Settings > Privacy (`delete_my_account`): open-consultation ballots are withdrawn, the public listing is removed, personal details are cleared, the profile is marked deleted and the sign-in identity is disabled and freed. Staff, system agents and current constitutional office holders cannot delete themselves.
+- Public counts show a split of ballots from verified members and from accounts not yet verified (`civic_election_verification_split`). Identity uniqueness (one person, one account) is not enforced for ordinary consultations; stronger verification is a separate, later tier.

@@ -108,7 +108,8 @@ interface AuthContextType {
       terms_accepted_at?: string;
       terms_version?: string;
       terms_acceptance_method?: string;
-    }
+    },
+    options?: { redirectPath?: string },
   ) => Promise<{ error: Error | null }>;
   signIn: (identifier: string, password: string, options?: SignInOptions) => Promise<{ error: Error | null }>;
   signInWithBiometrics: (options?: { reason?: string }) => Promise<{ error: Error | null }>;
@@ -601,6 +602,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       terms_version?: string;
       terms_acceptance_method?: string;
     },
+    options?: { redirectPath?: string },
   ) => {
     const normalizedEmail = credentials.email?.trim().toLowerCase();
     const normalizedPhoneDigits = credentials.phoneNumber?.replace(/\D/g, '') || '';
@@ -613,7 +615,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: normalizedEmail || syntheticEmail,
       password,
       options: {
-        emailRedirectTo: window.location.origin,
+        // Falls back to the site URL if the hosted allow-list lacks this path; the remembered
+        // return path (pending-auth-return) then still carries the member onward.
+        emailRedirectTo: `${window.location.origin}${options?.redirectPath ?? ''}`,
         data: {
           ...metadata,
           phone_country_code: metadata?.phone_country_code ?? credentials.phoneCountryCode,

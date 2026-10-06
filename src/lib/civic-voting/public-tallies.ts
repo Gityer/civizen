@@ -11,6 +11,11 @@ export type CivicPublicTallyRow = {
   voteCount: number;
 };
 
+export type CivicVerificationSplit = {
+  verified: number;
+  unverified: number;
+};
+
 export type CivicCountryStatRow = {
   countryCode: string;
   participantCount: number;
@@ -123,4 +128,25 @@ export async function setConsultationPublicPresence(
   });
   if (error) throw new Error(error.message);
   return Boolean(data);
+}
+
+/**
+ * Countable ballots split by whether the voting account is identity-verified.
+ * Aggregate only; never returns choices.
+ */
+export async function loadCivicElectionVerificationSplit(
+  electionId: string,
+): Promise<CivicVerificationSplit | null> {
+  const { data, error } = await db.rpc('civic_election_verification_split', {
+    p_election_id: electionId,
+  });
+  if (error) return null;
+  const row = (Array.isArray(data) ? data[0] : data) as
+    | { verified_count: number | string; unverified_count: number | string }
+    | undefined;
+  if (!row) return null;
+  return {
+    verified: Number(row.verified_count) || 0,
+    unverified: Number(row.unverified_count) || 0,
+  };
 }

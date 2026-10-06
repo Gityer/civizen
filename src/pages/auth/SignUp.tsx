@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PhoneCountryPicker } from '@/components/auth/PhoneCountryPicker';
@@ -17,10 +17,16 @@ import { Mail, Lock, User, ArrowRight, Globe, Phone } from 'lucide-react';
 import { PublicAuthHeader } from '@/components/public/PublicAuthHeader';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
 import { TERMS_ACCEPTANCE_VERSION } from '@/lib/terms-version';
+import { resolveAuthReturnPath } from '@/lib/auth-return-path';
+import { savePendingAuthReturn } from '@/lib/pending-auth-return';
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signUp } = useAuth();
+  // Arriving from a page such as a ballot: keep sign-up short and return there afterwards.
+  const returnPath = resolveAuthReturnPath(location.state, '');
+  const quickMode = Boolean(returnPath);
   const { t, language } = useLanguage();
   const detected = detectLocalePreferences();
   const [languageOptions, setLanguageOptions] = useState<readonly LanguageOption[]>([]);
@@ -71,7 +77,7 @@ export default function SignUp() {
       return;
     }
 
-    if (!dateOfBirth) {
+    if (!quickMode && !dateOfBirth) {
       setError(t('auth.dateOfBirthRequired'));
       return;
     }
@@ -99,6 +105,7 @@ export default function SignUp() {
     setLoading(true);
 
     try {
+      if (quickMode) savePendingAuthReturn(location.state);
       const { error } = await signUp({
         email: trimmedEmail || undefined,
         phoneNumber: trimmedPhone || undefined,
@@ -114,7 +121,7 @@ export default function SignUp() {
         terms_accepted_at: new Date().toISOString(),
         terms_version: TERMS_ACCEPTANCE_VERSION,
         terms_acceptance_method: 'signup',
-      });
+      }, { redirectPath: returnPath || undefined });
 
       if (error) {
         setError(error.message);
@@ -144,7 +151,7 @@ export default function SignUp() {
         <SignUpSuccessState
           backToLoginLabel={t('auth.backToLogin')}
           message={successMessage}
-          onBackToLogin={() => navigate('/login')}
+          onBackToLogin={() => navigate('/login', { state: location.state })}
           title={successTitle}
         />
       </PublicPageShell>
@@ -166,6 +173,8 @@ export default function SignUp() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {!quickMode ? (
+            <>
             <div className="space-y-2">
               <Label htmlFor="fullName">{t('auth.fullName')}</Label>
               <div className="relative">
@@ -192,6 +201,10 @@ export default function SignUp() {
                 required
               />
             </div>
+            </>
+            ) : (
+              <p className="text-sm text-muted-foreground">{t('auth.quickVoteSignup')}</p>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="phone">{t('auth.phone')}</Label>
@@ -244,6 +257,7 @@ export default function SignUp() {
               <p className="text-xs text-muted-foreground">{t('auth.contactMethodHint')}</p>
             </div>
 
+            {!quickMode ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="country">{t('auth.country')}</Label>
@@ -276,6 +290,7 @@ export default function SignUp() {
                 </Select>
               </div>
             </div>
+            ) : null}
 
             <div className="space-y-2">
               <Label htmlFor="password">{t('auth.password')}</Label>
@@ -346,7 +361,7 @@ export default function SignUp() {
 
           <p className="text-center mt-6 text-sm text-muted-foreground">
             {t('auth.alreadyHaveAccount')}{' '}
-            <Link to="/login" className="text-primary hover:underline font-medium">
+            <Link to="/login" state={location.state} className="text-primary hover:underline font-medium">
               {t('auth.signInLink')}
             </Link>
           </p>

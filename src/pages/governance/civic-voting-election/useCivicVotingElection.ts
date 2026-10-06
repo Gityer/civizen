@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { APP_RELEASE_ID, APP_VERSION, ANDROID_VERSION_CODE } from '@/lib/app-release';
-import { advanceAssistedBallot, assertDistinctAssistedRoles, attestVotingClient, buildDuressVoidBallot, canSubmitChallenge, castConsultationBallot, checkBoothUnlockPin, computeCoolingOffUntil, deriveDefaultChallengeWindow, electionTitleWithoutCountryLabel, enrollDuressPin, evaluateCivicVotingEligibility, evaluateSessionGates, isCoolingOffActive, isOrdinaryConsultationElection, loadCivicElectionCountryStats, loadCivicElectionDetail, loadCivicElectionPublicDirectory, loadCivicElectionPublicTallies, myConsultationBallotOption, myConsultationPublicPresence, openVoteWindow, remainingWindowSeconds, securityClassGatePolicy, setConsultationPublicPresence, withdrawConsultationBallot, type CivicCountryStatRow, type CivicElectionSecurityClass, type CivicPublicDirectoryRow, type CivicPublicTallyRow, type CivicVerificationCheckKind, type CivicElectionDetail } from '@/lib/civic-voting';
+import { advanceAssistedBallot, assertDistinctAssistedRoles, attestVotingClient, buildDuressVoidBallot, canSubmitChallenge, castConsultationBallot, checkBoothUnlockPin, computeCoolingOffUntil, deriveDefaultChallengeWindow, electionTitleWithoutCountryLabel, enrollDuressPin, evaluateCivicVotingEligibility, evaluateSessionGates, isCoolingOffActive, isOrdinaryConsultationElection, loadCivicElectionCountryStats, loadCivicElectionDetail, loadCivicElectionPublicDirectory, loadCivicElectionPublicTallies, loadCivicElectionVerificationSplit, myConsultationBallotOption, myConsultationPublicPresence, openVoteWindow, remainingWindowSeconds, securityClassGatePolicy, setConsultationPublicPresence, withdrawConsultationBallot, type CivicCountryStatRow, type CivicElectionSecurityClass, type CivicPublicDirectoryRow, type CivicPublicTallyRow, type CivicVerificationSplit, type CivicVerificationCheckKind, type CivicElectionDetail } from '@/lib/civic-voting';
 import { MIN_GOVERNANCE_SCORE, isNativeGovernanceApp } from '@/lib/governance-eligibility';
 import { toast } from 'sonner';
 import { type DemoGateState, VOTING_MANIFEST } from '@/pages/governance/civic-voting-election/civic-voting-election-shared';
@@ -20,6 +20,7 @@ export function useCivicVotingElection() {
   const [tallyError, setTallyError] = useState<string | null>(null);
   const [countryStats, setCountryStats] = useState<CivicCountryStatRow[]>([]);
   const [directory, setDirectory] = useState<CivicPublicDirectoryRow[]>([]);
+  const [verificationSplit, setVerificationSplit] = useState<CivicVerificationSplit | null>(null);
   const [directoryVisible, setDirectoryVisible] = useState(false);
   const [directoryBusy, setDirectoryBusy] = useState(false);
   const [myOption, setMyOption] = useState<string | null>(null);
@@ -27,11 +28,13 @@ export function useCivicVotingElection() {
   const [withdrawing, setWithdrawing] = useState(false);
 
   const refreshPublicParticipation = async (id: string, signedIn: boolean) => {
-    const [tallyResult, countryResult, directoryResult] = await Promise.all([
+    const [tallyResult, countryResult, directoryResult, splitResult] = await Promise.all([
       loadCivicElectionPublicTallies(id),
       loadCivicElectionCountryStats(id),
       loadCivicElectionPublicDirectory(id),
+      loadCivicElectionVerificationSplit(id),
     ]);
+    setVerificationSplit(splitResult);
     setTallies(tallyResult.tallies);
     setTallyTotal(tallyResult.totalCountable);
     setTallyError(tallyResult.error);
@@ -292,7 +295,7 @@ export function useCivicVotingElection() {
 
   return {
     detail, detailLoading, detailError, electionId, t, language, user, isConsultation, title,
-    displayTitle, tallies, tallyTotal, tallyError, countryStats, directory, directoryVisible,
+    displayTitle, verificationSplit, tallies, tallyTotal, tallyError, countryStats, directory, directoryVisible,
     directoryBusy, myOption, casting, withdrawing, votingOpen, votingClosed, castConsultation,
     withdrawConsultation, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
     pinInput, setPinInput, assistedStatus, pinMessage, canOpenBooth, failed, policy,

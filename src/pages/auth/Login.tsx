@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { UserRound, Lock, ArrowRight, Fingerprint } from 'lucide-react';
 import { PublicAuthHeader } from '@/components/public/PublicAuthHeader';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
-import { resolveAuthReturnPath } from '@/lib/auth-return-path';
+import { resolvePostAuthPath } from '@/lib/pending-auth-return';
 import { getBiometricSignInCapability } from '@/lib/biometric-sign-in';
 
 export default function Login() {
@@ -47,7 +47,7 @@ export default function Login() {
         return;
       }
 
-      navigate(resolveAuthReturnPath(location.state));
+      navigate(resolvePostAuthPath(location.state));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed');
     } finally {
@@ -66,7 +66,7 @@ export default function Login() {
       setBiometricLoading(false);
       return;
     }
-    navigate(resolveAuthReturnPath(location.state));
+    navigate(resolvePostAuthPath(location.state));
   };
 
   return (
@@ -167,7 +167,7 @@ export default function Login() {
 
           <p className="text-center mt-6 text-sm text-muted-foreground">
             {t('auth.dontHaveAccount')}{' '}
-            <Link to="/signup" className="text-primary hover:underline font-medium">
+            <Link to="/signup" state={location.state} className="text-primary hover:underline font-medium">
               {t('auth.signUpLink')}
             </Link>
           </p>

@@ -1,22 +1,18 @@
-import { Link } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CIVIC_ELECTION_TIER_LABELS, CIVIC_SECURITY_CLASS_LABELS } from '@/lib/civic-voting';
 import { getCountryName } from '@/lib/countries';
-import { Switch } from '@/components/ui/switch';
+import { CivicVotingConsultationVote } from '@/pages/governance/civic-voting-election/CivicVotingConsultationVote';
 import type { useCivicVotingElection } from '@/pages/governance/civic-voting-election/useCivicVotingElection';
 
 type CivicVotingElectionModel = ReturnType<typeof useCivicVotingElection>;
 
 export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectionModel }) {
   const {
-    detail, tallies, tallyTotal, tallyError, countryStats, directory, directoryVisible,
-    directoryBusy, myOption, casting, withdrawing, t, language, user, isConsultation, votingOpen,
-    votingClosed, castConsultation, withdrawConsultation, toggleDirectoryPresence,
+    detail, tallies, tallyTotal, tallyError, countryStats, directory, t, language, isConsultation,
+    verificationSplit,
   } = model;
   return (
     <>
@@ -59,6 +55,8 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
         {isConsultation && detail.election.summary ? (
           <p className="text-base leading-relaxed text-foreground">{detail.election.summary}</p>
         ) : null}
+
+        {isConsultation ? <CivicVotingConsultationVote model={model} /> : null}
 
         {isConsultation && detail.body ? (
           <div className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
@@ -122,6 +120,14 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
           <p className="text-xs text-muted-foreground">
             {t('civicVoting.tallies.total', { count: String(tallyTotal) })}
           </p>
+          {isConsultation && verificationSplit && verificationSplit.verified + verificationSplit.unverified > 0 ? (
+            <p className="text-xs text-muted-foreground" title={t('civicVoting.tallies.verifiedSplitHint')}>
+              {t('civicVoting.tallies.verifiedSplit', {
+                verified: String(verificationSplit.verified),
+                unverified: String(verificationSplit.unverified),
+              })}
+            </p>
+          ) : null}
           <p className="text-xs text-muted-foreground">{t('civicVoting.tallies.validOnly')}</p>
         </div>
 
@@ -191,124 +197,6 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
           </div>
         ) : null}
 
-        {isConsultation ? (
-          <div className="space-y-3">
-            <p className="text-xs text-muted-foreground">
-              {t('civicVoting.proposals.changeUntilClose')}
-            </p>
-            {!user ? (
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">{t('civicVoting.proposals.guestCta')}</p>
-                <div className="flex flex-wrap gap-2">
-                  <Button type="button" size="sm" asChild>
-                    <Link to="/login">{t('civicVoting.publicLanding.signIn')}</Link>
-                  </Button>
-                  <Button type="button" size="sm" variant="outline" asChild>
-                    <Link to="/signup">{t('civicVoting.publicLanding.signUp')}</Link>
-                  </Button>
-                </div>
-              </div>
-            ) : votingClosed ? (
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  {t('civicVoting.proposals.votingClosed')}
-                </p>
-                {myOption ? (
-                  <div className="flex items-start justify-between gap-3 rounded-xl border border-border/50 p-3">
-                    <div className="min-w-0 space-y-1">
-                      <p className="text-sm font-medium text-foreground">
-                        {t('civicVoting.participation.directoryToggle')}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {t('civicVoting.participation.directoryToggleHint')}
-                      </p>
-                    </div>
-                    <Switch
-                      checked={directoryVisible}
-                      disabled={directoryBusy}
-                      onCheckedChange={(checked) => void toggleDirectoryPresence(checked)}
-                      aria-label={t('civicVoting.participation.directoryToggle')}
-                    />
-                  </div>
-                ) : null}
-              </div>
-            ) : votingOpen ? (
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-foreground">
-                  {t('civicVoting.consultation.participate')}
-                </p>
-                {myOption ? (
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-xs text-muted-foreground">
-                      {t('civicVoting.proposals.yourChoice')}:{' '}
-                      <span className="font-medium text-foreground">
-                        {myOption === 'support'
-                          ? t('civicVoting.proposals.castSupport')
-                          : myOption === 'oppose'
-                            ? t('civicVoting.proposals.castOppose')
-                            : t('civicVoting.proposals.castAbstain')}
-                      </span>
-                    </p>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      disabled={casting || withdrawing}
-                      onClick={() => void withdrawConsultation()}
-                    >
-                      {withdrawing ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : null}
-                      {t('civicVoting.proposals.withdrawBallot')}
-                    </Button>
-                  </div>
-                ) : null}
-                <div className="flex flex-wrap gap-2">
-                  {(
-                    [
-                      ['support', 'castSupport'],
-                      ['oppose', 'castOppose'],
-                      ['abstain', 'castAbstain'],
-                    ] as const
-                  ).map(([key, labelKey]) => (
-                    <Button
-                      key={key}
-                      type="button"
-                      size="sm"
-                      variant={myOption === key ? 'default' : 'outline'}
-                      disabled={casting || withdrawing}
-                      onClick={() => void castConsultation(key)}
-                    >
-                      {t(`civicVoting.proposals.${labelKey}`)}
-                    </Button>
-                  ))}
-                </div>
-                {myOption ? (
-                  <div className="flex items-start justify-between gap-3 rounded-xl border border-border/50 p-3">
-                    <div className="min-w-0 space-y-1">
-                      <p className="text-sm font-medium text-foreground">
-                        {t('civicVoting.participation.directoryToggle')}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {t('civicVoting.participation.directoryToggleHint')}
-                      </p>
-                    </div>
-                    <Switch
-                      checked={directoryVisible}
-                      disabled={directoryBusy || withdrawing}
-                      onCheckedChange={(checked) => void toggleDirectoryPresence(checked)}
-                      aria-label={t('civicVoting.participation.directoryToggle')}
-                    />
-                  </div>
-                ) : null}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                {t(`civicVoting.status.${detail.election.status}`)}
-              </p>
-            )}
-          </div>
-        ) : null}
       </Card>
     ) : null}
     </>

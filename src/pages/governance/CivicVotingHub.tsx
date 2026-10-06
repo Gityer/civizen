@@ -812,6 +812,7 @@ export default function CivicVotingHub() {
                   body={t('civicVoting.features.transparencyBody')}
                 />
               </div>
+              <p className="mt-3 text-xs text-muted-foreground">{t('civicVoting.features.ordinaryNote')}</p>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

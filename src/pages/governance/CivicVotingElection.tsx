@@ -88,7 +88,7 @@ export default function CivicVotingElection() {
 
         <CivicVotingElectionDetail model={model} />
 
-        {!user && !isConsultation ? (
+        {!user && detail && !isConsultation ? (
           <Card className="rounded-2xl border-dashed border-border/70 p-4 shadow-none space-y-3">
             <p className="text-sm text-muted-foreground">{t('civicVoting.publicBrowseOnly')}</p>
             <div className="flex flex-wrap gap-2">
