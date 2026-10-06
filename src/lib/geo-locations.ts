@@ -1,5 +1,6 @@
 import { getCountryOptions } from '@/lib/countries';
 import { getCountryCapitalName } from '@/lib/country-capitals';
+import { GEO_CATALOG_DIR } from '@/lib/geo-catalog-build';
 
 export type GeoRegionOption = {
   code: string;
@@ -11,15 +12,30 @@ export type GeoCapitalLocation = {
   regionCode: string | null;
 };
 
-type GeoModule = typeof import('country-state-city');
+type GeoCountryData = {
+  regions: GeoRegionOption[];
+  cities: Record<string, string[]>;
+};
 
-let geoModulePromise: Promise<GeoModule> | null = null;
+const EMPTY_COUNTRY: GeoCountryData = { regions: [], cities: {} };
+const countryCache = new Map<string, Promise<GeoCountryData>>();
 
-function loadGeoModule(): Promise<GeoModule> {
-  if (!geoModulePromise) {
-    geoModulePromise = import('country-state-city');
+/**
+ * One country's regions and cities, from the per-country files vite.config.ts writes to /geo.
+ * A failed download is not cached, so the next call tries again.
+ */
+function loadCountry(countryCode: string): Promise<GeoCountryData> {
+  let pending = countryCache.get(countryCode);
+  if (!pending) {
+    pending = fetch(`${import.meta.env.BASE_URL}${GEO_CATALOG_DIR}/${countryCode}.json`)
+      .then((response) => (response.ok ? (response.json() as Promise<GeoCountryData>) : EMPTY_COUNTRY))
+      .catch(() => {
+        countryCache.delete(countryCode);
+        return EMPTY_COUNTRY;
+      });
+    countryCache.set(countryCode, pending);
   }
-  return geoModulePromise;
+  return pending;
 }
 
 function normalizePlaceName(value: string): string {
@@ -52,13 +68,8 @@ export async function listGeoRegions(countryCode: string): Promise<GeoRegionOpti
   const code = countryCode.trim().toUpperCase();
   if (!/^[A-Z]{2}$/.test(code)) return [];
 
-  const { State } = await loadGeoModule();
-  return State.getStatesOfCountry(code)
-    .map((state) => ({
-      code: state.isoCode,
-      name: state.name,
-    }))
-    .sort((left, right) => left.name.localeCompare(right.name));
+  const { regions } = await loadCountry(code);
+  return [...regions].sort((left, right) => left.name.localeCompare(right.name));
 }
 
 /** Cities for a country + state/region code. */
@@ -67,10 +78,9 @@ export async function listGeoCities(countryCode: string, regionCode: string): Pr
   const region = regionCode.trim().toUpperCase();
   if (!/^[A-Z]{2}$/.test(country) || !region) return [];
 
-  const { City } = await loadGeoModule();
-  return City.getCitiesOfState(country, region)
-    .map((city) => city.name)
-    .sort((left, right) => left.localeCompare(right));
+  const { cities } = await loadCountry(country);
+  const match = Object.keys(cities).find((key) => key.toUpperCase() === region);
+  return match ? [...cities[match]].sort((left, right) => left.localeCompare(right)) : [];
 }
 
 /** Cities for a country (all states). Prefer listGeoCities when a region is known. */
@@ -78,8 +88,8 @@ export async function listGeoCitiesOfCountry(countryCode: string): Promise<strin
   const country = countryCode.trim().toUpperCase();
   if (!/^[A-Z]{2}$/.test(country)) return [];
 
-  const { City } = await loadGeoModule();
-  const names = (City.getCitiesOfCountry(country) ?? []).map((city) => city.name);
+  const { cities } = await loadCountry(country);
+  const names = Object.values(cities).flat();
   return Array.from(new Set(names)).sort((left, right) => left.localeCompare(right));
 }
 
@@ -97,19 +107,16 @@ export async function resolveCountryCapitalLocation(
   const capitalName = getCountryCapitalName(code);
   if (!capitalName) return null;
 
-  const { City } = await loadGeoModule();
-  const cities = City.getCitiesOfCountry(code) ?? [];
+  const { cities } = await loadCountry(code);
   let best: { name: string; stateCode: string; score: number } | null = null;
 
-  for (const city of cities) {
-    const score = capitalMatchScore(city.name, capitalName);
-    if (score <= 0) continue;
-    if (
-      !best ||
-      score > best.score ||
-      (score === best.score && city.name.length > best.name.length)
-    ) {
-      best = { name: city.name, stateCode: city.stateCode, score };
+  for (const [stateCode, names] of Object.entries(cities)) {
+    for (const name of names) {
+      const score = capitalMatchScore(name, capitalName);
+      if (score <= 0) continue;
+      if (!best || score > best.score || (score === best.score && name.length > best.name.length)) {
+        best = { name, stateCode, score };
+      }
     }
   }
 
