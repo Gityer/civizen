@@ -31,7 +31,7 @@ describe('curated governanceDashboard translations', () => {
   }
 
   for (const language of Object.keys(curatedTranslations)) {
-    it(`${language} hub/steward/common keys exist in English with identical placeholders`, () => {
+    it(`${language} curated keys all exist in English with identical placeholders`, () => {
       const { governanceDashboard: _dashboard, ...rest } = curatedTranslations[language];
       const curated = leaves(rest);
       const englishAll = leaves(baseTranslations);
@@ -40,13 +40,21 @@ describe('curated governanceDashboard translations', () => {
         'governanceHub.voteBlocked',
         'governanceHub.voteBlockedBySanction',
         'common.anonymousUser',
+        'civicBallot.receiptTitle',
+        'governanceMember.title',
+        'proposalSupport.title',
+        'notificationCenter.title',
         ...Object.keys(englishAll).filter((k) =>
           /^governanceHub\.(statuses\.(open|approved|rejected|cancelled)|voteChoices\.|decisionClasses\.|stewardIdentity\.)/.test(k),
         ),
       ];
-      expect(Object.keys(curated).sort()).toEqual([...required].sort());
       for (const key of required) {
-        expect(placeholders(curated[key]), key).toEqual(placeholders(englishAll[key]));
+        expect(curated[key], `${language} must curate ${key}`).toBeTruthy();
+      }
+      for (const [key, value] of Object.entries(curated)) {
+        expect(englishAll[key], `${language} curates unknown key ${key}`).toBeTruthy();
+        expect(placeholders(value), key).toEqual(placeholders(englishAll[key]));
+        expect(value.trim(), key).not.toBe('');
       }
     });
   }
