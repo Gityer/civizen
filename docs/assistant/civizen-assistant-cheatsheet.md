@@ -74,7 +74,8 @@ Public discovery includes `/areas`, `/partners`, `/fund`, `/documents`, `/govern
 | Areas | Areas (Contribute, Home > Governance, or public footer) | implemented (read-only V1) |
 | Governance landing | Home > Governance | implemented |
 | Civic voting | Home > Governance > Civic voting | implemented |
-| Governance workspace | Home > Governance workspace | implemented |
+| Governance (member page: Votes · Proposals · Tools) | Settings > Member workspace, or /governance/workspace | implemented (Tools tab only for office holders / founders / admins) |
+| Notifications | Bell in the top chrome, or Settings > Notifications | implemented (consultation published / result, Matters, agreements) |
 | Governance Solutions | Home > Governance > Governance Solutions | implemented |
 | Community Governance Charter | Home > Governance > Community Governance Charter | implemented (interim public policy) |
 | Partners | Contribute > Organization Partnership | implemented (public notice; not a CRM) |

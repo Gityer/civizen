@@ -181,7 +181,6 @@ describe('Settings page', () => {
       'Privacy',
       'Professional credentials',
       'Prototype credits',
-      'Safety',
       'Taxonomy',
       'Terms of Use',
     ];

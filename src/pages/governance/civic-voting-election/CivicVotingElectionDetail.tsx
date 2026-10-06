@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -68,6 +70,29 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
           <p className="text-xs text-muted-foreground">{t('civicVoting.consultation.bodyHint')}</p>
         ) : null}
 
+        {isConsultation && (detail.election.metadata?.matter_id || detail.election.metadata?.proposal_id) ? (
+          <div className="space-y-2 rounded-xl border border-border/50 bg-muted/20 p-3" data-testid="consultation-discussion">
+            <h3 className="text-sm font-semibold text-foreground">{t('civicBallot.discussionTitle')}</h3>
+            <p className="text-xs text-muted-foreground">{t('civicBallot.discussionHint')}</p>
+            <div className="flex flex-wrap gap-2">
+              {detail.election.metadata?.matter_id ? (
+                <Button type="button" size="sm" variant="outline" asChild>
+                  <Link to={`/contribute/matters/${String(detail.election.metadata.matter_id)}`}>
+                    {t('civicVoting.proposals.openMatter')}
+                  </Link>
+                </Button>
+              ) : null}
+              {detail.election.metadata?.proposal_id ? (
+                <Button type="button" size="sm" variant="ghost" asChild>
+                  <Link to={`/governance/voting/proposals/${String(detail.election.metadata.proposal_id)}`}>
+                    {t('civicVoting.proposals.openProposal')}
+                  </Link>
+                </Button>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
         {detail.contests.map((contest) => (
           <div key={contest.id} className="space-y-3">
             {!(isConsultation && contest.title === detail.election.title) ? (
@@ -118,7 +143,9 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
             </ul>
           )}
           <p className="text-xs text-muted-foreground">
-            {t('civicVoting.tallies.total', { count: String(tallyTotal) })}
+            {tallyTotal === 1
+              ? t('civicVoting.tallies.totalOne')
+              : t('civicVoting.tallies.total', { count: String(tallyTotal) })}
           </p>
           {isConsultation && verificationSplit && verificationSplit.verified + verificationSplit.unverified > 0 ? (
             <p className="text-xs text-muted-foreground" title={t('civicVoting.tallies.verifiedSplitHint')}>

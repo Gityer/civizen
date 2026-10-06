@@ -53,6 +53,9 @@ import {
   MessagingSecurity,
   MessagingSettingsPage,
   Onboarding,
+  GovernanceMember,
+  HelpSupport,
+  Notifications,
   OpportunityDetail,
   OpportunityForm,
   Pillars,
@@ -233,8 +236,11 @@ export const appRoutes1 = (
         <Route path="materials" element={<StudyMaterials />} />
         <Route path="tests" element={<StudyTests />} />
       </Route>
-      <Route path="/governance/workspace" element={<ProtectedRoute><Governance /></ProtectedRoute>} />
-      <Route path="/governance/new" element={<ProtectedRoute><GovernanceNew /></ProtectedRoute>} />
+      <Route path="/governance/workspace" element={<ProtectedRoute><GovernanceMember /></ProtectedRoute>} />
+      <Route path="/governance/tools" element={<ProtectedRoute><Governance /></ProtectedRoute>} />
+      <Route path="/governance/tools/steward" element={<ProtectedRoute><GovernanceNew /></ProtectedRoute>} />
+      <Route path="/governance/new" element={<ProtectedRoute><Navigate to="/governance/tools/steward" replace /></ProtectedRoute>} />
+      <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
       <Route path="/governance/solutions" element={<ProtectedRoute><SolutionsHub /></ProtectedRoute>} />
       <Route path="/governance/solutions/:problemId" element={<ProtectedRoute><SolutionProblemDetail /></ProtectedRoute>} />
       <Route path="/features" element={<ProtectedRoute><Navigate to="/study" replace /></ProtectedRoute>} />
@@ -323,6 +329,7 @@ export const appRoutes1 = (
       <Route path="/settings/prototype-credits" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
       <Route path="/settings/wallet" element={<ProtectedRoute><Navigate to="/settings/prototype-credits" replace /></ProtectedRoute>} />
       <Route path="/settings/taxonomy" element={<ProtectedRoute><TaxonomySettings /></ProtectedRoute>} />
+      <Route path="/settings/help" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
       <Route path="/settings/luma-wallet" element={<ProtectedRoute><Navigate to="/settings/prototype-credits" replace /></ProtectedRoute>} />
       <Route
         path="/settings/messaging"

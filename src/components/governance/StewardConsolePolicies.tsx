@@ -54,7 +54,7 @@ export function StewardConsolePolicies() {
         <h3 className="font-semibold">{t('governanceDashboard.policies.changeTitle')}</h3>
         <p className="text-sm text-muted-foreground">{t('governanceDashboard.policies.changeHelp')}</p>
         <Button asChild size="sm">
-          <Link to="/governance/workspace">{t('governanceDashboard.policies.changeAction')}</Link>
+          <Link to="/governance/tools">{t('governanceDashboard.policies.changeAction')}</Link>
         </Button>
       </Card>
     </div>

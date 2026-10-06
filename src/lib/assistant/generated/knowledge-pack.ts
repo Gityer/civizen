@@ -3,12 +3,12 @@ import type { KnowledgePack } from '../types';
 
 export const KNOWLEDGE_PACK: KnowledgePack = {
   "meta": {
-    "appVersion": "0.1.197",
-    "appReleaseId": "20260817-v0.1.197",
-    "androidVersionCode": 199,
-    "gitSha": "de0b6771145ecd2465e0451313bd1505c6a441c7",
-    "generatedAt": "2026-10-05T22:48:51.428Z",
-    "sourceFingerprint": "252a078ebacc03db0a32e1760cef8bd1eb1fe5e9e9c621fb2b6b7984b5d49170",
+    "appVersion": "0.1.198",
+    "appReleaseId": "20261005-v0.1.198",
+    "androidVersionCode": 200,
+    "gitSha": "1a1ccf96f4d3f4070975a3a280054aa767282d4b",
+    "generatedAt": "2026-10-06T05:37:24.101Z",
+    "sourceFingerprint": "9dfc70fdac689933bc1a596a25a19b0d952841e5b91e1379eb2b9605577b87bd",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370
@@ -694,13 +694,15 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "governance",
       "name": "Governance",
       "status": "implemented",
-      "description": "Public governance landing, civic voting, member proposal workspace, a member dashboard with the steward console (identity verifications, constitutional office holders, and a read-only Policies tab showing the voting rules in force), and related policy pages. Current public community instrument is the Community Governance Charter. Voting on member proposals requires a verified member with enough governance score in the native mobile app; an active governance sanction blocks voting.",
-      "howTo": "Open Home > Governance for the landing, Home > Governance > Civic voting for elections, Home > Governance workspace for member proposals, and /governance/new for the member dashboard (open and closed proposals; the steward console appears for office holders and members who can assign roles; policy changes are proposed to members and decided by vote, not edited by stewards).",
+      "description": "Public governance landing, civic voting, and one member Governance page with three tabs: Votes (open consultations with your own ballot status, scheduled ones, and published results), Proposals (drafts open for member support with a support threshold, your drafts, published and closed proposals), and Tools (steward console and legacy workspace tools, shown only to office holders, founders, admins, or members who can assign roles). A consultation starts as a Matter; its author opens the draft for member support, sets scope (global or one country) and opening/closing times, and can publish once the support threshold is reached; founders and admins can publish at any time. Ordinary consultations need only a free account; the server enforces sanctions, minimum age, verification and country scope when an election declares them. Every voter gets a receipt they can check against the public list of counted ballots; choices stay sealed. Members are notified when a consultation they follow is published and when its result is published. Current public community instrument is the Community Governance Charter.",
+      "howTo": "Open Home > Governance for the landing, Home > Governance > Civic voting for the public election catalog, and Settings > Member workspace (or /governance/workspace) for the member Governance page with the Votes, Proposals and Tools tabs. Start a consultation from a Matter (Contribute > Questions, Issues & Ideas > Create voting proposal), then open it for member support on the proposal page. Tap the bell in the top chrome or Settings > Notifications for notifications. The steward console is at /governance/tools/steward and the legacy workspace tools at /governance/tools (Tools tab).",
       "routes": [
         "/governance",
         "/governance/workspace",
-        "/governance/new",
-        "/governance/voting"
+        "/governance/tools",
+        "/governance/tools/steward",
+        "/governance/voting",
+        "/notifications"
       ],
       "roles": [
         "guest",
@@ -2010,7 +2012,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "capability:governance",
       "title": "Governance",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Governance status=implemented. Public governance landing, civic voting, member proposal workspace, a member dashboard with the steward console (identity verifications, constitutional office holders, and a read-only Policies tab showing the voting rules in force), and related policy pages. Current public community instrument is the Community Governance Charter. Voting on member proposals requires a verified member with enough governance score in the native mobile app; an active governance sanction blocks voting. Open Home > Governance for the landing, Home > Governance > Civic voting for elections, Home > Governance workspace for member proposals, and /governance/new for the member dashboard (open and closed proposals; the steward console appears for office holders and members who can assign roles; policy changes are proposed to members and decided by vote, not edited by stewards). Routes: /governance, /governance/workspace, /governance/new, /governance/voting.",
+      "text": "Governance status=implemented. Public governance landing, civic voting, and one member Governance page with three tabs: Votes (open consultations with your own ballot status, scheduled ones, and published results), Proposals (drafts open for member support with a support threshold, your drafts, published and closed proposals), and Tools (steward console and legacy workspace tools, shown only to office holders, founders, admins, or members who can assign roles). A consultation starts as a Matter; its author opens the draft for member support, sets scope (global or one country) and opening/closing times, and can publish once the support threshold is reached; founders and admins can publish at any time. Ordinary consultations need only a free account; the server enforces sanctions, minimum age, verification and country scope when an election declares them. Every voter gets a receipt they can check against the public list of counted ballots; choices stay sealed. Members are notified when a consultation they follow is published and when its result is published. Current public community instrument is the Community Governance Charter. Open Home > Governance for the landing, Home > Governance > Civic voting for the public election catalog, and Settings > Member workspace (or /governance/workspace) for the member Governance page with the Votes, Proposals and Tools tabs. Start a consultation from a Matter (Contribute > Questions, Issues & Ideas > Create voting proposal), then open it for member support on the proposal page. Tap the bell in the top chrome or Settings > Notifications for notifications. The steward console is at /governance/tools/steward and the legacy workspace tools at /governance/tools (Tools tab). Routes: /governance, /governance/workspace, /governance/tools, /governance/tools/steward, /governance/voting, /notifications.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"

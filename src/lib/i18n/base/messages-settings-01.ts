@@ -23,7 +23,7 @@ export const m_messages_settings_01 = {
     "walletOpenMarket": "Open Marketplace",
     "walletSignIn": "Sign in on the home screen to view your prototype credits here.",
     "notifications": "Notifications",
-    "notificationsDescription": "Manage notification preferences",
+    "notificationsDescription": "Consultations, results, Matters, and agreements that involve you",
     "privacy": "Privacy",
     "privacyDescription": "Biometric sign-in and profile visibility controls",
     "socialAccounts": "Social accounts",

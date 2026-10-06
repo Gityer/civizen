@@ -1,5 +1,5 @@
 import { type AppPermission } from '@/lib/access-control';
-import { User, Shield, Bell, HelpCircle, FileText, Lock, Settings as SettingsIcon, LayoutGrid, Award, Coins, MessageCircle, Share2 } from 'lucide-react';
+import { User, Bell, HelpCircle, FileText, Lock, Settings as SettingsIcon, LayoutGrid, Award, Coins, MessageCircle, Share2 } from 'lucide-react';
 
 export type SettingsNavItem = {
   icon: typeof User;
@@ -35,7 +35,7 @@ export const settingsItems: SettingsNavItem[] = [
     icon: Bell,
     labelKey: 'settings.notifications',
     descriptionKey: 'settings.notificationsDescription',
-    path: '/settings/notifications',
+    path: '/notifications',
   },
   {
     icon: SettingsIcon,
@@ -67,12 +67,6 @@ export const settingsItems: SettingsNavItem[] = [
     labelKey: 'settings.wallet',
     descriptionKey: 'settings.walletDescription',
     path: '/settings/prototype-credits',
-  },
-  {
-    icon: Shield,
-    labelKey: 'settings.safety',
-    descriptionKey: 'settings.safetyDescription',
-    path: '/settings/safety',
   },
   {
     icon: LayoutGrid,

@@ -2,6 +2,7 @@ import { Suspense, lazy, type ReactNode } from 'react';
 import { Search } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { NotificationBell } from '@/components/layout/NotificationBell';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -48,6 +49,7 @@ export function AppTopChrome({ beforeSearch }: AppTopChromeProps) {
       {/* On lg the buttons sit inside the secondary tab bar's band (above it, vertically centred). */}
       <div className="pointer-events-auto flex items-center gap-2 px-4 pb-3 pt-2 lg:pb-0 lg:pt-[5px]">
         {beforeSearch}
+        <NotificationBell profileId={profile.id} />
         <Button
           type="button"
           size="icon"
