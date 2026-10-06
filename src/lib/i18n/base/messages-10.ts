@@ -167,7 +167,7 @@ export const m_messages_10 = {
   "search": {
     "title": "Search",
     "placeholder": "Search by name or username...",
-    "placeholderUnified": "Search people, companies, products, services, or contents...",
+    "placeholderUnified": "Search people, companies, posts, products, services, or contents...",
     "searching": "Searching...",
     "noUsersFound": "No users found",
     "noResultsFound": "No results found",
@@ -197,7 +197,8 @@ export const m_messages_10 = {
     "runBy": "Run by {name}",
     "viewOwnerProfile": "View profile for {name}",
     "noDescription": "No description available.",
-    "directoryError": "Some directory results could not be loaded."
+    "directoryError": "Some directory results could not be loaded.",
+    "postsHeading": "Posts"
   },
   "endorseSelect": {
     "title": "Choose someone to endorse",
