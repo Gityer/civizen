@@ -79,3 +79,17 @@ describe('ProposalSupportCard', () => {
     expect(fromLocalInput('')).toBeNull();
   });
 });
+
+describe('parseOptionLines', () => {
+  it('treats the default trio as no custom options and keeps custom labels', async () => {
+    const { parseOptionLines } = await import('./proposal-options');
+    expect(parseOptionLines('Support\nOppose\nAbstain')).toEqual([]);
+    expect(parseOptionLines('support\n oppose \nabstain\n')).toEqual([]);
+    expect(parseOptionLines('Keep as is\nChange it\n\nNot sure')).toEqual([
+      { label: 'Keep as is' },
+      { label: 'Change it' },
+      { label: 'Not sure' },
+    ]);
+    expect(parseOptionLines('')).toEqual([]);
+  });
+});

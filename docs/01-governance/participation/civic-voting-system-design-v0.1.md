@@ -317,3 +317,14 @@ Migration `supabase/migrations/20261006070000_voting_proposals_member_support.sq
 | Notifications | `public.user_notifications` is read and marked read directly by the owner (existing RLS); producers are server functions only (`civic_notify_profiles`). UI: bell in the app chrome, `/notifications`, Settings › Notifications. |
 | Member surface | `/governance/workspace` is the one member Governance page: Votes (open / scheduled / results), Proposals (open for support, mine, published, closed), Tools (steward console `/governance/tools/steward`, legacy workspace `/governance/tools`; shown only to founders/admins/system, role or settings managers, and office holders). `/governance/new` redirects to the steward console. |
 | Legacy proposal votes | `governance_proposal_votes.weight` is clamped to 0..1 by trigger; the client can no longer inflate a vote. |
+
+## 15. Ballot options, quorum and outcome (2026-10-06)
+
+Migration `supabase/migrations/20261006080000_consultation_options_and_outcome.sql`; SQL test `supabase/tests/consultation_options_outcome_test.sql`.
+
+| Concern | Contract |
+| --- | --- |
+| Options | A draft may define 2–12 options (`update_voting_proposal_settings(..., p_options)`), stored as `metadata.options = [{key,label}]` with keys slugified from the label. Publishing creates one candidate per option; without custom options the ballot is Support / Oppose / Abstain. `cast_consultation_ballot` accepts any option the election defines. Standard option labels are translated in the UI; custom labels show as entered. |
+| Decision rules | `metadata.quorum` (minimum countable ballots) and `metadata.pass_threshold_percent` (default 50) are set on the draft and copied to the election at publication. |
+| Outcome | `civic_election_outcome(election)` returns `total_countable`, `quorum`, `quorum_met`, `pass_threshold_percent`, `support_share_percent` (Support among Support + Oppose; Abstain does not count), `passed` (null when the ballot has no Support/Oppose pair) and `leading_option_key`. The close tick stores it as `metadata.final_outcome` and in the `election_closed` event; the ballot page and the member Governance results list show one sentence from it. A consultation passes when quorum is met and the support share is strictly above the threshold. |
+| Approval and ranked ballots | Not implemented. The schema keeps `seat_count` and `rank` for them; a future contract must define how multi-selection payloads are sealed and tallied. |

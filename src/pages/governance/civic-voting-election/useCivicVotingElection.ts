@@ -95,7 +95,7 @@ export function useCivicVotingElection() {
     return error instanceof Error && error.message ? error.message : t(fallbackKey);
   };
 
-  const castConsultation = async (optionKey: 'support' | 'oppose' | 'abstain') => {
+  const castConsultation = async (optionKey: string) => {
     if (!electionId || casting || withdrawing) return;
     setCasting(true);
     try {

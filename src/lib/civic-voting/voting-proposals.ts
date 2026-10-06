@@ -27,7 +27,30 @@ export type VotingProposal = {
   metadata: Record<string, unknown>;
   openForSupport: boolean;
   supportThreshold: number;
+  /** Custom ballot options; empty means the default Support / Oppose / Abstain. */
+  options: ProposalOption[];
+  quorum: number | null;
+  passThresholdPercent: number | null;
 };
+
+export type ProposalOption = { key: string; label: string };
+
+function readOptions(metadata: Record<string, unknown>): ProposalOption[] {
+  const raw = metadata.options;
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((item) => {
+      const row = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
+      return { key: String(row.key ?? ''), label: String(row.label ?? row.key ?? '') };
+    })
+    .filter((row) => row.key !== '');
+}
+
+function readNumber(value: unknown): number | null {
+  if (value === null || value === undefined || value === '') return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
 
 type ProposalRow = {
   id: string;
@@ -72,6 +95,9 @@ function mapProposal(row: ProposalRow): VotingProposal {
     metadata,
     openForSupport: Boolean(metadata.open_for_support),
     supportThreshold: Number.isFinite(threshold) && threshold > 0 ? threshold : 10,
+    options: readOptions(metadata),
+    quorum: readNumber(metadata.quorum),
+    passThresholdPercent: readNumber(metadata.pass_threshold_percent),
   };
 }
 
@@ -250,6 +276,10 @@ export async function updateVotingProposalSettings(input: {
   scopeCountryCode?: string | null;
   votingOpensAt?: string | null;
   votingClosesAt?: string | null;
+  /** Empty or omitted resets to the default Support / Oppose / Abstain. */
+  options?: Array<{ key?: string; label: string }> | null;
+  quorum?: number | null;
+  passThresholdPercent?: number | null;
 }): Promise<void> {
   const { error } = await db.rpc('update_voting_proposal_settings', {
     p_proposal_id: input.proposalId,
@@ -257,6 +287,9 @@ export async function updateVotingProposalSettings(input: {
     p_scope_country_code: input.scopeCountryCode || null,
     p_voting_opens_at: input.votingOpensAt || null,
     p_voting_closes_at: input.votingClosesAt || null,
+    p_options: input.options && input.options.length > 0 ? input.options : null,
+    p_quorum: input.quorum ?? null,
+    p_pass_threshold: input.passThresholdPercent ?? null,
   });
   if (error) throw new Error(error.message);
 }

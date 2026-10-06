@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import type { CivicElection, MyConsultationBallot } from '@/lib/civic-voting';
+import { consultationOptionLabel, describeConsultationOutcome, readConsultationOutcome } from '@/lib/civic-voting/outcome';
 import { readFinalTally, type ElectionGroups } from './governance-member-model';
 
 type Translate = (key: string, params?: Record<string, string>) => string;
@@ -50,7 +51,7 @@ function ElectionRow({
           <span className="inline-flex items-center gap-1" data-testid={voted ? 'vote-status-voted' : 'vote-status-pending'}>
             {voted ? <CheckCircle2 className="h-3.5 w-3.5 text-primary" aria-hidden /> : <Circle className="h-3.5 w-3.5" aria-hidden />}
             {voted
-              ? t('governanceMember.youVoted', { choice: t(`civicVoting.proposals.cast${capitalize(ballot?.optionKey ?? '')}`) })
+              ? t('governanceMember.youVoted', { choice: consultationOptionLabel(t, ballot?.optionKey) })
               : t('governanceMember.notVotedYet')}
           </span>
         ) : null}
@@ -61,10 +62,6 @@ function ElectionRow({
       </Button>
     </Card>
   );
-}
-
-function capitalize(value: string): string {
-  return value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
 }
 
 function ResultRow({
@@ -80,6 +77,12 @@ function ResultRow({
 }) {
   const tally = readFinalTally(election.metadata);
   const total = tally.reduce((sum, row) => sum + row.voteCount, 0);
+  const outcome = readConsultationOutcome(election.metadata);
+  const outcomeLine = outcome
+    ? describeConsultationOutcome(outcome, (key) =>
+        consultationOptionLabel(t, key, tally.find((row) => row.optionKey === key)?.displayName),
+      )
+    : null;
   return (
     <Card className="space-y-2 rounded-2xl border-border/60 p-4">
       <div className="flex items-start justify-between gap-3">
@@ -98,7 +101,7 @@ function ResultRow({
             return (
               <li key={row.optionKey} className="space-y-1">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-foreground">{row.displayName}</span>
+                  <span className="text-foreground">{consultationOptionLabel(t, row.optionKey, row.displayName)}</span>
                   <span className="text-xs text-muted-foreground">{row.voteCount} · {pct}%</span>
                 </div>
                 <Progress value={pct} className="h-1.5" />
@@ -107,6 +110,9 @@ function ResultRow({
           })}
         </ul>
       )}
+      {outcomeLine ? (
+        <p className="text-sm text-foreground" data-testid="result-outcome">{t(outcomeLine.key, outcomeLine.params)}</p>
+      ) : null}
       <Button type="button" size="sm" variant="ghost" className="gap-2 px-0" onClick={() => onOpen(election.id)}>
         {t('governanceMember.openResult')}
         <ArrowRight className="h-4 w-4" aria-hidden />

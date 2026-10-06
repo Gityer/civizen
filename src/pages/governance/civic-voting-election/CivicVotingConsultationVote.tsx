@@ -2,16 +2,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { Loader2, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { consultationOptionLabel, describeConsultationOutcome, readConsultationOutcome } from '@/lib/civic-voting/outcome';
 import { formatReceipt } from '@/pages/governance/civic-voting-election/consultation-receipt';
 import type { useCivicVotingElection } from '@/pages/governance/civic-voting-election/useCivicVotingElection';
 
 type CivicVotingElectionModel = ReturnType<typeof useCivicVotingElection>;
 
-const OPTIONS = [
-  ['support', 'castSupport'],
-  ['oppose', 'castOppose'],
-  ['abstain', 'castAbstain'],
-] as const;
+const DEFAULT_OPTION_KEYS = ['support', 'oppose', 'abstain'];
 
 function formatDate(date: Date | undefined, language: string): string {
   if (!date || Number.isNaN(date.getTime())) return '';
@@ -38,6 +35,21 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
   const closesText = votingWindow
     ? t('civicBallot.closesOn', { date: formatDate(votingWindow.closesAt, language) })
     : null;
+  const candidates = detail?.contests?.[0]?.candidates ?? [];
+  const options = candidates.length > 0
+    ? candidates
+        .filter((candidate) => candidate.optionKey)
+        .map((candidate) => ({ key: String(candidate.optionKey), label: consultationOptionLabel(t, candidate.optionKey, candidate.displayName) }))
+    : DEFAULT_OPTION_KEYS.map((key) => ({ key, label: consultationOptionLabel(t, key) }));
+  const optionLabel = (key: string) => options.find((option) => option.key === key)?.label ?? consultationOptionLabel(t, key);
+  const outcome = readConsultationOutcome(detail?.election.metadata);
+  const outcomeLine = outcome ? describeConsultationOutcome(outcome, optionLabel) : null;
+  const outcomeBlock = outcomeLine ? (
+    <p className="text-sm text-foreground" data-testid="consultation-outcome">
+      <span className="font-medium">{t('civicBallot.outcomeTitle')}: </span>
+      {t(outcomeLine.key, outcomeLine.params)}
+    </p>
+  ) : null;
 
   const directoryToggle = myOption ? (
     <div className="flex items-start justify-between gap-3 rounded-xl border border-border/50 p-3">
@@ -98,6 +110,7 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
             ? t('civicBallot.closedOn', { date: formatDate(votingWindow.closesAt, language) })
             : t('civicVoting.proposals.votingClosed')}
         </p>
+        {outcomeBlock}
         {receiptBlock}
         {directoryToggle}
       </div>
@@ -131,13 +144,7 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-xs text-muted-foreground">
             {t('civicVoting.proposals.yourChoice')}:{' '}
-            <span className="font-medium text-foreground">
-              {myOption === 'support'
-                ? t('civicVoting.proposals.castSupport')
-                : myOption === 'oppose'
-                  ? t('civicVoting.proposals.castOppose')
-                  : t('civicVoting.proposals.castAbstain')}
-            </span>
+            <span className="font-medium text-foreground">{optionLabel(myOption)}</span>
           </p>
           <Button
             type="button"
@@ -152,16 +159,16 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
         </div>
       ) : null}
       <div className="flex flex-wrap gap-2">
-        {OPTIONS.map(([key, labelKey]) => (
+        {options.map((option) => (
           <Button
-            key={key}
+            key={option.key}
             type="button"
             size="sm"
-            variant={myOption === key ? 'default' : 'outline'}
+            variant={myOption === option.key ? 'default' : 'outline'}
             disabled={casting || withdrawing || blocked}
-            onClick={() => void castConsultation(key)}
+            onClick={() => void castConsultation(option.key)}
           >
-            {t(`civicVoting.proposals.${labelKey}`)}
+            {option.label}
           </Button>
         ))}
       </div>

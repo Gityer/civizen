@@ -111,3 +111,48 @@ describe('CivicVotingConsultationVote', () => {
     expect(formatReceipt('abcd1234abcd1234abcd1234')).toBe('ABCD-1234-ABCD-1234-ABCD-1234');
   });
 });
+
+describe('CivicVotingConsultationVote with custom options', () => {
+  it('renders one button per election option and casts its key', () => {
+    const castConsultation = vi.fn();
+    renderAt(
+      makeModel({
+        user: { id: 'u1' },
+        castConsultation,
+        detail: {
+          election: { status: 'open', metadata: {} },
+          contests: [
+            {
+              candidates: [
+                { optionKey: 'keep_as_is', displayName: 'Keep as is' },
+                { optionKey: 'change_it', displayName: 'Change it' },
+              ],
+            },
+          ],
+        },
+      }),
+    );
+    expect(screen.queryByText('civicVoting.proposals.castSupport')).toBeNull();
+    fireEvent.click(screen.getByText('Change it'));
+    expect(castConsultation).toHaveBeenCalledWith('change_it');
+  });
+
+  it('shows the published outcome once voting is closed', () => {
+    renderAt(
+      makeModel({
+        user: { id: 'u1' },
+        votingOpen: false,
+        votingClosed: true,
+        votingWindow: { ...window, state: 'closed' },
+        detail: {
+          election: {
+            status: 'closed',
+            metadata: { final_outcome: { total_countable: 10, quorum: null, quorum_met: true, pass_threshold_percent: 50, support_share_percent: 70, passed: true, leading_option_key: 'support' } },
+          },
+          contests: [],
+        },
+      }),
+    );
+    expect(screen.getByTestId('consultation-outcome').textContent).toContain('civicBallot.outcomePassed');
+  });
+});

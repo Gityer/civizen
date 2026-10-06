@@ -112,6 +112,9 @@ export default function CivicVotingProposal() {
         scopeCountryCode: input.scopeCountryCode,
         votingOpensAt: input.votingOpensAt,
         votingClosesAt: input.votingClosesAt,
+        options: input.options.map((option) => ({ key: '', label: option.label })),
+        quorum: input.quorum,
+        passThresholdPercent: input.passThresholdPercent,
       });
       toast.success(t('proposalSupport.settingsSaved'));
     }, 'proposalSupport.settingsFailed');

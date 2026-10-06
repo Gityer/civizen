@@ -17,3 +17,4 @@ export * from './election-title';
 export * from './public-tallies';
 export * from './voting-proposals';
 export * from './voting-window';
+export * from './outcome';

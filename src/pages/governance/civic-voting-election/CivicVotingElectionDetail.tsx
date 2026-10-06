@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CIVIC_ELECTION_TIER_LABELS, CIVIC_SECURITY_CLASS_LABELS } from '@/lib/civic-voting';
+import { consultationOptionLabel } from '@/lib/civic-voting/outcome';
 import { getCountryName } from '@/lib/countries';
 import { CivicVotingConsultationVote } from '@/pages/governance/civic-voting-election/CivicVotingConsultationVote';
 import type { useCivicVotingElection } from '@/pages/governance/civic-voting-election/useCivicVotingElection';
@@ -131,7 +132,9 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
                 return (
                   <li key={row.candidateId} className="space-y-1">
                     <div className="flex items-center justify-between gap-2 text-sm">
-                      <span className="font-medium text-foreground">{row.displayName}</span>
+                      <span className="font-medium text-foreground">
+                        {consultationOptionLabel(t, row.optionKey, row.displayName)}
+                      </span>
                       <span className="text-xs text-muted-foreground">
                         {row.voteCount} · {pct}%
                       </span>
