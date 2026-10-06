@@ -1,5 +1,7 @@
 import { governanceDashboardHy } from './governance-dashboard.hy';
 import { governanceDashboardRu } from './governance-dashboard.ru';
+import { governanceHubHy } from './governance-hub.hy';
+import { governanceHubRu } from './governance-hub.ru';
 
 type Tree = Record<string, unknown>;
 
@@ -8,8 +10,8 @@ type Tree = Record<string, unknown>;
  * Keyed by primary language subtag, then by top-level translation group.
  */
 export const curatedTranslations: Record<string, Tree> = {
-  hy: { governanceDashboard: governanceDashboardHy },
-  ru: { governanceDashboard: governanceDashboardRu },
+  hy: { governanceDashboard: governanceDashboardHy, ...governanceHubHy },
+  ru: { governanceDashboard: governanceDashboardRu, ...governanceHubRu },
 };
 
 function isTree(value: unknown): value is Tree {

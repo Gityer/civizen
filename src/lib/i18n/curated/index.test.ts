@@ -30,6 +30,27 @@ describe('curated governanceDashboard translations', () => {
     });
   }
 
+  for (const language of Object.keys(curatedTranslations)) {
+    it(`${language} hub/steward/common keys exist in English with identical placeholders`, () => {
+      const { governanceDashboard: _dashboard, ...rest } = curatedTranslations[language];
+      const curated = leaves(rest);
+      const englishAll = leaves(baseTranslations);
+      const required = [
+        'governanceHub.yourVote',
+        'governanceHub.voteBlocked',
+        'governanceHub.voteBlockedBySanction',
+        'common.anonymousUser',
+        ...Object.keys(englishAll).filter((k) =>
+          /^governanceHub\.(statuses\.(open|approved|rejected|cancelled)|voteChoices\.|decisionClasses\.|stewardIdentity\.)/.test(k),
+        ),
+      ];
+      expect(Object.keys(curated).sort()).toEqual([...required].sort());
+      for (const key of required) {
+        expect(placeholders(curated[key]), key).toEqual(placeholders(englishAll[key]));
+      }
+    });
+  }
+
   it('overrides a machine-translated pack without dropping other groups', () => {
     const merged = applyCuratedTranslations('hy-AM', { common: { back: 'x' }, governanceDashboard: { title: 'bad' } });
     expect((merged.governanceDashboard as Tree).title).toBe('Կառավարում');
