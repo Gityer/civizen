@@ -61,3 +61,15 @@ cd "$CIVIZEN_LOCAL_SUPABASE_DIR" && npx -y supabase gen types typescript --local
 ```
 
 Every table named in `types.ts` exists locally (about 100 of about 300); function names that are longer than 63 characters are truncated by Postgres.
+
+## Which backend does the app use?
+
+The web app (`npm run dev`, the `civizen-web` container on port 8080) reads `VITE_SUPABASE_URL` from `.env` / `.env.local`. By default that is the **live production backend**, not this local stack (kong on `127.0.0.1:56321`). Sign-ups, votes, withdrawals and account deletions made in the browser therefore change real data.
+
+Before testing anything that writes, check the URL in the page console:
+
+```js
+(await import('/src/integrations/supabase/client.ts')).supabase.supabaseUrl
+```
+
+To test writes safely, point `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` at the local stack (`http://127.0.0.1:56321` and the local anon key printed by `scripts/local-supabase/up.sh`) in `.env.local` and restart the dev server.
