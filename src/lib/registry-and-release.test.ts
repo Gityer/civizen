@@ -68,6 +68,7 @@ describe('app-pages', () => {
       '/',
       '/study',
       '/contribute',
+      '/governance',
       '/market',
       '/messaging',
     ]);

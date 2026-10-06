@@ -3,7 +3,7 @@
  * Bottom-nav hubs rely on tab switching; other AppLayout routes show Back beside the title.
  */
 
-const MAIN_NAV_HUB_PATHS = new Set(['/', '/study', '/contribute', '/market', '/messaging']);
+const MAIN_NAV_HUB_PATHS = new Set(['/', '/study', '/contribute', '/governance', '/market', '/messaging']);
 
 export function shouldShowAppBack(pathname: string): boolean {
   if (!pathname) return false;
