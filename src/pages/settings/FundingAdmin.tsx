@@ -207,7 +207,7 @@ export default function FundingAdmin() {
             onValueChange={(value) => setSection(parseFundingAdminSection(value))}
             className="hidden w-full min-w-0 md:block"
           >
-            <div className="min-w-0 overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="min-w-0 overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden">
               <TabsList
                 aria-label={t('settings.adminFundingSection')}
                 className="inline-flex h-auto w-max min-w-full justify-start gap-0 rounded-none border-b border-border/60 bg-transparent p-0 text-foreground shadow-none"

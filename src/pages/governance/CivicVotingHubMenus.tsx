@@ -70,7 +70,7 @@ export function ScopeTextMenu({
         <button
           type="button"
           className={cn(
-            'max-w-[7.5rem] truncate border-0 bg-transparent p-0 text-left text-xs font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline',
+            'max-w-30 truncate border-0 bg-transparent p-0 text-left text-xs font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline',
             value && 'text-foreground',
           )}
           aria-label={label}

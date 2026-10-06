@@ -76,7 +76,7 @@ export function EditProfileWorldCitizenFrontDetails({
   uploadingAvatar,
 }: EditProfileWorldCitizenFrontDetailsProps) {
   return (
-    <div className="mt-0.5 grid flex-1 grid-cols-[94px,1fr] items-start gap-1.5">
+    <div className="mt-0.5 grid flex-1 grid-cols-[94px_1fr] items-start gap-1.5">
       <div data-build-key="wcFrontPhotoLayer" data-build-label="Photo Layer">
         {renderLayoutRegion(
           'wcFrontPhoto',
@@ -88,7 +88,7 @@ export function EditProfileWorldCitizenFrontDetails({
                 {avatarInitials}
               </div>
             )}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/30" />
             <button
               type="button"
               data-build-ignore="true"
@@ -112,10 +112,10 @@ export function EditProfileWorldCitizenFrontDetails({
       {renderLayoutRegion(
         'wcFrontInfoCompactGroup',
         <div className="relative flex min-h-0 flex-col">
-          <div className="grid grid-cols-[1fr,0.5fr] gap-x-1.5 gap-y-0.5">
+          <div className="grid grid-cols-[1fr_0.5fr] gap-x-1.5 gap-y-0.5">
             {renderLayoutRegion(
               'wcFrontIdLineCompact',
-              <div className="col-span-2 flex items-center justify-between gap-3 rounded-[16px] bg-white/[0.06] px-2.5 py-1">
+              <div className="col-span-2 flex items-center justify-between gap-3 rounded-[16px] bg-white/6 px-2.5 py-1">
                 <div className="min-w-0 flex flex-1 items-center gap-2">
                   <p className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-cyan-50/62" data-build-key="wcFrontIdLineCompactLabel" data-build-label="ID Label">
                     {t('editProfile.id')}
@@ -137,7 +137,7 @@ export function EditProfileWorldCitizenFrontDetails({
                   size="icon"
                   data-build-key="wcFrontIdLineCompactToggle"
                   data-build-label="ID Visibility Toggle"
-                  className="grid h-7 w-7 shrink-0 place-items-center rounded-full !text-cyan-50 hover:bg-white/10 hover:!text-white focus-visible:!text-white"
+                  className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-cyan-50! hover:bg-white/10 hover:text-white! focus-visible:text-white!"
                   onClick={(event) => {
                     event.stopPropagation();
                     if (isBuildModeActive()) return;
@@ -249,7 +249,7 @@ export function EditProfileWorldCitizenFrontDetails({
                       }
                     }}
                     onBlur={() => setEditingDateOfBirth(false)}
-                    className="mt-0.5 h-7 border-cyan-50/15 bg-white/10 px-2 text-[11px] text-white [color-scheme:dark] focus-visible:ring-cyan-300"
+                    className="mt-0.5 h-7 border-cyan-50/15 bg-white/10 px-2 text-[11px] text-white scheme-dark focus-visible:ring-cyan-300"
                   />
                 ) : (
                   <p className="mt-0.5 truncate text-[0.9rem] leading-none font-display font-semibold text-white" data-build-key="wcFrontDobCompactValue" data-build-label="Date of Birth Value">

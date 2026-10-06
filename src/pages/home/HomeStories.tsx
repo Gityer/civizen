@@ -55,7 +55,7 @@ export function HomeStories({ model }: { model: HomeModel }) {
                   type="button"
                   onClick={() => setStorySectionFilter('all')}
                   className={cn(
-                    'block w-full rounded-lg px-3 py-2 text-left text-xs break-words whitespace-normal',
+                    'block w-full rounded-lg px-3 py-2 text-left text-xs wrap-break-word whitespace-normal',
                     storySectionFilter === 'all' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',
                   )}
                 >
@@ -67,7 +67,7 @@ export function HomeStories({ model }: { model: HomeModel }) {
                     type="button"
                     onClick={() => setStorySectionFilter(section)}
                     className={cn(
-                      'mt-1 block w-full rounded-lg px-3 py-2 text-left text-xs break-words whitespace-normal',
+                      'mt-1 block w-full rounded-lg px-3 py-2 text-left text-xs wrap-break-word whitespace-normal',
                       storySectionFilter === section ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',
                     )}
                   >
@@ -89,7 +89,7 @@ export function HomeStories({ model }: { model: HomeModel }) {
                   type="button"
                   onClick={() => setStoryAreaFilter('all')}
                   className={cn(
-                    'block w-full rounded-lg px-3 py-2 text-left text-xs break-words whitespace-normal',
+                    'block w-full rounded-lg px-3 py-2 text-left text-xs wrap-break-word whitespace-normal',
                     storyAreaFilter === 'all' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',
                   )}
                 >
@@ -101,7 +101,7 @@ export function HomeStories({ model }: { model: HomeModel }) {
                     type="button"
                     onClick={() => setStoryAreaFilter(area)}
                     className={cn(
-                      'mt-1 block w-full rounded-lg px-3 py-2 text-left text-xs break-words whitespace-normal',
+                      'mt-1 block w-full rounded-lg px-3 py-2 text-left text-xs wrap-break-word whitespace-normal',
                       storyAreaFilter === area ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',
                     )}
                   >

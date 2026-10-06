@@ -12,7 +12,7 @@ import {
 import { cn } from '@/lib/utils';
 
 /** Clears the floating Search + Profile controls on the first content row. */
-export const APP_PAGE_HEADER_CHROME_PAD = 'pr-[5.75rem]';
+export const APP_PAGE_HEADER_CHROME_PAD = 'pr-23';
 
 type AppPageHeaderProps = {
   title: ReactNode;

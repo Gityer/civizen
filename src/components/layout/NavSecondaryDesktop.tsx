@@ -33,14 +33,14 @@ export function NavSecondaryDesktop() {
     <div
       data-testid="nav-secondary-desktop"
       data-secondary-nav-chrome
-      className="sticky top-0 z-[45] border-b border-border/40 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/85"
+      className="sticky top-0 z-45 border-b border-border/40 bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/85"
     >
       <div
         ref={scrollRef}
         role="listbox"
         aria-label="Section navigation"
         aria-activedescendant={config.value}
-        className="flex items-center gap-0 overflow-x-auto overscroll-x-contain px-4 py-2.5 lg:pr-28 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex items-center gap-0 overflow-x-auto overscroll-x-contain px-4 py-2.5 lg:pr-28 scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         {items.map((item, index) => {
           const Icon = item.icon;

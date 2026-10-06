@@ -17,7 +17,7 @@ export default function MarketTaxonomy() {
   return (
     <AppLayout>
       <div className="flex min-h-0 flex-col pb-28">
-        <header className="sticky top-0 z-30 border-b border-border/60 bg-background/95 px-3 pb-3 pt-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
+        <header className="sticky top-0 z-30 border-b border-border/60 bg-background/95 px-3 pb-3 pt-4 backdrop-blur-md supports-backdrop-filter:bg-background/80">
           <AppPageHeader
             title={t('market.taxonomyTitle')}
             subtitle={t('market.taxonomySubtitle')}

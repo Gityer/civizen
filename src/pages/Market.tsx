@@ -227,7 +227,7 @@ export default function Market() {
         data-build-label="Marketplace page"
       >
         <header
-          className="sticky top-0 z-30 border-b border-border/60 bg-background/95 pb-3 pt-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 lg:top-[3.25rem]"
+          className="sticky top-0 z-30 border-b border-border/60 bg-background/95 pb-3 pt-4 backdrop-blur-md supports-backdrop-filter:bg-background/80 lg:top-13"
           data-build-key="marketHeader"
           data-build-label="Marketplace header"
         >

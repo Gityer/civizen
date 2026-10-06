@@ -58,7 +58,7 @@ export default function FundHub() {
       pageDescription={t('fund.hub.pageDescription')}
       showBackToHub={false}
     >
-      <section className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card/60 to-accent/5 p-5 sm:p-6">
+      <section className="rounded-2xl border border-primary/20 bg-linear-to-br from-primary/10 via-card/60 to-accent/5 p-5 sm:p-6">
         <div className="mb-3 flex items-center gap-2 text-primary">
           <Building2 className="h-5 w-5" />
           <h2 className="text-lg font-semibold text-foreground">{t('fund.hub.modelTitle')}</h2>

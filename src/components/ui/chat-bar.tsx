@@ -3784,7 +3784,7 @@ export function ChatBar({
 
             {showMessagingTabs && isMessagingInbox ? (
                 <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-                  <div className="flex shrink-0 items-center gap-1 overflow-x-auto overflow-y-hidden border-b border-border bg-muted/15 px-2 py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <div className="flex shrink-0 items-center gap-1 overflow-x-auto overflow-y-hidden border-b border-border bg-muted/15 px-2 py-2 [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden">
                     {(['all', 'unread', 'favourites'] as const).map((filterKey) => (
                       <Button
                         key={filterKey}
@@ -4140,7 +4140,7 @@ export function ChatBar({
                                 <MoreVertical className="h-5 w-5" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="min-w-[12rem]">
+                            <DropdownMenuContent align="end" className="min-w-48">
                               <DropdownMenuItem
                                 onSelect={() => {
                                   setMessageSelectionMode(true);
@@ -4235,7 +4235,7 @@ export function ChatBar({
                     <div
                       ref={scrollAreaRef}
                       className={cn(
-                        'min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain p-3 touch-pan-y [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+                        'min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain p-3 touch-pan-y [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden',
                         messageWallpaperClass,
                       )}
                     >

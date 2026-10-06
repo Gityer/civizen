@@ -67,7 +67,7 @@ export default function FundingProgramPlanAdmin({
             <p className="text-sm text-muted-foreground">{t('settings.adminFundingProgramPlanLead')}</p>
             <p className="text-xs text-muted-foreground">{t('settings.adminFundingProgramPlanNotWorldwide')}</p>
           </div>
-          <div className="min-w-[12rem] space-y-1">
+          <div className="min-w-48 space-y-1">
             <label htmlFor="program-plan-year" className="text-xs text-muted-foreground">
               {t('settings.adminFundingProgramPlanPeriod')}
             </label>

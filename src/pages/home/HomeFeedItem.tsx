@@ -342,7 +342,7 @@ export function HomeFeedItem({ model, item, index }: { model: HomeModel; item: H
                       <p className="text-xs font-medium text-foreground">
                         {getDisplayName(comment.author)}
                       </p>
-                      <p className="mt-1 whitespace-pre-wrap break-words text-sm text-foreground">
+                      <p className="mt-1 whitespace-pre-wrap wrap-break-word text-sm text-foreground">
                         {comment.content}
                       </p>
                     </div>

@@ -92,7 +92,7 @@ export function MobileNav() {
         <div
           data-secondary-nav-chrome
           className={cn(
-            'pointer-events-none fixed inset-x-0 bottom-[calc(4.15rem+env(safe-area-inset-bottom,0px))] z-[70] flex justify-center',
+            'pointer-events-none fixed inset-x-0 bottom-[calc(4.15rem+env(safe-area-inset-bottom,0px))] z-70 flex justify-center',
             chromeSlideClass,
           )}
           onPointerEnter={cancelCarouselHide}
@@ -126,7 +126,7 @@ export function MobileNav() {
         {config?.fab ? (
           <svg
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 z-[8] h-4 w-full -translate-y-full text-border/45"
+            className="pointer-events-none absolute inset-x-0 top-0 z-8 h-4 w-full -translate-y-full text-border/45"
             viewBox="0 0 360 16"
             preserveAspectRatio="none"
           >

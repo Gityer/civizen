@@ -57,9 +57,9 @@ describe('AgreementCreate', () => {
     expect(organization).toHaveTextContent('Cedar River University');
     expect(contributor).toHaveTextContent('Alex Rivera');
     expect(organization).toHaveAttribute('contenteditable', 'true');
-    expect(organization.className.split(/\s+/)).toContain('!inline');
+    expect(organization.className.split(/\s+/)).toContain('inline!');
     expect(organization.className.split(/\s+/)).not.toContain('inline-grid');
-    expect(organization.className.split(/\s+/)).toContain('break-words');
+    expect(organization.className.split(/\s+/)).toContain('wrap-break-word');
     expect(screen.getByTestId('agreement-document')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Organization / Project role' })).toHaveTextContent('Organization / Project');
     expect(screen.getByRole('button', { name: 'Contributor role' })).toHaveTextContent('Contributor');

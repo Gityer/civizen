@@ -87,7 +87,7 @@ export default function Onboarding() {
     <div className="relative min-h-screen bg-background">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.16),transparent_65%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-128 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.16),transparent_65%)]"
       />
 
       <PublicPageHeader hideGuestAuthActions={!heroCtaOffscreen} />

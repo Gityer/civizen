@@ -42,7 +42,7 @@ export function NavSecondaryStrip() {
           exit={{ opacity: 0, y: 12 }}
           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
           className={cn(
-            'pointer-events-none fixed inset-x-0 z-[60]',
+            'pointer-events-none fixed inset-x-0 z-60',
             hasFab
               ? 'bottom-[calc(6.35rem+env(safe-area-inset-bottom,0px))]'
               : 'bottom-20',
@@ -58,7 +58,7 @@ export function NavSecondaryStrip() {
               role="listbox"
               aria-label="Section navigation"
               aria-activedescendant={config.value}
-              className="flex items-center gap-0 overflow-x-auto overscroll-x-contain px-3 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex items-center gap-0 overflow-x-auto overscroll-x-contain px-3 py-1 scrollbar-none [&::-webkit-scrollbar]:hidden"
             >
               {items.map((item, index) => {
                 const Icon = item.icon;

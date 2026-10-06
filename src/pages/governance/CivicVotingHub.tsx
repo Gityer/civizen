@@ -722,7 +722,7 @@ export default function CivicVotingHub() {
             >
               <div
                 ref={tabStripRef}
-                className="-mx-1 overflow-x-auto overscroll-x-contain scroll-smooth px-1 pb-1 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="-mx-1 overflow-x-auto overscroll-x-contain scroll-smooth px-1 pb-1 snap-x snap-mandatory scrollbar-none [&::-webkit-scrollbar]:hidden"
               >
                 <TabsList className="inline-flex h-auto w-max justify-start gap-2 rounded-none bg-transparent p-0 text-foreground shadow-none pl-[max(0.5rem,calc(50%-4.75rem))] pr-[max(0.5rem,calc(50%-4.75rem))]">
                   {tiersWithElections.map((tier) => {

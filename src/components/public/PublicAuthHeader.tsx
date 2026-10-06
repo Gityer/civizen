@@ -16,7 +16,7 @@ export function PublicAuthHeader({ title, subtitle }: PublicAuthHeaderProps) {
           <CivizenBrandIcon className="h-10 w-10" />
           <h1 className="font-display text-3xl font-bold leading-none text-foreground">{title}</h1>
         </div>
-        <p className="mt-1.5 pl-[calc(2.5rem+0.75rem)] text-sm font-medium text-primary">
+        <p className="mt-1.5 pl-13 text-sm font-medium text-primary">
           {t('onboarding.slogan')}
         </p>
       </div>

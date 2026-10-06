@@ -214,7 +214,7 @@ export function UsersAdminMobileList({
 
             {/* Line 2: status pills + activity — role pill is the role dropdown */}
             <div className="flex min-w-0 items-center gap-1.5">
-              <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-1.5 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-1.5 overflow-x-auto scrollbar-none [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden">
                 <Badge
                   className={cn('shrink-0 rounded-full border', citizenshipBadgeClassName[effectiveCitizenshipStatus])}
                   variant="outline"

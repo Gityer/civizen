@@ -158,7 +158,7 @@ export function AgreementChoiceWord({
       {open && alternatives.length ? (
         <ul
           role="listbox"
-          className="absolute left-0 z-20 mt-1 min-w-[12rem] overflow-hidden rounded-lg border border-border/70 bg-card py-1 text-left text-sm font-normal normal-case tracking-normal shadow-md"
+          className="absolute left-0 z-20 mt-1 min-w-48 overflow-hidden rounded-lg border border-border/70 bg-card py-1 text-left text-sm font-normal normal-case tracking-normal shadow-md"
         >
           {alternatives.map((option) => (
             <li key={option.id}>

@@ -121,7 +121,7 @@ describe('AppPageHeader', () => {
     const actions = screen.getByTestId('app-page-header-actions');
     expect(header.className).toContain('flex-wrap');
     expect(header.className).toContain('items-start');
-    expect(title.className).not.toContain('break-words');
+    expect(title.className).not.toContain('wrap-break-word');
     expect(actions.className).toContain('w-full');
     expect(title).toHaveTextContent('Agreements');
   });

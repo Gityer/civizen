@@ -619,9 +619,9 @@ export default function EditProfile() {
             data-build-label={LAYOUT_REGION_LABELS.editProfileCardsGroup}
           >
             <TooltipProvider>
-              <div className="mx-auto w-full max-w-[26rem]">
+              <div className="mx-auto w-full max-w-104">
                 <Carousel opts={{ align: 'start' }} className="w-full">
-                  <CarouselContent className="-ml-0">
+                  <CarouselContent className="ml-0">
                     <Suspense fallback={<CarouselItem className="pl-0" />}>
                       <EditProfileWorldCitizenCard
                         avatarAlt={fullName || profile?.full_name || t('home.worldCitizen')}
@@ -762,7 +762,7 @@ export default function EditProfile() {
                   </Button>
                 </PopoverTrigger>
               </div>
-              <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+              <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                 <Command>
                   <CommandInput placeholder={t('editProfile.searchCountryPlaceholder')} />
                   <CommandList>

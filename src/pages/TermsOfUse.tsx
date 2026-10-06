@@ -44,7 +44,7 @@ export default function TermsOfUse() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }}>
-          <Card className="rounded-3xl border-border/70 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
+          <Card className="rounded-3xl border-border/70 bg-linear-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <Scale className="h-6 w-6" />
@@ -71,7 +71,7 @@ export default function TermsOfUse() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-          <Card className="rounded-3xl border-border/70 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
+          <Card className="rounded-3xl border-border/70 bg-linear-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <Scale className="h-6 w-6" />

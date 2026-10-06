@@ -3317,7 +3317,7 @@ export function BuildOverlay() {
     <div
       data-build-ignore="true"
       data-build-overlay-ui="true"
-      className="pointer-events-none fixed inset-0 z-[70]"
+      className="pointer-events-none fixed inset-0 z-70"
     >
       {active ? (
         <>
@@ -3356,7 +3356,7 @@ export function BuildOverlay() {
                 data-build-resize-handle="true"
                 data-build-resize-edge="top-left"
                 data-build-resize-selector={selectedSelector || undefined}
-                className="pointer-events-auto fixed z-[76]"
+                className="pointer-events-auto fixed z-76"
                 style={{
                   left: `${primarySelectedRect.left - CORNER_HANDLE_SIZE / 2}px`,
                   top: `${primarySelectedRect.top - CORNER_HANDLE_SIZE / 2}px`,
@@ -3372,7 +3372,7 @@ export function BuildOverlay() {
                 data-build-resize-handle="true"
                 data-build-resize-edge="left"
                 data-build-resize-selector={selectedSelector || undefined}
-                className="pointer-events-auto fixed z-[75]"
+                className="pointer-events-auto fixed z-75"
                 style={{
                   left: `${primarySelectedRect.left - RESIZE_HANDLE_THICKNESS / 2}px`,
                   top: `${primarySelectedRect.top + RESIZE_HANDLE_INSET}px`,
@@ -3388,7 +3388,7 @@ export function BuildOverlay() {
                 data-build-resize-handle="true"
                 data-build-resize-edge="top-right"
                 data-build-resize-selector={selectedSelector || undefined}
-                className="pointer-events-auto fixed z-[76]"
+                className="pointer-events-auto fixed z-76"
                 style={{
                   left: `${primarySelectedRectRight - CORNER_HANDLE_SIZE / 2}px`,
                   top: `${primarySelectedRect.top - CORNER_HANDLE_SIZE / 2}px`,
@@ -3404,7 +3404,7 @@ export function BuildOverlay() {
                 data-build-resize-handle="true"
                 data-build-resize-edge="right"
                 data-build-resize-selector={selectedSelector || undefined}
-                className="pointer-events-auto fixed z-[75]"
+                className="pointer-events-auto fixed z-75"
                 style={{
                   left: `${primarySelectedRectRight - RESIZE_HANDLE_THICKNESS / 2}px`,
                   top: `${primarySelectedRect.top + RESIZE_HANDLE_INSET}px`,
@@ -3420,7 +3420,7 @@ export function BuildOverlay() {
                 data-build-resize-handle="true"
                 data-build-resize-edge="top"
                 data-build-resize-selector={selectedSelector || undefined}
-                className="pointer-events-auto fixed z-[75]"
+                className="pointer-events-auto fixed z-75"
                 style={{
                   left: `${primarySelectedRect.left + RESIZE_HANDLE_INSET}px`,
                   top: `${primarySelectedRect.top - RESIZE_HANDLE_THICKNESS / 2}px`,
@@ -3436,7 +3436,7 @@ export function BuildOverlay() {
                 data-build-resize-handle="true"
                 data-build-resize-edge="bottom"
                 data-build-resize-selector={selectedSelector || undefined}
-                className="pointer-events-auto fixed z-[75]"
+                className="pointer-events-auto fixed z-75"
                 style={{
                   left: `${primarySelectedRect.left + RESIZE_HANDLE_INSET}px`,
                   top: `${primarySelectedRectBottom - RESIZE_HANDLE_THICKNESS / 2}px`,
@@ -3452,7 +3452,7 @@ export function BuildOverlay() {
                 data-build-resize-handle="true"
                 data-build-resize-edge="bottom-left"
                 data-build-resize-selector={selectedSelector || undefined}
-                className="pointer-events-auto fixed z-[76]"
+                className="pointer-events-auto fixed z-76"
                 style={{
                   left: `${primarySelectedRect.left - CORNER_HANDLE_SIZE / 2}px`,
                   top: `${primarySelectedRectBottom - CORNER_HANDLE_SIZE / 2}px`,
@@ -3468,7 +3468,7 @@ export function BuildOverlay() {
                 data-build-resize-handle="true"
                 data-build-resize-edge="bottom-right"
                 data-build-resize-selector={selectedSelector || undefined}
-                className="pointer-events-auto fixed z-[76]"
+                className="pointer-events-auto fixed z-76"
                 style={{
                   left: `${primarySelectedRectRight - CORNER_HANDLE_SIZE / 2}px`,
                   top: `${primarySelectedRectBottom - CORNER_HANDLE_SIZE / 2}px`,
@@ -3659,7 +3659,7 @@ export function BuildOverlay() {
                   <PopoverContent
                     align="start"
                     sideOffset={6}
-                    className="z-[120] max-h-72 w-[--radix-popover-trigger-width] overflow-y-auto rounded-2xl border-border/70 bg-background p-2"
+                    className="z-120 max-h-72 w-(--radix-popover-trigger-width) overflow-y-auto rounded-2xl border-border/70 bg-background p-2"
                     data-build-ignore="true"
                   >
                     <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
@@ -3938,7 +3938,7 @@ export function BuildOverlay() {
       <Button
         type="button"
         size="icon"
-        className="pointer-events-auto fixed h-12 w-12 touch-none select-none rounded-full border border-primary/30 bg-primary text-primary-foreground shadow-[0_18px_40px_rgba(15,23,42,0.32)] [&_svg]:!h-7 [&_svg]:!w-7"
+        className="pointer-events-auto fixed h-12 w-12 touch-none select-none rounded-full border border-primary/30 bg-primary text-primary-foreground shadow-[0_18px_40px_rgba(15,23,42,0.32)] [&_svg]:h-7! [&_svg]:w-7!"
         style={{
           left: `${Math.round(buttonPosition.x)}px`,
           top: `${Math.round(buttonPosition.y)}px`,

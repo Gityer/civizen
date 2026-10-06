@@ -13,7 +13,7 @@ export function StudySectionNav() {
   return (
     <nav
       ref={navRef}
-      className="-mx-1 mb-6 flex flex-nowrap gap-1 overflow-x-auto overscroll-x-contain pb-1 pt-1 [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden"
+      className="-mx-1 mb-6 flex flex-nowrap gap-1 overflow-x-auto overscroll-x-contain pb-1 pt-1 scrollbar-none [touch-action:pan-x] [&::-webkit-scrollbar]:hidden"
       aria-label={t('study.sectionNavAria')}
       onWheel={(event) => {
         const element = navRef.current;

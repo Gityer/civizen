@@ -43,7 +43,7 @@ export function HomePostInlineEditor({
           tabIndex={disabled ? -1 : 0}
           suppressContentEditableWarning
           className={cn(
-            'min-h-16 w-full whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground outline-none',
+            'min-h-16 w-full whitespace-pre-wrap wrap-break-word text-sm leading-relaxed text-foreground outline-none',
             '[&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5',
           )}
           onInput={(event) => onLiveChange(event.currentTarget.innerHTML || '')}

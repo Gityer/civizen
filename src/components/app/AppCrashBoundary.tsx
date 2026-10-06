@@ -104,7 +104,7 @@ export class AppCrashBoundary extends Component<Props, State> {
           <h1 className="text-xl font-semibold">{title}</h1>
           <p className="text-sm text-muted-foreground">{description}</p>
           {this.state.message && (
-            <p className="text-xs text-muted-foreground break-words">
+            <p className="text-xs text-muted-foreground wrap-break-word">
               Error: {getErrorMessage(this.state.message)}
             </p>
           )}

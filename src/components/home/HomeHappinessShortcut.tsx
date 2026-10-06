@@ -80,7 +80,7 @@ function HomeHappinessShortcutInner({ profileId, className }: ShortcutProps) {
         <span
           data-home-happiness-tooltip=""
           aria-hidden
-          className="pointer-events-none absolute right-0 top-full z-50 mt-1 hidden w-max max-w-[10.5rem] rounded-md border bg-popover px-2 py-1 text-left text-xs leading-snug text-popover-foreground shadow-sm [@media(hover:hover)]:group-hover:block [@media(hover:hover)]:group-focus-visible:block"
+          className="pointer-events-none absolute right-0 top-full z-50 mt-1 hidden w-max max-w-42 rounded-md border bg-popover px-2 py-1 text-left text-xs leading-snug text-popover-foreground shadow-sm [@media(hover:hover)]:group-hover:block [@media(hover:hover)]:group-focus-visible:block"
         >
           <span className="block font-medium">{t('happiness.pageTitle')}</span>
           <span className="block text-muted-foreground">{tooltipBody}</span>

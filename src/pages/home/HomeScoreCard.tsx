@@ -24,7 +24,7 @@ export function HomeScoreCard({ model }: { model: HomeModel }) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
       >
-        <Card className="border-border/70 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm transition-all duration-200 hover:border-border hover:shadow-md sm:p-6">
+        <Card className="border-border/70 bg-linear-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm transition-all duration-200 hover:border-border hover:shadow-md sm:p-6">
           <TooltipProvider delayDuration={200}>
             <div className="flex items-start gap-4 sm:gap-6">
               {homePointsToNextLabel ? (

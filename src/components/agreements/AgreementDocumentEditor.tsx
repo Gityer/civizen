@@ -425,7 +425,7 @@ export function AgreementDocumentEditor({
           placeholder={t('agreements.partyReferencePlaceholder')}
           ariaLabel={t('agreements.partyReference')}
           tone="muted"
-          className="min-w-[4.75rem] shrink-0 text-right text-sm"
+          className="min-w-19 shrink-0 text-right text-sm"
           onChange={(value) => onChange({
             ...state,
             partyReference: sanitizeAgreementReferenceInput(value),

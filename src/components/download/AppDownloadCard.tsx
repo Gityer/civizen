@@ -109,7 +109,7 @@ export function AppDownloadCard({
           <div className="rounded-xl bg-white p-2 shadow-sm">
             <DeferredQrCode value={ANDROID_INSTALL_PAGE_URL} size={qrSize} includeMargin />
           </div>
-          <p className="max-w-[8rem] text-xs leading-5 text-muted-foreground">
+          <p className="max-w-32 text-xs leading-5 text-muted-foreground">
             {t('home.scanQrInstall')}
           </p>
         </div>

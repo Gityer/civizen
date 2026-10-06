@@ -346,7 +346,7 @@ export function CollaborationAgreementView({ bundle, onReload }: CollaborationAg
         </Card>
       ) : null}
 
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 scrollbar-none [&::-webkit-scrollbar]:hidden">
         {(['agreement', 'parties', 'attachments', 'history', 'amendments', 'advanced'] as const).map((id) => (
           <button
             key={id}
@@ -375,7 +375,7 @@ export function CollaborationAgreementView({ bundle, onReload }: CollaborationAg
                 placeholder={t('agreements.partyReferencePlaceholder')}
                 ariaLabel={t('agreements.partyReference')}
                 tone="muted"
-                className="min-w-[4.75rem] shrink-0 text-right text-sm"
+                className="min-w-19 shrink-0 text-right text-sm"
                 onChange={(value) => setPartyReference(sanitizeAgreementReferenceInput(value))}
               />
             ) : partyReference ? (

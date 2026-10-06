@@ -25,7 +25,7 @@ export function UserPageMenuPanel({ model }: { model: UserPageMenuModel }) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -8, scale: 0.98 }}
           transition={{ duration: 0.16, ease: 'easeOut' }}
-          className="absolute right-0 top-[calc(100%+8px)] z-50 w-[min(320px,calc(100vw-1.5rem))] max-h-[calc(100dvh-6.5rem)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-3xl border border-border/70 bg-card/95 shadow-xl backdrop-blur supports-[backdrop-filter]:bg-card/92 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="absolute right-0 top-[calc(100%+8px)] z-50 w-[min(320px,calc(100vw-1.5rem))] max-h-[calc(100dvh-6.5rem)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-3xl border border-border/70 bg-card/95 shadow-xl backdrop-blur supports-backdrop-filter:bg-card/92 [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden"
         >
           <div className="space-y-2 p-2 pt-2">
             <div className="rounded-2xl border border-border/60 bg-background/70 px-3 py-2">

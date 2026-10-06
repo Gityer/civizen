@@ -107,7 +107,7 @@ export function PublicPageHeader({
           'fixed inset-x-0 top-0 z-40 pt-[max(0.5rem,var(--safe-area-top))] transition-transform duration-300 ease-out motion-reduce:transition-none',
           visible ? 'translate-y-0' : '-translate-y-full pointer-events-none',
           scrolled
-            ? 'border-b border-border/60 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80'
+            ? 'border-b border-border/60 bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/80'
             : 'bg-transparent',
         )}
       >

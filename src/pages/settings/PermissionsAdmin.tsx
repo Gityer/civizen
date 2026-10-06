@@ -313,11 +313,11 @@ export default function PermissionsAdmin() {
                   style={matrixCanvasStyle}
                 >
                 <div
-                  className="sticky top-0 z-20 grid items-center gap-1 border-b border-border/60 bg-card/95 px-2 py-3 backdrop-blur supports-[backdrop-filter]:bg-card/80"
+                  className="sticky top-0 z-20 grid items-center gap-1 border-b border-border/60 bg-card/95 px-2 py-3 backdrop-blur supports-backdrop-filter:bg-card/80"
                   style={matrixRowStyle}
                   data-testid="permissions-matrix-header"
                 >
-                  <div className="sticky left-0 z-30 bg-card/95 px-1 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground backdrop-blur supports-[backdrop-filter]:bg-card/80">
+                  <div className="sticky left-0 z-30 bg-card/95 px-1 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground backdrop-blur supports-backdrop-filter:bg-card/80">
                     {t('admin.permissions.featureColumn')}
                   </div>
                   {visibleRoles.map((role) => (
@@ -341,7 +341,7 @@ export default function PermissionsAdmin() {
                         <button
                           type="button"
                           onClick={() => toggleSectionVisibility(sectionGroup.sectionId)}
-                          className="sticky left-0 z-10 flex w-max max-w-[min(100%,14rem)] items-center rounded-md bg-card/95 px-1.5 py-1 text-left backdrop-blur supports-[backdrop-filter]:bg-card/80"
+                          className="sticky left-0 z-10 flex w-max max-w-[min(100%,14rem)] items-center rounded-md bg-card/95 px-1.5 py-1 text-left backdrop-blur supports-backdrop-filter:bg-card/80"
                           aria-expanded={!sectionCollapsed}
                           data-testid={`permissions-section-toggle-${sectionGroup.sectionId}`}
                         >

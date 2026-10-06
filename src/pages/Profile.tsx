@@ -787,7 +787,7 @@ export default function Profile() {
               <button
                 key={`bg-icon-${category.id}`}
                 type="button"
-                className="absolute z-[1] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="absolute z-1 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 style={{
                   left: `${viewPct(seat.x)}%`,
                   top: `${viewPct(seat.y)}%`,
@@ -819,7 +819,7 @@ export default function Profile() {
           })}
 
           <svg
-            className="pointer-events-none absolute inset-0 z-[2] h-full w-full"
+            className="pointer-events-none absolute inset-0 z-2 h-full w-full"
             viewBox={`${VIEW_MIN} ${VIEW_MIN} ${VIEW_SIZE} ${VIEW_SIZE}`}
             aria-hidden
           >
@@ -858,7 +858,7 @@ export default function Profile() {
 
           <div
             data-dial-avatar
-            className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-center"
+            className="pointer-events-none absolute inset-0 z-3 flex items-center justify-center"
           >
             <div
               className="group/avatar relative pointer-events-auto"
@@ -960,7 +960,7 @@ export default function Profile() {
               <button
                 type="button"
                 onClick={handleAvatarUploadClick}
-                className="absolute left-1/2 top-1/2 z-[4] h-[8.5rem] w-[8.5rem] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="absolute left-1/2 top-1/2 z-4 h-34 w-34 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 disabled={uploadingAvatar}
                 aria-label={t('common.changePhoto')}
               >
@@ -1009,7 +1009,7 @@ export default function Profile() {
                   : overallPercentLabel}
               </span>
               {ring.presentation === 'provisional' ? (
-                <span className="pointer-events-none absolute bottom-1 left-1/2 z-[5] -translate-x-1/2 rounded-full bg-background/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                <span className="pointer-events-none absolute bottom-1 left-1/2 z-5 -translate-x-1/2 rounded-full bg-background/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                   {t('score.estimateLabel')}
                 </span>
               ) : null}

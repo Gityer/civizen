@@ -888,7 +888,7 @@ export function EducationDetailsDialog({
               onOpenChange={setInstitutionOpen}
               ariaLabel={t('profile.educationDetails.institution')}
               empty={!form.institutionName}
-              className="!mr-0"
+              className="mr-0!"
               panel={
                 <Command shouldFilter={false}>
                   <CommandInput
@@ -974,7 +974,7 @@ export function EducationDetailsDialog({
               onOpenChange={setCityOpen}
               ariaLabel={t('profile.educationDetails.city')}
               empty={!form.city}
-              className="!mr-0"
+              className="mr-0!"
               panel={
                 <Command>
                   <CommandInput placeholder={t('profile.educationDetails.citySearch')} />
@@ -1010,7 +1010,7 @@ export function EducationDetailsDialog({
                   onOpenChange={setRegionOpen}
                   ariaLabel={t('profile.educationDetails.region')}
                   empty={!form.regionCode}
-                  className="!mr-0"
+                  className="mr-0!"
                   panel={
                     <Command>
                       <CommandInput placeholder={t('profile.educationDetails.regionSearch')} />

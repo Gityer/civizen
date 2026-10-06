@@ -65,7 +65,7 @@ export function AgreementFitInput({
       aria-label={ariaLabel || placeholder}
       aria-placeholder={placeholder}
       className={cn(
-        '!inline align-baseline border-b border-dashed bg-transparent leading-[inherit] outline-none break-words',
+        'inline! align-baseline border-b border-dashed bg-transparent leading-[inherit] outline-none wrap-break-word',
         tone === 'muted'
           ? empty
             ? 'border-muted-foreground/35 font-normal text-muted-foreground caret-muted-foreground before:pointer-events-none before:text-muted-foreground/55 before:content-[attr(data-placeholder)]'

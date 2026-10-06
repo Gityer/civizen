@@ -402,7 +402,7 @@ export default function FundingSourcesAdmin(_props: FundingSourcesAdminProps = {
                 })();
               }}
             >
-              <Input className="min-w-[12rem] flex-1" value={eventSummary} onChange={(e) => setEventSummary(e.target.value)} required />
+              <Input className="min-w-48 flex-1" value={eventSummary} onChange={(e) => setEventSummary(e.target.value)} required />
               <Button type="submit" size="sm" disabled={busy}>{t('settings.adminFundingSourcesLogEvent')}</Button>
             </form>
             <ul className="space-y-1 text-xs text-muted-foreground">

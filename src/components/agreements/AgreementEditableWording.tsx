@@ -51,7 +51,7 @@ export function AgreementFitTextarea({
           onCancel();
         }
       }}
-      className="block w-full resize-none overflow-hidden border-0 border-b border-dashed border-foreground/40 bg-transparent p-0 leading-[inherit] text-foreground outline-none [field-sizing:content]"
+      className="block w-full resize-none overflow-hidden border-0 border-b border-dashed border-foreground/40 bg-transparent p-0 leading-[inherit] text-foreground outline-none field-sizing-content"
     />
   );
 }

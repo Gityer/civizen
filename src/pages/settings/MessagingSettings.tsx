@@ -435,7 +435,7 @@ export default function MessagingSettings() {
                   <p className="text-xs text-muted-foreground">{t('settings.messagingReportsEmpty')}</p>
                 ) : (
                   <div className="space-y-3">
-                    <div className="grid gap-2 sm:grid-cols-[180px,1fr]">
+                    <div className="grid gap-2 sm:grid-cols-[180px_1fr]">
                       <Select
                         value={reportStatusFilter}
                         onValueChange={(value) => setReportStatusFilter(value as typeof reportStatusFilter)}

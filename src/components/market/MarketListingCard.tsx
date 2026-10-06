@@ -98,7 +98,7 @@ export function MarketListingCard({
           onArchived={() => onListingsChanged()}
           className={
             marketplace
-              ? 'h-7 max-w-[5.5rem] truncate rounded-full bg-background/90 px-2 text-[10px] font-medium text-muted-foreground shadow-md hover:text-destructive'
+              ? 'h-7 max-w-22 truncate rounded-full bg-background/90 px-2 text-[10px] font-medium text-muted-foreground shadow-md hover:text-destructive'
               : undefined
           }
         />
@@ -110,14 +110,14 @@ export function MarketListingCard({
     return (
       <li className="min-h-0" data-build-key={`marketListing-${listing.id}`} data-build-label={listing.title}>
         <Card className="overflow-hidden border border-border/40 bg-card shadow-sm">
-          <div className="relative aspect-square bg-gradient-to-br from-muted to-muted/60">
+          <div className="relative aspect-square bg-linear-to-br from-muted to-muted/60">
             <div className="absolute left-2 top-2 rounded-full bg-background/85 px-2 py-0.5 text-[10px] font-medium text-foreground shadow-sm backdrop-blur-sm">
               {kindLabel}
             </div>
             <div className="flex h-full items-center justify-center text-muted-foreground/40">
               <KindIcon className="h-12 w-12" aria-hidden />
             </div>
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent pt-10 pb-2 pl-2 pr-2">
+            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/75 via-black/35 to-transparent pt-10 pb-2 pl-2 pr-2">
               <div className="flex items-end justify-between gap-1">
                 <p className="min-w-0 flex-1 truncate text-base font-bold tabular-nums text-white drop-shadow-md">
                   {priceLabel}
@@ -152,7 +152,7 @@ export function MarketListingCard({
     return (
       <li className="h-full min-h-0" data-build-key={`marketListing-${listing.id}`} data-build-label={listing.title}>
         <Card className="flex h-full flex-col overflow-hidden border-border/70 bg-card/95 shadow-sm">
-          <div className="relative aspect-[4/3] bg-gradient-to-br from-muted/80 to-muted/40">
+          <div className="relative aspect-4/3 bg-linear-to-br from-muted/80 to-muted/40">
             <div className="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-0.5 text-xs font-medium text-foreground shadow-sm">
               {kindLabel}
             </div>

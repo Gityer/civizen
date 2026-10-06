@@ -471,7 +471,7 @@ export default function FundingEconomicsAdmin(_props: FundingEconomicsAdminProps
               ))}
             </div>
             <div className="hidden min-w-0 overflow-x-auto md:block">
-              <table className="w-full min-w-[42rem] text-left text-xs">
+              <table className="w-full min-w-2xl text-left text-xs">
                 <thead>
                   <tr className="border-b border-border/60 text-muted-foreground">
                     <th className="py-1 pr-2 font-medium">{t('settings.adminFundingEconomicsYear')}</th>

@@ -315,7 +315,7 @@ export default function Settings() {
                 <motion.div key="language" {...motionProps}>
                   <Card className="p-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                         <Globe className="w-5 h-5 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -345,14 +345,14 @@ export default function Settings() {
                 <motion.div key="appearance" {...motionProps}>
                   <Card className="p-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                         <Palette className="w-5 h-5 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground">{t('settings.appearanceTitle')}</h3>
                         <p className="text-sm text-muted-foreground">{t('settings.appearanceDescription')}</p>
                       </div>
-                      <div className="flex-shrink-0">
+                      <div className="shrink-0">
                         <ThemeToggle />
                       </div>
                     </div>
@@ -538,7 +538,7 @@ export default function Settings() {
         >
           <Card className="p-4">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                 <ShieldCheck className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0 space-y-2">
@@ -562,7 +562,7 @@ export default function Settings() {
                       aria-expanded={updateChannelMenuOpen}
                       title={`${t('settings.updateChannelTitle')}: ${updateChannelLabel}`}
                       className={cn(
-                        'flex-shrink-0',
+                        'shrink-0',
                         updateChannel === 'testing' && 'border-primary/50 bg-primary/10 text-primary',
                       )}
                       onMouseEnter={() => {

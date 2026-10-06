@@ -32,7 +32,7 @@ export function UsersAdminOverview({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="grid grid-cols-3 gap-2 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="grid grid-cols-3 gap-2 overflow-x-auto scrollbar-none [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         <Card className="min-w-0 rounded-2xl border-border/60 p-2.5 shadow-sm sm:rounded-3xl sm:p-4">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">

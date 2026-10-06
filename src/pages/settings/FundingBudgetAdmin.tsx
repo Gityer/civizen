@@ -1019,7 +1019,7 @@ export default function FundingBudgetAdmin({ onGoToSection }: FundingBudgetAdmin
                                           onClick={() => startAddLineInGroup(group.id)}
                                         >
                                           <Plus className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                                          <span className="max-w-0 overflow-hidden whitespace-nowrap text-xs opacity-0 transition-all duration-150 group-hover/addline:max-w-[9rem] group-hover/addline:opacity-100 group-focus-visible/addline:max-w-[9rem] group-focus-visible/addline:opacity-100">
+                                          <span className="max-w-0 overflow-hidden whitespace-nowrap text-xs opacity-0 transition-all duration-150 group-hover/addline:max-w-36 group-hover/addline:opacity-100 group-focus-visible/addline:max-w-36 group-focus-visible/addline:opacity-100">
                                             {t('settings.adminFundingBudgetAddLineInGroup')}
                                           </span>
                                         </button>
@@ -1178,7 +1178,7 @@ export default function FundingBudgetAdmin({ onGoToSection }: FundingBudgetAdmin
                                     onClick={() => startAddLineInGroup(group.id)}
                                   >
                                     <Plus className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                                    <span className="max-w-0 overflow-hidden whitespace-nowrap text-xs opacity-0 transition-all duration-150 group-hover/addline:max-w-[9rem] group-hover/addline:opacity-100 group-focus-visible/addline:max-w-[9rem] group-focus-visible/addline:opacity-100">
+                                    <span className="max-w-0 overflow-hidden whitespace-nowrap text-xs opacity-0 transition-all duration-150 group-hover/addline:max-w-36 group-hover/addline:opacity-100 group-focus-visible/addline:max-w-36 group-focus-visible/addline:opacity-100">
                                       {t('settings.adminFundingBudgetAddLineInGroup')}
                                     </span>
                                   </button>
@@ -1313,7 +1313,7 @@ export default function FundingBudgetAdmin({ onGoToSection }: FundingBudgetAdmin
                   </Button>
                 </div>
                 <form className="flex flex-wrap items-end gap-2" onSubmit={onAddGroup}>
-                  <div className="min-w-[12rem] flex-1 space-y-1">
+                  <div className="min-w-48 flex-1 space-y-1">
                     <Label htmlFor="group-name">{t('settings.adminFundingBudgetGroup')}</Label>
                     <Input
                       id="group-name"

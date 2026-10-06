@@ -158,7 +158,7 @@ export default function AgreementCreate() {
                 <button
                   type="button"
                   data-testid="agreements-create-title"
-                  className="m-0 border-0 bg-transparent p-0 text-left font-[inherit] text-[inherit] leading-[inherit] outline-none"
+                  className="m-0 border-0 bg-transparent p-0 text-left font-[inherit] text-inherit leading-[inherit] outline-none"
                 >
                   {t('agreements.createTitle')}
                 </button>

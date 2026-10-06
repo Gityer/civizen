@@ -86,7 +86,7 @@ export default function HappinessWork() {
         onValueChange={(value) => setSearchParams(value === 'overview' ? {} : { section: value })}
         className="w-full min-w-0"
       >
-        <div className="-mx-4 min-w-0 overflow-x-auto overscroll-x-contain px-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="-mx-4 min-w-0 overflow-x-auto overscroll-x-contain px-4 [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden">
           <TabsList
             aria-label={t('happiness.workTitle')}
             className="inline-flex h-auto w-max min-w-full justify-start gap-0 rounded-none border-b border-border/60 bg-transparent p-0 text-foreground shadow-none"

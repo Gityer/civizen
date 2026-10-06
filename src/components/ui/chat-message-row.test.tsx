@@ -111,7 +111,7 @@ describe('ChatMessageRow selection', () => {
 
     const primary = screen.getByTestId('chat-message-primary');
     expect(primary.className).not.toContain('break-all');
-    expect(primary.className).toContain('break-words');
+    expect(primary.className).toContain('wrap-break-word');
     expect(primary.className).toContain('[word-break:normal]');
   });
 

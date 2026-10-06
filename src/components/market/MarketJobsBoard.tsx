@@ -144,7 +144,7 @@ export function MarketJobsBoard({
         </p>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border/60">
-          <table className="w-full min-w-[44rem] text-left text-sm">
+          <table className="w-full min-w-176 text-left text-sm">
             <thead>
               <tr className="border-b border-border/60 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                 <th className="px-3 py-2 font-semibold">{t('market.jobsBoard.colPosted')}</th>
@@ -179,7 +179,7 @@ export function MarketJobsBoard({
                       {formatPostedOn(listing.created_at, language === 'en' ? 'en-GB' : language)}
                     </td>
                     <td className="px-3 py-2.5 font-medium text-primary">{name}</td>
-                    <td className="max-w-[14rem] px-3 py-2.5 text-foreground">
+                    <td className="max-w-56 px-3 py-2.5 text-foreground">
                       {formatJobTypesDisplay(listing.job_types)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-2.5">

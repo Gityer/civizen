@@ -333,7 +333,7 @@ export function AgreementRichText({
           'bg-transparent leading-[1.55] text-foreground outline-none',
           EDITOR_LIST_CLASS,
           inline
-            ? 'inline max-w-full whitespace-pre-wrap align-baseline [overflow-wrap:break-word]'
+            ? 'inline max-w-full whitespace-pre-wrap align-baseline wrap-break-word'
             : 'block min-h-[1.5em] w-full overflow-hidden',
           editorEmpty && 'text-primary before:pointer-events-none before:text-primary before:content-[attr(data-placeholder)]',
           focused ? 'border-b border-dashed border-foreground/40' : 'border-b border-transparent',

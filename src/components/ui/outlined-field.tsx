@@ -30,7 +30,7 @@ export function OutlinedField({
         'focus-within:border-ring focus-within:ring-2 focus-within:ring-ring',
         '[&_input]:h-9 [&_input]:border-0 [&_input]:bg-transparent [&_input]:px-0 [&_input]:shadow-none',
         '[&_input]:focus-visible:ring-0 [&_input]:focus-visible:ring-offset-0',
-        '[&_textarea]:min-h-[4.5rem] [&_textarea]:border-0 [&_textarea]:bg-transparent [&_textarea]:px-0 [&_textarea]:shadow-none',
+        '[&_textarea]:min-h-18 [&_textarea]:border-0 [&_textarea]:bg-transparent [&_textarea]:px-0 [&_textarea]:shadow-none',
         '[&_textarea]:focus-visible:ring-0 [&_textarea]:focus-visible:ring-offset-0',
         className,
       )}

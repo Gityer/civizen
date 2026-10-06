@@ -67,7 +67,7 @@ export function SlowRunningText({
         <span
           className={cn(
             'flex w-max motion-reduce:hidden',
-            'animate-marquee-slow hover:[animation-play-state:paused]',
+            'animate-marquee-slow hover:paused',
           )}
         >
           <span className="pr-10">{text}</span>

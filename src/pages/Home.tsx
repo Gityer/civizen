@@ -40,7 +40,7 @@ export default function Home() {
       <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6">
         {/* Header */}
         <motion.div
-          className="flex items-center justify-between gap-4 pr-[5.75rem]"
+          className="flex items-center justify-between gap-4 pr-23"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >

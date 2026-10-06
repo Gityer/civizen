@@ -51,7 +51,7 @@ export function EditProfileWorldCitizenBack({
         <div className="mt-3 grid grid-cols-1 gap-2 text-[10px] leading-tight text-cyan-50">
           {renderLayoutRegion(
             'wcBackIssuer',
-            <div className="rounded-2xl border border-cyan-50/12 bg-white/[0.06] px-3 py-2">
+            <div className="rounded-2xl border border-cyan-50/12 bg-white/6 px-3 py-2">
               <p className="uppercase tracking-[0.16em] text-cyan-50/70" data-build-key="wcBackIssuerLabel" data-build-label="Back Issuer Label">
                 Issuer
               </p>
@@ -65,7 +65,7 @@ export function EditProfileWorldCitizenBack({
 
         {renderLayoutRegion(
           'wcBackDid',
-          <div className="mt-2.5 flex items-center gap-1.5 rounded-[18px] border border-cyan-50/12 bg-white/[0.06] px-3 py-2.5">
+          <div className="mt-2.5 flex items-center gap-1.5 rounded-[18px] border border-cyan-50/12 bg-white/6 px-3 py-2.5">
             <p className="shrink-0 text-[10px] uppercase tracking-[0.2em] text-cyan-50/80" data-build-key="wcBackDidLabel" data-build-label="Back DID Label">
               {t('editProfile.did')}:
             </p>

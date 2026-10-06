@@ -266,7 +266,7 @@ export default function Pillars() {
                   <div className="space-y-2">
                     {/* Pillar Header */}
                     <div className="flex items-center gap-2">
-                      <div className={`w-8 h-8 rounded-lg ${pillar.bgColorClass} flex items-center justify-center flex-shrink-0`}>
+                      <div className={`w-8 h-8 rounded-lg ${pillar.bgColorClass} flex items-center justify-center shrink-0`}>
                         {(() => {
                           const Icon = iconMap[pillar.icon];
                           return Icon ? <Icon className="w-4 h-4 text-white" /> : null;
@@ -367,7 +367,7 @@ export default function Pillars() {
                             <span className="text-xs text-muted-foreground leading-relaxed">
                               {truncateText(custom.description, 80)}
                             </span>
-                            <Edit3 className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-2 mt-0.5" />
+                            <Edit3 className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2 mt-0.5" />
                           </div>
                         </div>
                       )}

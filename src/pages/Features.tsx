@@ -303,7 +303,7 @@ export default function Features() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
         >
-          <Card className="border-border/70 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
+          <Card className="border-border/70 bg-linear-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
             <h2 className="font-semibold text-foreground">
               {t('features.pillarsTitle')}
             </h2>

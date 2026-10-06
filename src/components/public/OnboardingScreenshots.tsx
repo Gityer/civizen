@@ -41,7 +41,7 @@ export function OnboardingScreenshots({ variant = 'section' }: OnboardingScreens
         className={
           inHero
             ? 'grid grid-cols-3 items-start gap-4 pt-6 [&>li:nth-child(2)]:-translate-y-6'
-            : '-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden'
+            : '-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 scrollbar-none sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden'
         }
       >
         {screens.map((screen) => {

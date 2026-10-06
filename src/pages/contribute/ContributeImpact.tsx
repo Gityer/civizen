@@ -120,7 +120,7 @@ export default function ContributeImpact() {
                 <Link key={participation.id} to={`/contribute/professional/${opportunity.id}`}>
                   <Card className="border-border/70 bg-card/95 p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-md">
                     <div className="flex items-start justify-between gap-3">
-                      <h3 className="font-semibold break-words text-foreground">{opportunity.title}</h3>
+                      <h3 className="font-semibold wrap-break-word text-foreground">{opportunity.title}</h3>
                       <Badge variant="outline" className="shrink-0 rounded-full">
                         {t(`contribute.opportunities.participationStatus.${participation.status}`)}
                       </Badge>

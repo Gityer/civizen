@@ -95,7 +95,7 @@ export function AccountSwitcherTrack({
       ref={ref}
       data-testid="account-switcher-track"
       className={cn(
-        'flex w-full min-w-0 snap-x snap-mandatory gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden data-[dragging=true]:snap-none',
+        'flex w-full min-w-0 snap-x snap-mandatory gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden data-[dragging=true]:snap-none',
         className,
       )}
       onClickCapture={(event) => {

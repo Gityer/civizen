@@ -74,7 +74,7 @@ export function PublicPageToolbar({ className, hideGuestAuthActions = false }: P
             data-testid="public-download-civizen"
           >
             <Download className="h-3.5 w-3.5 shrink-0" aria-hidden />
-            <span className="max-w-[9.5rem] truncate sm:max-w-none">{t('features.pages.downloads')}</span>
+            <span className="max-w-38 truncate sm:max-w-none">{t('features.pages.downloads')}</span>
           </Link>
         </>
       ) : null}

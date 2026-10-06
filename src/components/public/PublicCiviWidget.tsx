@@ -274,20 +274,20 @@ export function PublicCiviWidget() {
                     {tailed ? <CiviChatTail side={item.role === 'user' ? 'user' : 'assistant'} /> : null}
                     {blocks ? (
                       <>
-                        <p className="whitespace-pre-wrap break-words [overflow-wrap:break-word]">
+                        <p className="whitespace-pre-wrap wrap-break-word wrap-break-word">
                           <CiviLinkedText text={blocks.primary} />
                         </p>
                         {blocks.details.map((detail) => (
                           <p
                             key={detail.slice(0, 24)}
-                            className="mt-2 whitespace-pre-wrap break-words text-xs text-muted-foreground"
+                            className="mt-2 whitespace-pre-wrap wrap-break-word text-xs text-muted-foreground"
                           >
                             <CiviLinkedText text={detail} includeChoices={false} />
                           </p>
                         ))}
                       </>
                     ) : (
-                      <p className="whitespace-pre-wrap break-words [overflow-wrap:break-word]">{item.content}</p>
+                      <p className="whitespace-pre-wrap wrap-break-word wrap-break-word">{item.content}</p>
                     )}
                   </div>
                 </div>

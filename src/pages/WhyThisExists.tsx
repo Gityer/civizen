@@ -178,7 +178,7 @@ export default function WhyThisExists() {
 
         <section
           aria-labelledby="unity-without-erasing-diversity"
-          className="space-y-5 rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-primary/8 via-card/60 to-accent/5 p-5 sm:p-6"
+          className="space-y-5 rounded-[1.75rem] border border-primary/20 bg-linear-to-br from-primary/8 via-card/60 to-accent/5 p-5 sm:p-6"
         >
           <SectionHeading id="unity-without-erasing-diversity">{t('whyThisExists.diversityTitle')}</SectionHeading>
           {diversityParagraphs.map((paragraph) => (

@@ -64,7 +64,7 @@ export function EditProfileSocialCard({
         }}
       >
         <div
-          className="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d]"
+          className="relative h-full w-full transition-transform duration-700 transform-3d"
           style={{
             transform: socialCardSide === 'front' ? 'rotateY(0deg)' : 'rotateY(180deg)',
             transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',

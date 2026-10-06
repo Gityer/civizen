@@ -139,7 +139,7 @@ describe('PermissionsAdmin page', () => {
     expect(matrixScroll.className).toContain('min-w-0');
     expect(matrixScroll.className).toContain('overflow-x-auto');
     expect(matrixScroll.className).toContain('cursor-grab');
-    expect(matrixScroll.className).not.toContain('[scrollbar-width:none]');
+    expect(matrixScroll.className).not.toContain('scrollbar-none');
     expect(matrixScroll.className).not.toContain('[&::-webkit-scrollbar]:hidden');
     expect(matrixScroll.className).toContain('touch-pan-x');
     expect(matrixScroll.className).not.toContain('max-h-[72vh]');

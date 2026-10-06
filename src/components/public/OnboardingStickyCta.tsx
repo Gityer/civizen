@@ -25,7 +25,7 @@ export function OnboardingStickyCta({ visible }: OnboardingStickyCtaProps) {
       )}
     >
       {/* Right padding keeps both actions clear of the Civi launcher (bottom-right, 56px). */}
-      <div className="mx-auto flex w-full max-w-3xl gap-2 pr-[4.25rem]">
+      <div className="mx-auto flex w-full max-w-3xl gap-2 pr-17">
         <Button
           onClick={() => navigate('/signup')}
           className="h-11 flex-1 gap-2 dark:shadow-glow"

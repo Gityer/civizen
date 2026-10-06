@@ -218,7 +218,7 @@ export function UnifiedSearchBlock({
         />
       </div>
       <div
-        className="flex h-10 w-full items-center gap-1 overflow-x-auto rounded-md bg-muted p-1 text-muted-foreground [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex h-10 w-full items-center gap-1 overflow-x-auto rounded-md bg-muted p-1 text-muted-foreground scrollbar-none [&::-webkit-scrollbar]:hidden"
         role="tablist"
         aria-label={t('search.title')}
       >

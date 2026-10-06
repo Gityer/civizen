@@ -33,7 +33,7 @@ export function MarketJobsContact({ model }: { model: MarketJobsInterestFormMode
           <div className="flex flex-wrap items-start gap-x-3 gap-y-3 text-sm" data-testid="market-jobs-identity-fields">
             {showNameField ? (
               <OutlinedField
-                className="min-w-[10rem] flex-1"
+                className="min-w-40 flex-1"
                 label={t('market.jobsForm.fullNameLabel')}
                 htmlFor="market-jobs-full-name"
                 endAdornment={
@@ -52,7 +52,7 @@ export function MarketJobsContact({ model }: { model: MarketJobsInterestFormMode
             ) : null}
             {showCompanyField ? (
               <OutlinedField
-                className="min-w-[10rem] flex-1"
+                className="min-w-40 flex-1"
                 label={t('market.jobsForm.companyLabel')}
                 htmlFor="market-jobs-company"
               >
@@ -66,7 +66,7 @@ export function MarketJobsContact({ model }: { model: MarketJobsInterestFormMode
             ) : null}
             {showPhoneField ? (
               <OutlinedField
-                className="min-w-[11rem] flex-1"
+                className="min-w-44 flex-1"
                 label={t('market.jobsForm.phoneLabel')}
                 htmlFor="market-jobs-phone"
               >
@@ -269,7 +269,7 @@ export function MarketJobsContact({ model }: { model: MarketJobsInterestFormMode
         <div className="flex flex-col items-center gap-3 pt-2">
           <Button
             type="button"
-            className="min-w-[12rem] rounded-full"
+            className="min-w-48 rounded-full"
             onClick={() => void onSubmit()}
             disabled={submitting}
             data-testid="market-jobs-submit"

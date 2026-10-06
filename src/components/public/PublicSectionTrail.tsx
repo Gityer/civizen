@@ -72,14 +72,14 @@ export function PublicSectionTrail({
       {showLeadingEllipsis ? (
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center bg-gradient-to-r from-background via-background/95 to-transparent pl-0.5 pr-5 text-xs font-semibold text-muted-foreground"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center bg-linear-to-r from-background via-background/95 to-transparent pl-0.5 pr-5 text-xs font-semibold text-muted-foreground"
         >
           …
         </span>
       ) : null}
       <ol
         ref={scrollerRef}
-        className="flex min-w-0 max-w-full items-center overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex min-w-0 max-w-full items-center overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -87,7 +87,7 @@ export function PublicSectionTrail({
             'inline-flex items-center whitespace-nowrap text-xs',
             isLast
               ? 'shrink-0 font-semibold text-primary'
-              : 'max-w-[9rem] truncate font-medium text-muted-foreground hover:text-foreground sm:max-w-[12rem]',
+              : 'max-w-36 truncate font-medium text-muted-foreground hover:text-foreground sm:max-w-48',
           );
 
           return (

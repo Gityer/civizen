@@ -764,8 +764,8 @@ export default function StudyCivicLearning() {
                         className={cn(
                           'mt-1 block text-sm text-muted-foreground',
                           isDomainExpanded
-                            ? 'whitespace-normal break-words'
-                            : 'line-clamp-2 break-words',
+                            ? 'whitespace-normal wrap-break-word'
+                            : 'line-clamp-2 wrap-break-word',
                         )}
                         title={domainDescription}
                       >
@@ -1149,7 +1149,7 @@ export default function StudyCivicLearning() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.26 }}
           >
-            <Card className="border-border/70 bg-gradient-to-br from-emerald-500/10 via-card to-primary/5 p-5 shadow-sm">
+            <Card className="border-border/70 bg-linear-to-br from-emerald-500/10 via-card to-primary/5 p-5 shadow-sm">
               <h3 className="text-lg font-semibold text-foreground">{t('study.economyBriefingTitle')}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{t('study.economyBriefingDescription')}</p>
               <ul className="mt-4 space-y-2 text-sm text-foreground/90">
@@ -1167,7 +1167,7 @@ export default function StudyCivicLearning() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.04 }}
         >
-          <Card className="border-border/70 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
+          <Card className="border-border/70 bg-linear-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
             <div className="grid gap-4 md:grid-cols-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">

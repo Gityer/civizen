@@ -115,7 +115,7 @@ export function HomeRepostThoughtsDialog({
               onChange={(event) => setDraft(event.target.value)}
               placeholder={placeholder}
               rows={4}
-              className="min-h-[6rem] w-full resize-y rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
+              className="min-h-24 w-full resize-y rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
               disabled={busy}
             />
           </div>

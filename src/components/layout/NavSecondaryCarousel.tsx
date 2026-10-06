@@ -360,7 +360,7 @@ function LoopEndGuide({ geometry, itemCount, loop, wheelPosition, maxVisibleOffs
   const shared = { geometry, itemCount, loop, wheelPosition, maxVisibleOffset };
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-[15]" aria-hidden>
+    <div className="pointer-events-none absolute inset-0 z-15" aria-hidden>
       <LoopEndMarker slotIndex={wrapSlot - LOOP_END_DASH_OFFSET} kind="dash" {...shared} />
       <LoopEndMarker slotIndex={wrapSlot} kind="dot" {...shared} />
       <LoopEndMarker slotIndex={wrapSlot + LOOP_END_DASH_OFFSET} kind="dash" {...shared} />
@@ -591,7 +591,7 @@ export function NavSecondaryCarousel() {
           exit={{ opacity: 0, y: 12 }}
           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
           className={cn(
-            'pointer-events-none fixed inset-x-0 z-[60]',
+            'pointer-events-none fixed inset-x-0 z-60',
             hasFab
               ? 'bottom-[calc(6.35rem+env(safe-area-inset-bottom,0px))]'
               : 'bottom-20',
@@ -818,7 +818,7 @@ function CarouselArcItem({
         {hasIcons ? (
           <>
             <motion.span
-              className="inline-flex max-w-[4.25rem] items-center gap-1"
+              className="inline-flex max-w-17 items-center gap-1"
               style={{ opacity: flankAmount }}
               aria-hidden
             >

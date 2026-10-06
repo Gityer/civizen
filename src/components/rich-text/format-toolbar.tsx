@@ -64,7 +64,7 @@ export function FormatFlyout({
       </FormatToolButton>
       {open ? (
         <div className={cn('absolute left-0 z-40', placement === 'up' ? 'bottom-full pb-1' : 'top-full pt-1')}>
-          <div className={cn('min-w-[9.5rem] overflow-hidden rounded-xl bg-zinc-900 py-1 shadow-lg', panelClassName)}>
+          <div className={cn('min-w-38 overflow-hidden rounded-xl bg-zinc-900 py-1 shadow-lg', panelClassName)}>
             {children}
           </div>
         </div>

@@ -87,7 +87,7 @@ export function HomeComposer({ model }: { model: HomeModel }) {
                 </AvatarFallback>
               </Avatar>
               {!composerPlain ? (
-                <div className="pointer-events-none absolute inset-y-0 left-[3.35rem] right-3 z-[1] flex items-center sm:left-[4.15rem] sm:right-4">
+                <div className="pointer-events-none absolute inset-y-0 left-[3.35rem] right-3 z-1 flex items-center sm:left-[4.15rem] sm:right-4">
                   <SlowRunningText
                     text={composerPlaceholder}
                     onlyWhenOverflow
@@ -104,7 +104,7 @@ export function HomeComposer({ model }: { model: HomeModel }) {
                 tabIndex={isPosting || isSavingEdit ? -1 : 0}
                 suppressContentEditableWarning
                 className={cn(
-                  'min-h-10 w-full whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground outline-none sm:min-h-12',
+                  'min-h-10 w-full whitespace-pre-wrap wrap-break-word text-sm leading-relaxed text-foreground outline-none sm:min-h-12',
                   '[&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5',
                 )}
                 onInput={(event) => {

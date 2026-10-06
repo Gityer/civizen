@@ -647,7 +647,7 @@ export default function Law() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }}>
-          <Card className="rounded-3xl border-border/70 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
+          <Card className="rounded-3xl border-border/70 bg-linear-to-br from-primary/5 via-card to-accent/5 p-5 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-primary">{t('law.libraryBadge')}</p>

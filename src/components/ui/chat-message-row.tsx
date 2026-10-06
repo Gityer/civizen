@@ -127,7 +127,7 @@ export function ChatMessageRow({
       ) : (
         <button
           type="button"
-          className="h-8 w-8 flex-shrink-0 rounded-full"
+          className="h-8 w-8 shrink-0 rounded-full"
           disabled={selectionMode}
           onClick={(event) => {
             event.stopPropagation();
@@ -156,7 +156,7 @@ export function ChatMessageRow({
         <div data-testid="chat-message-body" className="space-y-1.5">
           <p
             data-testid="chat-message-primary"
-            className="whitespace-pre-wrap break-words text-pretty text-sm text-foreground [overflow-wrap:break-word] [word-break:normal]"
+            className="whitespace-pre-wrap wrap-break-word text-pretty text-sm text-foreground wrap-break-word [word-break:normal]"
           >
             <ChatLinkedText text={blocks.primary} />
             {message.id.startsWith('failed-') && onRetry ? (
@@ -176,7 +176,7 @@ export function ChatMessageRow({
             <p
               key={`detail-${index}`}
               data-testid="chat-message-detail"
-              className="whitespace-pre-wrap break-words text-pretty text-xs leading-5 text-muted-foreground [overflow-wrap:break-word] [word-break:normal]"
+              className="whitespace-pre-wrap wrap-break-word text-pretty text-xs leading-5 text-muted-foreground wrap-break-word [word-break:normal]"
             >
               <ChatLinkedText text={detail} includeChoices={false} />
             </p>
