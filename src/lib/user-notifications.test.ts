@@ -33,6 +33,11 @@ describe('notificationTitle', () => {
       .toBe('settings.notificationText.endorsement:Ana');
   });
 
+  it('translates report outcomes without a name', () => {
+    expect(notificationTitle({ notificationType: 'report_dismissed', title: 'x', actorName: null }, t))
+      .toBe('settings.notificationText.reportDismissed:');
+  });
+
   it('keeps the stored title otherwise', () => {
     expect(notificationTitle({ notificationType: 'post_repost', title: 'Ana reposted', actorName: 'Ana' }, t)).toBe('Ana reposted');
     expect(notificationTitle({ notificationType: 'post_comment', title: 'Someone commented', actorName: null }, t)).toBe('Someone commented');

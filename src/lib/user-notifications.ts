@@ -72,6 +72,8 @@ const TITLE_KEYS: Record<string, string> = {
   private_message: 'settings.notificationText.privateMessage',
   endorsement_received: 'settings.notificationText.endorsement',
   post_comment: 'settings.notificationText.postComment',
+  report_resolved: 'settings.notificationText.reportResolved',
+  report_dismissed: 'settings.notificationText.reportDismissed',
 };
 
 /** The title in the member's language when the type is known; otherwise the stored text. */
@@ -80,7 +82,9 @@ export function notificationTitle(
   t: (key: string, vars?: Record<string, string | number>) => string,
 ): string {
   const key = TITLE_KEYS[notification.notificationType];
-  if (!key || !notification.actorName) return notification.title;
+  if (!key) return notification.title;
+  if (key.startsWith('settings.notificationText.report')) return t(key);
+  if (!notification.actorName) return notification.title;
   return t(key, { name: notification.actorName });
 }
 

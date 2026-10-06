@@ -45,7 +45,41 @@ export const m_messages_settings_03 = {
     "notificationText": {
       "privateMessage": "{name} sent you a message",
       "endorsement": "{name} endorsed you",
-      "postComment": "{name} commented on your post"
+      "postComment": "{name} commented on your post",
+      "reportResolved": "Your report was reviewed and action was taken",
+      "reportDismissed": "Your report was reviewed; no action was needed"
+    },
+    "moderation": {
+      "title": "Reports review",
+      "menuDescription": "Review what members reported and act on it.",
+      "subtitle": "Oldest open reports first. The reporter is told the outcome, not who reviewed it.",
+      "open": "Open",
+      "closed": "Closed",
+      "emptyOpen": "No open reports.",
+      "emptyClosed": "No closed reports yet.",
+      "loadFailed": "Reports could not be loaded.",
+      "reported": "Reported",
+      "reporter": "Reported by",
+      "notesPlaceholder": "Note for other reviewers (optional)",
+      "resolve": "Resolve",
+      "dismiss": "Dismiss",
+      "markReviewed": "Mark as reviewed",
+      "removePost": "Remove post",
+      "removePostConfirm": "Remove this post for everyone? This cannot be undone.",
+      "saved": "Report updated.",
+      "saveFailed": "Could not update the report. Try again.",
+      "source": {
+        "post": "Post",
+        "profile": "Person",
+        "message": "Message",
+        "other": "Other"
+      },
+      "status": {
+        "pending": "New",
+        "reviewed": "Reviewed",
+        "resolved": "Resolved",
+        "dismissed": "Dismissed"
+      }
     },
     "safetyPage": {
       "blockedTitle": "Blocked people",

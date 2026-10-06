@@ -4,16 +4,25 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import {
   EndorseSelect,
   HelpSupport,
+  ModerationConsole,
   NotificationsSettings,
   ReportContent,
   SafetySettings,
 } from '@/app-routes/lazy-pages';
 
-/** Member support routes: help, notifications, safety, reporting and choosing whom to endorse. */
+/** Member support routes: help, notifications, safety, reporting, report review and choosing whom to endorse. */
 export const appRoutesSupport = (
   <>
     <Route path="/settings/notifications" element={<ProtectedRoute><NotificationsSettings /></ProtectedRoute>} />
     <Route path="/settings/safety" element={<ProtectedRoute><SafetySettings /></ProtectedRoute>} />
+    <Route
+      path="/settings/moderation"
+      element={
+        <ProtectedRoute requiredPermissions={['report.review']}>
+          <ModerationConsole />
+        </ProtectedRoute>
+      }
+    />
     <Route path="/settings/help" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
     <Route
       path="/report/user/:targetId"

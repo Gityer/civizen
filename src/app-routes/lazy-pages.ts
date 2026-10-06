@@ -91,6 +91,7 @@ export const MessagingSecurity = lazyWithChunkReload(() => import('@/pages/setti
 export const PrivacySettings = lazyWithChunkReload(() => import('@/pages/settings/PrivacySettings'));
 export const NotificationsSettings = lazyWithChunkReload(() => import('@/pages/settings/NotificationsSettings'));
 export const SafetySettings = lazyWithChunkReload(() => import('@/pages/settings/SafetySettings'));
+export const ModerationConsole = lazyWithChunkReload(() => import('@/pages/settings/ModerationConsole'));
 export const HelpSupport = lazyWithChunkReload(() => import('@/pages/settings/HelpSupport'));
 export const ReportContent = lazyWithChunkReload(() => import('@/pages/ReportContent'));
 export const EndorseSelect = lazyWithChunkReload(() => import('@/pages/EndorseSelect'));

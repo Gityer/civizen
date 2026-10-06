@@ -1,5 +1,5 @@
 import { type AppPermission } from '@/lib/access-control';
-import { User, Shield, Bell, HelpCircle, FileText, Lock, Settings as SettingsIcon, LayoutGrid, Award, Coins, MessageCircle, Share2 } from 'lucide-react';
+import { User, Shield, Bell, HelpCircle, FileText, Lock, Settings as SettingsIcon, LayoutGrid, Award, Coins, MessageCircle, Share2, Flag } from 'lucide-react';
 
 export type SettingsNavItem = {
   icon: typeof User;
@@ -36,6 +36,13 @@ export const settingsItems: SettingsNavItem[] = [
     labelKey: 'settings.notifications',
     descriptionKey: 'settings.notificationsDescription',
     path: '/settings/notifications',
+  },
+  {
+    icon: Flag,
+    labelKey: 'settings.moderation.title',
+    descriptionKey: 'settings.moderation.menuDescription',
+    path: '/settings/moderation',
+    requiredPermissions: ['report.review'],
   },
   {
     icon: SettingsIcon,

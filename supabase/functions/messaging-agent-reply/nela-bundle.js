@@ -808,9 +808,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.198",
     "appReleaseId": "20261005-v0.1.198",
     "androidVersionCode": 200,
-    "gitSha": "1790adace597ec4b1f977b8e5a9e7a58607e1c8b",
-    "generatedAt": "2026-10-06T14:12:23.362Z",
-    "sourceFingerprint": "23c5507eafbb6b199b16fd366a742ee1c17946f045af86ae904f250178cb9907",
+    "gitSha": "c15c11ab24b1c0282e9f8357a5e041df22385f85",
+    "generatedAt": "2026-10-06T14:19:50.359Z",
+    "sourceFingerprint": "91b39c3d640f96a14e9839d3cd16aa97dc7fdfce9aa11ff69ba5000a8cac81e8",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370
