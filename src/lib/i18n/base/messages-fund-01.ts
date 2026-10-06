@@ -1,0 +1,377 @@
+export const m_messages_fund_01 = {
+    "backToHub": "Back to Fund Civizen",
+    "hub": {
+      "title": "Fund Civizen",
+      "description": "Support a long-term public-benefit initiative through classified funding lanes — donations, compliant investment interest, institutional partnerships, and verified contribution. Civizen is not a government or public authority.",
+      "pageTitle": "Civizen — Fund Civizen",
+      "pageDescription": "How Civizen may be funded through donations, investor interest, institutional partnerships, and contributor recognition — with classified recording and transparency.",
+      "modelTitle": "How funding works",
+      "publicExplanation": "Mature Humanity and Civizen may be supported through lawful philanthropic gifts, grants, sponsorships, earned revenue, institutional partnerships, and — only through a separately authorized commercial vehicle — investment capital. Every financial relationship must be identified, classified, and used according to its actual legal character. Civizen does not publish or promise a fixed percentage of income, grants, donations, investment capital, or commercial revenue to investors, contributors, or founders. Public funding pages collect inquiries only.",
+      "pathwaysTitle": "Choose a pathway",
+      "legalNote": "Mature Humanity and Civizen are currently founder-led initiatives and are not yet operated by a dedicated nonprofit or other project-specific legal entity. These pages collect interest and information only. They do not accept payment, create investment contracts, offer securities, or represent that support is tax-deductible. An authorized recipient will be identified before funds are accepted.",
+      "lanes": {
+        "support": {
+          "title": "Support the mission",
+          "description": "Donations and public-interest support with no financial return."
+        },
+        "invest": {
+          "title": "Investor information request",
+          "description": "Request information about possible future commercial financing — not an offering or checkout."
+        },
+        "institutional": {
+          "title": "Institutional and government",
+          "description": "Grants, contracts, partnerships, pilots, and public-sector collaboration."
+        },
+        "contribute": {
+          "title": "Contribute and participate",
+          "description": "Volunteer, open-source-oriented, and program contribution paths — recognition without automatic pay."
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "Legal status, verified receipts when available, and reporting standards."
+        },
+        "projectFinance": {
+          "title": "Project budget",
+          "description": "Published project budget and funding summary when explicitly approved for public view."
+        }
+      }
+    },
+    "support": {
+      "title": "Support the mission",
+      "description": "Philanthropic support helps Civizen’s public-benefit work. Donations do not create ownership, profit participation, or investor status.",
+      "pageTitle": "Civizen — Support the mission",
+      "pageDescription": "Express interest in supporting Civizen through donations or philanthropy. Interest only — no payment on this page.",
+      "point1": "This form is an inquiry only — no payment is processed here.",
+      "point2": "No tax-deductibility is represented until an authorized tax-exempt recipient or fiscal sponsor is identified.",
+      "point3": "The authorized recipient will be identified before any funds are accepted.",
+      "formTitle": "Share your interest"
+    },
+    "invest": {
+      "title": "Investor information request",
+      "description": "Prospective institutional or private investors may request information about possible future commercial financing involving Civizen. This page is not an offer, solicitation, term sheet, or acceptance of funds.",
+      "pageTitle": "Civizen — Investor information request",
+      "pageDescription": "Request information about possible future commercial financing. This is not a securities offering and does not accept investment payments.",
+      "riskTitle": "Investor Interest and Non-Offering Notice",
+      "riskBody": "This page is not an offer to sell a security, a solicitation to buy a security, an offering memorandum, a term sheet, a crowdfunding campaign, an investment contract, a promise of returns, a valuation, an allocation reservation, or an acceptance of funds. No investment is accepted through this form.",
+      "participationWording": "Submitting an inquiry does not create investor status, ownership, repayment rights, revenue participation, governance rights, rights in the Mature Humanity mission, rights in donations or grants, or an obligation for Civizen to proceed with a transaction. Any future investment opportunity must be offered by a specifically identified legal entity under separately provided documents.",
+      "point1": "Do not submit bank credentials, wallet credentials, or government identification through this form.",
+      "point2": "Prospective investors must rely only on final transaction documents and their own advisers.",
+      "point3": "Staff may follow up only under a counsel-approved process.",
+      "formTitle": "Submit an investor information request",
+      "submitLabel": "Submit an investor information request"
+    },
+    "institutional": {
+      "title": "Institutional and government funding",
+      "description": "Grants, agency programs, and institutional partnerships are treated as restricted or conditionally restricted unless confirmed otherwise.",
+      "pageTitle": "Civizen — Institutional funding",
+      "pageDescription": "Inquire about grants, government programs, and institutional partnerships with Civizen.",
+      "point1": "Restricted funds are not mixed into investor or founder distributions.",
+      "point2": "Agreements require reporting, allowed-cost, and audit tracking.",
+      "point3": "This form opens a conversation — it does not accept grant funds.",
+      "formTitle": "Institutional inquiry"
+    },
+    "contribute": {
+      "title": "Contribute and participate",
+      "description": "Civizen welcomes volunteers, open-source-oriented contributors, researchers, educators, and community participants. Participation does not automatically create employment, wages, equity, or a share of proceeds.",
+      "pageTitle": "Civizen — Contributor participation",
+      "pageDescription": "Learn how Civizen recognizes contributors. Compensation exists only under written employment, contracts, grants, fellowships, bounties, or other approved programs.",
+      "point1": "Recognition may include attribution, badges, credentials, and community responsibilities — not money or a security.",
+      "point2": "Compensation exists only when established through an approved written arrangement.",
+      "point3": "Use the in-app Contribute hub to discover other ways to participate beyond this interest form.",
+      "hubCta": "Explore Contribute",
+      "formTitle": "Contributor interest",
+      "policyLink": "Read the Contributor Participation Policy"
+    },
+    "transparency": {
+      "title": "Transparency",
+      "description": "When authoritative financial activity exists, Civizen publishes verified receipts by class, restrictions, uses, reporting periods, and audit or review status.",
+      "pageTitle": "Civizen — Funding transparency",
+      "pageDescription": "Public transparency for Civizen funding — verified records only, not prototype distribution estimates.",
+      "prototypeNote": "Civizen is currently founder-led and does not yet publish organizational financial statements. This page will display verified records after an authorized entity or fiscal sponsor begins receiving and reporting project funds. Any demonstration data is labeled as a prototype and is not an audited report.",
+      "liveNote": "Published aggregates from reconciled received commitments by funding class. Individual funder identities are not shown. This is not a substitute for bank records, tax filings, or an independent audit.",
+      "noAuthoritativeNote": "Civizen is currently founder-led and does not yet publish organizational financial statements. This page will display verified records after an authorized entity or fiscal sponsor begins receiving and reporting project funds.",
+      "publishedAt": "Published",
+      "statusPublished": "Published",
+      "statusNotAvailable": "Not yet available",
+      "basisNote": "Amounts include commitments marked received or partially received in the operations ledger, when publishing is enabled. Prototype or estimated figures are never labeled as audited.",
+      "colCategory": "Category",
+      "colAmount": "Amount (USD)",
+      "colStatus": "Status",
+      "privacyNote": "Personal identities, bank details, wallet details, tax information, and private contracts are not shown on this dashboard.",
+      "legalStatusLink": "Current Legal Status",
+      "rows": {
+        "investor": {
+          "label": "Investment capital received",
+          "amount": "—",
+          "status": "Not yet published"
+        },
+        "donation": {
+          "label": "Donations received",
+          "amount": "—",
+          "status": "Not yet published"
+        },
+        "grants": {
+          "label": "Grants and government funding",
+          "amount": "—",
+          "status": "Not yet published"
+        },
+        "commercial": {
+          "label": "Commercial / earned revenue",
+          "amount": "—",
+          "status": "Not yet published"
+        },
+        "sponsorship": {
+          "label": "Sponsorships",
+          "amount": "—",
+          "status": "Not yet published"
+        }
+      }
+    },
+    "projectFinance": {
+      "title": "Project budget",
+      "description": "Read-only public summary of the approved and published Civizen project budget and selected funding aggregates.",
+      "relatedTransparency": "Related: funding transparency by class",
+      "notPublished": "No project budget has been explicitly published yet. Approval alone does not make budget details public.",
+      "publishedAt": "Published",
+      "lastPublished": "Last published",
+      "publishedVersion": "Published budget version",
+      "demoNoticeTitle": "Demonstration data",
+      "demoNoticeBody": "This public summary is labeled demonstration / non-production. Figures are not audited financial statements and must not be treated as live funder commitments or receipts.",
+      "planned": "Planned",
+      "committed": "Committed",
+      "actual": "Actual",
+      "fundingHeading": "Funding summary",
+      "received": "Received",
+      "requested": "Requested"
+    },
+    "form": {
+      "fullName": "Full name",
+      "email": "Email",
+      "organization": "Organization (optional)",
+      "country": "Country (optional)",
+      "indicatedAmount": "Indicative amount (USD, optional)",
+      "indicatedAmountPlaceholder": "10000",
+      "indicatedAmountHint": "Optional planning figure only — not a commitment or payment.",
+      "message": "Message (optional)",
+      "messagePlaceholder": "Tell us briefly about your interest or program.",
+      "accreditedInterest": "I may qualify as an accredited or professional investor (if applicable in my jurisdiction).",
+      "acceptRisk": "I have read the risk disclosure and understand this is an interest inquiry only, not an investment purchase.",
+      "submit": "Submit interest",
+      "submitInvestor": "Submit an investor information request",
+      "submitting": "Submitting…",
+      "invalidAmount": "Enter a valid non-negative amount, or leave the amount blank.",
+      "successTitle": "Interest received",
+      "successBody": "Thank you. Civizen will review your inquiry. This submission did not process any payment or create an investment.",
+      "disclaimer": "By submitting, you agree that Civizen may contact you about this inquiry. Do not send sensitive bank, wallet, or government ID details in the message field."
+    },
+    "admin": {
+      "title": "Funding interest",
+      "description": "Review public Fund Civizen inquiries. These are not capital receipts.",
+      "empty": "No funding interest inquiries yet.",
+      "exportCsv": "Export CSV",
+      "openLedger": "Open ledger",
+      "indicatedAmount": "Indicative amount",
+      "status": "Status",
+      "mapsToLane": "Ledger lane",
+      "convertToLedger": "Add to ledger",
+      "converting": "Converting…",
+      "convertSuccess": "Inquiry converted to a pledged ledger commitment.",
+      "alreadyConverted": "Already converted to a ledger commitment.",
+      "convertAmount": "Amount for ledger (required)",
+      "convertAmountPlaceholder": "10000",
+      "convertAmountRequired": "Enter an amount before converting this inquiry.",
+      "statuses": {
+        "new": "New",
+        "reviewing": "Reviewing",
+        "contacted": "Contacted",
+        "closed": "Closed",
+        "spam": "Spam"
+      }
+    },
+    "calculator": {
+      "title": "Retired planning tool (archived)",
+      "description": "Restricted historical planning tool. Superseded percentage formulas are inactive and must not be used for production decisions, payouts, or public promises.",
+      "lsp": "Retired proceeds field (USD)",
+      "contributorShare": "Contributor pool share (max 0.7)",
+      "servicingShare": "Project servicing share (max 0.1)",
+      "investorCapital": "Sample investor verified capital (USD)",
+      "totalInvestorCapital": "Total verified investor capital (USD)",
+      "contributorPoints": "Sample contributor verified points",
+      "totalContributorPoints": "Total verified contributor points",
+      "investorPool": "Investor pool",
+      "contributorPool": "Contributor pool",
+      "servicingPool": "Project servicing pool",
+      "founderFromLsp": "Founder reserve from retired proceeds field",
+      "missionReserve": "Mission / safety / liquidity residual",
+      "sampleInvestorPayout": "Sample investor payout",
+      "sampleContributorPayout": "Sample contributor payout",
+      "founderFromCapital": "Founder reserve from total investor capital (1%)",
+      "invalid": "Enter valid non-negative numbers within Constitution share limits.",
+      "disclaimer": "ARCHIVED MODEL — not current policy. Fixed investor, contributor, and founder percentage formulas from earlier drafts are superseded. This tool does not move money, approve payouts, or create rights."
+    },
+    "ledger": {
+      "title": "Funding ledger",
+      "description": "Classify and record funding commitments. Received investor capital creates a verified position for internal planning only.",
+      "legalNote": "This ledger is an internal operations tool. Recording a commitment here is not the same as a counsel-approved securities offering, donation receipt, or grant acceptance.",
+      "publishTitle": "Public transparency",
+      "publishDescription": "When published, `/fund/transparency` shows aggregate received totals by lane.",
+      "publishHint": "Only aggregates by funding class are public when enabled. Unpublish anytime. Do not publish founder-reserve or distribution-formula estimates.",
+      "publish": "Publish totals",
+      "unpublish": "Unpublish",
+      "publishBusy": "Updating…",
+      "publishOnSuccess": "Transparency totals are now public.",
+      "publishOffSuccess": "Transparency totals are hidden again.",
+      "lastPublished": "Last published",
+      "openAudit": "Audit log",
+      "openCompliance": "Compliance",
+      "filterLane": "Filter by lane",
+      "filterStatus": "Filter by status",
+      "filterAll": "All",
+      "emptyFiltered": "No commitments match these filters.",
+      "statusUpdated": "Commitment status updated.",
+      "exportCsv": "Export CSV",
+      "showForm": "Record commitment",
+      "hideForm": "Hide form",
+      "totalsTitle": "Received totals by lane",
+      "totalsEmpty": "No received commitments yet.",
+      "empty": "No funding commitments recorded yet.",
+      "existingFunder": "Funder",
+      "newFunder": "Create new funder",
+      "legalName": "Legal name",
+      "displayName": "Public display name",
+      "funderType": "Funder type",
+      "lane": "Funding lane",
+      "amountOriginal": "Amount (original currency)",
+      "currency": "Currency",
+      "amountUsd": "USD value (required when received)",
+      "status": "Status",
+      "paymentMethod": "Payment method",
+      "country": "Country",
+      "email": "Email",
+      "restrictionCode": "Restriction code",
+      "restrictions": "Restrictions / notes for restricted funds",
+      "restrictionsHint": "Grant and government lanes require a restriction code or restriction text.",
+      "agreementId": "Agreement ID",
+      "receiptId": "Receipt ID",
+      "bankReference": "Bank reference",
+      "datePledged": "Date pledged",
+      "dateReceived": "Date received",
+      "notes": "Internal notes",
+      "save": "Save commitment",
+      "saving": "Saving…",
+      "recordSuccess": "Commitment recorded.",
+      "unknownFunder": "Unknown funder",
+      "funderTypes": {
+        "individual": "Individual",
+        "organization": "Organization",
+        "foundation": "Foundation",
+        "government": "Government",
+        "institution": "Institution",
+        "other": "Other"
+      },
+      "lanes": {
+        "investor": "Investor capital",
+        "donation": "Donation",
+        "grant": "Grant",
+        "government": "Government",
+        "commercial": "Commercial revenue",
+        "sponsorship": "Sponsorship",
+        "other": "Other"
+      },
+      "statuses": {
+        "pledged": "Pledged",
+        "received": "Received",
+        "partially_received": "Partially received",
+        "refunded": "Refunded",
+        "cancelled": "Cancelled"
+      },
+      "paymentMethods": {
+        "wire": "Wire",
+        "ach": "ACH",
+        "card": "Card",
+        "check": "Check",
+        "usdt": "USDT",
+        "other_crypto": "Other crypto",
+        "in_kind": "In kind",
+        "other": "Other"
+      }
+    },
+    "audit": {
+      "title": "Funding audit log",
+      "description": "Append-only history of funding ledger actions.",
+      "backToLedger": "Back to funding ledger",
+      "filterEvent": "Filter by event",
+      "empty": "No funding audit events yet.",
+      "events": {
+        "all": "All events",
+        "commitment_recorded": "Commitment recorded",
+        "commitment_status_changed": "Commitment status changed",
+        "interest_converted": "Interest converted",
+        "transparency_published": "Transparency published",
+        "transparency_unpublished": "Transparency unpublished",
+        "compliance_case_upserted": "Compliance case upserted",
+        "payment_receipt_recorded": "Payment receipt recorded"
+      }
+    },
+    "compliance": {
+      "title": "Funding compliance",
+      "description": "Manual compliance review queue and payment receipts until live KYC/payment rails are approved.",
+      "backToLedger": "Back to funding ledger",
+      "newCase": "Open compliance case",
+      "caseType": "Case type",
+      "priority": "Priority",
+      "status": "Status",
+      "funder": "Funder (optional)",
+      "commitment": "Commitment (optional)",
+      "none": "None",
+      "summary": "Summary",
+      "notes": "Notes",
+      "saveCase": "Save case",
+      "caseSaved": "Compliance case saved.",
+      "caseUpdated": "Compliance case updated.",
+      "filterStatus": "Filter by status",
+      "filterAll": "All",
+      "emptyCases": "No compliance cases yet.",
+      "receiptTitle": "Record payment receipt",
+      "receiptHint": "Manual reconciliation only — no payment processor. Marking received still respects sanctions/compliance blocks.",
+      "amountUsd": "Amount (USD)",
+      "provider": "Provider",
+      "externalReference": "External reference",
+      "markReceived": "Also mark commitment as received",
+      "saveReceipt": "Save receipt",
+      "receiptSaved": "Payment receipt recorded.",
+      "invalidReceiptAmount": "Enter a valid receipt amount greater than zero.",
+      "receiptsList": "Recent receipts",
+      "emptyReceipts": "No payment receipts yet.",
+      "caseTypes": {
+        "kyc": "KYC",
+        "kyb": "KYB",
+        "sanctions": "Sanctions",
+        "source_of_funds": "Source of funds",
+        "tax_docs": "Tax documents",
+        "restricted_funds": "Restricted funds",
+        "other": "Other"
+      },
+      "statuses": {
+        "open": "Open",
+        "in_review": "In review",
+        "cleared": "Cleared",
+        "blocked": "Blocked",
+        "waived": "Waived"
+      },
+      "priorities": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "providers": {
+        "manual": "Manual",
+        "wire": "Wire",
+        "ach": "ACH",
+        "card_processor": "Card processor",
+        "crypto_custodian": "Crypto custodian",
+        "other": "Other"
+      }
+    },
+} as const;

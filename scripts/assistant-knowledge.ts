@@ -7,7 +7,7 @@
  */
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -230,6 +230,9 @@ function sourceParts(): string[] {
     parts.push(`${source.path}\n${readFileSync(abs, 'utf8')}`);
   }
   parts.push(readFileSync(resolve(root, 'src/App.tsx'), 'utf8'));
+  for (const file of readdirSync(resolve(root, 'src/app-routes')).sort()) {
+    parts.push(readFileSync(resolve(root, 'src/app-routes', file), 'utf8'));
+  }
   parts.push(readFileSync(resolve(root, 'src/pages/happiness/happiness-app-routes.tsx'), 'utf8'));
   parts.push(readFileSync(resolve(root, 'src/lib/contribute-lanes.ts'), 'utf8'));
   parts.push(readFileSync(resolve(root, 'src/lib/agreements-model.ts'), 'utf8'));

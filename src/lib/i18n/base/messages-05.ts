@@ -1,0 +1,25 @@
+export const m_messages_05 = {
+  "earnings": {
+    "pageTitle": "Earnings",
+    "pageSubtitle": "Earnings from your work, services, and products sold through Civizen.",
+    "settlementNotice": "This page tracks your earnings from work you've done, services you've provided, and products you've sold through Civizen. Amounts shown are illustrative prototype credits only — they are not money, and in-app payment settlement is not active yet.",
+    "summaryProducts": "Products sold",
+    "summaryServices": "Services sold",
+    "summaryPending": "Pending",
+    "summaryIllustrative": "Illustrative total",
+    "filter.all": "All",
+    "filter.product": "Products",
+    "filter.service": "Services",
+    "filter.signed": "Signed",
+    "filter.pending": "Pending",
+    "empty": "No seller activity yet. When someone starts and signs an agreement for your product or service — from Market today, or Study and other surfaces later — it will appear here.",
+    "backendUnavailable": "Seller earnings records are not available in this environment yet. Apply the latest database migration and refresh.",
+    "signIn": "Sign in to see your earnings.",
+    "back": "Back",
+    "backHome": "Home",
+    "openMarket": "Market",
+    "openAgreements": "Agreements",
+    "rowSignedHint": "Signed agreement",
+    "rowPendingHint": "Awaiting signatures"
+  },
+} as const;

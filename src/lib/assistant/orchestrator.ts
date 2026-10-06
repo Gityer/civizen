@@ -108,7 +108,7 @@ function composeFromRetrieval(
     : false;
   const capRelated = cap ? distinctiveEnough(query, `${cap.item.name} ${cap.item.description}`) : false;
   if (topic !== 'current_capability' && faq && faqRelated && (!cap || !capRelated || retrieval.faq[0].score >= (cap.score ?? 0) * 0.7)) {
-    const related = cap && faq.item.capabilityIds.includes(cap.item.id) ? cap.item : cap;
+    const related = cap && faq.item.capabilityIds.includes(cap.item.id) ? cap.item : null;
     const prefix = related && capRelated ? statusPrefix(related.status) : '';
     return `${prefix}${faq.item.answer}`.trim();
   }

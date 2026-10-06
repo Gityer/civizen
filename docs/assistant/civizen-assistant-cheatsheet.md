@@ -41,9 +41,11 @@ Civizen is not merely a project-management platform, social network, governance 
 
 ## Current product structure
 
-Primary bottom navigation (signed-in): **Home · Study · Contribute · Market · Messaging**.
+Primary navigation (signed-in): **Home · Study · Contribute · Market · Messaging** — bottom bar on phones; left side rail on large screens.
 
-Settings, Profile, Search, Agreements, Governance, Score, Downloads, and admin tools live outside the bottom nav (Profile menu, page chrome, or public routes).
+Public website header on large screens also shows **Why this exists · Areas · Jobs · Documents · Governance**, plus Sign in / Join for guests.
+
+Settings, Profile, Search, Agreements, Governance, Score, Downloads, and admin tools live outside the primary nav (Profile menu, page chrome, or public routes).
 
 Public discovery includes `/areas`, `/partners`, `/fund`, `/documents`, `/governance`, `/about/*`, and `/contribute/policy`.
 
@@ -174,7 +176,7 @@ Propose, then sign in Civizen (typed name + explicit consent) or record paper/ex
 
 ## Governance
 
-Public landing `/governance`. Member proposal hub `/governance/workspace`. Civic voting `/governance/voting` (Proposals and Elections; public browsing; History beside each label for past/demo items).
+Public landing `/governance`. Member proposal hub `/governance/workspace`. Member dashboard `/governance/new` (open/closed proposals with weighted results and voting; steward console for identity verifications, constitutional office holders and a read-only Policies tab with the voting rules in force, shown only to office holders and members who can assign roles; policy changes go through a member vote). Voting needs a verified member with enough governance score in the native mobile app; an active sanction blocks it. Civic voting `/governance/voting` (Proposals and Elections; public browsing; History beside each label for past/demo items).
 
 Current public community instrument: **Civizen Community Governance Charter** (`/governance/charter`). It is **not** the legal constitution of a government or company.
 

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 
 import { ASSISTANT_CAPABILITIES, ASSISTANT_FAQ } from './catalog';
 import { INDEXED_SOURCES } from './sources';
@@ -6,10 +6,20 @@ import { ASSISTANT_CAPABILITY_STATUSES, type KnowledgePack } from './types';
 
 export type KnowledgeValidationIssue = { code: string; message: string };
 
-const ROUTE_FILES = ['src/App.tsx', 'src/pages/happiness/happiness-app-routes.tsx'];
+const APP_ROUTES_DIR = 'src/app-routes';
+
+/** Route declarations live in App.tsx, the happiness routes, and the route modules under src/app-routes. */
+function routeFiles(): string[] {
+  const routeModules = existsSync(APP_ROUTES_DIR)
+    ? readdirSync(APP_ROUTES_DIR)
+        .filter((file) => /^app-routes-.*\.tsx$/.test(file))
+        .map((file) => `${APP_ROUTES_DIR}/${file}`)
+    : [];
+  return ['src/App.tsx', 'src/pages/happiness/happiness-app-routes.tsx', ...routeModules];
+}
 
 function appRoutes(): string[] {
-  return ROUTE_FILES.flatMap((file) => {
+  return routeFiles().flatMap((file) => {
     if (!existsSync(file)) return [];
     const src = readFileSync(file, 'utf8');
     return [...src.matchAll(/path="(\/[^"]*)"/g)].map((m) => m[1]);

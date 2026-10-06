@@ -808,9 +808,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.197",
     "appReleaseId": "20260817-v0.1.197",
     "androidVersionCode": 199,
-    "gitSha": "2fd1ccb3d402212ab5a4cfcb337b9d6dd42b52dd",
-    "generatedAt": "2026-09-30T20:34:36.217Z",
-    "sourceFingerprint": "0599edb309994bd7ab90f0d82b6e86073249e4b52341db39a6c8776ea1b81999",
+    "gitSha": "de0b6771145ecd2465e0451313bd1505c6a441c7",
+    "generatedAt": "2026-10-05T22:48:51.428Z",
+    "sourceFingerprint": "252a078ebacc03db0a32e1760cef8bd1eb1fe5e9e9c621fb2b6b7984b5d49170",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370
@@ -1496,8 +1496,8 @@ var KNOWLEDGE_PACK = {
       "id": "governance",
       "name": "Governance",
       "status": "implemented",
-      "description": "Public governance landing, civic voting, member proposal workspace, and related policy pages. Current public community instrument is the Community Governance Charter.",
-      "howTo": "Open Home > Governance for the landing, Home > Governance > Civic voting for elections, and Home > Governance workspace for member proposals.",
+      "description": "Public governance landing, civic voting, member proposal workspace, a member dashboard with the steward console (identity verifications, constitutional office holders, and a read-only Policies tab showing the voting rules in force), and related policy pages. Current public community instrument is the Community Governance Charter. Voting on member proposals requires a verified member with enough governance score in the native mobile app; an active governance sanction blocks voting.",
+      "howTo": "Open Home > Governance for the landing, Home > Governance > Civic voting for elections, Home > Governance workspace for member proposals, and /governance/new for the member dashboard (open and closed proposals; the steward console appears for office holders and members who can assign roles; policy changes are proposed to members and decided by vote, not edited by stewards).",
       "routes": [
         "/governance",
         "/governance/workspace",
@@ -2812,7 +2812,7 @@ var KNOWLEDGE_PACK = {
       "id": "capability:governance",
       "title": "Governance",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Governance status=implemented. Public governance landing, civic voting, member proposal workspace, and related policy pages. Current public community instrument is the Community Governance Charter. Open Home > Governance for the landing, Home > Governance > Civic voting for elections, and Home > Governance workspace for member proposals. Routes: /governance, /governance/workspace, /governance/new, /governance/voting.",
+      "text": "Governance status=implemented. Public governance landing, civic voting, member proposal workspace, a member dashboard with the steward console (identity verifications, constitutional office holders, and a read-only Policies tab showing the voting rules in force), and related policy pages. Current public community instrument is the Community Governance Charter. Voting on member proposals requires a verified member with enough governance score in the native mobile app; an active governance sanction blocks voting. Open Home > Governance for the landing, Home > Governance > Civic voting for elections, Home > Governance workspace for member proposals, and /governance/new for the member dashboard (open and closed proposals; the steward console appears for office holders and members who can assign roles; policy changes are proposed to members and decided by vote, not edited by stewards). Routes: /governance, /governance/workspace, /governance/new, /governance/voting.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"
@@ -3460,7 +3460,7 @@ var KNOWLEDGE_PACK = {
       "id": "docs/assistant/civizen-assistant-cheatsheet.md#6",
       "title": "Current product structure",
       "path": "docs/assistant/civizen-assistant-cheatsheet.md",
-      "text": "## Current product structure Primary bottom navigation (signed-in): **Home \xB7 Study \xB7 Contribute \xB7 Market \xB7 Messaging**. Settings, Profile, Search, Agreements, Governance, Score, Downloads, and admin tools live outside the bottom nav (Profile menu, page chrome, or public routes). Public discovery includes `/areas`, `/partners`, `/fund`, `/documents`, `/governance`, `/about/*`, and `/contribute/policy`.",
+      "text": "## Current product structure Primary navigation (signed-in): **Home \xB7 Study \xB7 Contribute \xB7 Market \xB7 Messaging** \u2014 bottom bar on phones; left side rail on large screens. Public website header on large screens also shows **Why this exists \xB7 Areas \xB7 Jobs \xB7 Documents \xB7 Governance**, plus Sign in / Join for guests. Settings, Profile, Search, Agreements, Governance, Score, Downloads, and admin tools live outside the primary nav (Profile menu, page chrome, or public routes). Public discovery includes `/areas`, `/partners`, `/fund`, `/documents`, `/governance`, `/about/*`, and `/contribute/policy`.",
       "status": "implemented",
       "priority": 5,
       "kind": "cheatsheet"
@@ -6009,7 +6009,7 @@ function composeFromRetrieval(retrieval, query, topic) {
   const faqRelated = faq ? distinctiveEnough(query, `${faq.item.question} ${faq.item.aliases.join(" ")} ${faq.item.answer}`) : false;
   const capRelated = cap ? distinctiveEnough(query, `${cap.item.name} ${cap.item.description}`) : false;
   if (topic !== "current_capability" && faq && faqRelated && (!cap || !capRelated || retrieval.faq[0].score >= (cap.score ?? 0) * 0.7)) {
-    const related = cap && faq.item.capabilityIds.includes(cap.item.id) ? cap.item : cap;
+    const related = cap && faq.item.capabilityIds.includes(cap.item.id) ? cap.item : null;
     const prefix = related && capRelated ? statusPrefix(related.status) : "";
     return `${prefix}${faq.item.answer}`.trim();
   }
