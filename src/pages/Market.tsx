@@ -6,13 +6,13 @@ import { MarketFiltersSheet } from '@/components/market/MarketFiltersSheet';
 import { MarketJobsInterestForm } from '@/components/market/MarketJobsInterestForm';
 import { MarketListingCard } from '@/components/market/MarketListingCard';
 import { MarketListingKindIconToggle } from '@/components/market/MarketListingKindIconToggle';
-import { PostMarketListingDialog } from '@/components/market/PostMarketListingDialog';
+import { MarketListingSearchBar } from '@/components/market/MarketListingSearchBar';
+import { MarketPostOfferDialog } from '@/components/market/MarketPostOfferDialog';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { PublicLanguageSelect } from '@/components/public/PublicLanguageSelect';
 import { PublicThemeToggle } from '@/components/public/PublicThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePageSecondaryNav } from '@/hooks/usePageSecondaryNav';
 import { useAuth } from '@/contexts/AuthContext';
@@ -111,6 +111,7 @@ export default function Market() {
   const marketSecondaryNav = useMemo(
     () => ({
       loop: true,
+      persistCarousel: true,
       items: MARKET_CAROUSEL_SECTION_IDS.map((id) => ({
         id,
         label: t(marketCategoryLabelKey(id)),
@@ -221,12 +222,12 @@ export default function Market() {
   return (
     <AppLayout hideTopChrome>
       <div
-        className="flex min-h-0 flex-col pb-28"
+        className="flex min-h-0 flex-col pb-28 lg:pb-8"
         data-build-key="marketPage"
         data-build-label="Marketplace page"
       >
         <header
-          className="sticky top-0 z-30 border-b border-border/60 bg-background/95 pb-3 pt-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/80"
+          className="sticky top-0 z-30 border-b border-border/60 bg-background/95 pb-3 pt-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 lg:top-[3.25rem]"
           data-build-key="marketHeader"
           data-build-label="Marketplace header"
         >
@@ -236,7 +237,7 @@ export default function Market() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <h1
-                      className="truncate text-xl font-display font-bold leading-none tracking-tight text-foreground"
+                      className="truncate text-lg font-display font-bold leading-none tracking-tight text-foreground sm:text-xl"
                       data-testid="market-page-title"
                     >
                       {isJobs ? (
@@ -383,30 +384,13 @@ export default function Market() {
           </TooltipProvider>
 
           {listingSearchOpen ? (
-            <div className="mt-3 px-3" data-testid="market-listing-search-bar">
-              <div className="relative">
-                <Search
-                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                  aria-hidden
-                />
-                <Input
-                  ref={searchInputRef}
-                  value={searchDraft}
-                  onChange={(event) => setSearchDraft(event.target.value)}
-                  placeholder={
-                    listingKind === 'service'
-                      ? t('market.searchBarPlaceholderServices')
-                      : t('market.searchBarPlaceholder')
-                  }
-                  className="h-10 rounded-full border-border/70 bg-muted/40 pl-9 pr-3 text-sm"
-                  aria-label={
-                    listingKind === 'service'
-                      ? t('market.searchBarPlaceholderServices')
-                      : t('market.searchBarPlaceholder')
-                  }
-                />
-              </div>
-            </div>
+            <MarketListingSearchBar
+              inputRef={searchInputRef}
+              value={searchDraft}
+              onChange={setSearchDraft}
+              listingKind={listingKind}
+              t={t}
+            />
           ) : null}
         </header>
 
@@ -472,30 +456,12 @@ export default function Market() {
       <MarketFiltersSheet open={filtersOpen} onOpenChange={setFiltersOpen} t={t} />
 
       {profile?.id ? (
-        <PostMarketListingDialog
+        <MarketPostOfferDialog
           open={postOpen}
           onOpenChange={setPostOpen}
           sellerProfileId={profile.id}
           onCreated={bumpListings}
-          dialogTitle={t('market.postOfferTitle')}
-          dialogDescription={t('market.postOfferDescription')}
-          titleLabel={t('market.postOfferFieldTitle')}
-          descriptionLabel={t('market.postOfferFieldDescription')}
-          priceLabel={t('market.postOfferFieldPrice')}
-          priceHint={t('market.postOfferPriceHint')}
-          submitLabel={t('market.postOfferSubmit')}
-          submittingLabel={t('market.postOfferSubmitting')}
-          cancelLabel={t('market.postOfferCancel')}
-          titleRequired={t('market.postOfferTitleRequired')}
-          priceRequired={t('market.postOfferPriceRequired')}
-          saveError={t('market.postOfferSaveError')}
-          quantityLabel={t('market.postOfferQuantityLabel')}
-          quantityHint={t('market.postOfferQuantityHint')}
-          quantityInvalid={t('market.postOfferQuantityInvalid')}
-          kindLabel={t('market.postOfferKindLabel')}
-          kindProduct={t('market.postOfferKindProduct')}
-          kindService={t('market.postOfferKindService')}
-          kindHint={t('market.postOfferKindHint')}
+          t={t}
         />
       ) : null}
     </AppLayout>

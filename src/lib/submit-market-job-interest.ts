@@ -24,7 +24,7 @@ export type MarketJobInterestPayload = {
   profileId?: string | null;
 };
 
-type InsertResult = { ok: true } | { ok: false; message: string };
+type InsertResult = { ok: true; message?: undefined } | { ok: false; message: string };
 
 export async function submitMarketJobInterest(payload: MarketJobInterestPayload): Promise<InsertResult> {
   const jobTypes = payload.jobTypes.map((item) => item.trim()).filter(Boolean);

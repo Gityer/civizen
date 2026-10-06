@@ -10,7 +10,9 @@ type Translate = (key: string, vars?: Record<string, string | number>) => string
 
 type ActivityFilter = 'all' | 'credits';
 
-function partyLabel(party: LumaLedgerActivityRow['to_party'], t: Translate) {
+function partyLabel(rawParty: LumaLedgerActivityRow['to_party'], t: Translate) {
+  // A joined row can arrive as an object or a one-element array depending on the relationship.
+  const party = Array.isArray(rawParty) ? rawParty[0] : rawParty;
   const n = party?.full_name?.trim();
   if (n) return n;
   const u = party?.username?.trim();

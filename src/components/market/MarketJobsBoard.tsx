@@ -1,5 +1,5 @@
 import { Lock, LockOpen, Loader2 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -50,6 +50,12 @@ export function MarketJobsBoard({
 
   const listingMode = listingModeForViewer(viewerMode);
 
+  // Keep the latest translator for the fetch error toast without refetching when it changes.
+  const tRef = useRef(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
+
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -60,7 +66,7 @@ export function MarketJobsBoard({
       .catch((error: unknown) => {
         if (!cancelled) {
           setListings([]);
-          toast.error(error instanceof Error ? error.message : t('market.jobsBoard.loadError'));
+          toast.error(error instanceof Error ? error.message : tRef.current('market.jobsBoard.loadError'));
         }
       })
       .finally(() => {

@@ -96,7 +96,7 @@ describe('Market', () => {
 
   it('hides app-wide top chrome and keeps Profile in the page header', async () => {
     render(
-      <MemoryRouter initialEntries={['/market']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/market']}>
         <Market />
       </MemoryRouter>,
     );
@@ -110,7 +110,7 @@ describe('Market', () => {
     writeLastMarketSection('local');
 
     render(
-      <MemoryRouter initialEntries={['/market']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/market']}>
         <Market />
       </MemoryRouter>,
     );
@@ -122,7 +122,7 @@ describe('Market', () => {
     writeLastMarketSection('jobs');
 
     render(
-      <MemoryRouter initialEntries={['/market']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/market']}>
         <Market />
       </MemoryRouter>,
     );
@@ -134,7 +134,7 @@ describe('Market', () => {
 
   it('toggles the listing search bar from the Search icon', async () => {
     render(
-      <MemoryRouter initialEntries={['/market']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/market']}>
         <Market />
       </MemoryRouter>,
     );
@@ -150,7 +150,7 @@ describe('Market', () => {
     writeLastMarketSection('jobs');
 
     render(
-      <MemoryRouter initialEntries={['/market']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter initialEntries={['/market']}>
         <Market />
       </MemoryRouter>,
     );
