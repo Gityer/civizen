@@ -202,7 +202,7 @@ Must all pass before booth opens:
 | # | Addition | Status | Implementation |
 |---|----------|--------|----------------|
 | 1 | **Duress PIN** — lookalike booth, void ballot, silent watcher alert | **Built** | `src/lib/civic-voting/duress.ts`, `civic_duress_settings` / `civic_duress_alerts` |
-| 2 | **Observer mode** — turnout / gate fails without PII | **Built** | `src/lib/civic-voting/observer.ts`, `/governance/voting/:id/observe` |
+| 2 | **Observer mode** — turnout / gate fails without PII | **Built** (live data since 2026-10-06 via `civic_election_observer_metrics`; says plainly when no roster/gates/risk/canvass exist) | `src/lib/civic-voting/observer.ts`, `observer-metrics.ts`, `/governance/voting/:id/observe` |
 | 3 | **Risk engine** — velocity, device farm, GPS cluster, impossible travel | **Built** | `src/lib/civic-voting/risk-engine.ts`, `civic_risk_findings` |
 | 4 | **Paper / assisted fallback** — dual-control audit | **Built** | `src/lib/civic-voting/assisted-ballot.ts`, `civic_assisted_ballots` |
 | 5 | **Candidate / measure challenge period** | **Built** | `src/lib/civic-voting/challenge-period.ts`, `civic_candidate_challenges` |
@@ -288,3 +288,32 @@ Canonical copy: `src/lib/civic-voting/single-world-citizenship.ts`. Idempotent p
 - A voter can change the choice until close, or withdraw the ballot (`withdraw_consultation_ballot`).
 - A member can delete their own account from Settings > Privacy (`delete_my_account`): open-consultation ballots are withdrawn, the public listing is removed, personal details are cleared, the profile is marked deleted and the sign-in identity is disabled and freed. Staff, system agents and current constitutional office holders cannot delete themselves.
 - Public counts show a split of ballots from verified members and from accounts not yet verified (`civic_election_verification_split`). Identity uniqueness (one person, one account) is not enforced for ordinary consultations; stronger verification is a separate, later tier.
+
+## 13. Consultation ballot integrity (Phase A, 2026-10-06)
+
+Migration `supabase/migrations/20261006060000_consultation_ballot_integrity.sql`; SQL test `supabase/tests/consultation_ballot_integrity_test.sql` (run with `scripts/local-supabase/run-sql-tests.sh consultation`).
+
+| Concern | Contract |
+| --- | --- |
+| Eligibility (server) | `consultation_eligibility_reason(election, profile)` is checked inside `cast_consultation_ballot`. Reasons: `election_not_open`, `demo_not_votable`, `consultation_cast_ordinary_only`, `not_authenticated`, `profile_unavailable`, `voter_blocked` (active `governance_sanctions` with `blocks_voting`/`blocks_governance_all`), `verification_required` (election `metadata.requires_verified`), `age_unknown` / `under_age` (election `metadata.min_age` vs `profiles.date_of_birth`), `outside_scope` (non-global `scope_country_code` vs `profiles.country_code`). The UI reads `my_consultation_eligibility` and shows the reason with the ballot buttons disabled. |
+| Secrecy | The choice is stored only in `civic_ballots.encrypted_payload` as `pgp_sym_encrypt` under a per-election secret in `civic_election_secrets` (RLS on, no API grants). Ballot/session metadata and `civic_ballot_selections` carry no option for consultations. Tallies decrypt inside the SECURITY DEFINER function `civic_election_public_tallies`. Known limit: the database owner / service role can still decrypt (Phase B/C of §6.2 remains open). |
+| Receipt | `cast_consultation_ballot` returns `{ballot_id, receipt}`; the receipt is a random 24-hex `ballot_commitment`, kept when a counted choice is changed, regenerated after a withdrawal. `civic_election_receipt_included(election, receipt)` and `civic_election_receipts(election)` are public; neither reveals a choice. |
+| Audit chain | Every cast, change, withdrawal, ledger start and close appends to `civic_voting_events` through `civic_append_election_event`: `event_hash = sha256(prev_hash|election_id|event_type|payload::text|created_at UTC µs)`, `actor_id` and `session_id` always NULL. Events are public-read. |
+| Lifecycle | `civic_close_due_elections()` (pg_cron `civic_elections_close_tick`, hourly at :20) sets `status = closed` once `voting_closes_at` has passed, stores `metadata.final_tally` / `closed_at`, appends `election_closed`, and closes the published proposal. The client uses `resolveVotingWindow` so an election past its close time is treated as closed before the tick runs. |
+| Withdrawal | Sets `is_countable = false`, clears the ciphertext, removes the directory listing, appends `consultation_withdrawn`. The former reversible `prior_choice_hash` is no longer written. |
+
+## 14. Member-initiated consultations and notifications (2026-10-06)
+
+Migration `supabase/migrations/20261006070000_voting_proposals_member_support.sql`; SQL test `supabase/tests/voting_proposal_support_test.sql`.
+
+| Concern | Contract |
+| --- | --- |
+| Draft | Unchanged: the initiator or responsible person of a Matter (or a manager) creates a draft with `create_voting_proposal_from_matter`. |
+| Open for support | The author (or a manager) calls `open_voting_proposal_for_support(proposal, threshold)`; `metadata.open_for_support = true`, `metadata.support_threshold` (1–1000, default 10). Open drafts are readable by every signed-in member. |
+| Support | `toggle_voting_proposal_support(proposal)` adds or removes one row in `civic_voting_proposal_support` for the caller (signed in, profile not deleted, no `proposal_create` sanction). `voting_proposal_support_summary` reports count, threshold, whether the caller supports it, and `ready`. |
+| Scope and timing | While a draft, `update_voting_proposal_settings` sets `scope_kind` (`global` or `country` + ISO-3166 alpha-2), `voting_opens_at`, `voting_closes_at` (closes must follow opens). |
+| Publish | `publish_voting_proposal`: managers at any time; the author once `ready`. Tier follows scope (`country` → `national`, else `supranational`). A future opening time creates a `scheduled` election; the lifecycle tick (`civic_close_due_elections`, hourly) opens it and appends `election_opened`. Publication appends `election_published` and notifies the author, supporters and Matter parties (`civic_consultation_published`, entity `civic_election`). |
+| Close | The tick notifies everyone whose ballot counted (`civic_consultation_closed`). |
+| Notifications | `public.user_notifications` is read and marked read directly by the owner (existing RLS); producers are server functions only (`civic_notify_profiles`). UI: bell in the app chrome, `/notifications`, Settings › Notifications. |
+| Member surface | `/governance/workspace` is the one member Governance page: Votes (open / scheduled / results), Proposals (open for support, mine, published, closed), Tools (steward console `/governance/tools/steward`, legacy workspace `/governance/tools`; shown only to founders/admins/system, role or settings managers, and office holders). `/governance/new` redirects to the steward console. |
+| Legacy proposal votes | `governance_proposal_votes.weight` is clamped to 0..1 by trigger; the client can no longer inflate a vote. |

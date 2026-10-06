@@ -29,6 +29,7 @@ import { m_messages_fund_01 } from './i18n/base/messages-fund-01';
 import { m_messages_fund_02 } from './i18n/base/messages-fund-02';
 import { m_messages_14 } from './i18n/base/messages-14';
 import { m_messages_15 } from './i18n/base/messages-15';
+import { m_messages_16 } from './i18n/base/messages-16';
 
 export const baseTranslations = {
   ...m_messages_01,
@@ -52,6 +53,7 @@ export const baseTranslations = {
   "fund": { ...m_messages_fund_01, ...m_messages_fund_02, },
   ...m_messages_14,
   ...m_messages_15,
+  ...m_messages_16,
 } as const;
 
 export type BaseTranslations = typeof baseTranslations;

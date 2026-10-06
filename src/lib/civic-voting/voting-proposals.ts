@@ -23,6 +23,10 @@ export type VotingProposal = {
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  /** Raw metadata: open_for_support, support_threshold, … */
+  metadata: Record<string, unknown>;
+  openForSupport: boolean;
+  supportThreshold: number;
 };
 
 type ProposalRow = {
@@ -42,9 +46,12 @@ type ProposalRow = {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  metadata?: Record<string, unknown> | null;
 };
 
 function mapProposal(row: ProposalRow): VotingProposal {
+  const metadata = (row.metadata && typeof row.metadata === 'object' ? row.metadata : {}) as Record<string, unknown>;
+  const threshold = Number(metadata.support_threshold);
   return {
     id: row.id,
     matterId: row.matter_id,
@@ -62,6 +69,9 @@ function mapProposal(row: ProposalRow): VotingProposal {
     publishedAt: row.published_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    metadata,
+    openForSupport: Boolean(metadata.open_for_support),
+    supportThreshold: Number.isFinite(threshold) && threshold > 0 ? threshold : 10,
   };
 }
 
@@ -69,7 +79,7 @@ export async function listVotingProposals(): Promise<VotingProposal[]> {
   const { data, error } = await db
     .from('civic_voting_proposals')
     .select(
-      'id, matter_id, title, summary, body, status, consultation_kind, scope_kind, scope_country_code, election_id, voting_opens_at, voting_closes_at, created_by_profile_id, published_at, created_at, updated_at',
+      'id, matter_id, title, summary, body, status, consultation_kind, scope_kind, scope_country_code, election_id, voting_opens_at, voting_closes_at, created_by_profile_id, published_at, created_at, updated_at, metadata',
     )
     .order('updated_at', { ascending: false });
 
@@ -81,7 +91,7 @@ export async function getVotingProposal(proposalId: string): Promise<VotingPropo
   const { data, error } = await db
     .from('civic_voting_proposals')
     .select(
-      'id, matter_id, title, summary, body, status, consultation_kind, scope_kind, scope_country_code, election_id, voting_opens_at, voting_closes_at, created_by_profile_id, published_at, created_at, updated_at',
+      'id, matter_id, title, summary, body, status, consultation_kind, scope_kind, scope_country_code, election_id, voting_opens_at, voting_closes_at, created_by_profile_id, published_at, created_at, updated_at, metadata',
     )
     .eq('id', proposalId)
     .maybeSingle();
@@ -94,7 +104,7 @@ export async function listVotingProposalsForMatter(matterId: string): Promise<Vo
   const { data, error } = await db
     .from('civic_voting_proposals')
     .select(
-      'id, matter_id, title, summary, body, status, consultation_kind, scope_kind, scope_country_code, election_id, voting_opens_at, voting_closes_at, created_by_profile_id, published_at, created_at, updated_at',
+      'id, matter_id, title, summary, body, status, consultation_kind, scope_kind, scope_country_code, election_id, voting_opens_at, voting_closes_at, created_by_profile_id, published_at, created_at, updated_at, metadata',
     )
     .eq('matter_id', matterId)
     .order('created_at', { ascending: false });
@@ -129,13 +139,19 @@ export async function publishVotingProposal(proposalId: string): Promise<string>
   return String(data);
 }
 
-export async function castConsultationBallot(electionId: string, optionKey: string): Promise<string> {
+export type ConsultationCastResult = { ballotId: string; receipt: string };
+
+export async function castConsultationBallot(
+  electionId: string,
+  optionKey: string,
+): Promise<ConsultationCastResult> {
   const { data, error } = await db.rpc('cast_consultation_ballot', {
     p_election_id: electionId,
     p_option_key: optionKey,
   });
   if (error) throw new Error(error.message);
-  return String(data);
+  const row = (data || {}) as { ballot_id?: string; receipt?: string };
+  return { ballotId: String(row.ballot_id ?? ''), receipt: String(row.receipt ?? '') };
 }
 
 export async function withdrawConsultationBallot(electionId: string): Promise<boolean> {
@@ -146,12 +162,115 @@ export async function withdrawConsultationBallot(electionId: string): Promise<bo
   return Boolean(data);
 }
 
+export type MyConsultationBallot = { optionKey: string | null; receipt: string | null; castAt: string | null };
+
+/** The member's own counted ballot (choice unsealed server-side for the owner only). */
+export async function myConsultationBallot(electionId: string): Promise<MyConsultationBallot | null> {
+  const { data, error } = await db.rpc('my_consultation_ballot', { p_election_id: electionId });
+  if (error || !data) return null;
+  const row = data as { option_key?: string | null; receipt?: string | null; cast_at?: string | null };
+  return {
+    optionKey: row.option_key ? String(row.option_key) : null,
+    receipt: row.receipt ? String(row.receipt) : null,
+    castAt: row.cast_at ? String(row.cast_at) : null,
+  };
+}
+
 export async function myConsultationBallotOption(electionId: string): Promise<string | null> {
-  const { data, error } = await db.rpc('my_consultation_ballot_option', {
+  const ballot = await myConsultationBallot(electionId);
+  return ballot?.optionKey ?? null;
+}
+
+export type ConsultationEligibility = { eligible: boolean; reason: string | null };
+
+/** Server-side eligibility for the signed-in member (null reason means eligible). */
+export async function myConsultationEligibility(electionId: string): Promise<ConsultationEligibility | null> {
+  const { data, error } = await db.rpc('my_consultation_eligibility', { p_election_id: electionId });
+  if (error || !data) return null;
+  const row = data as { eligible?: boolean; reason?: string | null };
+  return { eligible: Boolean(row.eligible), reason: row.reason ? String(row.reason) : null };
+}
+
+/** Public inclusion check: is this receipt among the counted ballots? */
+export async function checkConsultationReceipt(electionId: string, receipt: string): Promise<boolean> {
+  const { data, error } = await db.rpc('civic_election_receipt_included', {
     p_election_id: electionId,
+    p_receipt: receipt,
   });
-  if (error) return null;
-  return data ? String(data) : null;
+  if (error) throw new Error(error.message);
+  return Boolean(data);
+}
+
+export type VotingProposalSupport = {
+  count: number;
+  threshold: number;
+  openForSupport: boolean;
+  supported: boolean;
+  ready: boolean;
+};
+
+function mapSupport(data: unknown): VotingProposalSupport {
+  const row = (data && typeof data === 'object' ? data : {}) as Record<string, unknown>;
+  return {
+    count: Number(row.count) || 0,
+    threshold: Number(row.threshold) || 10,
+    openForSupport: Boolean(row.open_for_support),
+    supported: Boolean(row.supported),
+    ready: Boolean(row.ready),
+  };
+}
+
+export async function getVotingProposalSupport(proposalId: string): Promise<VotingProposalSupport | null> {
+  const { data, error } = await db.rpc('voting_proposal_support_summary', { p_proposal_id: proposalId });
+  if (error || !data) return null;
+  return mapSupport(data);
+}
+
+export async function openVotingProposalForSupport(
+  proposalId: string,
+  threshold?: number | null,
+): Promise<VotingProposalSupport> {
+  const { data, error } = await db.rpc('open_voting_proposal_for_support', {
+    p_proposal_id: proposalId,
+    p_threshold: threshold ?? null,
+  });
+  if (error) throw new Error(error.message);
+  return mapSupport(data);
+}
+
+export async function toggleVotingProposalSupport(proposalId: string): Promise<VotingProposalSupport> {
+  const { data, error } = await db.rpc('toggle_voting_proposal_support', { p_proposal_id: proposalId });
+  if (error) throw new Error(error.message);
+  return mapSupport(data);
+}
+
+export async function updateVotingProposalSettings(input: {
+  proposalId: string;
+  scopeKind: 'global' | 'country';
+  scopeCountryCode?: string | null;
+  votingOpensAt?: string | null;
+  votingClosesAt?: string | null;
+}): Promise<void> {
+  const { error } = await db.rpc('update_voting_proposal_settings', {
+    p_proposal_id: input.proposalId,
+    p_scope_kind: input.scopeKind,
+    p_scope_country_code: input.scopeCountryCode || null,
+    p_voting_opens_at: input.votingOpensAt || null,
+    p_voting_closes_at: input.votingClosesAt || null,
+  });
+  if (error) throw new Error(error.message);
+}
+
+/** True when this member may publish: managers always, authors once the support threshold is met. */
+export function canPublishVotingProposal(input: {
+  role: string | null | undefined;
+  profileId: string | null | undefined;
+  proposal: Pick<VotingProposal, 'createdByProfileId' | 'status'>;
+  support: Pick<VotingProposalSupport, 'ready'> | null;
+}): boolean {
+  if (input.proposal.status !== 'draft') return false;
+  if (canManageVotingProposals(input.role)) return true;
+  return Boolean(input.profileId && input.profileId === input.proposal.createdByProfileId && input.support?.ready);
 }
 
 export function canManageVotingProposals(role: string | null | undefined): boolean {

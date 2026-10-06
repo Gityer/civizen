@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { APP_RELEASE_ID, APP_VERSION, ANDROID_VERSION_CODE } from '@/lib/app-release';
-import { advanceAssistedBallot, assertDistinctAssistedRoles, attestVotingClient, buildDuressVoidBallot, canSubmitChallenge, castConsultationBallot, checkBoothUnlockPin, computeCoolingOffUntil, deriveDefaultChallengeWindow, electionTitleWithoutCountryLabel, enrollDuressPin, evaluateCivicVotingEligibility, evaluateSessionGates, isCoolingOffActive, isOrdinaryConsultationElection, loadCivicElectionCountryStats, loadCivicElectionDetail, loadCivicElectionPublicDirectory, loadCivicElectionPublicTallies, loadCivicElectionVerificationSplit, myConsultationBallotOption, myConsultationPublicPresence, openVoteWindow, remainingWindowSeconds, securityClassGatePolicy, setConsultationPublicPresence, withdrawConsultationBallot, type CivicCountryStatRow, type CivicElectionSecurityClass, type CivicPublicDirectoryRow, type CivicPublicTallyRow, type CivicVerificationSplit, type CivicVerificationCheckKind, type CivicElectionDetail } from '@/lib/civic-voting';
+import { advanceAssistedBallot, assertDistinctAssistedRoles, attestVotingClient, buildDuressVoidBallot, canSubmitChallenge, castConsultationBallot, checkBoothUnlockPin, checkConsultationReceipt, computeCoolingOffUntil, deriveDefaultChallengeWindow, electionTitleWithoutCountryLabel, enrollDuressPin, evaluateCivicVotingEligibility, evaluateSessionGates, isCoolingOffActive, isOrdinaryConsultationElection, loadCivicElectionCountryStats, loadCivicElectionDetail, loadCivicElectionPublicDirectory, loadCivicElectionPublicTallies, loadCivicElectionVerificationSplit, myConsultationBallot, myConsultationEligibility, myConsultationPublicPresence, openVoteWindow, remainingWindowSeconds, resolveVotingWindow, securityClassGatePolicy, setConsultationPublicPresence, toConsultationReasonCode, withdrawConsultationBallot, type CivicCountryStatRow, type CivicElectionSecurityClass, type CivicPublicDirectoryRow, type CivicPublicTallyRow, type CivicVerificationSplit, type CivicVerificationCheckKind, type CivicElectionDetail } from '@/lib/civic-voting';
 import { MIN_GOVERNANCE_SCORE, isNativeGovernanceApp } from '@/lib/governance-eligibility';
 import { toast } from 'sonner';
 import { type DemoGateState, VOTING_MANIFEST } from '@/pages/governance/civic-voting-election/civic-voting-election-shared';
@@ -24,6 +24,8 @@ export function useCivicVotingElection() {
   const [directoryVisible, setDirectoryVisible] = useState(false);
   const [directoryBusy, setDirectoryBusy] = useState(false);
   const [myOption, setMyOption] = useState<string | null>(null);
+  const [myReceipt, setMyReceipt] = useState<string | null>(null);
+  const [eligibilityReason, setEligibilityReason] = useState<string | null>(null);
   const [casting, setCasting] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
 
@@ -41,15 +43,20 @@ export function useCivicVotingElection() {
     setCountryStats(countryResult.rows);
     setDirectory(directoryResult.rows);
     if (signedIn) {
-      const [option, visible] = await Promise.all([
-        myConsultationBallotOption(id),
+      const [ballot, visible, eligibility] = await Promise.all([
+        myConsultationBallot(id),
         myConsultationPublicPresence(id),
+        myConsultationEligibility(id),
       ]);
-      setMyOption(option);
+      setMyOption(ballot?.optionKey ?? null);
+      setMyReceipt(ballot?.receipt ?? null);
       setDirectoryVisible(visible);
+      setEligibilityReason(eligibility?.reason ?? null);
     } else {
       setMyOption(null);
+      setMyReceipt(null);
       setDirectoryVisible(false);
+      setEligibilityReason(null);
     }
   };
 
@@ -78,24 +85,27 @@ export function useCivicVotingElection() {
   const isConsultation = detail
     ? isOrdinaryConsultationElection(detail.election, optionKeys)
     : false;
-  const votingOpen = detail?.election.status === 'open';
-  const votingClosed =
-    detail?.election.status === 'closed' ||
-    detail?.election.status === 'certified' ||
-    detail?.election.status === 'cancelled';
+  const votingWindow = detail ? resolveVotingWindow(detail.election) : null;
+  const votingOpen = votingWindow?.state === 'open';
+  const votingClosed = votingWindow?.state === 'closed';
+
+  const explainError = (error: unknown, fallbackKey: string) => {
+    const code = toConsultationReasonCode(error);
+    if (code) return t(`civicBallot.reason.${code}`);
+    return error instanceof Error && error.message ? error.message : t(fallbackKey);
+  };
 
   const castConsultation = async (optionKey: 'support' | 'oppose' | 'abstain') => {
     if (!electionId || casting || withdrawing) return;
     setCasting(true);
     try {
-      await castConsultationBallot(electionId, optionKey);
+      const result = await castConsultationBallot(electionId, optionKey);
       setMyOption(optionKey);
+      setMyReceipt(result.receipt || null);
       toast.success(t('civicVoting.proposals.castSaved'));
       await refreshPublicParticipation(electionId, true);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('civicVoting.proposals.castFailed'),
-      );
+      toast.error(explainError(error, 'civicVoting.proposals.castFailed'));
     } finally {
       setCasting(false);
     }
@@ -107,15 +117,25 @@ export function useCivicVotingElection() {
     try {
       await withdrawConsultationBallot(electionId);
       setMyOption(null);
+      setMyReceipt(null);
       setDirectoryVisible(false);
       toast.success(t('civicVoting.proposals.withdrawn'));
       await refreshPublicParticipation(electionId, true);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('civicVoting.proposals.withdrawFailed'),
-      );
+      toast.error(explainError(error, 'civicVoting.proposals.withdrawFailed'));
     } finally {
       setWithdrawing(false);
+    }
+  };
+
+  const verifyReceipt = async () => {
+    if (!electionId || !myReceipt) return;
+    try {
+      const included = await checkConsultationReceipt(electionId, myReceipt);
+      if (included) toast.success(t('civicBallot.receiptIncluded'));
+      else toast.error(t('civicBallot.receiptMissing'));
+    } catch {
+      toast.error(t('civicBallot.receiptCheckFailed'));
     }
   };
 
@@ -296,8 +316,8 @@ export function useCivicVotingElection() {
   return {
     detail, detailLoading, detailError, electionId, t, language, user, isConsultation, title,
     displayTitle, verificationSplit, tallies, tallyTotal, tallyError, countryStats, directory, directoryVisible,
-    directoryBusy, myOption, casting, withdrawing, votingOpen, votingClosed, castConsultation,
-    withdrawConsultation, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
+    directoryBusy, myOption, myReceipt, eligibilityReason, votingWindow, casting, withdrawing,
+    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
     pinInput, setPinInput, assistedStatus, pinMessage, canOpenBooth, failed, policy,
     coolingOffUntil, coolingOffActive, attestation, challengeOpen, eligibility, secondsLeft,
     startSimulatedWindow, toggleGate, tryOpenBooth, enrollPins, unlockWithPin, castSimulatedBallot,
