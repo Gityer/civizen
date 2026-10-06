@@ -20,7 +20,7 @@
     --popover-foreground: 200 25% 10%;
 
     /* Primary - Deep Teal (Trust) */
-    --primary: 174 62% 35%;
+    --primary: 174 62% 30%; /* 5:1 against white text (WCAG AA) */
     --primary-foreground: 0 0% 100%;
 
     /* Secondary - Warm slate */
@@ -39,7 +39,7 @@
 
     --border: 200 15% 90%;
     --input: 200 15% 90%;
-    --ring: 174 62% 35%;
+    --ring: 174 62% 30%;
 
     --radius: 1rem;
 
@@ -259,4 +259,16 @@
 }
 .civi-chat-bubble--plain {
   border-radius: 0.5rem;
+}
+
+/* Respect the system "reduce motion" setting everywhere (framer-motion follows it via MotionConfig). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

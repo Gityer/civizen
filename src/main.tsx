@@ -26,10 +26,20 @@ function attemptBootRecovery(reason: unknown) {
   return reloadForNewDeployment(reason);
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function renderFatalBootScreen(reason: unknown) {
   if (typeof document === "undefined") return;
 
-  const message = getErrorMessage(reason);
+  // Error text can carry URL fragments or server messages, so it is escaped before it reaches innerHTML.
+  const message = escapeHtml(getErrorMessage(reason));
   const root = document.getElementById("root");
   if (!root) return;
   const chunkStale = isChunkLoadError(reason);

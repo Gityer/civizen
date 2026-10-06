@@ -31,25 +31,28 @@ const localStorageMock: Storage = {
   },
 };
 
-Object.defineProperty(window, "localStorage", {
-  configurable: true,
-  value: localStorageMock,
-});
+// Node-environment tests (pure logic) have no window; the browser shims below are for jsdom only.
+if (typeof window !== "undefined") {
+  Object.defineProperty(window, "localStorage", {
+    configurable: true,
+    value: localStorageMock,
+  });
 
-beforeEach(() => {
-  window.localStorage.clear();
-});
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
 
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  value: (query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: () => {},
-    removeListener: () => {},
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    dispatchEvent: () => {},
-  }),
-});
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => {},
+    }),
+  });
+}

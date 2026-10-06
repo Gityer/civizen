@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { buildFirstRunSteps, dismissFirstRun, isFirstRunComplete, isFirstRunDismissed } from '@/lib/first-run-checklist';

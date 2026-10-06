@@ -75,5 +75,12 @@ export const m_messages_settings_03 = {
       "done": "Your data file has been downloaded.",
       "failed": "Could not prepare your data. Try again later.",
       "tooMany": "You have downloaded your data several times this hour. Try again later."
+    },
+    "skipToContent": "Skip to main content",
+    "routeError": {
+      "title": "This page ran into a problem",
+      "body": "The rest of Civizen still works. Try the page again, or go back to Home.",
+      "retry": "Try again",
+      "home": "Go to Home"
     }
 };

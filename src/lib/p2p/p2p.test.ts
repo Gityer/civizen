@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { GunClientManager } from './gun-client';
 import { IPFSClientManager } from './ipfs-client';
 import { PeerDiscoveryManager } from './peer-discovery';

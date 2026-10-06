@@ -3,6 +3,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { AppLayout } from '@/components/layout/AppLayout';
 
+vi.mock('@/contexts/LanguageContext', () => ({
+  useLanguage: () => ({ t: (key: string) => key }),
+}));
+
 vi.mock('@/components/layout/AppTopChrome', () => ({
   AppTopChrome: () => <div data-testid="app-top-chrome" />,
 }));
@@ -91,5 +95,13 @@ describe('AppLayout', () => {
     expect(screen.queryByTestId('mobile-nav')).not.toBeInTheDocument();
     expect(screen.queryByTestId('app-side-nav')).not.toBeInTheDocument();
     expect(screen.queryByTestId('nav-secondary-desktop')).not.toBeInTheDocument();
+  });
+});
+
+describe('AppLayout skip link', () => {
+  it('points at the main content', () => {
+    render(<AppLayout>content</AppLayout>);
+    expect(screen.getByText('settings.skipToContent').getAttribute('href')).toBe('#main-content');
+    expect(document.getElementById('main-content')).not.toBeNull();
   });
 });
