@@ -47,6 +47,7 @@ export const m_messages_02 = {
     "backToLogin": "Back to sign in",
     "checkEmailTitle": "Check your email",
     "checkEmailMessage": "We've sent a verification link to {email}.",
+    "quickVoteSignup": "Create a free account to vote. We only need a contact method and a password; you can complete your profile later.",
     "accountReadyTitle": "Account created",
     "accountReadyMessage": "Your account is ready for {phone}. You can sign in now.",
     "passwordRecoveryTitle": "Check your email",

@@ -25,7 +25,9 @@ export const m_messages_14 = {
       "total": "{count} countable ballots",
       "noneYet": "No countable ballots yet.",
       "unavailable": "Public counts could not be loaded.",
-      "validOnly": "Counts include valid ballots only. Individual choices stay private."
+      "validOnly": "Counts include valid ballots only. Individual choices stay private.",
+      "verifiedSplit": "Of these, {verified} from verified members and {unverified} from accounts not yet verified.",
+      "verifiedSplitHint": "Anyone can vote with a free account. Verified members completed identity checks, so their count is shown separately."
     },
     "proposals": {
       "title": "Proposals",
@@ -66,6 +68,8 @@ export const m_messages_14 = {
     "consultation": {
       "badge": "Consultation",
       "participate": "Participate in the consultation",
+      "guestQuickCta": "Free account, about a minute. You come straight back here to vote.",
+      "createAccountToVote": "Create account to vote",
       "bodyHint": "Voluntary network consultation. Respect for rights, diversity, and local autonomy remains. Public counts show valid ballots only."
     },
     "participation": {
@@ -193,7 +197,8 @@ export const m_messages_14 = {
       "homeTitle": "Home and solitude",
       "homeBody": "Important contests prefer your usual home and a single-person scene check.",
       "transparencyTitle": "Transparent tallies",
-      "transparencyBody": "Append-only event hashes and public commitments without exposing individual choices."
+      "transparencyBody": "Append-only event hashes and public commitments without exposing individual choices.",
+      "ordinaryNote": "These steps apply to higher-security contests. Ordinary consultations, such as a nonbinding opinion vote, only need a free account."
     },
     "badges": {
       "homeRequired": "Home required",
