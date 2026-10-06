@@ -10,6 +10,8 @@ Before planning or editing, agents **must read**:
 2. This file (`docs/04-operations/dev/AGENTS.md`)
 3. When work touches secondary nav, Market bottom menu, or `NavSecondaryCarousel`:
    **`docs/04-operations/dev/nav-secondary-carousel.md`** (canonical UX + geometry)
+   When work touches signed-in or public chrome on large screens (side rail, public header destinations, directory vs reading width):
+   **`docs/04-operations/dev/large-screen-layout.md`**
 4. When work touches onboarding, identity, citizenship, governance, elections, legal status, partnerships, or public mission copy:
    **`docs/00-foundation/recognized-planetary-citizenship-pathway.md`** (controlling long-term pathway)
 5. When work touches institutional architecture, proposed legal entities, funding allocation principles, contributor economic claims, how governance authority is distributed, stakeholder/partnership classification, pilots/validation programs, founder transition/succession, contribution recording, or Area/Domain taxonomy:

@@ -52,9 +52,13 @@ try {
     await page.goto(`${baseUrl}/market?section=for-you`, { waitUntil: 'networkidle', timeout: 60000 });
     await acceptTermsIfPresent();
     // Market secondary arc opens when the Market primary tab is activated.
-    const marketTab = page.locator('nav a, nav button').filter({ hasText: /^Market$/i }).first();
+    // Scope to the phone bottom bar — AppSideNav also has Market on large screens.
+    const marketTab = page
+      .locator('[data-testid="mobile-bottom-nav"] button')
+      .filter({ hasText: /^Market$/i })
+      .first();
     if (await marketTab.count()) {
-      await marketTab.click();
+      await marketTab.click({ force: false });
       await page.waitForTimeout(400);
     }
     await page.waitForSelector('[role="listbox"][aria-label="Section navigation"]', { timeout: 15000 });

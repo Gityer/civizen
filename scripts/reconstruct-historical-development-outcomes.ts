@@ -49,7 +49,7 @@ function gitCommits(): HistoricalCommit[] {
   let current: HistoricalCommit | null = null;
   for (const line of raw.split('\n')) {
     if (line.includes('\x1f')) {
-      const [sha, authoredAt, subject] = line.replace(/\x1e/g, '').split('\x1f');
+      const [sha, authoredAt, subject] = line.split('\x1e').join('').split('\x1f');
       current = { sha: sha!, authoredAt: authoredAt!, subject: subject!, files: [] };
       commits.push(current);
     } else if (line.trim() && current) current.files.push(line.trim());

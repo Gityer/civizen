@@ -13,6 +13,7 @@ Before planning or editing, read (in order):
 2. `docs/04-operations/dev/AGENTS.md`
 3. If the task touches secondary nav, Market bottom menu, Home/Study tabs, or `NavSecondaryCarousel`:
    - **`docs/04-operations/dev/nav-secondary-carousel.md`** (canonical UX + geometry spec)
+   - **`docs/04-operations/dev/large-screen-layout.md`** when work changes signed-in or public chrome on large screens
 4. If the task touches onboarding, identity, citizenship, governance, elections, legal status, partnerships, or public mission copy:
    - **`docs/00-foundation/recognized-planetary-citizenship-pathway.md`**
 5. If the task touches institutional architecture, proposed legal entities, funding allocation principles, contributor economic claims, how governance authority is distributed, stakeholder/partnership classification, pilots/validation, founder transition/succession, contribution recording, or Area/Domain taxonomy:

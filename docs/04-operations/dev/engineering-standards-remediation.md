@@ -30,6 +30,8 @@ These files exceeded the soft limit before or during institutional remediation. 
 ## Removed from allowlist
 
 - `GovernanceActivationFeedAdaptersPanel.tsx` — deleted from production tree (off route graph; demographic ingest UI removed).
+- 2026-10-05 split pass (caps removed or lowered to current size): `App.tsx` (routes now in `src/app-routes/`), `i18n.base.ts` (composed from `src/lib/i18n/base/`), `assistant/catalog.ts` (data in `catalog-data/`), `Home.tsx` (hooks and sections in `src/pages/home/`), `UserPageMenu.tsx`, `MarketJobsInterestForm.tsx`, `CivicVotingElection.tsx`, `CivicVotingHub.tsx`, `page-smoke.test.tsx`, plus `matters*.ts`, `identity-verification.ts`, `matters-coding-policy.ts`, `PublicCiviWidget.tsx`, `MatterDetail.tsx`, `MatterWorkPanel.tsx` and the two long matters test files. Text-scanning tests and the assistant route validator now read the split files. Still allowlisted (smaller than before): `chat-bar.tsx`, `Settings.tsx`, `EditProfile.tsx`, `StudyCivicLearning.tsx`, `Market.tsx`.
+- The extracted `src/pages/home/**` files keep the existing `react-hooks/exhaustive-deps` exemption that `Home.tsx` already had (effects there are intentionally scoped to specific triggers).
 
 ## 2026-08-13 contribution lifecycle freeze
 

@@ -10,6 +10,7 @@ const REQUIRED = [
   'memory-bank/systemPatterns.md',
   'memory-bank/projectbrief.md',
   'docs/04-operations/dev/nav-secondary-carousel.md',
+  'docs/04-operations/dev/large-screen-layout.md',
   '.cursor/rules/civizen-project.mdc',
   '.cursor/rules/form-fields.mdc',
 ];
@@ -30,6 +31,9 @@ for (const path of REQUIRED) {
 const agents = readFileSync(AGENTS, 'utf8');
 if (!agents.includes('nav-secondary-carousel.md')) {
   fail('AGENTS.md must reference docs/04-operations/dev/nav-secondary-carousel.md');
+}
+if (!agents.includes('large-screen-layout.md')) {
+  fail('AGENTS.md must reference docs/04-operations/dev/large-screen-layout.md');
 }
 if (!agents.includes('00-foundation/recognized-planetary-citizenship-pathway.md')) {
   fail('AGENTS.md must reference docs/00-foundation/recognized-planetary-citizenship-pathway.md');

@@ -21,6 +21,7 @@
     "promote:android-testing-to-release": "node scripts/promote-android-testing-to-release.mjs",
     "cap:android": "npm run build:android && npx cap sync android && npx cap open android",
     "cap:ios": "npm run build && npx cap sync ios && npx cap open ios",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "standards:check": "node scripts/check-engineering-standards.mjs",
     "lint": "npm run standards:check && eslint . --max-warnings=0",
     "audit:ci": "node scripts/audit-ci.mjs",
