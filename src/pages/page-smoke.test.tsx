@@ -258,7 +258,7 @@ const renderCritical = new Set([
   'NotificationsSettings',
   'SafetySettings',
   'HelpSupport',
-  'ReportUser',
+  'ReportContent',
   'SocialAccountsSettings',
   'PrototypeCredits',
   'PublicGovernanceLanding',

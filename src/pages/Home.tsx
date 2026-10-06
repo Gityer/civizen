@@ -16,6 +16,7 @@ import { HomeComposer } from '@/pages/home/HomeComposer';
 import { HomeFeedItem } from '@/pages/home/HomeFeedItem';
 import { HomeStories } from '@/pages/home/HomeStories';
 import { HomeEndorsements } from '@/pages/home/HomeEndorsements';
+import { HomeFirstRunChecklist } from '@/pages/home/HomeFirstRunChecklist';
 
 export default function Home() {
   const model = useHome();
@@ -73,6 +74,8 @@ export default function Home() {
             </div>
           </div>
         </motion.div>
+
+        <HomeFirstRunChecklist model={model} />
 
         {/* Score Card */}
         <HomeScoreCard model={model} />

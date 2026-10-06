@@ -13,16 +13,24 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
 import { blockProfile } from '@/lib/profile-blocks';
-import { REPORT_CATEGORIES, isReportReasonLongEnough, submitProfileReport, type ReportCategory } from '@/lib/user-reports';
+import {
+  REPORT_CATEGORIES,
+  isReportReasonLongEnough,
+  loadReportTarget,
+  submitContentReport,
+  type ReportCategory,
+  type ReportTarget,
+  type ReportTargetKind,
+} from '@/lib/user-reports';
 
-export default function ReportUser() {
-  const { userId } = useParams<{ userId: string }>();
+/** Report a person (/report/user/:targetId) or one of their posts (/report/post/:targetId). */
+export default function ReportContent({ kind = 'user' }: { kind?: ReportTargetKind }) {
+  const { targetId } = useParams<{ targetId: string }>();
   const navigate = useNavigate();
   const { profile } = useAuth();
   const { t } = useLanguage();
-  const [targetName, setTargetName] = useState<string | null>(null);
+  const [target, setTarget] = useState<ReportTarget | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [category, setCategory] = useState<ReportCategory>('harassment');
   const [reason, setReason] = useState('');
@@ -30,45 +38,32 @@ export default function ReportUser() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!targetId) return;
     let cancelled = false;
-    void (async () => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('id, full_name, username')
-        .eq('id', userId)
-        .is('deleted_at', null)
-        .maybeSingle();
+    void loadReportTarget(kind, targetId).then((loaded) => {
       if (cancelled) return;
-      if (!data) {
-        setNotFound(true);
-        return;
-      }
-      setTargetName(data.full_name || (data.username ? `@${data.username}` : null));
-    })();
+      if (!loaded) setNotFound(true);
+      else setTarget(loaded);
+    });
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [kind, targetId]);
 
-  const isSelf = Boolean(profile?.id && userId && profile.id === userId);
+  const isSelf = Boolean(profile?.id && target && profile.id === target.profileId);
+  const titleKey = kind === 'post' ? 'settings.reportUser.postTitle' : 'settings.reportUser.title';
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!profile?.id || !userId || isSelf) return;
+    if (!profile?.id || !target || isSelf) return;
     if (!isReportReasonLongEnough(reason)) {
       toast.error(t('settings.reportUser.tooShort'));
       return;
     }
     setSubmitting(true);
-    const { error } = await submitProfileReport({
-      reporterProfileId: profile.id,
-      reportedProfileId: userId,
-      category,
-      reason,
-    });
+    const { error } = await submitContentReport({ reporterProfileId: profile.id, target, category, reason });
     if (!error && alsoBlock) {
-      await blockProfile(userId);
+      await blockProfile(target.profileId);
     }
     setSubmitting(false);
     if (error) {
@@ -83,9 +78,9 @@ export default function ReportUser() {
     <AppLayout>
       <div className="mx-auto flex w-full max-w-lg flex-col gap-4 px-4 py-6">
         <AppPageHeader
-          title={targetName ? `${t('settings.reportUser.title')}: ${targetName}` : t('settings.reportUser.title')}
+          title={target?.displayName ? `${t(titleKey)}: ${target.displayName}` : t(titleKey)}
           subtitle={t('settings.reportUser.subtitle')}
-          fallbackPath={userId ? `/user/${userId}` : '/'}
+          fallbackPath={kind === 'user' && targetId ? `/user/${targetId}` : '/'}
           leading={
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
               <Flag className="h-6 w-6" />
@@ -100,6 +95,9 @@ export default function ReportUser() {
         ) : (
           <Card className="border-border/80 p-4">
             <form className="space-y-5" onSubmit={(event) => void handleSubmit(event)}>
+              {target?.excerpt ? (
+                <blockquote className="border-l-2 border-border pl-3 text-sm text-muted-foreground">{target.excerpt}</blockquote>
+              ) : null}
               <fieldset className="space-y-2">
                 <legend className="text-sm font-semibold text-foreground">{t('settings.reportUser.categoryLabel')}</legend>
                 <RadioGroup value={category} onValueChange={(value) => setCategory(value as ReportCategory)}>
@@ -131,7 +129,7 @@ export default function ReportUser() {
                 <Label htmlFor="report-also-block" className="font-normal">{t('settings.reportUser.blockToo')}</Label>
               </div>
 
-              <Button type="submit" variant="destructive" disabled={submitting || !profile?.id} className="w-full">
+              <Button type="submit" variant="destructive" disabled={submitting || !profile?.id || !target} className="w-full">
                 {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 {t('settings.reportUser.submit')}
               </Button>

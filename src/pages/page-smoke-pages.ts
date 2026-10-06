@@ -108,7 +108,7 @@ export const allPages: PageEntry[] = [
   { name: 'NotificationsSettings', path: '/settings/notifications', load: () => import('@/pages/settings/NotificationsSettings') },
   { name: 'SafetySettings', path: '/settings/safety', load: () => import('@/pages/settings/SafetySettings') },
   { name: 'HelpSupport', path: '/settings/help', load: () => import('@/pages/settings/HelpSupport') },
-  { name: 'ReportUser', path: '/report/user/demo', routePath: '/report/user/:userId', load: () => import('@/pages/ReportUser') },
+  { name: 'ReportContent', path: '/report/user/demo', routePath: '/report/user/:targetId', load: () => import('@/pages/ReportContent') },
   { name: 'AiAgentSettings', path: '/settings/ai-agent', load: () => import('@/pages/settings/AiAgentSettings') },
   { name: 'SocialAccountsSettings', path: '/settings/social-accounts', load: () => import('@/pages/settings/SocialAccountsSettings') },
 ];

@@ -3,6 +3,8 @@ export const m_messages_11 = {
     "userNotFound": "User not found",
     "back": "Back",
     "endorse": "Endorse",
+    "message": "Message",
+    "messageFailed": "Could not open a conversation. Try again.",
     "basedOn": "Based on {count} endorsement{plural}",
     "basedOnVerified": "Based on {count} verified activities",
     "pillars": "Pillars",

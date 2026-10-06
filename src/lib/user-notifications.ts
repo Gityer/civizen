@@ -88,3 +88,9 @@ export async function countUnreadNotifications(client: Client, profileId: string
     .is('read_at', null);
   return { count: count ?? 0, error };
 }
+
+/** Badge text for the bell; large counts collapse so the badge stays round. */
+export function formatUnreadBadge(count: number): string | null {
+  if (count <= 0) return null;
+  return count > 99 ? '99+' : String(count);
+}

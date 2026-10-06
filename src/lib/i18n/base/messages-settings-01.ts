@@ -25,7 +25,7 @@ export const m_messages_settings_01 = {
     "notifications": "Notifications",
     "notificationsDescription": "Manage notification preferences",
     "privacy": "Privacy",
-    "privacyDescription": "Biometric sign-in and profile visibility controls",
+    "privacyDescription": "Biometric sign-in, a copy of your data and account deletion",
     "socialAccounts": "Social accounts",
     "socialAccountsDescription": "Connect LinkedIn, Facebook, and X to publish Civizen posts",
     "socialAccountsBack": "Back to settings",

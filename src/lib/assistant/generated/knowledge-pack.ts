@@ -6,9 +6,9 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.198",
     "appReleaseId": "20261005-v0.1.198",
     "androidVersionCode": 200,
-    "gitSha": "fc89262e3c7d039db79275b1e521360ab817e142",
-    "generatedAt": "2026-10-06T07:06:48.221Z",
-    "sourceFingerprint": "91274c9226f120e4857adddd4f95c9060fdf64860085adb89ac189b7b040e8a3",
+    "gitSha": "605bb4a6e26c767959983dabf431ec79f347cb11",
+    "generatedAt": "2026-10-06T07:40:01.081Z",
+    "sourceFingerprint": "8faadfb2c23abd21b5769fe3fd7f0a84f68db2bd40e2a0853c14f2951c189176",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370

@@ -2,6 +2,7 @@ import { Suspense, lazy, type ReactNode } from 'react';
 import { Search } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { NotificationsBell } from '@/components/layout/NotificationsBell';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -18,7 +19,7 @@ type AppTopChromeProps = {
 };
 
 /**
- * Floating app chrome: Search + Profile (top-right).
+ * Floating app chrome: Notifications + Search + Profile (top-right).
  * Page back lives on the title row via `AppPageHeader` — not here — to avoid an extra chrome line.
  */
 export function AppTopChrome({ beforeSearch }: AppTopChromeProps) {
@@ -48,6 +49,7 @@ export function AppTopChrome({ beforeSearch }: AppTopChromeProps) {
       {/* On lg the buttons sit inside the secondary tab bar's band (above it, vertically centred). */}
       <div className="pointer-events-auto flex items-center gap-2 px-4 pb-3 pt-2 lg:pb-0 lg:pt-[5px]">
         {beforeSearch}
+        <NotificationsBell profileId={profile.id} />
         <Button
           type="button"
           size="icon"

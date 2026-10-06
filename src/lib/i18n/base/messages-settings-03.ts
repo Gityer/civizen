@@ -26,7 +26,9 @@ export const m_messages_settings_03 = {
       "markRead": "Mark as read",
       "unreadCount": "{count} unread",
       "open": "Open",
-      "retry": "Try again"
+      "retry": "Try again",
+      "bellLabel": "Notifications",
+      "bellLabelUnread": "Notifications, {count} unread"
     },
     "safetyPage": {
       "blockedTitle": "Blocked people",
@@ -45,6 +47,7 @@ export const m_messages_settings_03 = {
     },
     "reportUser": {
       "title": "Report this person",
+      "postTitle": "Report this post",
       "subtitle": "Reviewers will look at your report. The person you report is not told who reported them.",
       "reasonLabel": "What happened?",
       "reasonPlaceholder": "Describe what this person did, with dates or links if you have them.",
@@ -63,5 +66,14 @@ export const m_messages_settings_03 = {
       "self": "You cannot report yourself.",
       "notFound": "This profile could not be found.",
       "blockToo": "Also block this person from messaging me"
+    },
+    "dataExport": {
+      "title": "Download your data",
+      "body": "Get a copy of your profile, posts, comments, endorsements, messages you sent, votes on proposals and private Happiness and Work entries as one JSON file. Secret ballots are never included.",
+      "action": "Download my data",
+      "preparing": "Preparing your file...",
+      "done": "Your data file has been downloaded.",
+      "failed": "Could not prepare your data. Try again later.",
+      "tooMany": "You have downloaded your data several times this hour. Try again later."
     }
 };

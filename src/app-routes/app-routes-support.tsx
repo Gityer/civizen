@@ -5,7 +5,7 @@ import {
   EndorseSelect,
   HelpSupport,
   NotificationsSettings,
-  ReportUser,
+  ReportContent,
   SafetySettings,
 } from '@/app-routes/lazy-pages';
 
@@ -16,10 +16,18 @@ export const appRoutesSupport = (
     <Route path="/settings/safety" element={<ProtectedRoute><SafetySettings /></ProtectedRoute>} />
     <Route path="/settings/help" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
     <Route
-      path="/report/user/:userId"
+      path="/report/user/:targetId"
       element={
         <ProtectedRoute requiredPermissions={['report.create']}>
-          <ReportUser />
+          <ReportContent kind="user" />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/report/post/:targetId"
+      element={
+        <ProtectedRoute requiredPermissions={['report.create']}>
+          <ReportContent kind="post" />
         </ProtectedRoute>
       }
     />

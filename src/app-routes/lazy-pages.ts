@@ -92,7 +92,7 @@ export const PrivacySettings = lazyWithChunkReload(() => import('@/pages/setting
 export const NotificationsSettings = lazyWithChunkReload(() => import('@/pages/settings/NotificationsSettings'));
 export const SafetySettings = lazyWithChunkReload(() => import('@/pages/settings/SafetySettings'));
 export const HelpSupport = lazyWithChunkReload(() => import('@/pages/settings/HelpSupport'));
-export const ReportUser = lazyWithChunkReload(() => import('@/pages/ReportUser'));
+export const ReportContent = lazyWithChunkReload(() => import('@/pages/ReportContent'));
 export const EndorseSelect = lazyWithChunkReload(() => import('@/pages/EndorseSelect'));
 export const AiAgentSettings = lazyWithChunkReload(() => import('@/pages/settings/AiAgentSettings'));
 export const SocialAccountsSettings = lazyWithChunkReload(() => import('@/pages/settings/SocialAccountsSettings'));
