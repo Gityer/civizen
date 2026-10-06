@@ -1,0 +1,36 @@
+name: Migrations replay
+
+# Replays every file in supabase/migrations into an empty local Supabase, so a migration that cannot
+# be applied from scratch (e.g. one that needs data the hosted database already had) fails the PR
+# instead of the next developer's machine. Only runs when migrations or the replay tooling change.
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/**'
+      - 'scripts/local-supabase/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'supabase/migrations/**'
+      - 'scripts/local-supabase/**'
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    name: replay migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Start local Supabase and replay migrations
+        run: scripts/local-supabase/up.sh

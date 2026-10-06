@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Installed by scripts/local-supabase/install-hooks.sh. Runs after a branch switch (flag $3 = 1), not
+# after single-file checkouts.
+[ "${3:-0}" = "1" ] || exit 0
+exec "$(git rev-parse --show-toplevel)/scripts/local-supabase/auto-sync.sh"

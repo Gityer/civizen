@@ -1,0 +1,44 @@
+# Isolated local Supabase for Civizen (separate project id and ports so it never collides with
+# other Supabase stacks on the same machine). Copied into the work dir by up.sh.
+project_id = "civizen-local"
+
+[api]
+enabled = true
+port = 56321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 56322
+shadow_port = 56320
+major_version = 15
+
+[db.pooler]
+enabled = false
+
+[studio]
+enabled = true
+port = 56323
+
+[inbucket]
+enabled = true
+port = 56324
+
+[storage]
+enabled = true
+
+[auth]
+enabled = true
+site_url = "http://localhost:8080"
+additional_redirect_urls = ["http://localhost:8080"]
+enable_signup = true
+
+[auth.email]
+enable_confirmations = false
+
+[analytics]
+enabled = false
+
+[edge_runtime]
+enabled = false
