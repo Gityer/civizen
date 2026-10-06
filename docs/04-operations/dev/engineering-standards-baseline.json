@@ -2,7 +2,6 @@
   "max_source_lines": 400,
   "exempt_files": [
     "src/integrations/supabase/types.ts",
-    "src/lib/i18n.generated.ts",
     "src/lib/assistant/generated/knowledge-pack.ts"
   ],
   "legacy_allowlist": {
