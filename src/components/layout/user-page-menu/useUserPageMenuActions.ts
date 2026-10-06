@@ -1,6 +1,7 @@
 import { isOwnerSingleBusinessConstraintError, normalizeBusinessName, shouldUseConnectAction, toBusinessUsernameCandidate } from '@/lib/linked-business-accounts';
 import { isDuplicateLinkError, isMissingBusinessAccessRequestsTableError } from '@/lib/linked-accounts-errors';
 import { supabase } from '@/integrations/supabase/client';
+import { supabaseUntyped, type UntypedSupabaseClient } from '@/integrations/supabase/untyped';
 import { toast } from 'sonner';
 import { type AccountOption, type UserPageMenuProps, createEphemeralSupabaseClient, isNetworkFetchError, raceTimeout } from '@/components/layout/user-page-menu/user-page-menu-shared';
 import type { useUserPageMenuState } from '@/components/layout/user-page-menu/useUserPageMenuState';
@@ -74,13 +75,19 @@ export function useUserPageMenuActions({ setOpen, setCreateBusinessOpen, busines
     setSwitchingAccountId(null);
   };
 
-  const resolveProfileIdForUser = async (options: {
+  /**
+   * Signs in to the business account in an isolated client (proving the password), finds its profile and
+   * accepts the owner's link invite from that session. The link is only created when both sides are
+   * signed in: the owner issued the invite, the business account accepts it.
+   */
+  const acceptLinkInviteAsBusiness = async (options: {
     userId: string;
     email: string;
     password: string;
-  }) => {
+    inviteToken: string;
+  }): Promise<{ profileId: string | null; linkError: { code?: string; message?: string } | null }> => {
     const ephemeralClient = createEphemeralSupabaseClient();
-    if (!ephemeralClient) return null;
+    if (!ephemeralClient) return { profileId: null, linkError: null };
 
     // Try to authenticate in the isolated client to avoid clobbering the current session.
     await ephemeralClient.auth.signInWithPassword({
@@ -96,15 +103,18 @@ export function useUserPageMenuActions({ setOpen, setCreateBusinessOpen, busines
         .maybeSingle();
 
       if (ownProfile?.id) {
+        const { error: linkError } = await (ephemeralClient as unknown as UntypedSupabaseClient).rpc('accept_linked_account_invite', {
+          p_token: options.inviteToken,
+        });
         await ephemeralClient.auth.signOut();
-        return ownProfile.id;
+        return { profileId: ownProfile.id, linkError: linkError ?? null };
       }
 
       await new Promise((resolve) => setTimeout(resolve, 250));
     }
 
     await ephemeralClient.auth.signOut();
-    return null;
+    return { profileId: null, linkError: null };
   };
 
   const createBusinessAccountClientSide = async () => {
@@ -210,22 +220,25 @@ export function useUserPageMenuActions({ setOpen, setCreateBusinessOpen, busines
         businessUserId = fallbackSignIn.user.id;
       }
 
-      const linkedProfileId = await resolveProfileIdForUser({
+      const { data: inviteToken, error: inviteError } = await supabaseUntyped.rpc('create_linked_account_invite', {
+        p_business_name_normalized: normalizedBusinessName,
+      });
+
+      if (inviteError || typeof inviteToken !== 'string') {
+        console.warn('Could not create linked account invite:', inviteError);
+        return { error: t('home.accountSwitchCreateFailed') } as const;
+      }
+
+      const { profileId: linkedProfileId, linkError } = await acceptLinkInviteAsBusiness({
         userId: businessUserId,
         email: normalizedEmail,
         password: businessPassword,
+        inviteToken,
       });
 
       if (!linkedProfileId) {
         return { error: t('home.accountSwitchCreateFailed') } as const;
       }
-
-      const { error: linkError } = await supabase.from('linked_accounts').insert({
-        owner_profile_id: profile.id,
-        linked_profile_id: linkedProfileId,
-        relationship_type: 'business',
-        business_name_normalized: normalizedBusinessName,
-      });
 
       if (linkError) {
         if (isDuplicateLinkError(linkError)) {
