@@ -58,7 +58,6 @@ Financial copy remains inquiry-only (no checkout, tax-deductibility, or fixed re
 
 - Hub: `src/pages/Contribute.tsx`
 - Lane registry: `src/lib/contribute-lanes.ts`
-- Placeholder page: `src/pages/ContributeLane.tsx`
 - Slice 1 Education-to-Contribution: `src/pages/contribute/ProfessionalOpportunities.tsx`, `OpportunityDetail.tsx`, `OpportunityForm.tsx`
 - Slice 3 Community Challenges: `src/pages/contribute/CommunityChallenges.tsx`, `ChallengeDetail.tsx`, `ChallengeForm.tsx`
 - Slice 4 Learning Commons: `src/pages/contribute/KnowledgeSpaces.tsx`, `KnowledgeSpaceDetail.tsx`, `KnowledgeSpaceForm.tsx`, `KnowledgeResourceDetail.tsx`, `KnowledgeResourceForm.tsx`

@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
 import Contribute from '@/pages/Contribute';
-import ContributeLane from '@/pages/ContributeLane';
 
 vi.mock('framer-motion', () => ({
   motion: {
@@ -51,17 +50,3 @@ describe('Contribute hub', () => {
   });
 });
 
-describe('ContributeLane', () => {
-  it('redirects unknown lane ids to the hub', () => {
-    render(
-      <MemoryRouter initialEntries={['/contribute/unknown-lane']}>
-        <Routes>
-          <Route path="/contribute" element={<div>hub</div>} />
-          <Route path="/contribute/:laneId" element={<ContributeLane />} />
-        </Routes>
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText('hub')).toBeInTheDocument();
-  });
-});

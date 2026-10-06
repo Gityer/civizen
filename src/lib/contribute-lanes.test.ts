@@ -5,8 +5,6 @@ import {
   CONTRIBUTE_PLACEHOLDER_IDS,
   CONTRIBUTE_SECTION_ORDER,
   getContributeLanesBySection,
-  getContributePlaceholderLane,
-  isContributePlaceholderId,
 } from '@/lib/contribute-lanes';
 
 describe('contribute-lanes', () => {
@@ -47,9 +45,5 @@ describe('contribute-lanes', () => {
 
   it('has no remaining Contribute placeholder lanes', () => {
     expect(CONTRIBUTE_PLACEHOLDER_IDS).toEqual([]);
-    expect(isContributePlaceholderId('improvements')).toBe(false);
-    expect(getContributePlaceholderLane('improvements')).toBeUndefined();
-    expect(isContributePlaceholderId('policy')).toBe(false);
-    expect(getContributePlaceholderLane('policy')).toBeUndefined();
   });
 });

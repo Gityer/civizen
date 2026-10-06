@@ -19,7 +19,6 @@ import {
   CommunityChallenges,
   Contribute,
   ContributeImpact,
-  ContributeLane,
   ContributionsLedger,
   DownloadPage,
   Earnings,
@@ -220,10 +219,6 @@ export const appRoutes1 = (
       <Route
         path="/contribute/projects"
         element={<ProtectedRoute><Navigate to="/contribute/challenges" replace /></ProtectedRoute>}
-      />
-      <Route
-        path="/contribute/:laneId"
-        element={<ProtectedRoute><ContributeLane /></ProtectedRoute>}
       />
       <Route path="/messaging/:conversationId" element={<ProtectedRoute><Messaging /></ProtectedRoute>} />
       <Route path="/messaging" element={<ProtectedRoute><Messaging /></ProtectedRoute>} />

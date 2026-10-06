@@ -153,10 +153,4 @@ export function getContributeLanesBySection(section: ContributeLaneSection): Con
   return CONTRIBUTE_LANES.filter((lane) => lane.section === section);
 }
 
-export function getContributePlaceholderLane(id: string): ContributeLane | undefined {
-  return CONTRIBUTE_LANES.find((lane) => lane.placeholder && lane.id === id);
-}
 
-export function isContributePlaceholderId(id: string): id is ContributePlaceholderId {
-  return (CONTRIBUTE_PLACEHOLDER_IDS as readonly string[]).includes(id);
-}

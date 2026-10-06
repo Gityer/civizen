@@ -8,7 +8,6 @@ export const SignUp = lazyWithChunkReload(() => import('@/pages/auth/SignUp'));
 export const ForgotPassword = lazyWithChunkReload(() => import('@/pages/auth/ForgotPassword'));
 export const ResetPassword = lazyWithChunkReload(() => import('@/pages/auth/ResetPassword'));
 export const Contribute = lazyWithChunkReload(() => import('@/pages/Contribute'));
-export const ContributeLane = lazyWithChunkReload(() => import('@/pages/ContributeLane'));
 export const ProfessionalOpportunities = lazyWithChunkReload(
   () => import('@/pages/contribute/ProfessionalOpportunities'),
 );

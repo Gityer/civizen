@@ -808,9 +808,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.198",
     "appReleaseId": "20261005-v0.1.198",
     "androidVersionCode": 200,
-    "gitSha": "1a1ccf96f4d3f4070975a3a280054aa767282d4b",
-    "generatedAt": "2026-10-06T05:37:24.101Z",
-    "sourceFingerprint": "9dfc70fdac689933bc1a596a25a19b0d952841e5b91e1379eb2b9605577b87bd",
+    "gitSha": "05d487d34dde717af1b7d82faaefb0b8a3440d56",
+    "generatedAt": "2026-10-06T05:56:44.377Z",
+    "sourceFingerprint": "d63fd70ff44652577f6329658258aee698332039b350015eaf1c676a0e45388b",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370
@@ -3723,7 +3723,7 @@ var KNOWLEDGE_PACK = {
       "id": "docs/04-operations/dev/contribute-page.md#6",
       "title": "Implementation map",
       "path": "docs/04-operations/dev/contribute-page.md",
-      "text": "- Hub: `src/pages/Contribute.tsx` - Lane registry: `src/lib/contribute-lanes.ts` - Placeholder page: `src/pages/ContributeLane.tsx` - Slice 1 Education-to-Contribution: `src/pages/contribute/ProfessionalOpportunities.tsx`, `OpportunityDetail.tsx`, `OpportunityForm.tsx` - Slice 3 Community Challenges: `src/pages/contribute/CommunityChallenges.tsx`, `ChallengeDetail.tsx`, `ChallengeForm.tsx` - Slice 4 Learning Commons: `src/pages/contribute/KnowledgeSpaces.tsx`, `KnowledgeSpaceDetail.tsx`, `KnowledgeSpaceForm.tsx`, `KnowledgeResourceDetail.tsx`, `KnowledgeResourceForm.tsx` - Matter Collaboration (Questions, Issues & Ideas): `src/pages/contribute/Matters.tsx`, `MatterForm.tsx`, `MatterDetail.tsx`, `MatterWorkPanel.tsx` \xB7 spec: [`matter-collaboration.md`](./matter-collaboration.md) - My Contributions: `src/pages/contribute/ContributeImpact.tsx` - Domain + RPC wrappers: `src/lib/opportunities.ts`, `src/lib/opportunities-api.ts`, `src/lib/challenges.ts`, `src/lib/challenges-api.ts`, `src/lib/knowledge.ts`, `src/lib/knowledge-api.ts`, `src/lib/matters.ts`, `src/lib/matters-api.ts`, `src/lib/matters-workflow.ts`, `src/lib/matters-work.ts` - Schema: `supabase/migrations/20260813010000_educa",
+      "text": "- Hub: `src/pages/Contribute.tsx` - Lane registry: `src/lib/contribute-lanes.ts` - Slice 1 Education-to-Contribution: `src/pages/contribute/ProfessionalOpportunities.tsx`, `OpportunityDetail.tsx`, `OpportunityForm.tsx` - Slice 3 Community Challenges: `src/pages/contribute/CommunityChallenges.tsx`, `ChallengeDetail.tsx`, `ChallengeForm.tsx` - Slice 4 Learning Commons: `src/pages/contribute/KnowledgeSpaces.tsx`, `KnowledgeSpaceDetail.tsx`, `KnowledgeSpaceForm.tsx`, `KnowledgeResourceDetail.tsx`, `KnowledgeResourceForm.tsx` - Matter Collaboration (Questions, Issues & Ideas): `src/pages/contribute/Matters.tsx`, `MatterForm.tsx`, `MatterDetail.tsx`, `MatterWorkPanel.tsx` \xB7 spec: [`matter-collaboration.md`](./matter-collaboration.md) - My Contributions: `src/pages/contribute/ContributeImpact.tsx` - Domain + RPC wrappers: `src/lib/opportunities.ts`, `src/lib/opportunities-api.ts`, `src/lib/challenges.ts`, `src/lib/challenges-api.ts`, `src/lib/knowledge.ts`, `src/lib/knowledge-api.ts`, `src/lib/matters.ts`, `src/lib/matters-api.ts`, `src/lib/matters-workflow.ts`, `src/lib/matters-work.ts` - Schema: `supabase/migrations/20260813010000_education_to_contribution_opportunities.sql`, `202608130",
       "status": "implemented",
       "priority": 6,
       "kind": "doc"
