@@ -2801,7 +2801,7 @@ export function BuildOverlay() {
     );
   };
 
-  const renderTargetTree = (parentSelector: string | null, depth = 0): JSX.Element[] => {
+  const renderTargetTree = (parentSelector: string | null, depth = 0): React.JSX.Element[] => {
     const children = targetChildrenByParent.get(parentSelector) || [];
     return children.flatMap((target) => {
       const nestedChildren = targetChildrenByParent.get(target.selector) || [];

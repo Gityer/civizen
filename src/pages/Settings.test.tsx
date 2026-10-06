@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -147,9 +147,13 @@ describe('Settings page', () => {
 
     channelButton.click();
 
-    expect(await screen.findByRole('option', { name: 'Live' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Test' })).toBeInTheDocument();
-    expect(screen.getByText('Live channel is selected.')).toBeInTheDocument();
+    // The popover content can remount while it opens, so re-query inside waitFor instead of
+    // holding a reference to the first node that findBy resolved.
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Live' })).toBeInTheDocument();
+      expect(screen.getByRole('option', { name: 'Test' })).toBeInTheDocument();
+      expect(screen.getByText('Live channel is selected.')).toBeInTheDocument();
+    });
   });
 
   it('lists primary settings rows in alphabetical order by title', () => {

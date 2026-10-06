@@ -204,7 +204,14 @@ describe('KnowledgeSpaceDetail', () => {
       );
     });
 
-    fireEvent.click(screen.getAllByText('contribute.knowledge.coordinateGap')[0]);
+    // The conversion reloads the space; wait for that reload to finish so the next click
+    // targets the re-rendered coordinator controls instead of nodes that are about to unmount.
+    await waitFor(() => expect(getKnowledgeSpace).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.queryByText('common.loading')).not.toBeInTheDocument());
+    // Whether the coordinator panel stays open across the reload is a rendering detail;
+    // only toggle it when it is currently collapsed.
+    const coordinateTrigger = screen.getAllByText('contribute.knowledge.coordinateGap')[0].closest('button');
+    if (coordinateTrigger?.getAttribute('aria-expanded') !== 'true') fireEvent.click(coordinateTrigger as HTMLElement);
     fireEvent.click(await screen.findByText('contribute.knowledge.convertChallenge'));
     await waitFor(() => {
       expect(convertGapToChallenge).toHaveBeenCalledWith(

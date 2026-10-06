@@ -158,13 +158,14 @@ export function AgreementDateToken({
               className="p-1"
               classNames={{
                 caption_label: 'text-[13px] font-semibold tracking-tight',
-                head_cell: 'w-8 text-[11px] font-medium text-muted-foreground',
-                cell: 'h-8 w-8 p-0',
-                day: 'h-8 w-8 rounded-full p-0 font-normal hover:bg-muted',
-                day_selected:
-                  'rounded-full bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
-                day_today: 'rounded-full font-semibold text-primary aria-selected:text-primary-foreground',
-                nav_button: 'h-7 w-7 rounded-full border-0 bg-transparent opacity-60 hover:bg-muted hover:opacity-100',
+                weekday: 'w-8 text-[11px] font-medium text-muted-foreground',
+                day: 'h-8 w-8 p-0',
+                day_button: 'h-8 w-8 rounded-full p-0 font-normal hover:bg-muted',
+                selected:
+                  '[&>button]:rounded-full [&>button]:bg-primary [&>button]:text-primary-foreground [&>button:hover]:bg-primary [&>button:hover]:text-primary-foreground [&>button:focus]:bg-primary [&>button:focus]:text-primary-foreground',
+                today: '[&>button]:rounded-full [&>button]:bg-transparent [&>button]:font-semibold [&>button]:text-primary [&>button[aria-selected=true]]:text-primary-foreground',
+                button_previous: 'h-7 w-7 rounded-full border-0 bg-transparent opacity-60 hover:bg-muted hover:opacity-100',
+                button_next: 'h-7 w-7 rounded-full border-0 bg-transparent opacity-60 hover:bg-muted hover:opacity-100',
               }}
               onSelect={(date) => {
                 if (!date) return;

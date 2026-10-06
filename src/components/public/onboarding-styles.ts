@@ -20,7 +20,7 @@ export const onboardingRowClass = 'flex h-full w-full items-center gap-3 px-4 py
 export const onboardingGroupGridClass = 'lg:grid lg:grid-cols-2 lg:divide-y-0';
 
 export const onboardingGroupGridItemClass =
-  'lg:border-b lg:border-border/50 lg:odd:border-r lg:last:border-b-0 lg:last:odd:col-span-2 lg:last:odd:border-r-0 lg:[&:nth-last-child(2):odd]:border-b-0';
+  'lg:border-b lg:border-border/50 lg:odd:border-r lg:last:border-b-0 lg:last:odd:col-span-2 lg:last:odd:border-r-0 lg:[&:nth-last-child(2):nth-child(odd)]:border-b-0';
 
 /** Secondary row text: small on phones, one step up on large screens. */
 export const onboardingRowDetailClass = 'text-xs leading-snug text-muted-foreground lg:text-[0.8125rem]';
