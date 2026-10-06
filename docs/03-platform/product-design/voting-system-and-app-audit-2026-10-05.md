@@ -12,7 +12,9 @@ canonical: false
 
 # Voting system and whole-app audit (2026-10-05)
 
-**Scope:** Read-only review of the Civizen app (main `f7d7051`, local dev server, local Supabase synced from production on 2026-10-06) with emphasis on the voting / decision-making system. Nothing was changed in code. One test ballot was cast and withdrawn on the **local** database only.
+**Scope:** Read-only review of the Civizen app (main `f7d7051`, local dev server) with emphasis on the voting / decision-making system. Nothing was changed in code.
+
+**Correction (2026-10-06):** the dev server on port 8080 reads `VITE_SUPABASE_URL` from `.env`, which points at the **production** backend, not the local stack. The one test ballot cast and withdrawn during this audit (Armen's own account, 02:33 UTC) therefore went to production: it remains there as a withdrawn, non-countable `civic_ballots` row and the public count is 0. See `docs/04-operations/dev/local-supabase.md` ("Which backend does the app use?") before any browser write.
 
 **Method:** browser walkthrough of every top-level section (signed in, desktop light/dark and 375×812 phone), plus a code and migration inventory. File references are to the repository as of this date.
 
@@ -117,3 +119,13 @@ Appearance in general is good: consistent tokens, light/dark both clean, mobile 
 ## 5. Not covered
 
 Guest view of the consultation was not re-tested in this pass (the signed-in session is Armen's; the 2026-10-06 read-only review already measured it). Production data was not touched. Android native build and OTA update prompt were not exercised.
+
+## 6. Progress log
+
+| Date | Items | State |
+| --- | --- | --- |
+| 2026-10-06 | 6 (vote-first layout, return-to-ballot) | Done by a sibling session, commit `cefafa6`. |
+| 2026-10-06 | Phase 0: 1 (Observer real data), 2 (Study fake votes), 3 (Settings 404 rows → `/settings/help`), 4 (hub copy), 5 (marquee, plural) | Implemented locally, verified in the browser against the local stack; not committed. |
+| 2026-10-06 | Phase 1: 7 (server eligibility + visible reasons), 8 (sealed choice, hash-chained events, receipt + inclusion check), 9 (close tick + published final tally, client uses the real window), 10 (SQL RPC test + hook/component tests) | Implemented locally (migration `20261006060000`), SQL test passes, browser-verified; not committed, not on production. Contract: design doc §13. |
+| 2026-10-06 | Phase 2: 11 (one member Governance page: Votes / Proposals / Tools; `/governance/new` redirected; legacy vote weight clamped server-side), 12 (member support threshold, author publication once ready, scope + opening/closing times, scheduled opening via the lifecycle tick), 13 (Matter and proposal links on the ballot), 14 (notification center: bell, `/notifications`, publish and result notifications) | Implemented locally (migration `20261006070000`), SQL test passes, browser-verified on the local stack; not committed, not on production. Contract: design doc §14. |
+| open | AuthContext.tsx exceeds its size baseline (851 > 847) from a sibling commit; standards check fails until that baseline or file is adjusted. | Not changed here. |
