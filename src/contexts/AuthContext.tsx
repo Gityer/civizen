@@ -542,11 +542,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       : null;
 
     if (!trimmedIdentifier.includes('@')) {
+      // The server only returns the email when the password is right, so usernames and phone
+      // numbers cannot be turned into email addresses.
       const { data, error: resolveError } = await supabase.rpc('resolve_login_email', {
         identifier: trimmedIdentifier,
+        password,
       });
 
       if (resolveError) {
+        if ((resolveError as { code?: string }).code === '54000') {
+          return { error: new Error('Too many sign-in attempts. Wait a few minutes or sign in with your email.') };
+        }
         return { error: resolveError as Error };
       }
 

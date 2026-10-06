@@ -104,14 +104,13 @@ BEGIN
       USING ERRCODE = '42501', HINT = 'Verification and citizenship standing are set by reviewers.';
   END IF;
 
-  -- Governance eligibility is still computed in the app from the endorsement score. Until that moves
-  -- to the server, a member may record it for themselves only once their identity is verified.
-  IF NEW.is_governance_eligible IS DISTINCT FROM OLD.is_governance_eligible
-    AND coalesce(NEW.is_governance_eligible, false)
-    AND NOT coalesce(NEW.is_verified, false)
+  -- Governance eligibility is computed by refresh_governance_eligibility() (a later migration);
+  -- members cannot record it for themselves.
+  IF (NEW.is_governance_eligible IS DISTINCT FROM OLD.is_governance_eligible
+      OR NEW.governance_eligible_at IS DISTINCT FROM OLD.governance_eligible_at)
     AND NOT can_manage_status THEN
-    RAISE EXCEPTION 'profile_governance_eligibility_requires_verification'
-      USING ERRCODE = '42501';
+    RAISE EXCEPTION 'profile_governance_eligibility_server_only'
+      USING ERRCODE = '42501', HINT = 'Call refresh_governance_eligibility() instead.';
   END IF;
 
   RETURN NEW;

@@ -52,7 +52,7 @@ BEGIN
   END;
   BEGIN
     UPDATE public.profiles SET is_governance_eligible = true WHERE id = (SELECT a FROM sec_ids);
-    RAISE EXCEPTION 'FAIL: unverified member made self governance eligible';
+    RAISE EXCEPTION 'FAIL: member set own governance eligibility';
   EXCEPTION WHEN insufficient_privilege THEN NULL;
   END;
 END $$;
@@ -110,6 +110,8 @@ END $$;
 
 -- An eligible, verified member's vote is stored with weight 1 even when the client sends more.
 UPDATE public.profiles SET is_verified = true, is_governance_eligible = true WHERE id = (SELECT a FROM sec_ids);
+INSERT INTO public.endorsements (endorser_id, endorsed_id, pillar, stars)
+SELECT b, a, 'culture_ethics', 5 FROM sec_ids;
 SELECT set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated"}', true);
 SET LOCAL ROLE authenticated;
 INSERT INTO public.governance_proposal_votes (proposal_id, voter_id, choice, weight)
