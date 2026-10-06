@@ -1,5 +1,6 @@
 import {
   BookOpen,
+  ChevronRight,
   FileSignature,
   Globe2,
   Heart,
@@ -15,12 +16,19 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { OnboardingCardHeader } from '@/components/public/OnboardingCardHeader';
 import {
+  onboardingGroupClass,
+  onboardingGroupGridClass,
+  onboardingGroupGridItemClass,
+  onboardingIconTile,
+  onboardingRowDetailClass,
+  onboardingRowClass,
   onboardingSectionLeadClass,
   onboardingSectionTitleClass,
 } from '@/components/public/onboarding-styles';
+import { APP_VERSION } from '@/lib/app-release';
 import { PUBLIC_JOBS_PATH } from '@/lib/public-jobs-path';
 import { cn } from '@/lib/utils';
 
@@ -81,67 +89,83 @@ const outcomeItems = [
   { key: 'onboarding.outcomeStandards', icon: Layers },
 ] as const;
 
+const comingStatusKeys = [
+  'onboarding.statusComingIos',
+  'onboarding.statusComingFederation',
+  'onboarding.statusComingInsurance',
+] as const;
+
+/** Outcomes as a compact icon list (body of the "Outcomes we pursue" deep dive). */
 export function OnboardingOutcomes() {
   const { t } = useLanguage();
 
   return (
-    <section className="overflow-hidden rounded-[1.75rem] border border-accent/25 bg-gradient-to-br from-accent/10 via-card/50 to-primary/5 p-5 sm:p-6">
-      <div className="space-y-2">
-        <h2 className={cn(onboardingSectionTitleClass, 'text-accent')}>{t('onboarding.outcomesTitle')}</h2>
-        <p className={onboardingSectionLeadClass}>{t('onboarding.outcomesLead')}</p>
-      </div>
-      <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+    <div className="space-y-3">
+      <p className={onboardingSectionLeadClass}>{t('onboarding.outcomesLead')}</p>
+      <ul className="grid gap-x-4 gap-y-2.5 sm:grid-cols-2">
         {outcomeItems.map((item) => (
-          <li
-            key={item.key}
-            className="flex items-start gap-3 rounded-2xl border border-accent/15 bg-background/40 px-4 py-3 backdrop-blur-sm"
-          >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
-              <item.icon className="h-4 w-4" />
-            </div>
-            <span className="text-sm leading-relaxed text-foreground/90">{t(item.key)}</span>
+          <li key={item.key} className="flex items-start gap-2.5 text-sm leading-snug text-foreground/90">
+            <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+            <span>{t(item.key)}</span>
           </li>
         ))}
       </ul>
-    </section>
+    </div>
   );
 }
 
+/** "What Civizen is today": one grouped list, one module per row, plus build status. */
 export function OnboardingProductModules() {
   const { t } = useLanguage();
 
   return (
-    <section className="space-y-5">
-      <div className="max-w-2xl space-y-2">
-        <h2 className={onboardingSectionTitleClass}>{t('onboarding.productTitle')}</h2>
+    <section className="space-y-4">
+      <div className="space-y-1.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className={onboardingSectionTitleClass}>{t('onboarding.productTitle')}</h2>
+          <Badge variant="secondary" className="rounded-full bg-primary/10 text-primary">
+            {t('onboarding.statusBadge')}
+          </Badge>
+        </div>
         <p className={onboardingSectionLeadClass}>{t('onboarding.productLead')}</p>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+      <ul className={cn(onboardingGroupClass, onboardingGroupGridClass)}>
         {productModules.map((module) => {
-          const cardClassName =
-            'group rounded-2xl border border-border/40 bg-background/30 p-4 transition-colors hover:border-primary/20 hover:bg-card/80';
+          const href = 'href' in module ? module.href : undefined;
           const body = (
             <>
-              <div className="mb-2">
-                <OnboardingCardHeader icon={module.icon} title={t(module.titleKey)} tone={module.tone} />
-              </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">{t(module.descriptionKey)}</p>
+              <span className={onboardingIconTile(cn('h-9 w-9 rounded-xl', module.tone))}>
+                <module.icon className="h-[1.1rem] w-[1.1rem]" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold leading-snug text-foreground">{t(module.titleKey)}</span>
+                <span className={cn('mt-0.5 line-clamp-2', onboardingRowDetailClass)}>
+                  {t(module.descriptionKey)}
+                </span>
+              </span>
+              {href ? <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden /> : null}
             </>
           );
-          if ('href' in module && module.href) {
-            return (
-              <Link key={module.titleKey} to={module.href} className={cn(cardClassName, 'block')}>
-                {body}
-              </Link>
-            );
-          }
           return (
-            <div key={module.titleKey} className={cardClassName}>
-              {body}
-            </div>
+            <li key={module.titleKey} className={onboardingGroupGridItemClass}>
+              {href ? (
+                <Link to={href} className={cn(onboardingRowClass, 'hover:bg-primary/5')}>
+                  {body}
+                </Link>
+              ) : (
+                <div className={onboardingRowClass}>{body}</div>
+              )}
+            </li>
           );
         })}
-      </div>
+      </ul>
+
+      <p className="px-1 text-xs leading-relaxed text-muted-foreground">
+        <span className="font-medium text-foreground/80">{t('onboarding.statusVersion', { version: APP_VERSION })}</span>
+        {' · '}
+        {t('onboarding.statusComingLabel')}: {comingStatusKeys.map((key) => t(key)).join(', ')}
+      </p>
     </section>
   );
 }

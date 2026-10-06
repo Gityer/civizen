@@ -2,10 +2,12 @@ import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'reac
 
 import { PublicHomeLogo } from '@/components/public/PublicHomeLogo';
 import { PublicPageToolbar } from '@/components/public/PublicPageToolbar';
+import { PublicPrimaryNav } from '@/components/public/PublicPrimaryNav';
 import {
   PublicSectionTrail,
   type PublicSectionTrailItem,
 } from '@/components/public/PublicSectionTrail';
+import { PUBLIC_CHROME_MAX_CLASS } from '@/lib/responsive-layout';
 import { useShowOnScrollUp } from '@/hooks/useShowOnScrollUp';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +20,8 @@ type PublicPageHeaderProps = {
    * Multi-segment path stays on row 2 when it fits; if it overflows, root lifts beside the logo.
    */
   sectionTrail?: readonly PublicSectionTrailItem[];
+  /** Passed to the default toolbar: hide its large-screen Sign in / Join while the page shows its own. */
+  hideGuestAuthActions?: boolean;
   children?: ReactNode;
 };
 
@@ -28,8 +32,9 @@ function trailPlainText(items: readonly PublicSectionTrailItem[]): string {
 /** Public chrome: logo (+ section) on row 1; deeper trails on row 2 when needed. */
 export function PublicPageHeader({
   className,
-  maxWidthClass = 'max-w-3xl',
+  maxWidthClass = PUBLIC_CHROME_MAX_CLASS,
   sectionTrail,
+  hideGuestAuthActions = false,
   children,
 }: PublicPageHeaderProps) {
   const { visible, scrolled } = useShowOnScrollUp();
@@ -108,8 +113,11 @@ export function PublicPageHeader({
       >
         <div className={cn('relative mx-auto w-full px-6 pb-3 pt-4 sm:px-8', maxWidthClass, className)}>
           <div className="flex w-full items-center justify-between gap-3">
-            <PublicHomeLogo sectionLabel={root?.label} sectionHref={root?.href} />
-            {children ?? <PublicPageToolbar />}
+            <div className="flex min-w-0 flex-1 items-center gap-4">
+              <PublicHomeLogo sectionLabel={root?.label} sectionHref={root?.href} />
+              <PublicPrimaryNav className="min-w-0 flex-1 justify-center" />
+            </div>
+            {children ?? <PublicPageToolbar hideGuestAuthActions={hideGuestAuthActions} />}
           </div>
           {trail.length >= 2 ? (
             <div ref={trailSlotRef} className="relative mt-2.5 min-w-0">

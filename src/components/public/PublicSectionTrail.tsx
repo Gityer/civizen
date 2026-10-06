@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { cn } from '@/lib/utils';
@@ -29,23 +29,23 @@ export function PublicSectionTrail({
   const scrollerRef = useRef<HTMLOListElement | null>(null);
   const [showLeadingEllipsis, setShowLeadingEllipsis] = useState(false);
 
-  const syncScrollState = () => {
+  const syncScrollState = useCallback(() => {
     const node = scrollerRef.current;
     if (!node) return;
     const overflows = node.scrollWidth > node.clientWidth + 1;
     setShowLeadingEllipsis(overflows && node.scrollLeft > 1);
-  };
+  }, []);
 
-  const scrollToEnd = () => {
+  const scrollToEnd = useCallback(() => {
     const node = scrollerRef.current;
     if (!node) return;
     node.scrollLeft = Math.max(0, node.scrollWidth - node.clientWidth);
     syncScrollState();
-  };
+  }, [syncScrollState]);
 
   useLayoutEffect(() => {
     scrollToEnd();
-  }, [items]);
+  }, [items, scrollToEnd]);
 
   useEffect(() => {
     const node = scrollerRef.current;
@@ -63,7 +63,7 @@ export function PublicSectionTrail({
       resizeObserver?.disconnect();
       window.removeEventListener('resize', scrollToEnd);
     };
-  }, [items]);
+  }, [items, scrollToEnd, syncScrollState]);
 
   if (items.length === 0) return null;
 

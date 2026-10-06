@@ -20,9 +20,9 @@ export function OnboardingFaq() {
   const { t } = useLanguage();
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-4">
       <h2 className={onboardingSectionTitleClass}>{t('onboarding.faqTitle')}</h2>
-      <Accordion type="single" collapsible className="rounded-[1.75rem] border border-border/40 bg-background/30 px-4 sm:px-5">
+      <Accordion type="single" collapsible className="rounded-2xl border border-border/50 bg-card/50 px-4 sm:px-5">
         {faqItems.map((item, index) => (
           <AccordionItem key={item.questionKey} value={`faq-${index}`} className="border-border/40">
             <AccordionTrigger className="text-left text-sm font-medium hover:no-underline sm:text-base">

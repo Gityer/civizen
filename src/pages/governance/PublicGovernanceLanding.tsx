@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Vote, FileText, BookOpen, Lightbulb } from 'lucide-react';
 
-import { PublicPageFooter } from '@/components/public/PublicPageFooter';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,10 +26,11 @@ export default function PublicGovernanceLanding() {
   return (
     <PublicPageShell
       contentClassName="px-6 pb-16 sm:px-8"
-      maxWidthClass="max-w-3xl"
+      layout="directory"
+      showFooter
       sectionTrail={[{ label: governanceLabel }]}
     >
-      <div className="mx-auto max-w-3xl space-y-6 pt-2">
+      <div className="space-y-6 pt-2">
         <p className="text-sm text-muted-foreground sm:text-base">
           {t('civicVoting.publicLanding.subtitle')}
         </p>
@@ -134,8 +134,6 @@ export default function PublicGovernanceLanding() {
             {t('civicVoting.publicLanding.areasLink')}
           </Link>
         </p>
-
-        <PublicPageFooter />
       </div>
     </PublicPageShell>
   );

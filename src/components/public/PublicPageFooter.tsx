@@ -5,74 +5,52 @@ import { PUBLIC_JOBS_PATH } from '@/lib/public-jobs-path';
 
 const CONTACT_URL = 'https://civizen.world';
 
+const FOOTER_LINKS = [
+  { to: '/why-this-exists', labelKey: 'onboarding.footerWhy' },
+  { to: '/areas', labelKey: 'onboarding.footerAreas' },
+  { to: PUBLIC_JOBS_PATH, labelKey: 'onboarding.footerJobs' },
+  { to: '/fund', labelKey: 'onboarding.footerFund' },
+  { to: '/documents', labelKey: 'onboarding.footerDocuments' },
+  { to: '/governance', labelKey: 'onboarding.footerGovernance' },
+  { to: '/about/legal-status', labelKey: 'onboarding.footerLegalStatus' },
+  { to: '/terms', labelKey: 'onboarding.footerTerms' },
+  { to: '/download', labelKey: 'onboarding.footerDownload' },
+] as const;
+
 export function PublicPageFooter() {
   const { t } = useLanguage();
 
   return (
-    <footer className="flex flex-col items-center gap-3 border-t border-border/40 pt-6 text-sm text-muted-foreground">
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-        <Link to="/why-this-exists" className="transition-colors hover:text-foreground">
-          {t('onboarding.footerWhy')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <Link to="/areas" className="transition-colors hover:text-foreground">
-          {t('onboarding.footerAreas')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <Link to={PUBLIC_JOBS_PATH} className="transition-colors hover:text-foreground">
-          {t('onboarding.footerJobs')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <Link to="/fund" className="transition-colors hover:text-foreground">
-          {t('onboarding.footerFund')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <Link to="/documents" className="transition-colors hover:text-foreground">
-          {t('onboarding.footerDocuments')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <Link to="/governance" className="transition-colors hover:text-foreground">
-          {t('onboarding.footerGovernance')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <Link to="/about/legal-status" className="transition-colors hover:text-foreground">
-          {t('onboarding.footerLegalStatus')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <Link to="/terms" className="transition-colors hover:text-foreground">
-          {t('onboarding.footerTerms')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <Link to="/download" className="transition-colors hover:text-foreground">
-          {t('onboarding.footerDownload')}
-        </Link>
-        <span aria-hidden className="text-border">
-          ·
-        </span>
-        <a
-          href={CONTACT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="transition-colors hover:text-foreground"
+    <footer className="border-t border-border/40 pt-8 text-sm text-muted-foreground">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-foreground">{t('common.appName')}</p>
+          <p className="max-w-sm text-xs leading-relaxed text-muted-foreground">
+            {t('onboarding.slogan')}
+          </p>
+        </div>
+        <nav
+          aria-label={t('common.appName')}
+          className="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8"
         >
-          {t('onboarding.footerContact')}
-        </a>
+          {FOOTER_LINKS.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="transition-colors hover:text-foreground"
+            >
+              {t(item.labelKey)}
+            </Link>
+          ))}
+          <a
+            href={CONTACT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-foreground"
+          >
+            {t('onboarding.footerContact')}
+          </a>
+        </nav>
       </div>
     </footer>
   );

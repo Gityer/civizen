@@ -1,5 +1,5 @@
 import {
-  ArrowRight,
+  ChevronRight,
   ExternalLink,
   FileText,
   GitBranch,
@@ -14,9 +14,10 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import { OnboardingCardHeader } from '@/components/public/OnboardingCardHeader';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
+  onboardingGroupClass,
+  onboardingRowClass,
   onboardingSectionLeadClass,
   onboardingSectionTitleClass,
 } from '@/components/public/onboarding-styles';
@@ -33,14 +34,12 @@ const systemLayers = [
     titleKey: 'onboarding.systemMapIdentity',
     descriptionKey: 'onboarding.systemMapIdentityDescription',
     tone: 'bg-primary/12 text-primary',
-    cardTone: 'from-primary/30 to-primary/5',
   },
   {
     icon: Landmark,
     titleKey: 'onboarding.systemMapGovernance',
     descriptionKey: 'onboarding.systemMapGovernanceDescription',
     tone: 'bg-pillar-culture text-white',
-    cardTone: 'from-pillar-culture/40 to-pillar-culture/10',
     href: '/governance',
   },
   {
@@ -48,21 +47,18 @@ const systemLayers = [
     titleKey: 'onboarding.systemMapEconomy',
     descriptionKey: 'onboarding.systemMapEconomyDescription',
     tone: 'bg-pillar-economy text-white',
-    cardTone: 'from-pillar-economy/40 to-pillar-economy/10',
   },
   {
     icon: Leaf,
     titleKey: 'onboarding.systemMapStewardship',
     descriptionKey: 'onboarding.systemMapStewardshipDescription',
     tone: 'bg-pillar-environment text-white',
-    cardTone: 'from-pillar-environment/40 to-pillar-environment/10',
   },
   {
     icon: Layers,
     titleKey: 'onboarding.systemMapStandards',
     descriptionKey: 'onboarding.systemMapStandardsDescription',
     tone: 'bg-accent text-accent-foreground',
-    cardTone: 'from-accent/30 to-accent/5',
   },
 ] as const;
 
@@ -75,99 +71,85 @@ const learnMoreLinks = [
   { icon: Landmark, labelKey: 'onboarding.learnMoreGovernanceDocs', href: CIVIZEN_GOVERNANCE_DOCS_URL, external: false },
 ] as const;
 
+/** Layered system map as a connected vertical list (body of its deep dive). */
 export function OnboardingSystemMap() {
   const { t } = useLanguage();
 
   return (
-    <section className="space-y-5">
-      <div className="max-w-2xl space-y-2">
-        <h2 className={onboardingSectionTitleClass}>{t('onboarding.systemMapTitle')}</h2>
-        <p className={onboardingSectionLeadClass}>{t('onboarding.systemMapLead')}</p>
-      </div>
-
-      <div className="overflow-hidden rounded-[1.75rem] border border-primary/20 bg-card/40 p-4 sm:p-6">
-        <div className="flex flex-col gap-2 md:flex-row md:items-stretch md:gap-0">
-          {systemLayers.map((layer, index) => {
-            const cardInner = (
-              <>
-                <OnboardingCardHeader
-                  icon={layer.icon}
-                  title={t(layer.titleKey)}
-                  tone={layer.tone}
-                  className="mb-2"
-                />
-                <p className="text-xs leading-relaxed text-muted-foreground">{t(layer.descriptionKey)}</p>
-              </>
-            );
-            const cardClassName = cn(
-              'w-full flex-1 rounded-2xl border border-white/5 bg-gradient-to-br px-4 py-4',
-              layer.cardTone,
-              'href' in layer && layer.href ? 'transition-opacity hover:opacity-90' : null,
-            );
-            return (
-              <div key={layer.titleKey} className="flex flex-1 items-center gap-2 md:flex-col md:gap-1">
-                {'href' in layer && layer.href ? (
-                  <Link to={layer.href} className={cardClassName}>
-                    {cardInner}
-                  </Link>
-                ) : (
-                  <div className={cardClassName}>{cardInner}</div>
-                )}
-                {index < systemLayers.length - 1 ? (
-                  <ArrowRight
-                    className="mx-auto h-4 w-4 shrink-0 rotate-90 text-primary/60 md:rotate-0"
-                    aria-hidden
-                  />
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
+    <div className="space-y-3">
+      <p className={onboardingSectionLeadClass}>{t('onboarding.systemMapLead')}</p>
+      <ol className="relative space-y-3 pl-1">
+        <span aria-hidden className="absolute bottom-4 left-[1.05rem] top-4 w-px bg-border" />
+        {systemLayers.map((layer) => {
+          const body = (
+            <>
+              <span className={cn('relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg', layer.tone)}>
+                <layer.icon className="h-4 w-4" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold leading-snug text-foreground">{t(layer.titleKey)}</span>
+                <span className="block text-xs leading-snug text-muted-foreground">{t(layer.descriptionKey)}</span>
+              </span>
+            </>
+          );
+          return (
+            <li key={layer.titleKey}>
+              {'href' in layer && layer.href ? (
+                <Link to={layer.href} className="flex items-center gap-3 hover:opacity-90">
+                  {body}
+                </Link>
+              ) : (
+                <div className="flex items-center gap-3">{body}</div>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
   );
 }
 
+/** Mission documents and source: one grouped link list. */
 export function OnboardingLearnMore() {
   const { t } = useLanguage();
 
   return (
-    <section className="space-y-5">
-      <div className="max-w-2xl space-y-2">
+    <section className="space-y-4">
+      <div className="space-y-1.5">
         <h2 className={onboardingSectionTitleClass}>{t('onboarding.learnMoreTitle')}</h2>
         <p className={onboardingSectionLeadClass}>{t('onboarding.learnMoreLead')}</p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <ul className={cn(onboardingGroupClass, 'sm:grid sm:grid-cols-2 sm:divide-y-0')}>
         {learnMoreLinks.map((link) => {
-          const className =
-            'flex items-center justify-between rounded-2xl border border-border/40 bg-background/30 px-4 py-3.5 text-sm font-medium text-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:shadow-soft';
+          const className = cn(onboardingRowClass, 'text-sm font-medium text-foreground hover:bg-primary/5');
           const content = (
             <>
-              <OnboardingCardHeader icon={link.icon} title={t(link.labelKey)} className="min-w-0 flex-1" />
+              <link.icon className="h-4 w-4 shrink-0 text-primary" aria-hidden />
+              <span className="min-w-0 flex-1">{t(link.labelKey)}</span>
               {link.external ? (
-                <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
               ) : (
-                <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
               )}
             </>
           );
 
-          if (link.external) {
-            return (
-              <a key={link.labelKey} href={link.href} target="_blank" rel="noopener noreferrer" className={className}>
-                {content}
-              </a>
-            );
-          }
-
           return (
-            <Link key={link.labelKey} to={link.href} className={className}>
-              {content}
-            </Link>
+            <li key={link.labelKey} className="sm:border-b sm:border-border/50">
+              {link.external ? (
+                <a href={link.href} target="_blank" rel="noopener noreferrer" className={className}>
+                  {content}
+                </a>
+              ) : (
+                <Link to={link.href} className={className}>
+                  {content}
+                </Link>
+              )}
+            </li>
           );
         })}
-      </div>
+      </ul>
     </section>
   );
 }

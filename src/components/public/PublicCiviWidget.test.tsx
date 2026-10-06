@@ -2,7 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { panelSizeAfterEdgeDrag, panelSizeAfterNwDrag, PublicCiviWidget, civiBubbleIsTailed, scrollTopForLastExchange } from '@/components/public/PublicCiviWidget';
+import { PublicCiviWidget } from '@/components/public/PublicCiviWidget';
+import { panelSizeAfterEdgeDrag, panelSizeAfterNwDrag, civiBubbleIsTailed, scrollTopForLastExchange } from '@/components/public/civi-widget-layout';
 import { CIVI_AVATAR_STORAGE_KEY, setCiviAvatarId } from '@/lib/civi-avatar';
 import { baseTranslations, translateMessage } from '@/lib/i18n';
 

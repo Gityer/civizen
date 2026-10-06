@@ -21,7 +21,7 @@ vi.mock('@/contexts/LanguageContext', async () => {
 });
 
 describe('PublicPageFooter', () => {
-  it('includes a discovery link to Areas', () => {
+  it('includes discovery links in a large-screen friendly grid', () => {
     render(
       <MemoryRouter>
         <PublicPageFooter />
@@ -29,5 +29,10 @@ describe('PublicPageFooter', () => {
     );
     expect(screen.getByRole('link', { name: 'Areas' })).toHaveAttribute('href', '/areas');
     expect(screen.getByRole('link', { name: 'Jobs' })).toHaveAttribute('href', '/jobs');
+    expect(screen.getByRole('link', { name: 'Why this exists' })).toHaveAttribute(
+      'href',
+      '/why-this-exists',
+    );
+    expect(screen.getByText('Civizen')).toBeInTheDocument();
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -52,7 +52,7 @@ vi.mock('@/lib/i18n.runtime', async () => {
 describe('Onboarding public page', () => {
   it('shows product, proof, and faq content for new visitors', async () => {
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Onboarding />
       </MemoryRouter>,
     );
@@ -80,7 +80,7 @@ describe('Onboarding public page', () => {
 
   it('shows the public app download card with qr code and actions', async () => {
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Onboarding />
       </MemoryRouter>,
     );
@@ -91,5 +91,27 @@ describe('Onboarding public page', () => {
     expect(screen.getByRole('button', { name: 'Download the Android test build' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Open download page' })).toBeInTheDocument();
     expect(await screen.findByTestId('qr-code')).toHaveAttribute('data-value', ANDROID_INSTALL_PAGE_URL);
+  });
+
+  it('shows Join / Sign in once on first view; the sticky bar waits until the hero actions scroll away', () => {
+    render(
+      <MemoryRouter>
+        <Onboarding />
+      </MemoryRouter>,
+    );
+
+    const hero = within(screen.getByTestId('onboarding-hero-actions'));
+    expect(hero.getByRole('button', { name: /Join the network/ })).toBeInTheDocument();
+    expect(hero.getByRole('button', { name: 'Sign in' })).toBeInTheDocument();
+
+    // Hidden bar is out of the accessibility tree, so only the hero pair is reachable.
+    expect(screen.getByTestId('onboarding-sticky-cta')).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getAllByRole('button', { name: /Join the network/ })).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: 'Sign in' })).toHaveLength(1);
+
+    // Large-screen header pair stays hidden while the hero pair is on screen.
+    expect(screen.getByTestId('public-sign-in')).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByTestId('public-join')).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.queryAllByRole('link', { name: /Join the network|^Sign in$/ })).toHaveLength(0);
   });
 });
