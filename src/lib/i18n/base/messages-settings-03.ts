@@ -30,6 +30,23 @@ export const m_messages_settings_03 = {
       "bellLabel": "Notifications",
       "bellLabelUnread": "Notifications, {count} unread"
     },
+    "notificationPreferences": {
+      "title": "Notify me about",
+      "messages": "New messages",
+      "messagesHint": "When someone writes to you in a direct conversation.",
+      "endorsements": "Endorsements",
+      "endorsementsHint": "When someone endorses you.",
+      "comments": "Comments on my posts",
+      "commentsHint": "When someone comments on a post you wrote.",
+      "governance": "Governance",
+      "governanceHint": "New proposals you can vote on, and results of your own proposals.",
+      "saveFailed": "Could not save the setting. Try again."
+    },
+    "notificationText": {
+      "privateMessage": "{name} sent you a message",
+      "endorsement": "{name} endorsed you",
+      "postComment": "{name} commented on your post"
+    },
     "safetyPage": {
       "blockedTitle": "Blocked people",
       "blockedBody": "Blocked people cannot message you. They are not told that you blocked them.",

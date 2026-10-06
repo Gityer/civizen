@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { countUnread, notificationLink, toUserNotification } from './user-notifications';
+import { countUnread, notificationLink, notificationTitle, toUserNotification } from './user-notifications';
 
 describe('notificationLink', () => {
   it('links agreements and matters to their pages', () => {
@@ -16,6 +16,26 @@ describe('notificationLink', () => {
     expect(notificationLink({ entityType: 'post', entityId: 'p1' })).toBe('/');
     expect(notificationLink({ entityType: 'something_new', entityId: 'x' })).toBeNull();
     expect(notificationLink({ entityType: null, entityId: null })).toBeNull();
+  });
+
+  it('opens conversations, the profile and proposals', () => {
+    expect(notificationLink({ entityType: 'conversation', entityId: 'c1' })).toBe('/messaging/c1');
+    expect(notificationLink({ entityType: 'profile', entityId: 'p1' })).toBe('/profile');
+    expect(notificationLink({ entityType: 'governance_proposal', entityId: 'g1' })).toBe('/governance/voting/proposals/g1');
+  });
+});
+
+describe('notificationTitle', () => {
+  const t = (key: string, vars?: Record<string, string | number>) => `${key}:${vars?.name ?? ''}`;
+
+  it('translates known types that name who acted', () => {
+    expect(notificationTitle({ notificationType: 'endorsement_received', title: 'Ana endorsed you', actorName: 'Ana' }, t))
+      .toBe('settings.notificationText.endorsement:Ana');
+  });
+
+  it('keeps the stored title otherwise', () => {
+    expect(notificationTitle({ notificationType: 'post_repost', title: 'Ana reposted', actorName: 'Ana' }, t)).toBe('Ana reposted');
+    expect(notificationTitle({ notificationType: 'post_comment', title: 'Someone commented', actorName: null }, t)).toBe('Someone commented');
   });
 });
 
@@ -49,6 +69,7 @@ describe('toUserNotification', () => {
       entityId: 'post1',
       readAt: null,
       createdAt: '2026-10-06T00:00:00Z',
+      actorName: null,
     });
   });
 });

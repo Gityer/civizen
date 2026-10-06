@@ -7,6 +7,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { NotificationPreferencesCard } from '@/components/settings/NotificationPreferencesCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +16,7 @@ import {
   fetchUserNotifications,
   markNotificationsRead,
   notificationLink,
+  notificationTitle,
   type UserNotification,
 } from '@/lib/user-notifications';
 
@@ -109,7 +111,7 @@ export default function NotificationsSettings() {
                 <li key={item.id}>
                   <Card className={`space-y-2 border-border/80 p-4 ${item.readAt ? '' : 'border-l-4 border-l-primary'}`}>
                     <div className="space-y-1">
-                      <p className={`text-sm ${item.readAt ? 'text-foreground' : 'font-semibold text-foreground'}`}>{item.title}</p>
+                      <p className={`text-sm ${item.readAt ? 'text-foreground' : 'font-semibold text-foreground'}`}>{notificationTitle(item, t)}</p>
                       {item.body ? <p className="text-sm text-muted-foreground">{item.body}</p> : null}
                       <p className="text-xs text-muted-foreground">
                         <time dateTime={item.createdAt}>{formatter.format(new Date(item.createdAt))}</time>
@@ -135,6 +137,8 @@ export default function NotificationsSettings() {
             })}
           </ul>
         )}
+
+        <NotificationPreferencesCard />
       </div>
     </AppLayout>
   );

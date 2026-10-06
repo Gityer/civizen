@@ -18,11 +18,19 @@ export type UserNotification = {
   entityId: string | null;
   readAt: string | null;
   createdAt: string;
+  /** Who caused it, when the database recorded that (metadata.actor_name). */
+  actorName: string | null;
 };
 
 export const NOTIFICATIONS_PAGE_SIZE = 50;
 
 type NotificationRow = Database['public']['Tables']['user_notifications']['Row'];
+
+function readActorName(metadata: unknown): string | null {
+  if (!metadata || typeof metadata !== 'object') return null;
+  const name = (metadata as { actor_name?: unknown }).actor_name;
+  return typeof name === 'string' && name.trim() ? name : null;
+}
 
 export function toUserNotification(row: NotificationRow): UserNotification {
   return {
@@ -34,6 +42,7 @@ export function toUserNotification(row: NotificationRow): UserNotification {
     entityId: row.entity_id,
     readAt: row.read_at,
     createdAt: row.created_at,
+    actorName: readActorName(row.metadata),
   };
 }
 
@@ -48,9 +57,31 @@ export function notificationLink(notification: Pick<UserNotification, 'entityTyp
       return entityId ? `/contribute/matters/${entityId}` : '/contribute/matters';
     case 'post':
       return '/';
+    case 'conversation':
+      return entityId ? `/messaging/${entityId}` : '/messaging';
+    case 'profile':
+      return '/profile';
+    case 'governance_proposal':
+      return entityId ? `/governance/voting/proposals/${entityId}` : '/governance/voting';
     default:
       return null;
   }
+}
+
+const TITLE_KEYS: Record<string, string> = {
+  private_message: 'settings.notificationText.privateMessage',
+  endorsement_received: 'settings.notificationText.endorsement',
+  post_comment: 'settings.notificationText.postComment',
+};
+
+/** The title in the member's language when the type is known; otherwise the stored text. */
+export function notificationTitle(
+  notification: Pick<UserNotification, 'notificationType' | 'title' | 'actorName'>,
+  t: (key: string, vars?: Record<string, string | number>) => string,
+): string {
+  const key = TITLE_KEYS[notification.notificationType];
+  if (!key || !notification.actorName) return notification.title;
+  return t(key, { name: notification.actorName });
 }
 
 export function countUnread(notifications: Pick<UserNotification, 'readAt'>[]): number {
