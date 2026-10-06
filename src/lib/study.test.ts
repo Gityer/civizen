@@ -9,7 +9,6 @@ import {
   FOUNDATION_STUDY_DOCUMENT_KEYS,
   getFoundationCompletionMetrics,
   isMissingStudyBackend,
-  STUDY_PROPOSALS,
   STUDY_DOCUMENTS,
 } from '@/lib/study';
 
@@ -155,10 +154,5 @@ describe('study module', () => {
     expect(constitutionMaterials.length).toBeGreaterThan(0);
     expect(economyMaterials.length).toBeGreaterThan(0);
     expect(constitutionMaterials.every((material) => material.domainId === 'constitution')).toBe(true);
-  });
-
-  it('includes proposal archive entries with routed destinations', () => {
-    expect(STUDY_PROPOSALS.length).toBeGreaterThan(0);
-    expect(STUDY_PROPOSALS.every((proposal) => proposal.route.startsWith('/'))).toBe(true);
   });
 });

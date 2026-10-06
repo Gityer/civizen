@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Vote, ShieldCheck, Bell, MapPin, Eye, Loader2, ChevronRight, History } from 'lucide-react';
+import { Vote, Loader2, ChevronRight, History } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { CivicVotingPageHeading, CivicVotingPageShell } from '@/components/governance/CivicVotingPageShell';
+import { CivicVotingHowItWorks } from '@/components/governance/CivicVotingHowItWorks';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -540,6 +541,7 @@ export default function CivicVotingHub() {
           <SlowRunningText
             text={t('civicVoting.subtitle')}
             className="w-full text-sm text-muted-foreground"
+            onlyWhenOverflow
           />
         </div>
 
@@ -790,29 +792,7 @@ export default function CivicVotingHub() {
               {t('civicVoting.folds.howItWorks')}
             </AccordionTrigger>
             <AccordionContent>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <FeatureChip
-                  icon={<ShieldCheck className="h-4 w-4" />}
-                  title={t('civicVoting.features.identityTitle')}
-                  body={t('civicVoting.features.identityBody')}
-                />
-                <FeatureChip
-                  icon={<Bell className="h-4 w-4" />}
-                  title={t('civicVoting.features.pushTitle')}
-                  body={t('civicVoting.features.pushBody')}
-                />
-                <FeatureChip
-                  icon={<MapPin className="h-4 w-4" />}
-                  title={t('civicVoting.features.homeTitle')}
-                  body={t('civicVoting.features.homeBody')}
-                />
-                <FeatureChip
-                  icon={<Eye className="h-4 w-4" />}
-                  title={t('civicVoting.features.transparencyTitle')}
-                  body={t('civicVoting.features.transparencyBody')}
-                />
-              </div>
-              <p className="mt-3 text-xs text-muted-foreground">{t('civicVoting.features.ordinaryNote')}</p>
+              <CivicVotingHowItWorks t={t} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -882,25 +862,5 @@ export default function CivicVotingHub() {
         </SheetContent>
       </Sheet>
     </CivicVotingPageShell>
-  );
-}
-
-function FeatureChip({
-  icon,
-  title,
-  body,
-}: {
-  icon: ReactNode;
-  title: string;
-  body: string;
-}) {
-  return (
-    <div className="rounded-xl border border-border/50 bg-muted/20 p-3">
-      <div className="flex items-center gap-2 text-primary">
-        {icon}
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-      </div>
-      <p className="mt-1 text-xs text-muted-foreground">{body}</p>
-    </div>
   );
 }

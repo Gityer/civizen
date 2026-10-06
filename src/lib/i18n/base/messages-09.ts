@@ -135,7 +135,9 @@ export const m_messages_09 = {
     "foundationLibraryTitle": "Foundational materials",
     "foundationLibraryDescription": "Core constitutional, legal, citizenship, and economy materials for citizen study.",
     "openMaterial": "Open material",
-    "viewProposal": "View proposal",
+    "openBallot": "Open ballot",
+    "openVotesEmpty": "No votes are open right now. Open consultations appear here as soon as they are published.",
+    "openVotesLoadFailed": "Open votes could not be loaded.",
     "markAsRead": "Mark as read",
     "markAsUnread": "Mark as unread",
     "markComplete": "Mark complete",
@@ -146,14 +148,9 @@ export const m_messages_09 = {
       "legalText": "Legal Text",
       "guide": "Guide"
     },
-    "proposalStatus": {
-      "active": "Active",
-      "review": "In Review",
-      "scheduled": "Scheduled"
-    },
     "continueLearning": "Continue learning",
     "recentlyUpdated": "Recently updated documents",
-    "pendingVotes": "Pending votes",
+    "pendingVotes": "Open votes",
     "economyBriefingTitle": "Economy & Luma briefing",
     "economyBriefingDescription": "Luma follows a civic monetary model with controlled issuance, human approvals, and policy guardrails.",
     "economyBriefingPoints": {
@@ -266,20 +263,6 @@ export const m_messages_09 = {
       "economyConstitutionalTokenomicsGovernance": {
         "title": "Constitutional Tokenomics & Governance Model",
         "summary": "Foundational draft defining Luma tokenomics, treasury governance, civic incentives, and staged safeguards that reduce concentrated control over time."
-      }
-    },
-    "proposals": {
-      "governanceCadence": {
-        "title": "Quarterly Governance Review Cadence",
-        "summary": "Defines recurring review intervals for governance policy recalibration."
-      },
-      "reserveDisclosure": {
-        "title": "Reserve Disclosure Standard",
-        "summary": "Standardizes reserve-category visibility across civic reporting surfaces."
-      },
-      "citizenshipPathway": {
-        "title": "Citizenship Advancement Baseline",
-        "summary": "Clarifies baseline progression criteria for participation and civic standing."
       }
     },
     "specialists": {

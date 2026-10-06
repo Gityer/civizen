@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ConstitutionReader } from '@/components/study/ConstitutionReader';
 import { StudyMarkdownReader } from '@/components/study/StudyMarkdownReader';
+import { StudyOpenVotesCard } from '@/components/study/StudyOpenVotesCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -16,7 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { StudyLayoutOutletContext } from '@/pages/StudyLayout';
 import { permissionListHasAny } from '@/lib/access-control';
 import { CONSTITUTION_ARTICLE_BOOKMARK_PREFIX, CONSTITUTION_STUDY_SECTIONS, OPEN_ARTICLE_STORAGE_KEY } from '@/lib/constitution-study';
-import { buildStudyAiExplanation, getFoundationMaterialsForDomain, FOUNDATION_STUDY_DOCUMENT_KEYS, filterStudyDocumentsByQuery, getFoundationCompletionMetrics, isMissingStudyBackend, STUDY_PROPOSALS, STUDY_DOCUMENTS, type StudyCertificationStatus, type StudyDocument, type StudyMaterial, type StudyMaterialType } from '@/lib/study';
+import { buildStudyAiExplanation, getFoundationMaterialsForDomain, FOUNDATION_STUDY_DOCUMENT_KEYS, filterStudyDocumentsByQuery, getFoundationCompletionMetrics, isMissingStudyBackend, STUDY_DOCUMENTS, type StudyCertificationStatus, type StudyDocument, type StudyMaterial, type StudyMaterialType } from '@/lib/study';
 import { getStudyMaterialContentByKey } from '@/lib/study-material-content';
 import { cn } from '@/lib/utils';
 import { type StudyDomain, studyDomains } from '@/pages/study/study-domains';
@@ -1107,40 +1108,7 @@ export default function StudyCivicLearning() {
             </ul>
           </Card>
 
-          <Card className="border-border/70 bg-card/95 p-5 shadow-sm">
-            <div className="flex items-center gap-2">
-              <Scale className="h-4 w-4 text-primary" />
-              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                {t('study.pendingVotes')}
-              </h3>
-            </div>
-            <div className="mt-3 space-y-2">
-              {STUDY_PROPOSALS.map((proposal) => (
-                <Card key={proposal.key} className="border-border/70 bg-background/50 p-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="space-y-1">
-                      <p className="text-sm font-semibold text-foreground">{t(proposal.titleKey)}</p>
-                      <p className="text-xs text-muted-foreground">{t(proposal.summaryKey)}</p>
-                    </div>
-                    <Badge variant="outline" className="rounded-full">
-                      {t(`study.proposalStatus.${proposal.status}`)}
-                    </Badge>
-                  </div>
-                  <div className="mt-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="gap-2"
-                      onClick={() => navigate(proposal.route)}
-                    >
-                      {t('study.viewProposal')}
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </Card>
+          <StudyOpenVotesCard />
         </motion.div>
 
         {selectedDomainData?.id === 'economy' && (

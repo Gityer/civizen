@@ -34,14 +34,6 @@ export type StudyMaterial = {
   availableNow: boolean;
 };
 
-export type StudyProposal = {
-  key: string;
-  titleKey: string;
-  summaryKey: string;
-  status: 'active' | 'review' | 'scheduled';
-  route: string;
-};
-
 export const FOUNDATION_STUDY_DOCUMENT_KEYS = [
   'constitution',
   'laws',
@@ -228,30 +220,6 @@ export const FOUNDATION_STUDY_MATERIALS: StudyMaterial[] = [
     materialType: 'legalText',
     route: '/study?domain=economy&material=economy-constitutional-tokenomics-governance',
     availableNow: true,
-  },
-];
-
-export const STUDY_PROPOSALS: StudyProposal[] = [
-  {
-    key: 'governance-cadence',
-    titleKey: 'study.proposals.governanceCadence.title',
-    summaryKey: 'study.proposals.governanceCadence.summary',
-    status: 'review',
-    route: '/governance',
-  },
-  {
-    key: 'reserve-disclosure',
-    titleKey: 'study.proposals.reserveDisclosure.title',
-    summaryKey: 'study.proposals.reserveDisclosure.summary',
-    status: 'active',
-    route: '/study?domain=economy',
-  },
-  {
-    key: 'citizenship-pathway',
-    titleKey: 'study.proposals.citizenshipPathway.title',
-    summaryKey: 'study.proposals.citizenshipPathway.summary',
-    status: 'scheduled',
-    route: '/terms',
   },
 ];
 
