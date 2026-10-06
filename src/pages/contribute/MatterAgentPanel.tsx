@@ -53,8 +53,8 @@ const DEFAULT_CODING_PATHS = [
 export function MatterAgentPanel({ bundle, profileId, linkedIds, busy, onBusy, onReload, t }: Props) {
   const canManage = viewerRepresents(profileId, bundle.matter.responsible, linkedIds)
     || bundle.responsibilities.some(
-      (row) => row.role === 'collaborator'
-        && row.acceptanceStatus === 'accepted'
+      (row) => row.kind === 'collaborator'
+        && row.status === 'accepted'
         && viewerRepresents(profileId, row.actor, linkedIds),
     );
 

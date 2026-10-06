@@ -3,6 +3,9 @@ import { PlusCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { AppLayout } from '@/components/layout/AppLayout';
+import { AppPageHeader } from '@/components/layout/AppPageHeader';
+import { APP_DIRECTORY_MAX_CLASS } from '@/lib/responsive-layout';
+import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
@@ -24,21 +27,18 @@ export default function Contribute() {
 
   return (
     <AppLayout>
-      <div className="space-y-8 px-4 py-6">
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-4"
-        >
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <PlusCircle className="h-7 w-7" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-display font-bold text-foreground">
-              {t('contribute.title')}
-            </h1>
-            <p className="text-base text-muted-foreground">{t('contribute.subtitle')}</p>
-          </div>
+      <div className={cn('space-y-8 px-4 py-6', APP_DIRECTORY_MAX_CLASS)}>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+          <AppPageHeader
+            showBack={false}
+            leading={
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary sm:h-14 sm:w-14">
+                <PlusCircle className="h-6 w-6 sm:h-7 sm:w-7" />
+              </div>
+            }
+            title={t('contribute.title')}
+            subtitle={t('contribute.subtitle')}
+          />
         </motion.div>
 
         {CONTRIBUTE_SECTION_ORDER.map((section, sectionIndex) => {

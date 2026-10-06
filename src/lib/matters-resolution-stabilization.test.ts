@@ -8,7 +8,7 @@ import {
   resolveEscalationPolicyId,
 } from '@/lib/matters';
 import { createMatter, createMatterEngineContext, performFormalAction } from '@/lib/matters-workflow';
-import { createTask, pendingFor, startCollaborativeWork } from '@/lib/matters-work-workflow';
+import { asWorkState, createTask, pendingFor, startCollaborativeWork } from '@/lib/matters-work-workflow';
 import {
   createResolutionEngineState,
   performResolutionReview,
@@ -27,13 +27,12 @@ function startIssue(ctx = createMatterEngineContext(new Date('2026-09-01T12:00:0
       matterType: 'issue',
       initiator: userA,
       addressee: product,
-      responsible: product,
       createdByProfileId: 'a',
     },
     ctx,
   );
   let work = createResolutionEngineState(
-    performFormalAction(state, ctx, { actor: product, action: 'accept_responsibility' }),
+    asWorkState(performFormalAction(state, ctx, { actor: product, action: 'accept_responsibility' })),
   );
   work = createResolutionEngineState(startCollaborativeWork(work, ctx, product));
   return { ctx, state: work };

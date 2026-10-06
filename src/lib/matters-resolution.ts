@@ -1,6 +1,7 @@
 /**
  * Matter Collaboration Phase 3 — Resolution, evaluation, outcome follow-up types.
  */
+import type { MatterActorRef } from '@/lib/matters';
 
 export const RESOLUTION_KINDS = [
   'answered',
@@ -119,7 +120,7 @@ export type MatterOutcomeFollowup = {
   reviewDueAt: string;
   outcomeQuestion: string;
   targetIndicator: string | null;
-  reviewer: { kind: string; profileId: string; displayName?: string | null };
+  reviewer: MatterActorRef;
   status: 'scheduled' | 'pending' | 'completed' | 'cancelled';
   result: OutcomeResult | null;
   notes: string | null;

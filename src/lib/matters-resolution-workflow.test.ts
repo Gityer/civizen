@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { AUTO_CLOSE_REASON, deriveMatterStatus } from '@/lib/matters';
 import { createMatterEngineContext } from '@/lib/matters-workflow';
 import {
+  asWorkState,
   completeCollaborativeWork,
   createTask,
   performTaskAction,
@@ -32,13 +33,12 @@ function startIssue(ctx = start()) {
       matterType: 'issue',
       initiator: userA,
       addressee: product,
-      responsible: product,
       createdByProfileId: 'a',
     },
     ctx,
   );
   let work = createResolutionEngineState(
-    performFormalAction(state, ctx, { actor: product, action: 'accept_responsibility' }),
+    asWorkState(performFormalAction(state, ctx, { actor: product, action: 'accept_responsibility' })),
   );
   work = createResolutionEngineState(startCollaborativeWork(work, ctx, product));
   return { ctx, state: work };
