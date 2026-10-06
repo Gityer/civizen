@@ -1,10 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   server: {
     // Listen on all interfaces (IPv4 + IPv6). Using only "::" can break some
     // Windows↔WSL port-forwarding setups where the browser hits 127.0.0.1.
@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     strictPort: false,
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
