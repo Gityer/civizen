@@ -1150,7 +1150,6 @@ export function ChatBar({
       return;
     }
     setClearChatBusy(true);
-    let refetchedRows: PrivateMsgRow[] = [];
     try {
       const { error } = await supabase.from('private_messages').delete().eq('conversation_id', convId);
       if (error) {
@@ -1176,7 +1175,7 @@ export function ChatBar({
         rawPrivateRowsRef.current = [];
         setMessages([]);
       } else {
-        refetchedRows = (data ?? []) as PrivateMsgRow[];
+        const refetchedRows = (data ?? []) as PrivateMsgRow[];
         rawPrivateRowsRef.current = refetchedRows;
         setMessages(
           refetchedRows.map((row) =>

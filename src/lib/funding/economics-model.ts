@@ -347,7 +347,6 @@ export function buildAnnualProjection(
 } {
   let accumulated = 0;
   let peakDeficit = 0;
-  let cumulativeCapital = 0;
   const rows: AnnualProjectionRow[] = [];
 
   for (const row of annualRowsForScenario(scenario, horizonYears)) {
@@ -393,7 +392,7 @@ export function buildAnnualProjection(
   // by reading optional fields if present on the typed row (extended at extract time).
   enrichCapitalDraws(rows, scenario);
 
-  cumulativeCapital = rows.length ? rows[rows.length - 1]!.cumulativeCapitalDrawnUsdM : 0;
+  const cumulativeCapital = rows.length ? rows[rows.length - 1]!.cumulativeCapitalDrawnUsdM : 0;
 
   const revenueUsdM = round1(rows.reduce((a, r) => a + r.revenueUsdM, 0));
   const costsUsdM = round1(rows.reduce((a, r) => a + r.costsUsdM, 0));
@@ -607,7 +606,6 @@ export function calculateIrr(cashFlows: number[]): number | null {
     if (Math.abs(nMid) < 1e-7) return mid;
     if (nLo * nMid <= 0) {
       hi = mid;
-      nHi = nMid;
     } else {
       lo = mid;
       nLo = nMid;

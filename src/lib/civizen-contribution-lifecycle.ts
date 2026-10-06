@@ -186,7 +186,7 @@ export function evaluateContributionLifecycle(event: ContributionEvent): Contrib
     (Array.isArray(event.rawMeta.realFeatures) &&
       event.rawMeta.realFeatures.some((item) => typeof item === 'string' && /\.(test|spec)\./.test(item)));
 
-  let quality: number | null = null;
+  let quality: number | null;
   let contributionFunction: ContributionLifecycleView['contributionFunction'] = 'unknown';
   let artifactFunction: ContributionLifecycleView['artifactFunction'] = 'unknown';
   let structuralSignificance: ContributionLifecycleView['structuralSignificance'] = 'unknown';

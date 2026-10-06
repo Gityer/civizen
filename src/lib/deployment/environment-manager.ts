@@ -471,9 +471,9 @@ export class EnvironmentManager {
         reason,
       });
     } catch (error) {
-      throw new Error(
-        `Rollback failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-      );
+      throw new Error(`Rollback failed: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        cause: error,
+      });
     }
   }
 

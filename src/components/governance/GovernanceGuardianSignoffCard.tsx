@@ -163,11 +163,11 @@ export function GovernanceGuardianSignoffCard({
     }
 
     setSubmittingExternalSignature(true);
-    let verificationMethod = 'guardian_multisig_attestation';
-    let resolvedPayloadHash: string | null = null;
-    let resolvedSignedMessage: string | null = null;
-    let resolvedSignature: string | null = null;
-    let hasCryptographicPayload = false;
+    let verificationMethod: string;
+    let resolvedPayloadHash: string | null;
+    let resolvedSignedMessage: string | null;
+    let resolvedSignature: string | null;
+    let hasCryptographicPayload: boolean;
     try {
       const preparedPayload = await prepareExternalGuardianSignoffPayload({
         signer: selectedExternalSigner,

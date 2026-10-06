@@ -821,7 +821,7 @@ Deno.serve(async (request) => {
     })) ?? [];
 
   const llm = resolveLlm();
-  let replyText = '';
+  let replyText: string;
   let moderationMetric: ModerationMetricCategory | null = null;
   let diagnostics: Record<string, unknown> | null = null;
   let usedModel = false;

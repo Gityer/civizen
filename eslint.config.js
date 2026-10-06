@@ -18,7 +18,10 @@ export default tseslint.config(
       "react-refresh": reactRefresh,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      // Classic Rules of Hooks. The v7 "recommended" preset adds React Compiler diagnostics
+      // (purity, refs, set-state-in-effect, ...) that only matter when the app adopts React Compiler.
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
     },

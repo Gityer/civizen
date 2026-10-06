@@ -365,7 +365,7 @@ export default function CivicVotingHub() {
       const profileRegion = profile?.region_code?.trim().toUpperCase() || null;
       const profileCity = profile?.city?.trim() || null;
 
-      let geoRegionCodes: string[] = [];
+      let geoRegionCodes: string[];
       try {
         geoRegionCodes = (await listGeoRegions(preferredCountry)).map((region) => region.code);
       } catch {
@@ -385,7 +385,7 @@ export default function CivicVotingHub() {
 
       let localityMatch: string | null = null;
       if (profileCity && preferredRegion) {
-        let geoCities: string[] = [];
+        let geoCities: string[];
         try {
           geoCities = await listGeoCities(preferredCountry, preferredRegion);
         } catch {

@@ -803,7 +803,7 @@ export function useGovernanceActivationDemographicFeeds() {
 
     setIngestingSignedFeedSnapshot(true);
 
-    let payloadHash = '';
+    let payloadHash: string;
     try {
       const verified = await verifyActivationDemographicPayloadSignature({
         keyAlgorithm: adapter.key_algorithm,

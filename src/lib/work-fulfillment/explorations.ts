@@ -78,7 +78,7 @@ export function suggestAdjacentRoles(input: {
       explore.push('You have limited evidence of group facilitation.');
     }
     explore.push('Consider which skills and contributions you already have, and which this kind of work may still need.');
-    let alignment: WorkFitAlignment = 'limited_alignment';
+    let alignment: WorkFitAlignment;
     if (hits.length >= 2) alignment = 'strong_alignment';
     else if (hits.length === 1) alignment = 'some_alignment';
     else alignment = 'worth_exploring';
