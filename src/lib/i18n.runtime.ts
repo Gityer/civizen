@@ -1,5 +1,6 @@
 import { getCountryName } from './countries';
 import type { BaseTranslations } from './i18n.base';
+import { applyCuratedTranslations } from './i18n/curated';
 import type { LanguageCode, LanguageOption } from './i18n.languages';
 
 export type TranslationTree = Record<string, unknown>;
@@ -348,8 +349,9 @@ export async function loadLanguagePack(language: LanguageCode): Promise<Translat
 
   const cached = cachedLanguagePacks.get(language) || readPackedLanguage(language);
   if (cached) {
-    cachedLanguagePacks.set(language, cached);
-    return cached;
+    const curatedCached = applyCuratedTranslations(language, cached);
+    cachedLanguagePacks.set(language, curatedCached);
+    return curatedCached;
   }
 
   const inFlight = inFlightLanguageLoads.get(language);
@@ -357,14 +359,14 @@ export async function loadLanguagePack(language: LanguageCode): Promise<Translat
 
   const promise = translateTree(baseTranslations, language, new Map())
     .then((messages) => {
-      const tree = scrubLegacyBrandTree(messages) as TranslationTree;
+      const tree = applyCuratedTranslations(language, scrubLegacyBrandTree(messages) as TranslationTree);
       cachedLanguagePacks.set(language, tree);
       persistPackedLanguage(language, tree);
       return tree;
     })
     .catch((error) => {
       console.error(`Failed to load language pack for ${language}:`, error);
-      return baseTranslations;
+      return applyCuratedTranslations(language, baseTranslations);
     })
     .finally(() => {
       inFlightLanguageLoads.delete(language);
