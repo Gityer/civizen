@@ -62,6 +62,10 @@ cd "$CIVIZEN_LOCAL_SUPABASE_DIR" && npx -y supabase gen types typescript --local
 
 Every table named in `types.ts` exists locally (about 100 of about 300); function names that are longer than 63 characters are truncated by Postgres.
 
+## SQL tests
+
+`scripts/local-supabase/run-sql-tests.sh [name-filter]` runs every `supabase/tests/*_test.sql` against the local database only. Each file wraps itself in `BEGIN … ROLLBACK`, impersonates members with `SET LOCAL ROLE authenticated` + `request.jwt.claims`, and raises on any failed assertion, so nothing persists. The consultation ballot and proposal-support tests need the production-derived data (election `single-world-citizenship`, profiles `member` and `citizen`).
+
 ## Which backend does the app use?
 
 The web app (`npm run dev`, the `civizen-web` container on port 8080) reads `VITE_SUPABASE_URL` from `.env` / `.env.local`. By default that is the **live production backend**, not this local stack (kong on `127.0.0.1:56321`). Sign-ups, votes, withdrawals and account deletions made in the browser therefore change real data.

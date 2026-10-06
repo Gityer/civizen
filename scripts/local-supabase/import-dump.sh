@@ -29,6 +29,18 @@ fi
 echo "Loading $DUMP ..."
 gzip -dc "$DUMP" | psql_db
 
+# GoTrue cannot sign in a user whose token columns are NULL ("converting NULL to string is unsupported",
+# HTTP 500 on /token). pg_dump of production leaves them NULL, so normalise them to empty strings.
+psql_db -c "update auth.users
+  set confirmation_token = coalesce(confirmation_token, ''),
+      recovery_token = coalesce(recovery_token, ''),
+      email_change_token_new = coalesce(email_change_token_new, ''),
+      email_change = coalesce(email_change, ''),
+      email_change_token_current = coalesce(email_change_token_current, ''),
+      phone_change = coalesce(phone_change, ''),
+      phone_change_token = coalesce(phone_change_token, ''),
+      reauthentication_token = coalesce(reauthentication_token, '');"
+
 # A local snapshot (refresh-data.sh --restore) keeps its own password hashes; a production export has none.
 if [ "${CIVIZEN_KEEP_PASSWORDS:-}" != "1" ]; then
   psql_db -c "update auth.users
