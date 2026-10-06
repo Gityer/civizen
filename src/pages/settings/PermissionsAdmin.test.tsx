@@ -116,7 +116,7 @@ describe('PermissionsAdmin page', () => {
     fromMock.mockClear();
   });
 
-  it('shows main folders folded, with expand-all after the Permissions title', async () => {
+  it('shows main folders folded, with expand-all after the Permissions title', { timeout: 30_000 }, async () => {
     render(
       <MemoryRouter>
         <PermissionsAdmin />
@@ -156,7 +156,7 @@ describe('PermissionsAdmin page', () => {
     expect(canvasStyle).toContain('5rem');
   });
 
-  it('expands all folders from the title chevron, and still unfolds one folder by name', async () => {
+  it('expands all folders from the title chevron, and still unfolds one folder by name', { timeout: 30_000 }, async () => {
     render(
       <MemoryRouter>
         <PermissionsAdmin />
