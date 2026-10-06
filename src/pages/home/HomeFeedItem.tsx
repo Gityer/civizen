@@ -29,7 +29,7 @@ export function HomeFeedItem({ model, item, index }: { model: HomeModel; item: H
     setThoughtsOriginal, setFullOriginal, profile, t, navigate, postEditorRef, canPost, getInitials,
     getDisplayName, formatRelativeTime, viewerPermissions, beginEditPost, cancelEditPost,
     saveEditedPost, deleteOwnPost, toggleLike, activeIdentityLabel, handlePlainRepost,
-    handleUndoRepost, toggleComments, handlePublishToSocial, submitComment,
+    handleUndoRepost, toggleComments, handlePublishToSocial, submitComment, hidePostForMe,
   } = model;
 
   const post = item.post as Post;
@@ -113,6 +113,12 @@ export function HomeFeedItem({ model, item, index }: { model: HomeModel; item: H
                 })}
                 onEdit={() => beginEditPost(post)}
                 onDelete={() => void deleteOwnPost(post)}
+                {...(profile?.id && post.author_id !== profile.id && isRecordablePostId(post.id) ? {
+                  hideLabel: t('home.hidePost'),
+                  reportLabel: t('home.reportPost'),
+                  onHide: () => void hidePostForMe(post.id),
+                  onReport: () => navigate(`/report/post/${post.id}`),
+                } : {})}
               />
             <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>

@@ -38,6 +38,7 @@ describe('AppTopChrome', () => {
     );
 
     expect(screen.getByTestId('app-top-chrome-search')).toBeInTheDocument();
+    expect(screen.getByTestId('app-top-chrome-notifications')).toBeInTheDocument();
     expect(await screen.findByTestId('user-page-menu-trigger')).toBeInTheDocument();
     expect(screen.queryByTestId('app-top-chrome-back')).not.toBeInTheDocument();
   });

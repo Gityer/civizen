@@ -2,6 +2,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Suspense, useEffect, useState } from "react";
+import { MotionConfig } from "framer-motion";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
@@ -14,6 +15,8 @@ import { permissionListHas } from "@/lib/access-control";
 import { lazyWithChunkReload } from "@/lib/lazy-with-chunk-reload";
 import { appRoutes1 } from "@/app-routes/app-routes-1";
 import { appRoutes2 } from "@/app-routes/app-routes-2";
+import { appRoutesSupport } from "@/app-routes/app-routes-support";
+import { RouteErrorBoundary } from "@/components/app/RouteErrorBoundary";
 import { NotFound } from "@/app-routes/lazy-pages";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -133,6 +136,7 @@ function BuildOverlayLoader() {
 
 const App = () => (
   <AppCrashBoundary>
+    <MotionConfig reducedMotion="user">
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="civizen-theme-v1">
         <ThemeStorageSync />
@@ -143,14 +147,17 @@ const App = () => (
               <DeferredAppUpdatePrompt />
               <BrowserRouter>
                 <PageSecondaryNavProvider>
+                <RouteErrorBoundary>
                 <Suspense fallback={<RouteFallback />}>
                   <Routes>
                     {appRoutes1}
                     {appRoutes2}
+                    {appRoutesSupport}
                   {/* Fallback */}
                   <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
+                </RouteErrorBoundary>
                 <PendingAuthReturnRedirect />
                 <PublicCiviHost />
                 <BuildOverlayLoader />
@@ -161,6 +168,7 @@ const App = () => (
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
+    </MotionConfig>
   </AppCrashBoundary>
 );
 

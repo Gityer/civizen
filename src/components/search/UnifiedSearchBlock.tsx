@@ -24,6 +24,8 @@ import {
   type SearchDirectoryPerson,
 } from '@/lib/search-directory';
 import { useMarketPublishedListings } from '@/lib/use-market-published-listings';
+import { useSearchActivity } from '@/lib/search-posts';
+import { SearchActivityResults } from '@/components/search/SearchActivityResults';
 import { cn } from '@/lib/utils';
 
 interface UnifiedSearchBlockProps {
@@ -167,15 +169,8 @@ export function UnifiedSearchBlock({
     [matchingListings],
   );
 
-  const getInitials = (name?: string | null) => {
-    if (!name) return '?';
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
+  const getInitials = (name?: string | null) =>
+    name ? name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) : '?';
 
   const priceLabel = (priceLumens: number) => {
     return `${(priceLumens / 100).toLocaleString(undefined, {
@@ -189,12 +184,13 @@ export function UnifiedSearchBlock({
   const showProducts = tab === null || tab === 'products';
   const showServices = tab === null || tab === 'services';
   const showContents = tab === null || tab === 'contents';
+  const activity = useSearchActivity(query, showContents && Boolean(currentProfile?.id));
   const hasAnyResults =
     (showPeople && peopleResults.length > 0)
     || (showCompanies && companyResults.length > 0)
     || (showProducts && productResults.length > 0)
     || (showServices && serviceResults.length > 0)
-    || (showContents && contentResults.length > 0);
+    || (showContents && (contentResults.length + activity.posts.length + activity.civicItems.length > 0));
 
   const toggleFilterTab = (next: SearchFilterTab) => {
     setTab((current) => (current === next ? null : next));
@@ -511,6 +507,8 @@ export function UnifiedSearchBlock({
             ))}
           </div>
         )}
+
+        {query.length >= 2 && showContents ? <SearchActivityResults activity={activity} /> : null}
 
         {query.length < 2 && (
           <motion.div

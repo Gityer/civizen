@@ -8,12 +8,14 @@ on:
     paths:
       - 'supabase/migrations/**'
       - 'scripts/local-supabase/**'
+      - 'supabase/tests/**'
   push:
     branches:
       - main
     paths:
       - 'supabase/migrations/**'
       - 'scripts/local-supabase/**'
+      - 'supabase/tests/**'
 
 permissions:
   contents: read
@@ -30,7 +32,14 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .nvmrc
 
       - name: Start local Supabase and replay migrations
         run: scripts/local-supabase/up.sh
+
+      - name: Run database regression checks
+        run: |
+          for f in supabase/tests/*.sql; do
+            echo "== $f"
+            docker exec -i supabase_db_civizen-local psql -U postgres -q -v ON_ERROR_STOP=1 -f - < "$f"
+          done

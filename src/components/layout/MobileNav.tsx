@@ -139,7 +139,7 @@ export function MobileNav() {
             />
           </svg>
         ) : null}
-        <div className="grid w-full grid-cols-5 pt-2 pb-[env(safe-area-inset-bottom,0px)]">
+        <div className="grid w-full grid-cols-6 pt-2 pb-[env(safe-area-inset-bottom,0px)]">
           {MAIN_NAV_ITEMS.map((item) => {
             const isActive = isMainNavItemActive(location.pathname, item.path);
             const hasSecondaryNav = Boolean(config) && matchesSecondaryNavRoute(location.pathname, item.path);

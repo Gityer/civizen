@@ -63,17 +63,27 @@ function facebookAuthorizeUrl(state: string): string {
   return `https://www.facebook.com/v21.0/dialog/oauth?${params.toString()}`;
 }
 
-function xAuthorizeUrl(state: string): string {
+function base64Url(bytes: Uint8Array): string {
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+/** PKCE pair for X: a random verifier kept server-side and its S256 challenge for the URL. */
+async function createPkcePair(): Promise<{ verifier: string; challenge: string }> {
+  const verifier = base64Url(crypto.getRandomValues(new Uint8Array(48)));
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
+  return { verifier, challenge: base64Url(digest) };
+}
+
+function xAuthorizeUrl(state: string, codeChallenge: string): string {
   const clientId = Deno.env.get('X_CLIENT_ID') || '';
-  // PKCE challenge is finalized in oauth-callback exchange using stored verifier when available.
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: clientId,
     redirect_uri: oauthRedirectUri(),
     scope: 'tweet.read tweet.write users.read offline.access',
     state,
-    code_challenge: state.replace(/-/g, '').slice(0, 43),
-    code_challenge_method: 'plain',
+    code_challenge: codeChallenge,
+    code_challenge_method: 'S256',
   });
   return `https://twitter.com/i/oauth2/authorize?${params.toString()}`;
 }
@@ -303,11 +313,13 @@ Deno.serve(async (request) => {
         }, 400);
       }
 
+      const pkce = payload.provider === 'x' ? await createPkcePair() : null;
       const { data: stateRow, error: stateError } = await adminClient
         .from('social_oauth_states')
         .insert({
           profile_id: profile.id,
           provider: payload.provider,
+          code_verifier: pkce?.verifier ?? null,
         })
         .select('id')
         .single();
@@ -319,7 +331,7 @@ Deno.serve(async (request) => {
       let authorizeUrl = '';
       if (payload.provider === 'linkedin') authorizeUrl = linkedInAuthorizeUrl(stateRow.id);
       else if (payload.provider === 'facebook') authorizeUrl = facebookAuthorizeUrl(stateRow.id);
-      else authorizeUrl = xAuthorizeUrl(stateRow.id);
+      else authorizeUrl = xAuthorizeUrl(stateRow.id, pkce?.challenge ?? '');
 
       return jsonResponse({ authorizeUrl });
     }

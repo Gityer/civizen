@@ -366,6 +366,26 @@ Deno.serve(async (req) => {
       return jsonResponse({ ok: true, status: problem.status, skipped: true });
     }
 
+    // Each council run makes several model calls, so members get a few runs per hour.
+    const { data: callerProfile } = await admin
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .is('deleted_at', null)
+      .maybeSingle();
+    if (!callerProfile?.id) {
+      return jsonResponse({ error: 'Profile not found' }, 403);
+    }
+    const { data: withinQuota, error: quotaError } = await admin.rpc('consume_ai_quota', {
+      p_profile_id: callerProfile.id,
+      p_bucket: 'solutions_council',
+      p_limit: 10,
+      p_window: '1 hour',
+    });
+    if (quotaError || withinQuota !== true) {
+      return jsonResponse({ error: 'Too many council runs. Try again later.' }, 429);
+    }
+
     if (problem.status === 'split' && continueDebate) {
       const nextMax = Math.min(8, Math.max(Number(problem.max_rounds) || 3, Number(problem.current_round) || 0) + 1);
       await admin

@@ -209,7 +209,10 @@ Deno.serve(async (request) => {
       externalAccountName = page.pageName;
       expiresAt = null;
     } else {
-      const verifier = state.replace(/-/g, '').slice(0, 43);
+      const verifier = typeof stateRow.code_verifier === 'string' ? stateRow.code_verifier : '';
+      if (!verifier) {
+        return redirectToSettings({ error: 'invalid_state', provider });
+      }
       const token = await exchangeX(code, verifier);
       accessToken = token.access_token;
       refreshToken = token.refresh_token || null;

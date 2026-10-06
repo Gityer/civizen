@@ -37,17 +37,6 @@ function isEmailTakenError(error: { message?: string } | null | undefined) {
   return message.includes('already') && (message.includes('registered') || message.includes('exists') || message.includes('been taken'));
 }
 
-async function findAuthUserIdByEmail(
-  adminClient: ReturnType<typeof createClient>,
-  email: string,
-): Promise<string | null> {
-  const { data } = await adminClient.auth.admin.generateLink({
-    type: 'magiclink',
-    email,
-  });
-  return data?.user?.id ?? null;
-}
-
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -156,10 +145,15 @@ Deno.serve(async (request) => {
       },
     });
 
-    let createdUserId: string | null = createdUser?.user?.id ?? null;
+    const createdUserId: string | null = createdUser?.user?.id ?? null;
 
+    // An email that is already registered belongs to someone else's account (or one the caller must
+    // sign in to). Never adopt it here: renaming and linking it would hand the caller that account.
     if (!createdUserId && isEmailTakenError(createError)) {
-      createdUserId = await findAuthUserIdByEmail(adminClient, email);
+      return new Response(JSON.stringify({ code: 'EMAIL_TAKEN', error: 'This email is already registered. Sign in to that account to connect it.' }), {
+        status: 409,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (!createdUserId) {

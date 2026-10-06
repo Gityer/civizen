@@ -18,7 +18,7 @@ Humanity lacks a shared civic layer for cooperation across borders — auditable
 
 It is developed with an open-source orientation and meant to be audited in public, with a staged path toward broader distributed stewardship. Rights to use each component are governed only by the license expressly included with that component.
 
-The longer destination is documented in [From Voluntary World Citizenship to Recognized Planetary Citizenship](/about/planetary-citizenship-pathway).
+The longer destination is documented in [From Voluntary World Citizenship to Recognized Planetary Citizenship](https://civizen.world/about/planetary-citizenship-pathway).
 
 ---
 
@@ -39,12 +39,12 @@ Coming next includes broader federation, insurance modules, and iPhone distribut
 
 ## Get the Android app
 
-Sideload from civizen.world (APKs are not stored in this repo). **Live and Testing** are **v0.1.49** (build 51, release `20260801-v0.1.49`; in-app updates + gated Test channel).
+Sideload from civizen.world (APKs are not stored in this repo). The install page always offers the current Live and Testing builds, with in-app updates and a gated Test channel.
 
 | | |
 |---|---|
 | Scan | ![Android install QR](./docs/04-operations/dev/assets/android-download-qr.png) |
-| Or open | [Install page](https://civizen.world/download) · [Testing APK](https://civizen.world/downloads/civizen-debug-testing-20260801-v0.1.49.apk?v=20260801-v0.1.49&h=apk) · [Production APK](https://civizen.world/downloads/civizen-debug-release-20260801-v0.1.49.apk?v=20260801-v0.1.49&h=apk) |
+| Or open | [Install page](https://civizen.world/download) |
 
 Prefer **Android Chrome** for the Open / Install prompt. Some in-app browsers only save the file — then open it from notifications or Files.
 
@@ -64,11 +64,14 @@ Civizen is the software expression of **Mature Humanity** — a civic, peace-ori
 - Clone, install, start:
 
 ```bash
-git clone https://github.com/maturehumanity/civizen.git
+git clone https://github.com/Gityer/civizen.git
 cd civizen
 npm install
+cp .env.example .env   # then fill in the Supabase URL and publishable key
 npm run dev
 ```
+
+For a backend of your own, `scripts/local-supabase/up.sh` starts an isolated local Supabase (Docker) and replays every migration; it prints the URL and keys to put in `.env`. Database regression checks live in `supabase/tests/`.
 
 Or run the dev server in Docker (restarts with Docker; uses the Supabase backend from `.env`). After `npm install`:
 
@@ -85,12 +88,12 @@ Local-first identity (DIDs), sync and storage toward P2P/decentralized backends,
 
 - **Feature registry:** `src/lib/feature-registry.ts` — update registry and Features-page copy together  
 - **Autosave** is the default for editable app pages  
-- **Android publish:** `npm run update:application` · **iOS:** `npm run cap:ios`  
+- **Android publish:** `npm run update:application` · **iOS:** not set up yet (`@capacitor/ios` is not installed)  
 - Ops / release notes: `docs/04-operations/dev/`
 
 ### Contributing
 
-Propose changes through the project’s governance process when possible; for code, open a clear PR against `main` with a short why. Prefer small, reviewable diffs.
+Propose changes through the project’s governance process when possible; for code, open a clear PR against `main` with a short why. Prefer small, reviewable diffs. See [CONTRIBUTING.md](CONTRIBUTING.md) for checks to run, and [SECURITY.md](SECURITY.md) to report a vulnerability privately.
 
 ---
 

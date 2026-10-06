@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 
 import { buildCivizenContext, stripsSensitiveContext } from '@/lib/civizen-context-model';

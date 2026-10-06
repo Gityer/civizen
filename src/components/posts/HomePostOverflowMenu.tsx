@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Pencil, Trash2, MoreHorizontal } from 'lucide-react';
+import { EyeOff, Flag, Pencil, Trash2, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +18,11 @@ type HomePostOverflowMenuProps = {
   canDelete: boolean;
   onEdit: () => void;
   onDelete: () => void;
+  /** Shown on other people's posts. */
+  reportLabel?: string;
+  hideLabel?: string;
+  onReport?: () => void;
+  onHide?: () => void;
 };
 
 function IconMenuItem({
@@ -62,8 +67,12 @@ export function HomePostOverflowMenu({
   canDelete,
   onEdit,
   onDelete,
+  reportLabel,
+  hideLabel,
+  onReport,
+  onHide,
 }: HomePostOverflowMenuProps) {
-  if (!canEdit && !canDelete) return null;
+  if (!canEdit && !canDelete && !onReport && !onHide) return null;
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -101,6 +110,26 @@ export function HomePostOverflowMenu({
               onSelect={() => onDelete()}
             >
               <Trash2 className="h-4 w-4" aria-hidden />
+            </IconMenuItem>
+          ) : null}
+          {onHide && hideLabel ? (
+            <IconMenuItem
+              label={hideLabel}
+              testId="home-post-hide"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center p-0"
+              onSelect={() => onHide()}
+            >
+              <EyeOff className="h-4 w-4" aria-hidden />
+            </IconMenuItem>
+          ) : null}
+          {onReport && reportLabel ? (
+            <IconMenuItem
+              label={reportLabel}
+              testId="home-post-report"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center p-0 text-destructive focus:text-destructive"
+              onSelect={() => onReport()}
+            >
+              <Flag className="h-4 w-4" aria-hidden />
             </IconMenuItem>
           ) : null}
         </DropdownMenuContent>

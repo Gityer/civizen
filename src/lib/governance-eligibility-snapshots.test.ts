@@ -13,20 +13,9 @@ import {
 
 type GovernanceSnapshotClient = SupabaseClient<Database>;
 
-function createSnapshotClient(stubs: { snapshotError?: { message: string } | null; profileError?: { message: string } | null }) {
-  const upsert = vi.fn().mockResolvedValue({ error: stubs.snapshotError ?? null });
-  const eq = vi.fn().mockResolvedValue({ error: stubs.profileError ?? null });
-  const update = vi.fn().mockReturnValue({ eq });
-
-  const client = {
-    from: vi.fn((table: string) => {
-      if (table === 'governance_eligibility_snapshots') return { upsert };
-      if (table === 'profiles') return { update };
-      throw new Error(`unexpected table ${table}`);
-    }),
-  };
-
-  return { client: client as unknown as GovernanceSnapshotClient, upsert, update, eq };
+function createRpcClient(error: { message: string } | null = null) {
+  const rpc = vi.fn().mockResolvedValue({ data: null, error });
+  return { client: { rpc } as unknown as GovernanceSnapshotClient, rpc };
 }
 
 describe('governance-eligibility-snapshots', () => {
@@ -151,42 +140,21 @@ describe('governance-eligibility-snapshots', () => {
     ).toBe(false);
   });
 
-  it('persists snapshot then profile patch when both backends succeed', async () => {
-    const { client, upsert, update, eq } = createSnapshotClient({});
+  it('asks the server to recompute eligibility for the profile', async () => {
+    const { client, rpc } = createRpcClient();
 
     const result = await persistGovernanceEligibilitySnapshot(client, payload);
 
     expect(result.error).toBeNull();
-    expect(upsert).toHaveBeenCalledTimes(1);
-    expect(upsert).toHaveBeenCalledWith(
-      expect.objectContaining({ profile_id: 'profile-1', eligible: true }),
-      { onConflict: 'profile_id' },
-    );
-    expect(update).toHaveBeenCalledWith(
-      expect.objectContaining({ is_governance_eligible: true, governance_eligible_at: '2026-04-18T12:00:00.000Z' }),
-    );
-    expect(eq).toHaveBeenCalledWith('id', 'profile-1');
+    expect(rpc).toHaveBeenCalledWith('refresh_governance_eligibility', { p_profile_id: 'profile-1' });
   });
 
-  it('returns snapshot error without updating the profile', async () => {
-    const snapshotErr = { message: 'snapshot failed' };
-    const { client, upsert, update } = createSnapshotClient({ snapshotError: snapshotErr });
+  it('returns the server error', async () => {
+    const serverErr = { message: 'refresh failed' };
+    const { client } = createRpcClient(serverErr);
 
     const result = await persistGovernanceEligibilitySnapshot(client, payload);
 
-    expect(result.error).toBe(snapshotErr);
-    expect(upsert).toHaveBeenCalledTimes(1);
-    expect(update).not.toHaveBeenCalled();
-  });
-
-  it('returns profile error after a successful snapshot upsert', async () => {
-    const profileErr = { message: 'profile failed' };
-    const { client, upsert, update } = createSnapshotClient({ profileError: profileErr });
-
-    const result = await persistGovernanceEligibilitySnapshot(client, payload);
-
-    expect(result.error).toBe(profileErr);
-    expect(upsert).toHaveBeenCalledTimes(1);
-    expect(update).toHaveBeenCalledTimes(1);
+    expect(result.error).toBe(serverErr);
   });
 });

@@ -792,12 +792,24 @@ Deno.serve(async (request) => {
     });
   }
 
-  const { data: rows, error: msgError } = await admin
+  const { data: withinQuota, error: quotaError } = await admin.rpc('consume_ai_quota', {
+    p_profile_id: callerProfile.id,
+    p_bucket: 'civi_chat',
+    p_limit: 60,
+    p_window: '1 hour',
+  });
+  if (quotaError || withinQuota !== true) {
+    return jsonResponse(429, { error: 'You have sent Civi a lot of messages this hour. Try again later.' });
+  }
+
+  // Newest 40 messages, then back to chronological order: long threads must answer the latest turn.
+  const { data: newestRows, error: msgError } = await admin
     .from('private_messages')
     .select('id, sender_id, content, created_at')
     .eq('conversation_id', conversationId)
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: false })
     .limit(40);
+  const rows = newestRows ? [...newestRows].reverse() : newestRows;
 
   if (msgError) {
     return new Response(JSON.stringify({ error: 'Failed to load messages' }), {

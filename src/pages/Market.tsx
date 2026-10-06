@@ -3,6 +3,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Link, useSearchParams } from 'react-router-dom';
 
 import { MarketFiltersSheet } from '@/components/market/MarketFiltersSheet';
+import { DEFAULT_MARKET_FILTERS, applyMarketFilters, countActiveMarketFilters, type MarketFilters } from '@/lib/market-filters';
 import { MarketJobsInterestForm } from '@/components/market/MarketJobsInterestForm';
 import { MarketListingCard } from '@/components/market/MarketListingCard';
 import { MarketListingKindIconToggle } from '@/components/market/MarketListingKindIconToggle';
@@ -68,18 +69,17 @@ export default function Market() {
     readListingKindFromParams(searchParams),
   );
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [marketFilters, setMarketFilters] = useState<MarketFilters>(DEFAULT_MARKET_FILTERS);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const appliedForYouBoostRef = useRef(false);
 
   const amountLocale = language === 'en' ? 'en-US' : language;
-
   const bumpListings = useCallback(() => {
     void refetchListings();
     void refetchMyListings();
   }, [refetchListings, refetchMyListings]);
 
   const noopBalance = useCallback(() => {}, []);
-
   const isSaved = section === 'saved';
   const isSelling = section === 'sell';
   const isJobs = section === 'jobs';
@@ -89,13 +89,11 @@ export default function Market() {
   const sourceListings = isSelling ? myListings : listings;
   const sourceLoading = isSelling ? myListingsLoading : listingsLoading;
   const sourceError = isSelling ? myListingsError : listingsError;
-
   const showListingKindToggle = !isJobs;
-
   const listingKindFilter: MarketListingKind | null = isJobs ? 'service' : listingKind;
 
   const filteredListings = useMemo(() => {
-    return sourceListings.filter((listing) => {
+    const matching = sourceListings.filter((listing) => {
       if (listingKindFilter && listing.listing_kind !== listingKindFilter) {
         return false;
       }
@@ -106,7 +104,8 @@ export default function Market() {
       }
       return true;
     });
-  }, [listingKindFilter, searchDraft, sourceListings]);
+    return applyMarketFilters(matching, marketFilters);
+  }, [listingKindFilter, marketFilters, searchDraft, sourceListings]);
 
   const marketSecondaryNav = useMemo(
     () => ({
@@ -155,7 +154,8 @@ export default function Market() {
 
   const sectionTitle = t(marketCategoryLabelKey(section));
   const profileMenuLabel = t('home.profileMenuButton');
-  const filtersLabel = t('market.filtersTitle');
+  const activeFilterCount = countActiveMarketFilters(marketFilters);
+  const filtersLabel = activeFilterCount ? `${t('market.filtersTitle')} (${activeFilterCount})` : t('market.filtersTitle');
   const agreementsLabel = t('common.agreements');
   const creditsLabel = t('market.walletShortcut');
   const searchLabel = t('common.search');
@@ -267,7 +267,7 @@ export default function Market() {
                       data-build-label="Open marketplace filters"
                       aria-label={filtersLabel}
                     >
-                      <ListFilter className="h-4 w-4" aria-hidden />
+                      <ListFilter className={activeFilterCount ? 'h-4 w-4 text-primary' : 'h-4 w-4'} aria-hidden />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">{filtersLabel}</TooltipContent>
@@ -453,7 +453,7 @@ export default function Market() {
         ) : null}
       </div>
 
-      <MarketFiltersSheet open={filtersOpen} onOpenChange={setFiltersOpen} t={t} />
+      <MarketFiltersSheet open={filtersOpen} onOpenChange={setFiltersOpen} t={t} value={marketFilters} onChange={setMarketFilters} />
 
       {profile?.id ? (
         <MarketPostOfferDialog

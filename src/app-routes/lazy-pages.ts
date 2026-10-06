@@ -89,6 +89,12 @@ export const TaxonomySettings = lazyWithChunkReload(() => import('@/pages/settin
 export const MessagingSettingsPage = lazyWithChunkReload(() => import('@/pages/settings/MessagingSettings'));
 export const MessagingSecurity = lazyWithChunkReload(() => import('@/pages/settings/MessagingSecurity'));
 export const PrivacySettings = lazyWithChunkReload(() => import('@/pages/settings/PrivacySettings'));
+export const NotificationsSettings = lazyWithChunkReload(() => import('@/pages/settings/NotificationsSettings'));
+export const SafetySettings = lazyWithChunkReload(() => import('@/pages/settings/SafetySettings'));
+export const ModerationConsole = lazyWithChunkReload(() => import('@/pages/settings/ModerationConsole'));
+export const HelpSupport = lazyWithChunkReload(() => import('@/pages/settings/HelpSupport'));
+export const ReportContent = lazyWithChunkReload(() => import('@/pages/ReportContent'));
+export const EndorseSelect = lazyWithChunkReload(() => import('@/pages/EndorseSelect'));
 export const AiAgentSettings = lazyWithChunkReload(() => import('@/pages/settings/AiAgentSettings'));
 export const SocialAccountsSettings = lazyWithChunkReload(() => import('@/pages/settings/SocialAccountsSettings'));
 export const NotFound = lazyWithChunkReload(() => import('@/pages/NotFound'));

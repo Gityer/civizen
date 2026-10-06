@@ -9344,7 +9344,7 @@ isOneToOne: false
 { Args: { "p_gap_id": string,"payload": Json }; Returns: undefined
                            },
 "resolve_login_email":
-{ Args: { "identifier": string }; Returns: string
+{ Args: { "identifier": string; "password": string }; Returns: string
                            },
 "retry_matter_agent_run":
 { Args: { "p_assignment_id": string }; Returns: string

@@ -55,27 +55,21 @@ export function buildGovernanceEligibilityProfilePatch(
   };
 }
 
+/**
+ * Asks the server to recompute and store the member's eligibility. The payload is only used to
+ * pick the profile: the score, flag and snapshot come from refresh_governance_eligibility(), so a
+ * modified client cannot make itself eligible.
+ */
 export async function persistGovernanceEligibilitySnapshot(
   client: GovernanceSnapshotClient,
-  payload: GovernanceEligibilitySnapshotPayload,
+  payload: Pick<GovernanceEligibilitySnapshotPayload, 'profileId'>,
 ) {
-  const snapshot = buildGovernanceEligibilitySnapshot(payload);
-  const profilePatch = buildGovernanceEligibilityProfilePatch(payload);
-
-  const snapshotResponse = await client
-    .from('governance_eligibility_snapshots')
-    .upsert(snapshot, { onConflict: 'profile_id' });
-
-  if (snapshotResponse.error) {
-    return { error: snapshotResponse.error };
-  }
-
-  const profileResponse = await client
-    .from('profiles')
-    .update(profilePatch)
-    .eq('id', payload.profileId);
-
-  return { error: profileResponse.error };
+  const rpc = client.rpc as unknown as (
+    fn: 'refresh_governance_eligibility',
+    args: { p_profile_id: string },
+  ) => Promise<{ error: { message: string } | null }>;
+  const { error } = await rpc.call(client, 'refresh_governance_eligibility', { p_profile_id: payload.profileId });
+  return { error };
 }
 
 export function sameGovernanceEligibilitySnapshot(

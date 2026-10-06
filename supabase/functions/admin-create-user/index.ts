@@ -25,6 +25,8 @@ const assignableRoles = new Set([
   'admin',
 ]);
 
+const elevatedRoles = new Set(['founder', 'admin']);
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -75,6 +77,22 @@ Deno.serve(async (request) => {
     const email = payload.email?.trim();
     const password = payload.password?.trim();
     const role = payload.role && assignableRoles.has(payload.role) ? payload.role : 'member';
+
+    // Founder and admin accounts carry every permission, so only a founder may create them.
+    if (elevatedRoles.has(role)) {
+      const { data: callerProfile } = await userClient
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .is('deleted_at', null)
+        .maybeSingle();
+      if (callerProfile?.role !== 'founder') {
+        return new Response(JSON.stringify({ error: 'Only a founder can create founder or admin accounts.' }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
 
     if (!email || !password) {
       return new Response(JSON.stringify({ error: 'Email and password are required.' }), {

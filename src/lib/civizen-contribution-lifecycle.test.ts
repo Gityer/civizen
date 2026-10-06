@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 
 import { assessContributionImpact, parseImpactEvidence } from '@/lib/civizen-contribution-impact';

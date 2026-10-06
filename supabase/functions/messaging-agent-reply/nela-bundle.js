@@ -805,12 +805,12 @@ function retrievalConfidence(retrieval) {
 // src/lib/assistant/generated/knowledge-pack.ts
 var KNOWLEDGE_PACK = {
   "meta": {
-    "appVersion": "0.1.197",
-    "appReleaseId": "20260817-v0.1.197",
-    "androidVersionCode": 199,
-    "gitSha": "de0b6771145ecd2465e0451313bd1505c6a441c7",
-    "generatedAt": "2026-10-05T22:48:51.428Z",
-    "sourceFingerprint": "252a078ebacc03db0a32e1760cef8bd1eb1fe5e9e9c621fb2b6b7984b5d49170",
+    "appVersion": "0.1.198",
+    "appReleaseId": "20261005-v0.1.198",
+    "androidVersionCode": 200,
+    "gitSha": "c15c11ab24b1c0282e9f8357a5e041df22385f85",
+    "generatedAt": "2026-10-06T14:19:50.359Z",
+    "sourceFingerprint": "91b39c3d640f96a14e9839d3cd16aa97dc7fdfce9aa11ff69ba5000a8cac81e8",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370
@@ -3289,7 +3289,7 @@ var KNOWLEDGE_PACK = {
       "id": "registry:nav",
       "title": "Primary navigation",
       "path": "src/lib/main-nav.ts",
-      "text": "Current bottom navigation paths: /, /study, /contribute, /market, /messaging.",
+      "text": "Current bottom navigation paths: /, /study, /contribute, /governance, /market, /messaging.",
       "status": "implemented",
       "priority": 2,
       "kind": "registry"
