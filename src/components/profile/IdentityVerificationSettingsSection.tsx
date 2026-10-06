@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { Camera, CheckCircle2, FileImage, Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -102,8 +103,10 @@ export function IdentityVerificationSettingsSection() {
     ? profileFieldsFromAuth(profile)
     : null;
 
+  const latest = useLatestRef({ profileSnapshot, t });
   const reload = useCallback(async () => {
-    if (!profileId || !profileSnapshot) {
+    const { profileSnapshot: snapshot, t: translate } = latest.current;
+    if (!profileId || !snapshot) {
       setBundle(null);
       setLoading(false);
       return;
@@ -111,27 +114,20 @@ export function IdentityVerificationSettingsSection() {
 
     setLoading(true);
     try {
-      const next = await ensureIdentityVerificationCase(profileId, profileSnapshot);
+      const next = await ensureIdentityVerificationCase(profileId, snapshot);
       setBundle(next);
     } catch (error) {
       console.error('Failed to load identity verification case', error);
-      toast.error(t('editProfile.identityVerification.loadFailed'));
+      toast.error(translate('editProfile.identityVerification.loadFailed'));
     } finally {
       setLoading(false);
     }
-  }, [
-    profileId,
-    profileSnapshot?.full_name,
-    profileSnapshot?.country,
-    profileSnapshot?.date_of_birth,
-    profileSnapshot?.username,
-    profileSnapshot?.phone_e164,
-    profileSnapshot?.phone_number,
-  ]);
+  }, [profileId, latest]);
 
   useEffect(() => {
     void reload();
-  }, [reload]);
+  }, [reload, profileSnapshot?.full_name, profileSnapshot?.country, profileSnapshot?.date_of_birth,
+    profileSnapshot?.username, profileSnapshot?.phone_e164, profileSnapshot?.phone_number]);
 
   if (!profile?.id) {
     return null;

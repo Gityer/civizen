@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { cloneElement, isValidElement, lazy, Suspense, useState, useEffect, useRef, useMemo, type ChangeEvent, type ReactNode } from 'react';
+import { cloneElement, isValidElement, Suspense, useState, useEffect, useRef, useMemo, type ChangeEvent, type ReactElement, type ReactNode } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { Button } from '@/components/ui/button';
@@ -7,63 +7,26 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Camera, Check, ChevronLeft, ChevronRight, ChevronsUpDown, Eye, EyeOff, Globe, Loader2, MapPin, PencilLine, Save } from 'lucide-react';
+import { Check, ChevronsUpDown, Globe, Loader2, MapPin, Save } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getCountryName, getCountryOptions } from '@/lib/countries';
 import { detectDeviceLocation, LocationPermissionError } from '@/lib/device-location';
 import { uploadProfileAvatar } from '@/lib/profile-avatar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import {
-  type CardCategory,
-  getDefaultCardCategoryCode,
-  getStoredCardCategories,
-  getStoredProfileCardCategory,
-  saveProfileCardCategory,
-} from '@/lib/taxonomy';
-import {
-  buildCivizenDid,
-  buildCivizenLsiQrValue,
-  buildWorldCitizenMrz,
-  getWorldCitizenIdParts,
-  getWorldCitizenStatusLabel,
-  getWorldCitizenStatusPrefix,
-  normalizeCivizenSocialId,
-} from '@/lib/world-citizen-id';
-import {
-  BUILD_STORAGE_EVENT,
-  EDIT_PROFILE_LAYOUT_SCHEMA_KEY_PREFIX,
-  EDIT_PROFILE_LAYOUT_SCHEMA_VERSION,
-  LAYOUT_REGION_LABELS,
-  LEGACY_LAYOUT_STORAGE_PREFIX,
-  areDraftsEqual,
-  getFullNameChangeState,
-  getUsernameChangeState,
-  normalizeProfileDraft,
-  resetEditProfileBuildStorage,
-  type ProfileDraft,
-} from '@/lib/edit-profile-helpers';
+import { type CardCategory, getDefaultCardCategoryCode, getStoredCardCategories, getStoredProfileCardCategory, saveProfileCardCategory } from '@/lib/taxonomy';
+import { buildCivizenDid, buildCivizenLsiQrValue, buildWorldCitizenMrz, getWorldCitizenIdParts, getWorldCitizenStatusPrefix, normalizeCivizenSocialId } from '@/lib/world-citizen-id';
+import { BUILD_STORAGE_EVENT, EDIT_PROFILE_LAYOUT_SCHEMA_KEY_PREFIX, EDIT_PROFILE_LAYOUT_SCHEMA_VERSION, LAYOUT_REGION_LABELS, LEGACY_LAYOUT_STORAGE_PREFIX, areDraftsEqual, getFullNameChangeState, getUsernameChangeState, normalizeProfileDraft, resetEditProfileBuildStorage, type ProfileDraft } from '@/lib/edit-profile-helpers';
 import { WorldCitizenshipStatusNotice } from '@/components/institutional/WorldCitizenshipStatusNotice';
 import { IdentityVerificationSettingsSection } from '@/components/profile/IdentityVerificationSettingsSection';
+import { EditProfileSocialCard, EditProfileWorldCitizenCard } from '@/components/profile/edit-profile-lazy-cards';
 
-const EditProfileSocialCard = lazy(() =>
-  import('@/components/profile/EditProfileSocialCard').then((module) => ({
-    default: module.EditProfileSocialCard,
-  })),
-);
 
-const EditProfileWorldCitizenCard = lazy(() =>
-  import('@/components/profile/EditProfileWorldCitizenCard').then((module) => ({
-    default: module.EditProfileWorldCitizenCard,
-  })),
-);
 
 function isBuildModeActive() {
   return typeof document !== 'undefined' && document.body.dataset.buildModeActive === 'true';
@@ -558,7 +521,7 @@ export default function EditProfile() {
   ) => {
     if (isValidElement(children) && typeof children.type === 'string') {
       const childProps = children.props as { className?: string };
-      return cloneElement(children, {
+      return cloneElement(children as ReactElement<Record<string, unknown>>, {
         'data-build-key': key,
         'data-build-label': LAYOUT_REGION_LABELS[key],
         className: cn('relative', options?.className, childProps.className),

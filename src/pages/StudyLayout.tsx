@@ -3,10 +3,13 @@ import { BookOpen, Search } from 'lucide-react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { AppLayout } from '@/components/layout/AppLayout';
+import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageSecondaryNav } from '@/hooks/usePageSecondaryNav';
+import { APP_DIRECTORY_MAX_CLASS } from '@/lib/responsive-layout';
 import { studySectionRegistry } from '@/lib/study-sections';
+import { cn } from '@/lib/utils';
 
 export type StudyLayoutOutletContext = {
   isSearchOpen: boolean;
@@ -63,17 +66,21 @@ export default function StudyLayout() {
 
   return (
     <AppLayout>
-      <div className="space-y-4 px-4 pb-40 pt-6 md:pb-6">
-        <div>
-          <div className="flex items-start justify-between gap-3">
+      <div className={cn('space-y-4 px-4 pb-40 pt-6 md:pb-6', APP_DIRECTORY_MAX_CLASS)}>
+        <AppPageHeader
+          showBack={false}
+          titleClassName="text-xl sm:text-2xl"
+          title={
             <Link
               to="/study"
-              className="inline-flex items-center gap-2 text-2xl font-display font-bold tracking-tight text-foreground transition-colors hover:text-primary"
+              className="inline-flex min-w-0 items-center gap-2 tracking-tight transition-colors hover:text-primary"
             >
-              <BookOpen className="h-6 w-6 text-primary" />
+              <BookOpen className="hidden h-6 w-6 shrink-0 text-primary sm:block" aria-hidden="true" />
               <span>{t('study.sections.civicLearning.label')}</span>
             </Link>
-            {isStudyRoute && (
+          }
+          titleAccessory={
+            isStudyRoute ? (
               <Button
                 type="button"
                 size="icon"
@@ -84,10 +91,10 @@ export default function StudyLayout() {
               >
                 <Search className="h-4 w-4" />
               </Button>
-            )}
-          </div>
-          <p className="text-sm text-muted-foreground">{t('study.layoutSubtitle')}</p>
-        </div>
+            ) : undefined
+          }
+          subtitle={t('study.layoutSubtitle')}
+        />
         <Outlet context={{ isSearchOpen }} />
       </div>
     </AppLayout>

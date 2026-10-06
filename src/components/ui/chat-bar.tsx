@@ -3,6 +3,7 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MediaAudio, MediaVideo } from '@/components/ui/chat-bar-media';
 import {
   Send,
   MessageCircle,
@@ -36,7 +37,7 @@ import {
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CiviAssistantHeading, CiviAvatar, CiviInboxRow } from '@/components/ui/civi-avatar';
 import { ChatMessageRow } from '@/components/ui/chat-message-row';
@@ -409,48 +410,6 @@ const getRandomId = () =>
 const getGroupParticipantCap = (mode: CallMode) =>
   mode === 'video' ? GROUP_VIDEO_MAX_PARTICIPANTS : GROUP_VOICE_MAX_PARTICIPANTS;
 
-function MediaVideo({
-  stream,
-  muted,
-  className,
-}: {
-  stream: MediaStream | null;
-  muted?: boolean;
-  className: string;
-}) {
-  const ref = useRef<HTMLVideoElement | null>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.srcObject = stream;
-    }
-  }, [stream]);
-
-  if (!stream) return null;
-
-  return (
-    <video
-      ref={ref}
-      autoPlay
-      playsInline
-      muted={muted}
-      className={className}
-    />
-  );
-}
-
-function MediaAudio({ stream }: { stream: MediaStream }) {
-  const ref = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.srcObject = stream;
-    }
-  }, [stream]);
-
-  return <audio ref={ref} autoPlay />;
-}
-
 export type ChatBarVariant = 'floating' | 'page';
 
 export function ChatBar({
@@ -492,9 +451,10 @@ export function ChatBar({
   const [searchQuery, setSearchQuery] = useState('');
   const [starredMessageIds, setStarredMessageIds] = useState<Set<string>>(() => new Set());
   const [wallpaperByConversation, setWallpaperByConversation] = useState<Record<string, string>>({});
-  const [disappearingTick, setDisappearingTick] = useState(0);
+  /** "Now" used to expire disappearing messages; refreshed on the purge interval below. */
+  const [disappearingNowMs, setDisappearingNowMs] = useState(() => Date.now());
   const [disappearingBusy, setDisappearingBusy] = useState(false);
-  const messageLongPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const messageLongPressTimerRef = useRef<number | null>(null);
   const longPressConsumedClickRef = useRef(false);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const composerFileInputRef = useRef<HTMLInputElement>(null);
@@ -666,8 +626,7 @@ export function ChatBar({
       return;
     }
     let cancelled = false;
-    void supabase
-      .rpc('private_list_my_blocked_profiles')
+    void Promise.resolve(supabaseUntyped.rpc('private_list_my_blocked_profiles'))
       .then(({ data, error }) => {
         if (cancelled) return;
         if (error || !Array.isArray(data)) {
@@ -827,8 +786,8 @@ export function ChatBar({
       if (!profile?.id) return;
       const wasBlocked = blockedProfileIds.has(targetProfileId);
       const { error } = wasBlocked
-        ? await supabase.rpc('private_unblock_profile', { target_profile_id: targetProfileId })
-        : await supabase.rpc('private_block_profile', { target_profile_id: targetProfileId });
+        ? await supabaseUntyped.rpc('private_unblock_profile', { target_profile_id: targetProfileId })
+        : await supabaseUntyped.rpc('private_block_profile', { target_profile_id: targetProfileId });
       if (error) {
         console.error('ChatBar: toggle block failed', error);
         toast.error(tRef.current('chatBar.private.profile.blockActionFailed'));
@@ -1059,7 +1018,7 @@ export function ChatBar({
           conversation_id: selectedConversationId,
         };
     setReportSubmitting(true);
-    const { error } = await supabase.from('reports').insert({
+    const { error } = await supabaseUntyped.from('reports').insert({
       reporter_id: profile.id,
       reported_user_id: threadMemberProfileId,
       reason,
@@ -1116,6 +1075,7 @@ export function ChatBar({
         createdAt: m.created_at,
         disappearingMinutes: activeDisappearingMinutes,
         disappearingStartedAt: activeDisappearingStartedAt,
+        nowMs: disappearingNowMs,
       }),
     );
     if (searchOnlyStarred) {
@@ -1127,7 +1087,7 @@ export function ChatBar({
   }, [
     activeDisappearingMinutes,
     activeDisappearingStartedAt,
-    disappearingTick,
+    disappearingNowMs,
     messages,
     searchOnlyStarred,
     searchQuery,
@@ -1805,8 +1765,9 @@ export function ChatBar({
 
   useEffect(() => {
     if (!selectedConversationId || activeDisappearingMinutes <= 0) return;
+    setDisappearingNowMs(Date.now());
     const intervalId = window.setInterval(() => {
-      setDisappearingTick((tick) => tick + 1);
+      setDisappearingNowMs(Date.now());
       void supabase.rpc('private_purge_expired_disappearing_messages', {
         p_conversation_id: selectedConversationId,
       });
@@ -2325,7 +2286,7 @@ export function ChatBar({
     }
 
     try {
-      const { data: inserted, error } = await supabase
+      const { data: inserted, error } = await supabaseUntyped
         .from('private_messages')
         .insert(insertPayload)
         .select(PRIVATE_MESSAGES_LIST_SELECT)
@@ -2786,7 +2747,7 @@ export function ChatBar({
     }
 
     try {
-      const { data: inserted, error } = await supabase
+      const { data: inserted, error } = await supabaseUntyped
         .from('private_messages')
         .insert(insertPayload)
         .select(PRIVATE_MESSAGES_LIST_SELECT)

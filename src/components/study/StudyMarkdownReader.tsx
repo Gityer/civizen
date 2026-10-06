@@ -181,7 +181,7 @@ export function StudyMarkdownReader({
 
       return (
         <p key={key} className="text-sm leading-6 text-foreground/95">
-          {renderInlineMarkdown(block.text)}
+          {renderInlineMarkdown((block as Extract<MarkdownBlock, { text: string }>).text)}
         </p>
       );
     });

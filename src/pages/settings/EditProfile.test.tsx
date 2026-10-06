@@ -145,7 +145,7 @@ describe('Edit Profile identity block', () => {
 
   it('shows masked generated identity values and reveals them on demand', async () => {
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <EditProfile />
       </MemoryRouter>,
     );
@@ -211,7 +211,7 @@ describe('Edit Profile identity block', () => {
     );
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <EditProfile />
       </MemoryRouter>,
     );

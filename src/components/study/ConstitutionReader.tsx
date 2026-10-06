@@ -124,7 +124,7 @@ function firstHeading(markdown: string) {
 
 function subArticleHeadings(blocks: MarkdownBlock[]) {
   return blocks
-    .filter((block): block is Extract<MarkdownBlock, { type: 'h3' }> => block.type === 'h3')
+    .filter((block): block is Extract<MarkdownBlock, { text: string }> => block.type === 'h3')
     .map((block) => block.text.trim());
 }
 
@@ -299,7 +299,7 @@ export function ConstitutionReader({
 
       return (
         <p key={key} className="text-sm leading-6 text-foreground/95">
-          {renderInlineMarkdown(block.text)}
+          {renderInlineMarkdown((block as Extract<MarkdownBlock, { text: string }>).text)}
         </p>
       );
     });

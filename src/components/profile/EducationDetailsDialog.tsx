@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import {
   AlertCircle,
   BadgeCheck,
@@ -41,8 +42,9 @@ import {
   type GeoRegionOption,
 } from '@/lib/geo-locations';
 import { cn } from '@/lib/utils';
-import { supabase } from '@/integrations/supabase/client';
+import { supabaseUntyped } from '@/integrations/supabase/untyped';
 import { toast } from 'sonner';
+import { AUTOSAVE_MS, canHoverOpen, selectedOptionClass, type AutosaveStatus } from '@/components/profile/details-dialog-helpers';
 
 export type EducationEntryDefaults = {
   countryCode?: string | null;
@@ -70,16 +72,9 @@ type EducationFormState = {
   city: string;
 };
 
-type AutosaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 type VerificationStatus = 'unverified' | 'certificate_provided' | 'verified';
 
 const YEAR_OPTIONS = Array.from({ length: 80 }, (_, index) => String(new Date().getFullYear() - index));
-const AUTOSAVE_MS = 650;
-
-function canHoverOpen(): boolean {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
-  return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-}
 
 function serializeForm(form: EducationFormState): string {
   return JSON.stringify(form);
@@ -93,13 +88,6 @@ function educationLooksFilled(form: EducationFormState): boolean {
       form.yearCompleted ||
       form.city.trim() ||
       (form.educationLevel && form.educationLevel !== DEFAULT_EDUCATION_LEVEL),
-  );
-}
-
-function selectedOptionClass(selected: boolean): string {
-  return cn(
-    selected &&
-      'bg-primary/20 text-foreground data-[selected=true]:bg-primary/30 data-[selected=true]:text-foreground',
   );
 }
 
@@ -254,14 +242,17 @@ export function EducationDetailsDialog({
 
   const knownLevelKeys = useMemo(() => new Set<string>(EDUCATION_LEVELS), []);
 
-  const levelLabel = (level: string) => {
-    if (knownLevelKeys.has(level)) {
-      const key = `profile.educationDetails.levels.${level}`;
-      const translated = t(key);
-      return translated === key ? level : translated;
-    }
-    return level;
-  };
+  const levelLabel = useCallback(
+    (level: string) => {
+      if (knownLevelKeys.has(level)) {
+        const key = `profile.educationDetails.levels.${level}`;
+        const translated = t(key);
+        return translated === key ? level : translated;
+      }
+      return level;
+    },
+    [knownLevelKeys, t],
+  );
 
   const levelOptions = useMemo(() => {
     const builtIn = EDUCATION_LEVELS.map((level) => ({
@@ -272,7 +263,7 @@ export function EducationDetailsDialog({
       .filter((level) => !knownLevelKeys.has(level))
       .map((level) => ({ value: level, label: level }));
     return [...builtIn, ...custom];
-  }, [customLevels, knownLevelKeys, t]);
+  }, [customLevels, knownLevelKeys, levelLabel]);
 
   const filteredLevelOptions = useMemo(() => {
     const q = levelQuery.trim().toLowerCase();
@@ -333,6 +324,9 @@ export function EducationDetailsDialog({
     cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [open]);
 
+  // Primitives, so the load effect does not re-run when the parent passes a new `defaults` object.
+  const { countryCode: defCountry, regionCode: defRegion, city: defCity } = defaults;
+
   useEffect(() => {
     if (!open) {
       hydratedRef.current = false;
@@ -345,7 +339,7 @@ export function EducationDetailsDialog({
     const load = async () => {
       hydratedRef.current = false;
       setLoading(true);
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabaseUntyped
         .from('profile_education_entries')
         .select(
           'id, education_level, institution_name, country_code, region_code, city, department, major, year_start, year_end, verification_status, certificate_path',
@@ -361,7 +355,7 @@ export function EducationDetailsDialog({
         return;
       }
 
-      let nextForm = emptyForm(defaults);
+      let nextForm = emptyForm({ countryCode: defCountry, regionCode: defRegion, city: defCity });
       if (data) {
         setEntryId(typeof data.id === 'string' ? data.id : null);
         const level =
@@ -387,13 +381,13 @@ export function EducationDetailsDialog({
                 : '',
           countryCode:
             (typeof data.country_code === 'string' && data.country_code) ||
-            defaults.countryCode ||
+            defCountry ||
             '',
           regionCode:
             (typeof data.region_code === 'string' && data.region_code) ||
-            defaults.regionCode ||
+            defRegion ||
             '',
-          city: (typeof data.city === 'string' && data.city) || defaults.city || '',
+          city: (typeof data.city === 'string' && data.city) || defCity || '',
         };
 
         if (
@@ -428,7 +422,7 @@ export function EducationDetailsDialog({
     return () => {
       cancelled = true;
     };
-  }, [open, profileId, defaults.countryCode, defaults.regionCode, defaults.city, t, knownLevelKeys]);
+  }, [open, profileId, defCountry, defRegion, defCity, t, knownLevelKeys]);
 
   useEffect(() => {
     if (!form.countryCode) {
@@ -496,13 +490,13 @@ export function EducationDetailsDialog({
     const payload = buildPayload(verificationStatusRef.current, nextForm);
     const currentId = entryIdRef.current;
     const { data, error } = currentId
-      ? await (supabase as any)
+      ? await supabaseUntyped
           .from('profile_education_entries')
           .update(payload)
           .eq('id', currentId)
           .select('id')
           .maybeSingle()
-      : await (supabase as any)
+      : await supabaseUntyped
           .from('profile_education_entries')
           .upsert(payload, { onConflict: 'profile_id' })
           .select('id')
@@ -524,25 +518,27 @@ export function EducationDetailsDialog({
     return true;
   };
 
+  const persistEducationRef = useLatestRef(persistEducation);
+
   useEffect(() => {
     if (!open || loading || !hydratedRef.current) return;
     if (formKey === lastSavedRef.current) return;
 
     const timer = window.setTimeout(() => {
-      void persistEducation();
+      void persistEducationRef.current();
     }, AUTOSAVE_MS);
 
     return () => window.clearTimeout(timer);
-  }, [form, formKey, loading, open, profileId, t]);
+  }, [form, formKey, loading, open, persistEducationRef, profileId, t]);
 
   // Flush pending education when the panel closes (X, parent, or dial), so score refreshes.
   const wasOpenRef = useRef(open);
   useEffect(() => {
     if (wasOpenRef.current && !open) {
-      void persistEducation({ force: educationLooksFilled(formRef.current) });
+      void persistEducationRef.current({ force: educationLooksFilled(formRef.current) });
     }
     wasOpenRef.current = open;
-  }, [open]);
+  }, [open, persistEducationRef]);
 
   const handleOpenChange = (next: boolean) => {
     onOpenChange(next);
@@ -616,13 +612,13 @@ export function EducationDetailsDialog({
 
       const currentId = entryIdRef.current;
       const { data, error } = currentId
-        ? await (supabase as any)
+        ? await supabaseUntyped
             .from('profile_education_entries')
             .update(payload)
             .eq('id', currentId)
             .select('id')
             .maybeSingle()
-        : await (supabase as any)
+        : await supabaseUntyped
             .from('profile_education_entries')
             .upsert(payload, { onConflict: 'profile_id' })
             .select('id')

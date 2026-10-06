@@ -11,138 +11,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { loadLanguageOptions, type LanguageCode, type LanguageOption } from '@/lib/i18n.runtime';
-import { permissionListHas, permissionListHasAny, type AppPermission } from '@/lib/access-control';
+import { permissionListHas, permissionListHasAny } from '@/lib/access-control';
 import { canViewCiviAgentSettings } from '@/lib/assistant/interaction-log';
 import { isOfficialCivizenOrgProfile } from '@/lib/civizen-org-account';
 import { APP_VERSION_TAG, ANDROID_VERSION_CODE } from '@/lib/app-release';
-import {
-  ensureAuthorizedAppUpdateChannel,
-  getAppUpdateChannel,
-  getAppUpdateChannelExpiresAt,
-  onAppUpdateChannelChange,
-  setAppUpdateChannel,
-  type AppUpdateChannel,
-} from '@/lib/update-channel';
+import { ensureAuthorizedAppUpdateChannel, getAppUpdateChannel, getAppUpdateChannelExpiresAt, onAppUpdateChannelChange, setAppUpdateChannel, type AppUpdateChannel } from '@/lib/update-channel';
 import { cn } from '@/lib/utils';
-import {
-  User,
-  Shield,
-  Bell,
-  HelpCircle,
-  LogOut,
-  ChevronRight,
-  FileText,
-  Lock,
-  Settings as SettingsIcon,
-  Globe,
-  Palette,
-  Users,
-  KeyRound,
-  ShieldCheck,
-  Fingerprint,
-  Bot,
-  Landmark,
-  LayoutGrid,
-  Lightbulb,
-  Award,
-  Coins,
-  MessageCircle,
-  Vote,
-  FlaskConical,
-  Share2,
-} from 'lucide-react';
+import { LogOut, ChevronRight, Globe, Palette, Users, KeyRound, ShieldCheck, Fingerprint, Bot, Landmark, LayoutGrid, Lightbulb, Coins, Vote, FlaskConical } from 'lucide-react';
+import { type SettingsNavItem, settingsItems } from '@/pages/settings-items';
+
+
 
 function canHoverOpen(): boolean {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
   return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 }
 
-type SettingsNavItem = {
-  icon: typeof User;
-  labelKey: string;
-  descriptionKey: string;
-  path: string;
-  requiredPermissions?: AppPermission[];
-};
-
-/** Primary settings rows — English alphabetical by default label; UI also sorts by translated title. */
-const settingsItems: SettingsNavItem[] = [
-  {
-    icon: User,
-    labelKey: 'settings.editProfile',
-    descriptionKey: 'settings.editProfileDescription',
-    path: '/settings/profile',
-    requiredPermissions: ['profile.update_self'],
-  },
-  {
-    icon: HelpCircle,
-    labelKey: 'settings.helpSupport',
-    descriptionKey: 'settings.helpSupportDescription',
-    path: '/settings/help',
-  },
-  {
-    icon: MessageCircle,
-    labelKey: 'settings.messaging',
-    descriptionKey: 'settings.messagingDescription',
-    path: '/settings/messaging',
-    requiredPermissions: ['message.create'],
-  },
-  {
-    icon: Bell,
-    labelKey: 'settings.notifications',
-    descriptionKey: 'settings.notificationsDescription',
-    path: '/settings/notifications',
-  },
-  {
-    icon: SettingsIcon,
-    labelKey: 'settings.pillars',
-    descriptionKey: 'settings.pillarsDescription',
-    path: '/settings/pillars',
-    requiredPermissions: ['profile.update_self'],
-  },
-  {
-    icon: Lock,
-    labelKey: 'settings.privacy',
-    descriptionKey: 'settings.privacyDescription',
-    path: '/settings/privacy',
-  },
-  {
-    icon: Share2,
-    labelKey: 'settings.socialAccounts',
-    descriptionKey: 'settings.socialAccountsDescription',
-    path: '/settings/social-accounts',
-  },
-  {
-    icon: Award,
-    labelKey: 'settings.professions',
-    descriptionKey: 'settings.professionsDescription',
-    path: '/settings/professions',
-  },
-  {
-    icon: Coins,
-    labelKey: 'settings.wallet',
-    descriptionKey: 'settings.walletDescription',
-    path: '/settings/prototype-credits',
-  },
-  {
-    icon: Shield,
-    labelKey: 'settings.safety',
-    descriptionKey: 'settings.safetyDescription',
-    path: '/settings/safety',
-  },
-  {
-    icon: LayoutGrid,
-    labelKey: 'settings.taxonomy',
-    descriptionKey: 'settings.taxonomyDescription',
-    path: '/settings/taxonomy',
-  },
-  {
-    icon: FileText,
-    labelKey: 'settings.termsPrivacy',
-    descriptionKey: 'settings.termsPrivacyDescription',
-    path: '/settings/legal',
-  },
-];
 
 type PrimarySettingsRow =
   | { kind: 'language' }
@@ -268,8 +152,8 @@ export default function Settings() {
   };
 
   const primarySettingsRows: PrimarySettingsRow[] = [
-    { kind: 'language' },
-    { kind: 'appearance' },
+    { kind: 'language' as const },
+    { kind: 'appearance' as const },
     ...visibleSettingsItems.map((item) => ({ kind: 'nav' as const, item })),
   ].sort((a, b) => primaryRowLabel(a).localeCompare(primaryRowLabel(b), language, { sensitivity: 'base' }));
 

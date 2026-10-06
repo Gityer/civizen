@@ -12,7 +12,7 @@ type AgreementFitTextareaProps = {
   onCancel: () => void;
 };
 
-export function fitTextareaToContent(element: HTMLTextAreaElement | null) {
+function fitTextareaToContent(element: HTMLTextAreaElement | null) {
   if (!element) return;
   element.style.height = 'auto';
   element.style.height = `${element.scrollHeight}px`;

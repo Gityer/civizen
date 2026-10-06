@@ -71,7 +71,7 @@ describe('Settings page', () => {
     authProfileState.profile = { effective_permissions: [], role: 'member' };
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Settings />
       </MemoryRouter>,
     );
@@ -84,7 +84,7 @@ describe('Settings page', () => {
     authProfileState.profile = { effective_permissions: [], role: 'guest' };
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Settings />
       </MemoryRouter>,
     );
@@ -97,7 +97,7 @@ describe('Settings page', () => {
     window.localStorage.removeItem(APP_UPDATE_CHANNEL_KEY);
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Settings />
       </MemoryRouter>,
     );
@@ -111,7 +111,7 @@ describe('Settings page', () => {
     window.localStorage.removeItem(APP_UPDATE_CHANNEL_KEY);
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Settings />
       </MemoryRouter>,
     );
@@ -123,7 +123,7 @@ describe('Settings page', () => {
     authProfileState.profile = { effective_permissions: [], role: 'member' };
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Settings />
       </MemoryRouter>,
     );
@@ -136,7 +136,7 @@ describe('Settings page', () => {
     window.localStorage.removeItem(APP_UPDATE_CHANNEL_KEY);
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Settings />
       </MemoryRouter>,
     );
@@ -160,7 +160,7 @@ describe('Settings page', () => {
     window.localStorage.removeItem(APP_UPDATE_CHANNEL_KEY);
 
     render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <MemoryRouter>
         <Settings />
       </MemoryRouter>,
     );

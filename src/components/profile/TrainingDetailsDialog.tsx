@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { AlertCircle, CheckCircle2, Loader2, Plus, X } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,8 +21,10 @@ import {
   PROFILE_TRAINING_SEEDS,
 } from '@/lib/profile-trainings';
 import { cn } from '@/lib/utils';
-import { supabase } from '@/integrations/supabase/client';
+import { supabaseUntyped } from '@/integrations/supabase/untyped';
 import { toast } from 'sonner';
+import { AUTOSAVE_MS, canHoverOpen, selectedOptionClass, type AutosaveStatus } from '@/components/profile/details-dialog-helpers';
+import { CyclingOptionsLabel } from '@/components/profile/CyclingOptionsLabel';
 
 type TrainingDetailsDialogProps = {
   open: boolean;
@@ -30,64 +33,8 @@ type TrainingDetailsDialogProps = {
   onSaved?: () => void;
 };
 
-type AutosaveStatus = 'idle' | 'saving' | 'saved' | 'error';
-
-const AUTOSAVE_MS = 650;
-
-function canHoverOpen(): boolean {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
-  return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-}
-
 function serializeTrainings(names: string[]): string {
   return JSON.stringify(normalizeTrainingNames(names));
-}
-
-function selectedOptionClass(selected: boolean): string {
-  return cn(
-    selected &&
-      'bg-primary/20 text-foreground data-[selected=true]:bg-primary/30 data-[selected=true]:text-foreground',
-  );
-}
-
-function CyclingOptionsLabel({
-  options,
-  active,
-  paused,
-  fallback,
-}: {
-  options: readonly string[];
-  active: boolean;
-  paused: boolean;
-  fallback: string;
-}) {
-  const [index, setIndex] = useState(0);
-  const [preferReducedMotion, setPreferReducedMotion] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const sync = () => setPreferReducedMotion(media.matches);
-    sync();
-    media.addEventListener('change', sync);
-    return () => media.removeEventListener('change', sync);
-  }, []);
-
-  useEffect(() => {
-    if (!active || paused || preferReducedMotion || options.length <= 1) return;
-    const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % options.length);
-    }, 1600);
-    return () => window.clearInterval(timer);
-  }, [active, paused, preferReducedMotion, options]);
-
-  if (!active || options.length === 0) return <>{fallback}</>;
-  const label = options[index % options.length] ?? fallback;
-  return (
-    <span className="inline-block min-w-[4.5ch] transition-opacity duration-300" aria-hidden>
-      {label}
-    </span>
-  );
 }
 
 type SentenceTokenProps = {
@@ -243,7 +190,7 @@ export function TrainingDetailsDialog({
     const load = async () => {
       hydratedRef.current = false;
       setLoading(true);
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabaseUntyped
         .from('profile_training_entries')
         .select('id, training_names')
         .eq('profile_id', profileId)
@@ -287,13 +234,13 @@ export function TrainingDetailsDialog({
 
     const existingId = entryIdRef.current;
     const { data, error } = existingId
-      ? await (supabase as any)
+      ? await supabaseUntyped
           .from('profile_training_entries')
           .update(payload)
           .eq('id', existingId)
           .select('id')
           .maybeSingle()
-      : await (supabase as any)
+      : await supabaseUntyped
           .from('profile_training_entries')
           .upsert(payload, { onConflict: 'profile_id' })
           .select('id')
@@ -315,24 +262,26 @@ export function TrainingDetailsDialog({
     return true;
   };
 
+  const persistTrainingsRef = useLatestRef(persistTrainings);
+
   useEffect(() => {
     if (!open || loading || !hydratedRef.current) return;
     if (formKey === lastSavedRef.current) return;
 
     const timer = window.setTimeout(() => {
-      void persistTrainings();
+      void persistTrainingsRef.current();
     }, AUTOSAVE_MS);
 
     return () => window.clearTimeout(timer);
-  }, [formKey, loading, open, profileId]);
+  }, [formKey, loading, open, persistTrainingsRef, profileId]);
 
   const wasOpenRef = useRef(open);
   useEffect(() => {
     if (wasOpenRef.current && !open) {
-      void persistTrainings({ force: namesRef.current.length > 0 });
+      void persistTrainingsRef.current({ force: namesRef.current.length > 0 });
     }
     wasOpenRef.current = open;
-  }, [open]);
+  }, [open, persistTrainingsRef]);
 
   const flushAndClose = async () => {
     await persistTrainings({ force: namesRef.current.length > 0 });

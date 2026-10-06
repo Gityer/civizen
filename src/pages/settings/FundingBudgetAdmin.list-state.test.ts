@@ -1,17 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { ProjectBudgetRow } from '@/lib/finance/budget-api';
-import {
-  budgetLifecycleBadgeKey,
-  budgetSelectorSizingLabel,
-  classifyBudgetListState,
-  historicalBudgetsForSelector,
-  ordinaryBudgetsForSelector,
-  partitionBudgetsForSelector,
-  preferredWorkingBudgetId,
-  primaryBudgetWorkflowAction,
-  shouldUseBudgetSelector,
-} from '@/pages/settings/FundingBudgetAdmin';
+import { budgetLifecycleBadgeKey, budgetSelectorSizingLabel, classifyBudgetListState, historicalBudgetsForSelector, ordinaryBudgetsForSelector, partitionBudgetsForSelector, preferredWorkingBudgetId, primaryBudgetWorkflowAction, shouldUseBudgetSelector } from '@/pages/settings/FundingBudgetAdmin.list-state';
 
 function budget(partial: Partial<ProjectBudgetRow> & Pick<ProjectBudgetRow, 'id' | 'name'>): ProjectBudgetRow {
   return {

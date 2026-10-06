@@ -12,12 +12,8 @@ import {
   Underline,
 } from 'lucide-react';
 
-import {
-  applyRichTextCommand,
-  FormatFlyout,
-  FormatMenuItem,
-  FormatToolButton,
-} from '@/components/rich-text/format-toolbar';
+import { FormatFlyout, FormatMenuItem, FormatToolButton } from '@/components/rich-text/format-toolbar';
+import { applyRichTextCommand } from '@/components/rich-text/rich-text-commands';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   agreementHtmlIsEmpty,

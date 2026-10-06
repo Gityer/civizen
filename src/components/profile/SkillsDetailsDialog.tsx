@@ -24,9 +24,10 @@ import {
 } from '@/lib/profile-skills';
 import { getSkillDescription } from '@/lib/profile-skill-descriptions';
 import { cn } from '@/lib/utils';
-import { supabase } from '@/integrations/supabase/client';
+import { supabaseUntyped } from '@/integrations/supabase/untyped';
 import { toast } from 'sonner';
 import { DemonstratedSkillEvidence } from '@/components/profile/DemonstratedSkillEvidence';
+import { AUTOSAVE_MS, canHoverOpen, selectedOptionClass, type AutosaveStatus } from '@/components/profile/details-dialog-helpers';
 
 type SkillsDetailsDialogProps = {
   open: boolean;
@@ -35,32 +36,16 @@ type SkillsDetailsDialogProps = {
   onSaved?: () => void;
 };
 
-type AutosaveStatus = 'idle' | 'saving' | 'saved' | 'error';
-
 type SkillsFormState = {
   hard: string[];
   soft: string[];
 };
-
-const AUTOSAVE_MS = 650;
-
-function canHoverOpen(): boolean {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
-  return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-}
 
 function serializeSkills(form: SkillsFormState): string {
   return JSON.stringify({
     hard: normalizeSkillNames(form.hard),
     soft: normalizeSkillNames(form.soft),
   });
-}
-
-function selectedOptionClass(selected: boolean): string {
-  return cn(
-    selected &&
-      'bg-primary/20 text-foreground data-[selected=true]:bg-primary/30 data-[selected=true]:text-foreground',
-  );
 }
 
 function readStringArray(value: unknown): string[] {
@@ -252,7 +237,7 @@ export function SkillsDetailsDialog({
     const load = async () => {
       hydratedRef.current = false;
       setLoading(true);
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabaseUntyped
         .from('profile_skills_entries')
         .select('id, hard_skill_names, soft_skill_names, skill_names')
         .eq('profile_id', profileId)
@@ -306,13 +291,13 @@ export function SkillsDetailsDialog({
     };
     const currentId = entryIdRef.current;
     const { data, error } = currentId
-      ? await (supabase as any)
+      ? await supabaseUntyped
           .from('profile_skills_entries')
           .update(payload)
           .eq('id', currentId)
           .select('id')
           .maybeSingle()
-      : await (supabase as any)
+      : await supabaseUntyped
           .from('profile_skills_entries')
           .upsert(payload, { onConflict: 'profile_id' })
           .select('id')

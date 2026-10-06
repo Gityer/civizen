@@ -40,7 +40,7 @@ export function AgreementEndCondition({
   const allowed = conditions.length ? conditions : AGREEMENT_END_CONDITIONS_ALL;
 
   const apply = (next: AgreementEndConditionId) => {
-    const values = { ...state.values, endOpen: next };
+    const values: Record<string, string> = { ...state.values, endOpen: next };
     if (next === 'specific_date' && !values.endAt?.trim()) {
       values.endAt = addCalendarYears(values.startAt?.trim() || localIsoDate(), 1);
     }

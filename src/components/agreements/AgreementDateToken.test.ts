@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { fitAgreementDatePicker } from '@/components/agreements/AgreementDateToken';
+import { fitAgreementDatePicker } from '@/components/agreements/agreement-date-fit';
 
 describe('fitAgreementDatePicker', () => {
   it('shifts left when the calendar would overflow the right edge', () => {

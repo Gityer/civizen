@@ -1,80 +1,27 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react';
 import { motion } from 'framer-motion';
-import {
-  ArrowRight,
-  BadgeCheck,
-  Bookmark,
-  BookmarkCheck,
-  BookOpen,
-  Building2,
-  Check,
-  ChevronDown,
-  ChevronRight,
-  ChevronUp,
-  Coins,
-  Clock3,
-  FileText,
-  Gavel,
-  Globe,
-  GraduationCap,
-  Landmark,
-  Leaf,
-  Scale,
-  ShieldCheck,
-  Sparkles,
-  X,
-} from 'lucide-react';
+import { ArrowRight, BadgeCheck, Bookmark, BookmarkCheck, BookOpen, Check, ChevronDown, ChevronRight, ChevronUp, Coins, Clock3, FileText, Gavel, Landmark, Scale, X } from 'lucide-react';
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { toast } from 'sonner';
-
 import { ConstitutionReader } from '@/components/study/ConstitutionReader';
 import { StudyMarkdownReader } from '@/components/study/StudyMarkdownReader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import type { StudyLayoutOutletContext } from '@/pages/StudyLayout';
 import { permissionListHasAny } from '@/lib/access-control';
-import {
-  CONSTITUTION_ARTICLE_BOOKMARK_PREFIX,
-  CONSTITUTION_STUDY_SECTIONS,
-  OPEN_ARTICLE_STORAGE_KEY,
-} from '@/lib/constitution-study';
-import {
-  buildStudyAiExplanation,
-  getFoundationMaterialsForDomain,
-  FOUNDATION_STUDY_DOCUMENT_KEYS,
-  filterStudyDocumentsByQuery,
-  getFoundationCompletionMetrics,
-  isMissingStudyBackend,
-  STUDY_PROPOSALS,
-  STUDY_DOCUMENTS,
-  type StudyCertificationStatus,
-  type StudyDocument,
-  type StudyMaterial,
-  type StudyMaterialType,
-} from '@/lib/study';
+import { CONSTITUTION_ARTICLE_BOOKMARK_PREFIX, CONSTITUTION_STUDY_SECTIONS, OPEN_ARTICLE_STORAGE_KEY } from '@/lib/constitution-study';
+import { buildStudyAiExplanation, getFoundationMaterialsForDomain, FOUNDATION_STUDY_DOCUMENT_KEYS, filterStudyDocumentsByQuery, getFoundationCompletionMetrics, isMissingStudyBackend, STUDY_PROPOSALS, STUDY_DOCUMENTS, type StudyCertificationStatus, type StudyDocument, type StudyMaterial, type StudyMaterialType } from '@/lib/study';
 import { getStudyMaterialContentByKey } from '@/lib/study-material-content';
 import { cn } from '@/lib/utils';
+import { type StudyDomain, studyDomains } from '@/pages/study/study-domains';
 
-type StudyDomain = {
-  id: string;
-  titleKey: string;
-  descriptionKey: string;
-  icon: ComponentType<{ className?: string }>;
-  availableNow: boolean;
-  launchPath?: string;
-};
+
 
 const STUDY_PROGRESS_KEY = 'civizen-study-progress-v2';
 const STUDY_BOOKMARKS_KEY = 'civizen-study-bookmarks-v1';
@@ -83,83 +30,6 @@ const FOUNDATION_CERTIFICATION_ID = 'civic_foundations';
 const DOMAIN_PROGRESS_RING_RADIUS = 11;
 const DOMAIN_PROGRESS_RING_CIRCUMFERENCE = 2 * Math.PI * DOMAIN_PROGRESS_RING_RADIUS;
 const CONSTITUTION_ARTICLE_HEADING_PATTERN = /^##\s+(.+)$/;
-
-const studyDomains: StudyDomain[] = [
-  {
-    id: 'constitution',
-    titleKey: 'study.domains.constitution.title',
-    descriptionKey: 'study.domains.constitution.description',
-    icon: Landmark,
-    availableNow: true,
-  },
-  {
-    id: 'laws',
-    titleKey: 'study.domains.laws.title',
-    descriptionKey: 'study.domains.laws.description',
-    icon: Gavel,
-    availableNow: true,
-    launchPath: '/law',
-  },
-  {
-    id: 'citizenship',
-    titleKey: 'study.domains.citizenship.title',
-    descriptionKey: 'study.domains.citizenship.description',
-    icon: ShieldCheck,
-    availableNow: true,
-    launchPath: '/terms',
-  },
-  {
-    id: 'economy',
-    titleKey: 'study.domains.economy.title',
-    descriptionKey: 'study.domains.economy.description',
-    icon: Coins,
-    availableNow: true,
-    launchPath: '/study?domain=economy',
-  },
-  {
-    id: 'aiEthics',
-    titleKey: 'study.domains.aiEthics.title',
-    descriptionKey: 'study.domains.aiEthics.description',
-    icon: Sparkles,
-    availableNow: false,
-  },
-  {
-    id: 'rights',
-    titleKey: 'study.domains.rights.title',
-    descriptionKey: 'study.domains.rights.description',
-    icon: Scale,
-    availableNow: false,
-  },
-  {
-    id: 'environment',
-    titleKey: 'study.domains.environment.title',
-    descriptionKey: 'study.domains.environment.description',
-    icon: Leaf,
-    availableNow: false,
-  },
-  {
-    id: 'cultureEducation',
-    titleKey: 'study.domains.cultureEducation.title',
-    descriptionKey: 'study.domains.cultureEducation.description',
-    icon: GraduationCap,
-    availableNow: false,
-  },
-  {
-    id: 'judicial',
-    titleKey: 'study.domains.judicial.title',
-    descriptionKey: 'study.domains.judicial.description',
-    icon: Building2,
-    availableNow: false,
-  },
-  {
-    id: 'proposals',
-    titleKey: 'study.domains.proposals.title',
-    descriptionKey: 'study.domains.proposals.description',
-    icon: Globe,
-    availableNow: true,
-    launchPath: '/governance',
-  },
-];
 
 const materialTypeIcons: Record<StudyMaterialType, ComponentType<{ className?: string }>> = {
   constitution: Landmark,
@@ -558,7 +428,7 @@ export default function StudyCivicLearning() {
         return {
           id: section.id,
           title: constitutionArticleHeading(section.markdown),
-          domainId: 'constitution',
+          domainId: 'constitution' as const,
           sentences,
         };
       })
@@ -574,7 +444,7 @@ export default function StudyCivicLearning() {
         return {
           id: item.key,
           title: item.title,
-          domainId: 'economy',
+          domainId: 'economy' as const,
           materialKey: item.key,
           sentences,
         };
