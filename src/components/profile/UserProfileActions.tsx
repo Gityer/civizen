@@ -26,7 +26,8 @@ export function UserProfileActions({ profileId }: { profileId: string }) {
     });
     setOpeningChat(false);
     if (error || !data) {
-      toast.error(t('userProfile.messageFailed'));
+      const refused = /messaging_not_accepted|messaging_blocked/.test(error?.message ?? '');
+      toast.error(t(refused ? 'userProfile.messageNotAccepted' : 'userProfile.messageFailed'));
       return;
     }
     navigate(`/messaging/${data as string}`);

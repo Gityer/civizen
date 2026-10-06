@@ -808,9 +808,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.198",
     "appReleaseId": "20261005-v0.1.198",
     "androidVersionCode": 200,
-    "gitSha": "508b92b081415aae584ec78442fff53946ec25ce",
-    "generatedAt": "2026-10-06T13:56:25.942Z",
-    "sourceFingerprint": "7a41082fe2b106597456ec1901521e9f7ae65d036093e73f47fbff5b02c84f96",
+    "gitSha": "7f9ca6615be570f1a5460a07c9c8266161af64cf",
+    "generatedAt": "2026-10-06T14:05:43.193Z",
+    "sourceFingerprint": "23c5507eafbb6b199b16fd366a742ee1c17946f045af86ae904f250178cb9907",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 370
@@ -3289,7 +3289,7 @@ var KNOWLEDGE_PACK = {
       "id": "registry:nav",
       "title": "Primary navigation",
       "path": "src/lib/main-nav.ts",
-      "text": "Current bottom navigation paths: /, /study, /contribute, /market, /messaging.",
+      "text": "Current bottom navigation paths: /, /study, /contribute, /governance, /market, /messaging.",
       "status": "implemented",
       "priority": 2,
       "kind": "registry"

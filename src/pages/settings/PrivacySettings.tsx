@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { DataExportCard } from '@/components/settings/DataExportCard';
+import { ProfilePrivacyCard } from '@/components/settings/ProfilePrivacyCard';
 import { DeleteAccountCard } from '@/components/settings/DeleteAccountCard';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -108,6 +109,8 @@ export default function PrivacySettings() {
             />
           </div>
         </Card>
+
+        <ProfilePrivacyCard />
 
         <Card className="space-y-3 border-border/80 p-4">
           <div className="space-y-1">

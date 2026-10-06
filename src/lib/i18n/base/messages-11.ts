@@ -5,6 +5,7 @@ export const m_messages_11 = {
     "endorse": "Endorse",
     "message": "Message",
     "messageFailed": "Could not open a conversation. Try again.",
+    "messageNotAccepted": "This member is not accepting new messages from you.",
     "basedOn": "Based on {count} endorsement{plural}",
     "basedOnVerified": "Based on {count} verified activities",
     "pillars": "Pillars",

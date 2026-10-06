@@ -76,6 +76,17 @@ export const m_messages_settings_03 = {
       "failed": "Could not prepare your data. Try again later.",
       "tooMany": "You have downloaded your data several times this hour. Try again later."
     },
+    "profilePrivacy": {
+      "hideTitle": "Hide me from People search",
+      "hideBody": "Others will not find you by name or username in Search. Your profile link and your posts still work.",
+      "messageTitle": "Who can start a conversation with me",
+      "messageEveryone": "Everyone",
+      "messageTies": "People I endorsed or who endorsed me",
+      "messageNobody": "Nobody",
+      "messageHint": "Conversations you already have are not affected.",
+      "saved": "Privacy setting saved.",
+      "saveFailed": "Could not save the setting. Try again."
+    },
     "skipToContent": "Skip to main content",
     "routeError": {
       "title": "This page ran into a problem",
