@@ -47,22 +47,59 @@ export function toSearchPostHit(row: SearchPostRow, query: string): SearchPostHi
   };
 }
 
-/** Posts matching the query (two characters or more), debounced like the directory search. */
-export function useSearchPosts(query: string, enabled: boolean): SearchPostHit[] {
-  const [hits, setHits] = useState<SearchPostHit[]>([]);
+export type SearchCivicKind = 'proposal' | 'election' | 'problem' | 'matter';
+
+export type SearchCivicHit = {
+  kind: SearchCivicKind;
+  id: string;
+  title: string;
+  summary: string;
+  path: string;
+};
+
+export type SearchActivity = { posts: SearchPostHit[]; civicItems: SearchCivicHit[] };
+
+const EMPTY_ACTIVITY: SearchActivity = { posts: [], civicItems: [] };
+
+export function toSearchCivicHits(data: unknown): SearchCivicHit[] {
+  if (!Array.isArray(data)) return [];
+  return data
+    .filter((row): row is Record<string, unknown> => Boolean(row) && typeof row === 'object')
+    .filter((row) => ['proposal', 'election', 'problem', 'matter'].includes(String(row.kind)))
+    .map((row) => ({
+      kind: row.kind as SearchCivicKind,
+      id: String(row.id),
+      title: String(row.title ?? ''),
+      summary: postHtmlToPlainText(String(row.summary ?? '')),
+      path: String(row.path ?? '/'),
+    }));
+}
+
+/**
+ * Posts plus proposals, elections, problems and matters matching the query (two characters or
+ * more), debounced like the directory search. Row-level security decides what each member sees.
+ */
+export function useSearchActivity(query: string, enabled: boolean): SearchActivity {
+  const [activity, setActivity] = useState<SearchActivity>(EMPTY_ACTIVITY);
 
   useEffect(() => {
     const trimmed = query.trim();
     if (!enabled || trimmed.length < 2) {
-      setHits([]);
+      setActivity(EMPTY_ACTIVITY);
       return;
     }
     let cancelled = false;
     const timer = setTimeout(async () => {
-      const { data, error } = await supabaseUntyped.rpc('search_posts', { p_query: trimmed, p_limit: 20 });
+      const [posts, civic] = await Promise.all([
+        supabaseUntyped.rpc('search_posts', { p_query: trimmed, p_limit: 20 }),
+        supabaseUntyped.rpc('search_civic_items', { p_query: trimmed, p_limit: 20 }),
+      ]);
       if (cancelled) return;
-      const rows = !error && Array.isArray(data) ? (data as SearchPostRow[]) : [];
-      setHits(rows.map((row) => toSearchPostHit(row, trimmed)));
+      const postRows = !posts?.error && Array.isArray(posts?.data) ? (posts.data as SearchPostRow[]) : [];
+      setActivity({
+        posts: postRows.map((row) => toSearchPostHit(row, trimmed)),
+        civicItems: civic?.error ? [] : toSearchCivicHits(civic?.data),
+      });
     }, 250);
     return () => {
       cancelled = true;
@@ -70,5 +107,5 @@ export function useSearchPosts(query: string, enabled: boolean): SearchPostHit[]
     };
   }, [query, enabled]);
 
-  return hits;
+  return activity;
 }

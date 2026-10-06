@@ -198,7 +198,12 @@ export const m_messages_10 = {
     "viewOwnerProfile": "View profile for {name}",
     "noDescription": "No description available.",
     "directoryError": "Some directory results could not be loaded.",
-    "postsHeading": "Posts"
+    "postsHeading": "Posts",
+    "civicHeading": "Proposals, votes and matters",
+    "kindProposal": "Proposal",
+    "kindElection": "Vote",
+    "kindProblem": "Problem",
+    "kindMatter": "Matter"
   },
   "endorseSelect": {
     "title": "Choose someone to endorse",

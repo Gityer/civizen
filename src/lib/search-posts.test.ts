@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/integrations/supabase/untyped', () => ({ supabaseUntyped: {} }));
 
-import { excerptAroundMatch, toSearchPostHit } from '@/lib/search-posts';
+import { excerptAroundMatch, toSearchCivicHits, toSearchPostHit } from '@/lib/search-posts';
 
 describe('search posts', () => {
   it('keeps short posts whole', () => {
@@ -32,5 +32,17 @@ describe('search posts', () => {
       'garden',
     );
     expect(hit).toMatchObject({ id: 'p1', excerpt: 'Hello garden', authorName: '@ana' });
+  });
+
+  it('keeps only known civic item kinds', () => {
+    const hits = toSearchCivicHits([
+      { kind: 'proposal', id: 'g1', title: 'Garden budget', summary: '<p>Fund it</p>', path: '/governance/voting/proposals/g1' },
+      { kind: 'unknown', id: 'x', title: 'x', summary: '', path: '/' },
+      null,
+    ]);
+    expect(hits).toEqual([
+      { kind: 'proposal', id: 'g1', title: 'Garden budget', summary: 'Fund it', path: '/governance/voting/proposals/g1' },
+    ]);
+    expect(toSearchCivicHits('nope')).toEqual([]);
   });
 });

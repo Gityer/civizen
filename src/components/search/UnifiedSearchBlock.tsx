@@ -24,8 +24,8 @@ import {
   type SearchDirectoryPerson,
 } from '@/lib/search-directory';
 import { useMarketPublishedListings } from '@/lib/use-market-published-listings';
-import { useSearchPosts } from '@/lib/search-posts';
-import { SearchPostResults } from '@/components/search/SearchPostResults';
+import { useSearchActivity } from '@/lib/search-posts';
+import { SearchActivityResults } from '@/components/search/SearchActivityResults';
 import { cn } from '@/lib/utils';
 
 interface UnifiedSearchBlockProps {
@@ -184,13 +184,13 @@ export function UnifiedSearchBlock({
   const showProducts = tab === null || tab === 'products';
   const showServices = tab === null || tab === 'services';
   const showContents = tab === null || tab === 'contents';
-  const postResults = useSearchPosts(query, showContents && Boolean(currentProfile?.id));
+  const activity = useSearchActivity(query, showContents && Boolean(currentProfile?.id));
   const hasAnyResults =
     (showPeople && peopleResults.length > 0)
     || (showCompanies && companyResults.length > 0)
     || (showProducts && productResults.length > 0)
     || (showServices && serviceResults.length > 0)
-    || (showContents && (contentResults.length > 0 || postResults.length > 0));
+    || (showContents && (contentResults.length + activity.posts.length + activity.civicItems.length > 0));
 
   const toggleFilterTab = (next: SearchFilterTab) => {
     setTab((current) => (current === next ? null : next));
@@ -508,7 +508,7 @@ export function UnifiedSearchBlock({
           </div>
         )}
 
-        {query.length >= 2 && showContents ? <SearchPostResults posts={postResults} /> : null}
+        {query.length >= 2 && showContents ? <SearchActivityResults activity={activity} /> : null}
 
         {query.length < 2 && (
           <motion.div

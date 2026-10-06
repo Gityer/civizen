@@ -259,6 +259,12 @@ BEGIN
     RETURN NEW;
   END IF;
 
+  -- RLS only lets API callers vote as themselves, so a vote for someone else comes from server code
+  -- running inside the request (Nela's automatic participation when a proposal is created).
+  IF NEW.voter_id IS DISTINCT FROM public.current_profile_id() THEN
+    RETURN NEW;
+  END IF;
+
   IF TG_OP = 'UPDATE'
     AND (NEW.proposal_id IS DISTINCT FROM OLD.proposal_id OR NEW.voter_id IS DISTINCT FROM OLD.voter_id) THEN
     RAISE EXCEPTION 'governance_vote_identity_immutable' USING ERRCODE = '42501';

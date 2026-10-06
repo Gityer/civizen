@@ -49,3 +49,47 @@ $$;
 
 REVOKE ALL ON FUNCTION public.search_posts(text, integer) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.search_posts(text, integer) TO authenticated;
+
+-- Proposals, elections and consultations, public problems and matters, found by title or summary.
+-- Runs as the caller, so each table's own row-level security decides what they may see.
+CREATE OR REPLACE FUNCTION public.search_civic_items(p_query text, p_limit integer DEFAULT 20)
+RETURNS TABLE (kind text, id uuid, title text, summary text, path text, created_at timestamptz)
+LANGUAGE sql
+STABLE
+SECURITY INVOKER
+SET search_path = public
+AS $$
+  WITH params AS (
+    SELECT
+      '%' || replace(replace(replace(btrim(coalesce(p_query, '')), '\', '\\'), '%', '\%'), '_', '\_') || '%' AS pattern,
+      length(btrim(coalesce(p_query, ''))) >= 2 AS usable,
+      least(greatest(coalesce(p_limit, 20), 1), 50) AS lim
+  ),
+  hits AS (
+    SELECT 'proposal'::text, gp.id, gp.title, left(coalesce(gp.summary, ''), 280),
+      '/governance/voting/proposals/' || gp.id, gp.created_at
+    FROM public.governance_proposals gp, params
+    WHERE params.usable AND (gp.title ILIKE params.pattern OR gp.summary ILIKE params.pattern)
+    UNION ALL
+    SELECT 'election', ce.id, ce.title, left(coalesce(ce.summary, ''), 280),
+      '/governance/voting/' || ce.id, ce.created_at
+    FROM public.civic_elections ce, params
+    WHERE params.usable
+      AND coalesce(ce.metadata->>'sample_batch', '') = ''
+      AND (ce.title ILIKE params.pattern OR ce.summary ILIKE params.pattern)
+    UNION ALL
+    SELECT 'problem', sp.id, sp.title, left(coalesce(sp.body, ''), 280),
+      '/governance/solutions/' || sp.id, sp.created_at
+    FROM public.solution_problems sp, params
+    WHERE params.usable AND (sp.title ILIKE params.pattern OR sp.body ILIKE params.pattern)
+    UNION ALL
+    SELECT 'matter', m.id, m.title, left(coalesce(m.description, ''), 280),
+      '/contribute/matters/' || m.id, m.created_at
+    FROM public.matters m, params
+    WHERE params.usable AND (m.title ILIKE params.pattern OR m.description ILIKE params.pattern)
+  )
+  SELECT * FROM hits ORDER BY 6 DESC LIMIT (SELECT lim FROM params);
+$$;
+
+REVOKE ALL ON FUNCTION public.search_civic_items(text, integer) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.search_civic_items(text, integer) TO authenticated;

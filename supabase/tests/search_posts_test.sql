@@ -52,4 +52,15 @@ BEGIN
   END IF;
 END $$;
 
+RESET ROLE;
+INSERT INTO public.governance_proposals (title, summary, proposer_id, opens_at, closes_at)
+SELECT 'Garden budget proposal', 'Fund the community garden', b, now(), now() + interval '1 day' FROM search_ids;
+SET LOCAL ROLE authenticated;
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM public.search_civic_items('garden budget') WHERE kind = 'proposal') THEN
+    RAISE EXCEPTION 'FAIL: proposal not found by search_civic_items';
+  END IF;
+END $$;
+
 ROLLBACK;
