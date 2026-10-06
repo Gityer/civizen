@@ -38,8 +38,8 @@ function unit(id: string, name: string, unitKey: string): GovernanceExecutionUni
     unit_key: unitKey,
     domain_key: unitKey,
     description: '',
+    is_system_unit: true,
     is_active: true,
-    metadata: {},
     created_at: '2026-04-01T00:00:00.000Z',
     updated_at: '2026-04-01T00:00:00.000Z',
   };
@@ -55,6 +55,7 @@ function implementation(overrides: Partial<ImplementationRow>): ImplementationRo
     metadata: {},
     created_by: 'user-1',
     assigned_at: '2026-04-02T00:00:00.000Z',
+    started_at: null,
     completed_at: null,
     created_at: '2026-04-02T00:00:00.000Z',
     updated_at: '2026-04-02T00:00:00.000Z',

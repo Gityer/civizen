@@ -30,7 +30,7 @@ type GovernanceExecutionThresholdRuleSeed = {
   requiresWindowClose: boolean;
 };
 
-const GOVERNANCE_DECISION_CLASS_BASELINES: Record<GovernanceDecisionClass, GovernanceExecutionThresholdRuleSeed> = {
+export const GOVERNANCE_DECISION_CLASS_BASELINES: Record<GovernanceDecisionClass, GovernanceExecutionThresholdRuleSeed> = {
   ordinary: {
     approvalClass: 'ordinary_majority',
     minApprovalShare: 0.5,
@@ -57,7 +57,7 @@ const GOVERNANCE_DECISION_CLASS_BASELINES: Record<GovernanceDecisionClass, Gover
   },
 };
 
-const GOVERNANCE_ACTION_THRESHOLD_OVERRIDES: Partial<Record<GovernanceExecutionActionType, GovernanceExecutionThresholdRuleSeed>> = {
+export const GOVERNANCE_ACTION_THRESHOLD_OVERRIDES: Partial<Record<GovernanceExecutionActionType, GovernanceExecutionThresholdRuleSeed>> = {
   manual_follow_through: {
     approvalClass: 'ordinary_majority',
     minApprovalShare: 0.5,

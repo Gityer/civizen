@@ -1,150 +1,54 @@
 # Governance Integration Guide
 
-This guide explains how the new Governance UI components and Steward Consoles have been integrated into the Civizen Mobile MVP to achieve full decentralization.
+How the member-facing governance surfaces are built on the real database tables. Current state only; the roadmap section at the end names what is intentionally not built yet.
 
-Working institutional model (project reference, not this product guide): [Institutional Blueprint](../../institutional/institutional-blueprint.md) · [Governance Framework](../../institutional/governance-framework.md) · [Pilot Framework](../../institutional/pilot-framework.md) (civic voting is one possible Governance Pilot, not all Civizen governance). In-app proposal `decision_class` values (`ordinary` / `elevated` / `constitutional`) are a product scaffold and are not the Framework’s seven decision classes.
+Working institutional model (project reference, not this product guide): [Institutional Blueprint](../../institutional/institutional-blueprint.md) · [Governance Framework](../../institutional/governance-framework.md) · [Pilot Framework](../../institutional/pilot-framework.md). In-app proposal `decision_class` values (`ordinary` / `elevated` / `constitutional`) are a product scaffold and are not the Framework's seven decision classes.
 
-## Architecture Overview
+## Surfaces
 
-The decentralization program consists of three main layers:
+| Route | Page | Purpose |
+|---|---|---|
+| `/governance` | `PublicGovernanceLanding` | Public landing |
+| `/governance/voting` | `CivicVotingHub` | Public elections and civic proposals |
+| `/governance/workspace` | `Governance` | Full member workspace: create proposals, vote, execution, guardian and audit tooling |
+| `/governance/new` | `GovernanceNew` | Member dashboard: open/closed proposals with weighted results and voting, plus the steward console |
 
-### 1. Backend Layer (Database & RPCs)
-Located in `supabase/migrations/`, these SQL files define:
-- **Identity Verification**: Tables and RPCs for managing user identity verification processes.
-- **Constitutional Offices**: Tables and RPCs for managing governance roles and office holders.
-- **Proposals & Voting**: Tables and RPCs for creating, voting on, and managing governance proposals.
+## Tables
 
-### 2. Permission Model Layer
-Located in `src/lib/governance-permission-model.ts`, this layer provides:
-- **Role-Based Access Control (RBAC)**: Defines governance roles (Admin, Steward, Office Holder, Verified User).
-- **Action Permissions**: Maps actions to required roles.
-- **Context Checking**: Verifies user permissions before allowing operations.
+- `governance_proposals`: `title`, `summary`, `body`, `status` (`open` / `approved` / `rejected` / `cancelled`), `opens_at`, `closes_at`, `required_quorum`, `approval_threshold`.
+- `governance_proposal_votes`: one row per (`proposal_id`, `voter_id`); `choice` (`approve` / `reject` / `abstain`), `weight` (0 or 1), `snapshot` of the voter's standing.
+- `governance_proposal_events`: audit trail (`vote.recorded`, ...).
+- `governance_sanctions`: can block `vote` and/or `proposal_create` for a member.
+- `constitutional_offices`: office assignments (`office_key`, `profile_id`, `is_active`, `assigned_by`, `assigned_at`, `ended_at`, `notes`, `metadata`). Today the only `office_key` is `founder`; one active holder per office and one active assignment per member and office (partial unique indexes). Insert and update are allowed for members with `role.assign` or `settings.manage`.
 
-### 3. UI Layer
-Located in `src/components/governance/`, these React components provide:
-- **GovernanceDashboard**: Main entry point for governance features.
-- **GovernanceProposalsList**: Displays active proposals and allows voting.
-- **StewardConsole**: Provides steward management tools.
-- **StewardConsoleIdentityVerification**: Manages identity verification requests.
-- **StewardConsoleOfficeManagement**: Manages constitutional offices and holders.
+## One voting path
 
-## Component Hierarchy
+All voting goes through `src/lib/governance-voting-service.ts`:
 
-```
-GovernanceDashboard
-├── GovernanceProposalsList
-│   └── Individual Proposal Cards (with voting)
-├── StewardConsole (if user is steward)
-│   ├── StewardConsoleIdentityVerification
-│   └── StewardConsoleOfficeManagement
-└── Proposal Details Panel
-```
+1. `loadGovernanceVoteContext` (`governance-vote-context.ts`, hook `useGovernanceVoteContext`) loads the member's score, sanctions and eligibility. Eligible means verified, minimum governance score, and the native mobile app.
+2. `getGovernanceVoteBlockReason` returns `not_signed_in`, `sanctioned` or `not_eligible` (in that order) and `getGovernanceVoteBlockMessageKey` gives the message to show.
+3. `recordGovernanceVote` upserts the weighted vote with the standing snapshot, then writes the `vote.recorded` event. If only the event fails, the vote stays and the result reports `eventRecorded: false`.
 
-## Integration Steps
+Results come from `summarizeGovernanceResults` / `fetchGovernanceProposalResults` in `governance-ui-utils.ts`: percentages are of decisive weight (approve + reject), abstentions count toward total votes but not quorum, and results for many proposals are computed from one batched votes query.
 
-### Step 1: Update App Routing
-In `src/App.tsx`, replace the existing Governance route with the new one:
+## Offices
 
-```typescript
-// OLD:
-const Governance = lazy(() => import('@/pages/Governance'));
+`governance-ui-utils.ts` exposes `fetchConstitutionalOfficeAssignments`, `findProfileByUsername`, `appointConstitutionalOfficeHolder` and `endConstitutionalOfficeAssignment`. Ending an assignment keeps it in the history and appends who ended it and why to `metadata`; an update that changes no row (blocked by row-level security) is reported as a failure. Failures are classified as `not_permitted`, `office_occupied`, `already_holds_office` or `failed`.
 
-// NEW:
-const GovernanceNew = lazy(() => import('@/pages/GovernanceNew'));
+`transferConstitutionalOffice` calls the database function `transfer_constitutional_office` (migration `20261005230000`), which ends the current term and starts the next in one transaction (permission-checked, one active holder preserved, audit metadata kept); the console's Transfer button uses it so an office cannot be left vacant by a half-finished hand-over. The migration has been applied and tested on the local database only, not on the hosted one.
 
-// In Routes:
-<Route path="/governance" element={<ProtectedRoute><GovernanceNew /></ProtectedRoute>} />
-```
+`deriveGovernancePermissions` (`governance-permission-model.ts`) turns the member's standing and permissions into `canVote`, `canCreateProposals`, `canManageOffices`, `isOfficeHolder` and `canAccessStewardConsole`. The UI mirrors, but never replaces, the database policies.
 
-### Step 2: Verify Database Migrations
-Ensure all three migration files have been applied to your Supabase database:
-- `20260501120000_identity_verifications.sql`
-- `20260501121000_constitutional_offices.sql`
-- `20260501122000_proposals_and_voting.sql`
+## Policies
 
-Run:
-```bash
-supabase db push
-```
+The steward console's Policies tab is read-only. `governance-policy-catalog.ts` reads the same constants the proposal composer and resolver use (`GOVERNANCE_DECISION_CLASS_BASELINES` and `GOVERNANCE_ACTION_THRESHOLD_OVERRIDES` in `governance-execution-thresholds.ts`, the eligibility rules and the voting window), so the tab shows the thresholds that actually decide a vote: approval class, share of decisive votes, quorum and whether the vote waits for the window to close, per decision class and per sensitive action. Stewards do not edit these values; a change is proposed in the workspace and decided by vote under the current rules.
 
-### Step 3: Test the Governance Flow
+## Tests
 
-1. **As a Regular User**:
-   - Navigate to `/governance`
-   - View active proposals
-   - Cast votes on proposals
-   - See voting results update in real-time
+`governance-voting-service.test.ts`, `governance-ui-utils.test.ts`, `governance-vote-context.test.ts`, `governance-permission-model.test.ts` and `governance-policy-catalog.test.ts` run against a recording Supabase stub (`src/test/create-recording-client.ts`). Write paths against a real database (office changes, row-level security) still need a local Supabase.
 
-2. **As a Steward**:
-   - Navigate to `/governance`
-   - Access the "Steward Console" tab
-   - Review and approve/reject identity verifications
-   - Manage constitutional office holders
-   - Configure governance policies
+## Roadmap (not built)
 
-## Key Features Implemented
-
-### For All Users
-- **View Active Proposals**: Browse all active governance proposals with descriptions.
-- **Vote on Proposals**: Cast votes (Yes/No/Abstain) on active proposals.
-- **See Results**: View real-time voting results with percentages.
-- **Check Status**: See your governance status and permissions.
-
-### For Stewards
-- **Identity Verification Management**: Review and approve/reject identity verification requests.
-- **Office Management**: Appoint and revoke constitutional office holders.
-- **Policy Configuration**: Configure governance policies and rules.
-- **Audit Trail**: View history of governance actions.
-
-## Permission Model
-
-The following roles and permissions are enforced:
-
-| Role | Can Vote | Can Create Proposals | Can Manage Offices | Can Manage Verifications |
-| :--- | :--- | :--- | :--- | :--- |
-| Admin | ✅ | ✅ | ✅ | ✅ |
-| Office Holder | ✅ | ✅ | ❌ | ❌ |
-| Verified User | ✅ | ❌ | ❌ | ❌ |
-| Regular User | ❌ | ❌ | ❌ | ❌ |
-
-## API Integration
-
-All UI components use the utility functions defined in `src/lib/governance-ui-utils.ts`:
-
-- `fetchGovernanceProposals()`: Get active proposals
-- `castGovernanceVote()`: Submit a vote
-- `getGovernanceProposalResults()`: Get voting results
-- `fetchIdentityVerificationStatus()`: Get verification requests
-- `fetchConstitutionalOffices()`: Get office information
-- `fetchOfficeHolders()`: Get current office holders
-- `checkGovernancePermissions()`: Check user permissions
-
-## Testing
-
-Run the governance RPC tests:
-```bash
-supabase db execute supabase/tests/governance_rpc_test.sql
-```
-
-Run the UI utility tests:
-```bash
-npm test src/lib/governance-ui-utils.test.ts
-```
-
-## Next Steps
-
-1. **Integrate with Existing Governance Page**: Merge `GovernanceNew.tsx` with the existing `Governance.tsx` or replace it entirely.
-2. **Add More Governance Features**: Implement proposal creation UI, advanced filtering, and governance analytics.
-3. **Enhance Steward Tools**: Add more management capabilities, audit logging, and reporting.
-4. **Mobile Optimization**: Ensure all components are fully responsive for mobile devices.
-
-## Troubleshooting
-
-**Issue**: "User is not authorized" error
-- **Solution**: Verify the user's role in the `profiles` table and ensure they have the appropriate permissions.
-
-**Issue**: Proposals not loading
-- **Solution**: Check that the Supabase migrations have been applied and the RPC functions are accessible.
-
-**Issue**: Voting not working
-- **Solution**: Ensure the user is authenticated and has the `can_vote` permission. Check the browser console for API errors.
+- An editable, versioned policy store with execution after an approved proposal (today the thresholds are code constants; the Policies tab only shows them).
+- More office keys or council seats: add values to `constitutional_office_key` and the dashboard lists them automatically; term limits and multi-holder offices need schema design first.
+- Moving `pages/Governance.tsx` `handleVote` onto `recordGovernanceVote` (same payload) once that page has test coverage.

@@ -19,7 +19,7 @@ const grantSpec = {
   requestedUnitKey: 'policy_legal',
   role: 'moderator',
   permission: 'law.review',
-} as const satisfies Extract<GovernanceProposalExecutionSpec, { actionType: 'grant_role_permission' }>;
+} as const satisfies Extract<GovernanceProposalExecutionSpec, { actionType: 'grant_role_permission' | 'revoke_role_permission' }>;
 
 function buildGrantOnlyClient() {
   const upsert = vi.fn().mockResolvedValue({ error: null });

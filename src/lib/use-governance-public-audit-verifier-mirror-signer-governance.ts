@@ -33,7 +33,7 @@ export function useGovernancePublicAuditVerifierMirrorSignerGovernance() {
 
     const [permissionResponse, summaryResponse, boardResponse] = await Promise.all([
       supabase.rpc('current_profile_can_manage_public_audit_verifiers'),
-      supabase.rpc('governance_public_audit_verifier_mirror_signer_governance_summary', {
+      supabase.rpc('governance_public_audit_verifier_mirror_signer_governance_summa', {
         requested_policy_key: 'default',
       }),
       supabase.rpc('governance_public_audit_verifier_mirror_signer_governance_board', {
@@ -78,7 +78,7 @@ export function useGovernancePublicAuditVerifierMirrorSignerGovernance() {
 
     setSavingSignerGovernanceRequirement(true);
 
-    const { error } = await supabase.rpc('set_governance_public_audit_verifier_mirror_signer_governance_requirement', {
+    const { error } = await supabase.rpc('set_governance_public_audit_verifier_mirror_signer_governance_r', {
       requested_policy_key: 'default',
       require_governance_approval: draft.requireSignerGovernanceApproval,
       required_independent_approvals: asIntegerOrNull(draft.minSignerGovernanceIndependentApprovals) ?? undefined,
@@ -111,7 +111,7 @@ export function useGovernancePublicAuditVerifierMirrorSignerGovernance() {
 
     setSavingSignerGovernanceAttestation(true);
 
-    const { error } = await supabase.rpc('record_governance_public_audit_verifier_mirror_signer_governance_attestation', {
+    const { error } = await supabase.rpc('record_governance_public_audit_verifier_mirror_signer_governanc', {
       target_signer_id: draft.targetSignerId,
       attestor_signer_key: draft.attestorSignerKey.trim(),
       attestation_decision: draft.attestationDecision,

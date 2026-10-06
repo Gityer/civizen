@@ -321,7 +321,7 @@ describe('governance-public-audit-verifiers helpers', () => {
     expect(
       isMissingPublicAuditVerifierBackend({
         code: 'PGRST202',
-        message: 'Function governance_public_audit_verifier_mirror_signer_governance_summary does not exist',
+        message: 'Function governance_public_audit_verifier_mirror_signer_governance_summa does not exist',
       }),
     ).toBe(true);
 

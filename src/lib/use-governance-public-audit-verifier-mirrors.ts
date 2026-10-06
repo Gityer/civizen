@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
 import {
   isMissingPublicAuditVerifierBackend,
   readGovernancePublicAuditClientVerifierBundle,
@@ -157,7 +157,7 @@ export function useGovernancePublicAuditVerifierMirrors(args: { latestBatchId: s
 
     setTogglingMirrorId(mirrorId);
 
-    const { error } = await supabase
+    const { error } = await supabaseUntyped
       .from('governance_public_audit_verifier_mirrors')
       .update({ is_active: isActive })
       .eq('id', mirrorId);

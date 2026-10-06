@@ -24,7 +24,7 @@ describe('getActionMetadataPayload', () => {
     const payload = getActionMetadataPayload(
       draft({
         actionType: 'grant_role_permission',
-        targetRole: 'not_a_real_role',
+        targetRole: 'not_a_real_role' as never,
         targetPermission: 'law.review',
       }),
     );

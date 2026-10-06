@@ -77,7 +77,7 @@ export type CanvassReviewAction = 'clear' | 'escalate';
 export function advanceCanvassSample(input: {
   status: 'selected' | 'in_review' | 'cleared' | 'escalated';
   action: 'start_review' | CanvassReviewAction;
-}): { ok: true; nextStatus: 'in_review' | 'cleared' | 'escalated' } | { ok: false; reason: string } {
+}): { ok: true; nextStatus: 'in_review' | 'cleared' | 'escalated'; reason?: undefined } | { ok: false; reason: string } {
   if (input.action === 'start_review') {
     if (input.status !== 'selected') return { ok: false, reason: 'not_selected' };
     return { ok: true, nextStatus: 'in_review' };

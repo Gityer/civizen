@@ -63,7 +63,7 @@ type ContentReviewSpec = Extract<
 const approveContentSpec: ContentReviewSpec = {
   actionType: 'approve_content_item',
   autoExecutable: true,
-  requestedUnitKey: 'civic_operations',
+  requestedUnitKey: 'policy_legal',
   contentItemId: 'content-1',
   reviewStatus: 'approved',
   notes: 'Looks good',

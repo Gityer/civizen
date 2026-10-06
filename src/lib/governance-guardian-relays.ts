@@ -1,3 +1,4 @@
+import type { Database } from '@/integrations/supabase/types';
 import type {
   GovernanceProposalGuardianRelayAlertBoardRow,
   GovernanceProposalGuardianRelayAttestationAuditRow,
@@ -154,7 +155,7 @@ export function readGovernanceProposalGuardianRelayAttestationAuditRows(rows: un
       const status = asString(entry.recent_health_status, 'unknown');
       const normalizedStatus =
         status === 'healthy' || status === 'degraded' || status === 'critical' || status === 'unknown'
-          ? status
+          ? (status as 'healthy' | 'degraded' | 'critical' | 'unknown')
           : 'unknown';
 
       return {
@@ -365,11 +366,11 @@ export function isMissingGuardianRelayBackend(error: { code?: string | null; mes
     || message.includes('governance_proposal_guardian_relay_client_proof_manifest')
     || message.includes('governance_proposal_guardian_relay_recent_client_manifests')
     || message.includes('governance_proposal_guardian_relay_client_verification_package')
-    || message.includes('capture_governance_proposal_guardian_relay_client_verification_package')
-    || message.includes('sign_governance_proposal_guardian_relay_client_verification_package')
-    || message.includes('governance_proposal_guardian_relay_recent_client_verification_packages')
-    || message.includes('governance_proposal_guardian_relay_client_verification_distribution_summary')
-    || message.includes('governance_proposal_guardian_relay_client_verification_signature_board')
+    || message.includes('capture_governance_proposal_guardian_relay_client_verification_')
+    || message.includes('sign_governance_proposal_guardian_relay_client_verification_pac')
+    || message.includes('governance_proposal_guardian_relay_recent_client_verification_p')
+    || message.includes('governance_proposal_guardian_relay_client_verification_distribu')
+    || message.includes('governance_proposal_guardian_relay_client_verification_signatur')
     || message.includes('governance_guardian_relay_worker_runs')
     || message.includes('governance_guardian_relay_alerts')
     || message.includes('governance_proposal_guardian_relay_operations_summary')

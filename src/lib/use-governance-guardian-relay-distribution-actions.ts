@@ -25,7 +25,7 @@ export function useGovernanceGuardianRelayDistributionActions({
 
     setCapturingRelayClientVerificationPackage(true);
 
-    const { error } = await supabase.rpc('capture_governance_proposal_guardian_relay_client_verification_package', {
+    const { error } = await supabase.rpc('capture_governance_proposal_guardian_relay_client_verification_', {
       target_proposal_id: proposalId,
       package_notes: packageNotes.trim() || null,
       package_metadata: {
@@ -67,7 +67,7 @@ export function useGovernanceGuardianRelayDistributionActions({
 
     setSigningRelayClientVerificationPackage(true);
 
-    const { error } = await supabase.rpc('sign_governance_proposal_guardian_relay_client_verification_package', {
+    const { error } = await supabase.rpc('sign_governance_proposal_guardian_relay_client_verification_pac', {
       target_package_id: packageId,
       signer_key: signerKey,
       signature,

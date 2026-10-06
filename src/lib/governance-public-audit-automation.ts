@@ -367,7 +367,7 @@ export function readGovernancePublicAuditClaimedExecutionJobs(rows: unknown): Go
     .map((entry) => asRecord(entry))
     .filter((entry): entry is Record<string, unknown> => Boolean(entry))
     .map((entry) => {
-      const jobType = asString(entry.job_type).trim().toLowerCase() === 'verifier' ? 'verifier' : 'anchor';
+      const jobType = asString(entry.job_type).trim().toLowerCase() === 'verifier' ? ('verifier' as const) : ('anchor' as const);
       return {
         jobType,
         jobId: asString(entry.job_id),

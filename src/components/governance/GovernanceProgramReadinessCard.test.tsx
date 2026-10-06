@@ -1,11 +1,8 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import {
-  filterAndSortJurisdictionReviews,
-  GovernanceProgramReadinessCard,
-  summarizeJurisdictionReadiness,
-} from '@/components/governance/GovernanceProgramReadinessCard';
+import { GovernanceProgramReadinessCard } from '@/components/governance/GovernanceProgramReadinessCard';
+import { filterAndSortJurisdictionReviews, summarizeJurisdictionReadiness } from '@/components/governance/jurisdiction-readiness';
 import type { ActivationThresholdReviewRow } from '@/lib/governance-activation-review';
 
 vi.mock('@/components/ui/select', () => ({

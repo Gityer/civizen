@@ -42,7 +42,7 @@ export function canResolveChallenge(status: ChallengeStatus): boolean {
 }
 
 export type ChallengeResolution =
-  | { ok: true; nextStatus: Exclude<ChallengeStatus, 'open'> }
+  | { ok: true; nextStatus: Exclude<ChallengeStatus, 'open'>; reason?: undefined }
   | { ok: false; reason: string };
 
 export function resolveChallenge(input: {

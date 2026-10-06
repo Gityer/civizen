@@ -376,7 +376,7 @@ describe('governance-guardian-relays helpers', () => {
     expect(
       isMissingGuardianRelayBackend({
         code: 'PGRST202',
-        message: 'Could not find the function public.governance_proposal_guardian_relay_client_verification_signature_board',
+        message: 'Could not find the function public.governance_proposal_guardian_relay_client_verification_signatur',
         details: null,
       }),
     ).toBe(true);

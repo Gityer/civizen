@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
 import {
   GOVERNANCE_PUBLIC_AUDIT_EXTERNAL_EXECUTION_PAGE_BOARD_MAX_PAGES,
   isMissingPublicAuditAutomationBackend,
@@ -106,7 +106,7 @@ export function useGovernancePublicAuditAutomation(args: { latestBatchId: string
         requested_batch_id: args.latestBatchId,
         max_pages: GOVERNANCE_PUBLIC_AUDIT_EXTERNAL_EXECUTION_PAGE_BOARD_MAX_PAGES,
       }),
-      supabase.rpc('governance_public_audit_external_execution_automation_status'),
+      supabaseUntyped.rpc('governance_public_audit_external_execution_automation_status'),
     ]);
 
     const sharedError = adapterResponse.error

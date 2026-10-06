@@ -1,73 +1,115 @@
-import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
+import { useCallback, useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { fetchGovernanceProposals, castGovernanceVote, getGovernanceProposalResults } from '@/lib/governance-ui-utils';
-import { formatProposalStatus } from '@/lib/governance-ui-utils';
-import type { GovernanceProposal, GovernanceProposalResults } from '@/lib/governance-ui.types';
+import { supabase } from '@/integrations/supabase/client';
+import {
+  getGovernanceProposalStatusLabelKey,
+  getGovernanceVoteChoiceLabelKey,
+} from '@/lib/governance-proposals';
+import type {
+  GovernanceProposal,
+  GovernanceProposalFilter,
+  GovernanceProposalResults,
+  GovernanceVoteChoice,
+} from '@/lib/governance-ui.types';
+import {
+  fetchGovernanceProposalResults,
+  fetchGovernanceProposals,
+  fetchMyGovernanceVotes,
+} from '@/lib/governance-ui-utils';
+import {
+  getGovernanceVoteBlockReason,
+  recordGovernanceVote,
+  type GovernanceVoteIdentity,
+} from '@/lib/governance-voting-service';
+
+const VOTE_CHOICES: GovernanceVoteChoice[] = ['approve', 'reject', 'abstain'];
 
 interface GovernanceProposalsListProps {
+  filter: GovernanceProposalFilter;
+  identity: GovernanceVoteIdentity | null;
+  canVote: boolean;
+  voteBlockedBySanction: boolean;
   onProposalSelect?: (proposal: GovernanceProposal) => void;
 }
 
-export function GovernanceProposalsList({ onProposalSelect }: GovernanceProposalsListProps) {
+export function GovernanceProposalsList({
+  filter,
+  identity,
+  canVote,
+  voteBlockedBySanction,
+  onProposalSelect,
+}: GovernanceProposalsListProps) {
   const { t } = useLanguage();
+  const { profile } = useAuth();
   const [proposals, setProposals] = useState<GovernanceProposal[]>([]);
   const [results, setResults] = useState<Record<string, GovernanceProposalResults>>({});
+  const [myVotes, setMyVotes] = useState<Record<string, GovernanceVoteChoice>>({});
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
   const [votingProposalId, setVotingProposalId] = useState<string | null>(null);
-  const [userVotes, setUserVotes] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    loadProposals();
-  }, []);
+  const profileId = profile?.id;
 
-  const loadProposals = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
+    setFailed(false);
     try {
-      const data = await fetchGovernanceProposals('active');
-      setProposals(data);
-      
-      // Load results for each proposal
-      for (const proposal of data) {
-        const proposalResults = await getGovernanceProposalResults(proposal.id);
-        if (proposalResults) {
-          setResults((prev) => ({
-            ...prev,
-            [proposal.id]: proposalResults,
-          }));
-        }
-      }
+      const rows = await fetchGovernanceProposals(supabase, filter);
+      const [nextResults, nextVotes] = await Promise.all([
+        fetchGovernanceProposalResults(supabase, rows),
+        profileId
+          ? fetchMyGovernanceVotes(
+              supabase,
+              profileId,
+              rows.map((row) => row.id),
+            )
+          : Promise.resolve({}),
+      ]);
+      setProposals(rows);
+      setResults(nextResults);
+      setMyVotes(nextVotes);
     } catch (error) {
-      console.error('Error loading proposals:', error);
+      console.error('Failed to load governance proposals:', error);
+      setFailed(true);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, profileId]);
 
-  const handleVote = async (proposalId: string, choice: 'yes' | 'no' | 'abstain') => {
-    setVotingProposalId(proposalId);
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const handleVote = async (proposal: GovernanceProposal, choice: GovernanceVoteChoice) => {
+    const blockReason = getGovernanceVoteBlockReason({
+      signedIn: Boolean(identity),
+      voteBlockedBySanction,
+      eligible: canVote,
+    });
+    if (blockReason || !identity) return;
+
+    setVotingProposalId(proposal.id);
+    const outcome = await recordGovernanceVote(supabase, { proposalId: proposal.id, choice, identity });
+    setVotingProposalId(null);
+
+    if (!outcome.ok) {
+      toast.error(t('governanceDashboard.voteFailed'));
+      return;
+    }
+    toast.success(t('governanceDashboard.voteSaved'));
+    setMyVotes((previous) => ({ ...previous, [proposal.id]: choice }));
     try {
-      await castGovernanceVote(proposalId, choice);
-      setUserVotes((prev) => ({
-        ...prev,
-        [proposalId]: choice,
-      }));
-      
-      // Refresh results
-      const updatedResults = await getGovernanceProposalResults(proposalId);
-      if (updatedResults) {
-        setResults((prev) => ({
-          ...prev,
-          [proposalId]: updatedResults,
-        }));
-      }
+      const updated = await fetchGovernanceProposalResults(supabase, [proposal]);
+      setResults((previous) => ({ ...previous, ...updated }));
     } catch (error) {
-      console.error('Error casting vote:', error);
-    } finally {
-      setVotingProposalId(null);
+      console.error('Failed to refresh proposal results:', error);
     }
   };
 
@@ -79,10 +121,12 @@ export function GovernanceProposalsList({ onProposalSelect }: GovernanceProposal
     );
   }
 
-  if (proposals.length === 0) {
+  if (failed || proposals.length === 0) {
     return (
       <Card className="p-6 text-center">
-        <p className="text-muted-foreground">{t('governance.noProposals')}</p>
+        <p className="text-muted-foreground">
+          {failed ? t('governanceDashboard.loadFailed') : t('governanceDashboard.noProposals')}
+        </p>
       </Card>
     );
   }
@@ -90,114 +134,93 @@ export function GovernanceProposalsList({ onProposalSelect }: GovernanceProposal
   return (
     <div className="space-y-4">
       {proposals.map((proposal) => {
-        const proposalResults = results[proposal.id];
-        const userVote = userVotes[proposal.id];
+        const tally = results[proposal.id];
+        const myVote = myVotes[proposal.id];
+        const isOpen = proposal.status === 'open';
+        const busy = votingProposalId === proposal.id;
 
         return (
           <Card
             key={proposal.id}
-            className="p-6 hover:shadow-md transition-shadow cursor-pointer"
+            className="cursor-pointer p-6 transition-shadow hover:shadow-md"
             onClick={() => onProposalSelect?.(proposal)}
           >
             <div className="space-y-4">
-              {/* Header */}
               <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold">{proposal.proposal_title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {proposal.proposal_description}
-                  </p>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-lg font-semibold">{proposal.title}</h3>
+                  {proposal.summary && <p className="mt-1 text-sm text-muted-foreground">{proposal.summary}</p>}
                 </div>
-                <Badge variant={proposal.status === 'active' ? 'default' : 'secondary'}>
-                  {formatProposalStatus(proposal.status)}
+                <Badge variant={isOpen ? 'default' : 'secondary'}>
+                  {t(getGovernanceProposalStatusLabelKey(proposal.status))}
                 </Badge>
               </div>
 
-              {/* Voting Results */}
-              {proposalResults && (
+              {tally && (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Total Votes: {proposalResults.total_votes}</span>
+                  <div className="flex flex-wrap justify-between gap-2 text-sm text-muted-foreground">
+                    <span>{t('governanceDashboard.totalVotes', { count: tally.totalVotes })}</span>
+                    <span>
+                      {t('governanceDashboard.quorum', { met: tally.decisiveVotes, required: tally.requiredQuorum })}
+                    </span>
                   </div>
                   <div className="flex gap-2">
-                    <div className="flex-1">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>Yes</span>
-                        <span>{proposalResults.yes_percentage}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-green-500 h-2 rounded-full transition-all"
-                          style={{ width: `${proposalResults.yes_percentage}%` }}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>No</span>
-                        <span>{proposalResults.no_percentage}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-red-500 h-2 rounded-full transition-all"
-                          style={{ width: `${proposalResults.no_percentage}%` }}
-                        />
-                      </div>
-                    </div>
+                    <ResultBar
+                      label={t(getGovernanceVoteChoiceLabelKey('approve'))}
+                      percentage={tally.approvalPercentage}
+                      barClass="bg-green-500"
+                    />
+                    <ResultBar
+                      label={t(getGovernanceVoteChoiceLabelKey('reject'))}
+                      percentage={tally.rejectionPercentage}
+                      barClass="bg-red-500"
+                    />
                   </div>
                 </div>
               )}
 
-              {/* Voting Actions */}
-              {proposal.status === 'active' && !userVote && (
-                <div className="flex gap-2 pt-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleVote(proposal.id, 'yes');
-                    }}
-                    disabled={votingProposalId === proposal.id}
-                  >
-                    <ThumbsUp className="h-4 w-4 mr-1" />
-                    {votingProposalId === proposal.id ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Vote Yes'}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleVote(proposal.id, 'no');
-                    }}
-                    disabled={votingProposalId === proposal.id}
-                  >
-                    <ThumbsDown className="h-4 w-4 mr-1" />
-                    {votingProposalId === proposal.id ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Vote No'}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleVote(proposal.id, 'abstain');
-                    }}
-                    disabled={votingProposalId === proposal.id}
-                  >
-                    {votingProposalId === proposal.id ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Abstain'}
-                  </Button>
+              {isOpen && canVote && !voteBlockedBySanction && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {VOTE_CHOICES.map((choice) => (
+                    <Button
+                      key={choice}
+                      size="sm"
+                      variant={myVote === choice ? 'default' : 'outline'}
+                      disabled={busy}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        void handleVote(proposal, choice);
+                      }}
+                    >
+                      {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : t(getGovernanceVoteChoiceLabelKey(choice))}
+                    </Button>
+                  ))}
                 </div>
               )}
 
-              {userVote && (
-                <div className="text-sm text-muted-foreground pt-2">
-                  Your vote: <Badge variant="secondary">{userVote}</Badge>
-                </div>
+              {myVote && !isOpen && (
+                <p className="pt-2 text-sm text-muted-foreground">
+                  {t('governanceHub.yourVote', { choice: t(getGovernanceVoteChoiceLabelKey(myVote)) })}
+                </p>
               )}
             </div>
           </Card>
         );
       })}
+    </div>
+  );
+}
+
+function ResultBar({ label, percentage, barClass }: { label: string; percentage: number; barClass: string }) {
+  return (
+    <div className="flex-1">
+      <div className="mb-1 flex justify-between text-xs">
+        <span>{label}</span>
+        <span>{percentage}%</span>
+      </div>
+      <div className="h-2 w-full rounded-full bg-muted">
+        <div className={`h-2 rounded-full transition-all ${barClass}`} style={{ width: `${percentage}%` }} />
+      </div>
     </div>
   );
 }

@@ -18,10 +18,10 @@ export type AssistedBallotRoles = {
 };
 
 export type AssistedTransition =
-  | { ok: true; nextStatus: AssistedBallotStatus }
+  | { ok: true; nextStatus: AssistedBallotStatus; reason?: undefined }
   | { ok: false; reason: string };
 
-export function assertDistinctAssistedRoles(roles: AssistedBallotRoles): { ok: true } | { ok: false; reason: string } {
+export function assertDistinctAssistedRoles(roles: AssistedBallotRoles): { ok: true; reason?: undefined } | { ok: false; reason: string } {
   if (roles.voterProfileId === roles.assistantProfileId) {
     return { ok: false, reason: 'assistant_same_as_voter' };
   }
@@ -41,7 +41,7 @@ export function advanceAssistedBallot(input: {
   requireSteward?: boolean;
 }): AssistedTransition {
   const distinct = assertDistinctAssistedRoles(input.roles);
-  if (!distinct.ok) return distinct;
+  if (!distinct.ok) return { ok: false, reason: distinct.reason };
 
   const requireSteward = input.requireSteward !== false;
 

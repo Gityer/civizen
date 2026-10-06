@@ -137,14 +137,14 @@ export function useGovernanceGuardianRelays(args: { proposalId: string }) {
       supabase.rpc('governance_proposal_guardian_relay_client_verification_package', {
         target_proposal_id: args.proposalId,
       }),
-      supabase.rpc('governance_proposal_guardian_relay_recent_client_verification_packages', {
+      supabase.rpc('governance_proposal_guardian_relay_recent_client_verification_p', {
         target_proposal_id: args.proposalId,
         max_packages: 12,
       }),
-      supabase.rpc('governance_proposal_guardian_relay_client_verification_distribution_summary', {
+      supabase.rpc('governance_proposal_guardian_relay_client_verification_distribu', {
         target_proposal_id: args.proposalId,
       }),
-      supabase.rpc('governance_proposal_guardian_relay_client_verification_signature_board', {
+      supabase.rpc('governance_proposal_guardian_relay_client_verification_signatur', {
         target_proposal_id: args.proposalId,
         max_entries: 40,
       }),

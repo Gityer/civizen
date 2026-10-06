@@ -1,89 +1,145 @@
-import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
+import { useCallback, useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Loader2, Plus, Trash2 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { fetchConstitutionalOffices, fetchOfficeHolders, canPerformAction, GovernanceAction } from '@/lib/governance-ui-utils';
-import type { ConstitutionalOffice, ConstitutionalOfficeHolder } from '@/lib/governance-ui.types';
+import { supabase } from '@/integrations/supabase/client';
+import { Constants } from '@/integrations/supabase/types';
+import type { ConstitutionalOfficeAssignment, ConstitutionalOfficeKey } from '@/lib/governance-ui.types';
+import {
+  appointConstitutionalOfficeHolder,
+  endConstitutionalOfficeAssignment,
+  fetchConstitutionalOfficeAssignments,
+  findProfileByUsername,
+  transferConstitutionalOffice,
+} from '@/lib/governance-ui-utils';
 
-export function StewardConsoleOfficeManagement() {
-  const { t } = useLanguage();
-  const [offices, setOffices] = useState<ConstitutionalOffice[]>([]);
-  const [holders, setHolders] = useState<Record<string, ConstitutionalOfficeHolder[]>>({});
+const OFFICE_KEYS = Constants.public.Enums.constitutional_office_key as readonly ConstitutionalOfficeKey[];
+
+function holderName(assignment: ConstitutionalOfficeAssignment) {
+  return assignment.holder?.full_name || assignment.holder?.username || assignment.profile_id;
+}
+
+interface StewardConsoleOfficeManagementProps {
+  canManage: boolean;
+}
+
+export function StewardConsoleOfficeManagement({ canManage }: StewardConsoleOfficeManagementProps) {
+  const { t, language } = useLanguage();
+  const { profile } = useAuth();
+  const [assignments, setAssignments] = useState<ConstitutionalOfficeAssignment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [processingId, setProcessingId] = useState<string | null>(null);
-  const [canManage, setCanManage] = useState(false);
-  const [selectedOfficeId, setSelectedOfficeId] = useState<string | null>(null);
-  const [newHolderUsername, setNewHolderUsername] = useState('');
+  const [failed, setFailed] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [username, setUsername] = useState('');
+  const [notes, setNotes] = useState('');
+  const [endingId, setEndingId] = useState<string | null>(null);
+  const [transferringId, setTransferringId] = useState<string | null>(null);
+  const [endReason, setEndReason] = useState('');
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
+    setFailed(false);
     try {
-      const hasPermission = await canPerformAction(GovernanceAction.MANAGE_OFFICES);
-      setCanManage(hasPermission);
-
-      if (hasPermission) {
-        const officesData = await fetchConstitutionalOffices();
-        setOffices(officesData);
-
-        // Load holders for each office
-        for (const office of officesData) {
-          const holdersData = await fetchOfficeHolders(office.id);
-          setHolders((prev) => ({
-            ...prev,
-            [office.id]: holdersData,
-          }));
-        }
-      }
+      setAssignments(await fetchConstitutionalOfficeAssignments(supabase));
     } catch (error) {
-      console.error('Error loading offices:', error);
+      console.error('Failed to load office assignments:', error);
+      setFailed(true);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleAppointHolder = async (officeId: string) => {
-    if (!newHolderUsername.trim()) return;
+  useEffect(() => {
+    void load();
+  }, [load]);
 
-    setProcessingId(officeId);
+  const formatDate = (value: string) => new Date(value).toLocaleDateString(language);
+
+  const handleAppoint = async (officeKey: ConstitutionalOfficeKey) => {
+    if (!profile?.id || !username.trim()) return;
+    setBusy(true);
     try {
-      // Call appointment RPC here
-      console.log('Appointing holder:', newHolderUsername, 'to office:', officeId);
-      setNewHolderUsername('');
-      await loadData();
-    } catch (error) {
-      console.error('Error appointing holder:', error);
+      const member = await findProfileByUsername(supabase, username);
+      if (!member) {
+        toast.error(t('governanceDashboard.offices.userNotFound'));
+        return;
+      }
+      const result = await appointConstitutionalOfficeHolder(supabase, {
+        officeKey,
+        profileId: member.id,
+        assignedBy: profile.id,
+        notes,
+      });
+      if ("reason" in result) {
+        toast.error(t(`governanceDashboard.offices.errors.${result.reason}`));
+        return;
+      }
+      toast.success(t('governanceDashboard.offices.appointed'));
+      setUsername('');
+      setNotes('');
+      await load();
     } finally {
-      setProcessingId(null);
+      setBusy(false);
     }
   };
 
-  const handleRevokeHolder = async (holderId: string) => {
-    setProcessingId(holderId);
+  const handleEnd = async (assignment: ConstitutionalOfficeAssignment) => {
+    if (!profile?.id) return;
+    setBusy(true);
     try {
-      // Call revocation RPC here
-      console.log('Revoking holder:', holderId);
-      await loadData();
-    } catch (error) {
-      console.error('Error revoking holder:', error);
+      const result = await endConstitutionalOfficeAssignment(supabase, {
+        assignmentId: assignment.id,
+        endedBy: profile.id,
+        reason: endReason,
+      });
+      if ("reason" in result) {
+        toast.error(t(`governanceDashboard.offices.errors.${result.reason}`));
+        return;
+      }
+      toast.success(t('governanceDashboard.offices.ended'));
+      setEndingId(null);
+      setEndReason('');
+      await load();
     } finally {
-      setProcessingId(null);
+      setBusy(false);
     }
   };
 
-  if (!canManage) {
-    return (
-      <Card className="p-6 text-center">
-        <p className="text-muted-foreground">{t('governance.notAuthorized')}</p>
-      </Card>
-    );
-  }
+  const handleTransfer = async (officeKey: ConstitutionalOfficeKey) => {
+    if (!username.trim()) return;
+    setBusy(true);
+    try {
+      const member = await findProfileByUsername(supabase, username);
+      if (!member) {
+        toast.error(t('governanceDashboard.offices.userNotFound'));
+        return;
+      }
+      const result = await transferConstitutionalOffice(supabase, {
+        officeKey,
+        newHolderId: member.id,
+        reason: endReason,
+        notes,
+      });
+      if ('reason' in result) {
+        toast.error(t(`governanceDashboard.offices.errors.${result.reason}`));
+        return;
+      }
+      toast.success(t('governanceDashboard.offices.transferred'));
+      setTransferringId(null);
+      setUsername('');
+      setNotes('');
+      setEndReason('');
+      await load();
+    } finally {
+      setBusy(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -93,109 +149,127 @@ export function StewardConsoleOfficeManagement() {
     );
   }
 
+  if (failed) {
+    return (
+      <Card className="p-6 text-center">
+        <p className="text-muted-foreground">{t('governanceDashboard.offices.loadFailed')}</p>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Constitutional Offices</h3>
+      <h3 className="text-lg font-semibold">{t('governanceDashboard.offices.title')}</h3>
+      {!canManage && <p className="text-sm text-muted-foreground">{t('governanceDashboard.offices.notAuthorized')}</p>}
 
-      {offices.length === 0 ? (
-        <Card className="p-6 text-center">
-          <p className="text-muted-foreground">No constitutional offices configured</p>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {offices.map((office) => {
-            const officeHolders = holders[office.id] || [];
-            const isExpanded = selectedOfficeId === office.id;
+      {OFFICE_KEYS.map((officeKey) => {
+        const forOffice = assignments.filter((assignment) => assignment.office_key === officeKey);
+        const active = forOffice.find((assignment) => assignment.is_active);
+        const past = forOffice.filter((assignment) => !assignment.is_active);
 
-            return (
-              <Card key={office.id} className="p-4">
-                <div
-                  className="flex items-start justify-between gap-4 cursor-pointer"
-                  onClick={() => setSelectedOfficeId(isExpanded ? null : office.id)}
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-medium">{office.office_name}</h4>
-                      <Badge variant="outline">{officeHolders.length}/{office.max_holders}</Badge>
-                    </div>
-                    {office.office_description && (
-                      <p className="text-sm text-muted-foreground mt-1">{office.office_description}</p>
-                    )}
-                  </div>
+        return (
+          <Card key={officeKey} className="space-y-4 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h4 className="font-medium capitalize">{officeKey}</h4>
+              {!active && <Badge variant="outline">{t('governanceDashboard.offices.vacant')}</Badge>}
+            </div>
+
+            {active && (
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded bg-muted p-3">
+                <div>
+                  <p className="text-xs text-muted-foreground">{t('governanceDashboard.offices.holder')}</p>
+                  <p className="text-sm font-medium">{holderName(active)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t('governanceDashboard.offices.since', { date: formatDate(active.assigned_at) })}
+                  </p>
                 </div>
-
-                {isExpanded && (
-                  <div className="mt-4 space-y-3 pt-4 border-t">
-                    {/* Current Holders */}
-                    <div>
-                      <h5 className="text-sm font-medium mb-2">Current Holders</h5>
-                      {officeHolders.length === 0 ? (
-                        <p className="text-xs text-muted-foreground">No holders assigned</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {officeHolders.map((holder) => (
-                            <div key={holder.holder_id} className="flex items-center justify-between p-2 bg-muted rounded">
-                              <div>
-                                <p className="text-sm font-medium">{holder.profile_username}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  Term: {new Date(holder.term_start_at).toLocaleDateString()} -{' '}
-                                  {new Date(holder.term_end_at).toLocaleDateString()}
-                                </p>
-                              </div>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleRevokeHolder(holder.holder_id)}
-                                disabled={processingId === holder.holder_id}
-                              >
-                                {processingId === holder.holder_id ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  <Trash2 className="h-4 w-4" />
-                                )}
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                {canManage &&
+                  (endingId === active.id ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="w-full text-xs text-muted-foreground">{t('governanceDashboard.offices.confirmEnd')}</p>
+                      <Input
+                        className="w-56"
+                        placeholder={t('governanceDashboard.offices.endReason')}
+                        value={endReason}
+                        onChange={(event) => setEndReason(event.target.value)}
+                      />
+                      <Button size="sm" variant="destructive" disabled={busy} onClick={() => void handleEnd(active)}>
+                        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : t('governanceDashboard.offices.end')}
+                      </Button>
                     </div>
+                  ) : transferringId === active.id ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="w-full text-xs text-muted-foreground">{t('governanceDashboard.offices.transferHelp')}</p>
+                      <Input
+                        className="w-44"
+                        placeholder={t('governanceDashboard.offices.username')}
+                        value={username}
+                        onChange={(event) => setUsername(event.target.value)}
+                      />
+                      <Input
+                        className="w-56"
+                        placeholder={t('governanceDashboard.offices.endReason')}
+                        value={endReason}
+                        onChange={(event) => setEndReason(event.target.value)}
+                      />
+                      <Button size="sm" disabled={busy || !username.trim()} onClick={() => void handleTransfer(officeKey)}>
+                        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : t('governanceDashboard.offices.transfer')}
+                      </Button>
+                      <Button size="sm" variant="ghost" disabled={busy} onClick={() => setTransferringId(null)}>
+                        {t('governanceDashboard.offices.cancel')}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={() => setTransferringId(active.id)}>
+                        {t('governanceDashboard.offices.transfer')}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setEndingId(active.id)}>
+                        {t('governanceDashboard.offices.end')}
+                      </Button>
+                    </div>
+                  ))}
+              </div>
+            )}
 
-                    {/* Appoint New Holder */}
-                    {officeHolders.length < office.max_holders && (
-                      <div className="space-y-2 pt-2 border-t">
-                        <h5 className="text-sm font-medium">Appoint New Holder</h5>
-                        <div className="flex gap-2">
-                          <Input
-                            placeholder="Username"
-                            value={newHolderUsername}
-                            onChange={(e) => setNewHolderUsername(e.target.value)}
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                handleAppointHolder(office.id);
-                              }
-                            }}
-                          />
-                          <Button
-                            size="sm"
-                            onClick={() => handleAppointHolder(office.id)}
-                            disabled={processingId === office.id || !newHolderUsername.trim()}
-                          >
-                            {processingId === office.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Plus className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </Card>
-            );
-          })}
-        </div>
-      )}
+            {canManage && !active && (
+              <div className="space-y-2">
+                <h5 className="text-sm font-medium">{t('governanceDashboard.offices.appointTitle')}</h5>
+                <div className="flex flex-wrap gap-2">
+                  <Input
+                    className="w-48"
+                    placeholder={t('governanceDashboard.offices.username')}
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
+                  />
+                  <Input
+                    className="min-w-48 flex-1"
+                    placeholder={t('governanceDashboard.offices.notes')}
+                    value={notes}
+                    onChange={(event) => setNotes(event.target.value)}
+                  />
+                  <Button size="sm" disabled={busy || !username.trim()} onClick={() => void handleAppoint(officeKey)}>
+                    {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : t('governanceDashboard.offices.appoint')}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {past.length > 0 && (
+              <div className="space-y-1">
+                <h5 className="text-sm font-medium">{t('governanceDashboard.offices.history')}</h5>
+                {past.map((assignment) => (
+                  <p key={assignment.id} className="text-xs text-muted-foreground">
+                    {holderName(assignment)}
+                    {assignment.ended_at &&
+                      ` · ${t('governanceDashboard.offices.endedOn', { date: formatDate(assignment.ended_at) })}`}
+                  </p>
+                ))}
+              </div>
+            )}
+          </Card>
+        );
+      })}
     </div>
   );
 }

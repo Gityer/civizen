@@ -167,7 +167,7 @@ export function useGovernancePublicAuditVerifierMirrorProduction(args: { latestB
     });
 
     const { error: trustThresholdError } = await supabase.rpc(
-      'set_governance_public_audit_verifier_mirror_min_independent_signers',
+      'set_governance_public_audit_verifier_mirror_min_independent_sig',
       {
         requested_policy_key: 'default',
         required_signer_count: toIntegerOrNull(draft.minIndependentDirectorySigners) ?? undefined,
@@ -175,7 +175,7 @@ export function useGovernancePublicAuditVerifierMirrorProduction(args: { latestB
     );
 
     const { error: policyRatificationRequirementError } = await supabase.rpc(
-      'set_governance_public_audit_verifier_mirror_policy_ratification_requirement',
+      'set_governance_public_audit_verifier_mirror_policy_ratification',
       {
         requested_policy_key: 'default',
         require_ratification: draft.requirePolicyRatification,
@@ -184,7 +184,7 @@ export function useGovernancePublicAuditVerifierMirrorProduction(args: { latestB
     );
 
     const { error: signerGovernanceRequirementError } = await supabase.rpc(
-      'set_governance_public_audit_verifier_mirror_signer_governance_requirement',
+      'set_governance_public_audit_verifier_mirror_signer_governance_r',
       {
         requested_policy_key: 'default',
         require_governance_approval: draft.requireSignerGovernanceApproval,
@@ -193,7 +193,7 @@ export function useGovernancePublicAuditVerifierMirrorProduction(args: { latestB
     );
 
     const { error: federationOpsRequirementError } = await supabase.rpc(
-      'set_governance_public_audit_verifier_mirror_federation_ops_requirement',
+      'set_governance_public_audit_verifier_mirror_federation_ops_requ',
       {
         requested_policy_key: 'default',
         requested_require_federation_ops_readiness: draft.requireFederationOpsReadiness,
@@ -238,7 +238,7 @@ export function useGovernancePublicAuditVerifierMirrorProduction(args: { latestB
     if (!draft.signerKey.trim() || !draft.publicKey.trim()) return void toast.error('Signer key and public key are required.');
     setRegisteringDirectorySigner(true);
 
-    const { error } = await supabase.rpc('register_governance_public_audit_verifier_mirror_directory_signer', {
+    const { error } = await supabase.rpc('register_governance_public_audit_verifier_mirror_directory_sign', {
       signer_key: draft.signerKey.trim(),
       signer_label: draft.signerLabel.trim() || null,
       public_key: draft.publicKey.trim(),
@@ -304,7 +304,7 @@ export function useGovernancePublicAuditVerifierMirrorProduction(args: { latestB
     if (!draft.directoryId || !draft.signerKey.trim() || !draft.attestationSignature.trim()) return void toast.error('Directory, signer key, and signature are required.');
     setSavingDirectoryAttestation(true);
 
-    const { error } = await supabase.rpc('record_governance_public_audit_verifier_mirror_directory_attestation', {
+    const { error } = await supabase.rpc('record_governance_public_audit_verifier_mirror_directory_attest', {
       target_directory_id: draft.directoryId,
       signer_key: draft.signerKey.trim(),
       attestation_decision: draft.attestationDecision,
