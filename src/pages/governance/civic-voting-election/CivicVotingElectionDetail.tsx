@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CIVIC_ELECTION_TIER_LABELS, CIVIC_SECURITY_CLASS_LABELS } from '@/lib/civic-voting';
 import { consultationOptionLabel } from '@/lib/civic-voting/outcome';
+import { readBallotMethod } from '@/lib/civic-voting/voting-proposals';
 import { getCountryName } from '@/lib/countries';
 import { CivicVotingConsultationVote } from '@/pages/governance/civic-voting-election/CivicVotingConsultationVote';
 import type { useCivicVotingElection } from '@/pages/governance/civic-voting-election/useCivicVotingElection';
@@ -157,6 +158,9 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
                 unverified: String(verificationSplit.unverified),
               })}
             </p>
+          ) : null}
+          {isConsultation && readBallotMethod(detail.election.metadata) === 'approval' ? (
+            <p className="text-xs text-muted-foreground">{t('civicBallot.approvalsNote')}</p>
           ) : null}
           <p className="text-xs text-muted-foreground">{t('civicVoting.tallies.validOnly')}</p>
         </div>

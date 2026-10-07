@@ -3,6 +3,8 @@ import { Loader2, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { consultationOptionLabel, describeConsultationOutcome, readConsultationOutcome } from '@/lib/civic-voting/outcome';
+import { readBallotMethod, readMaxSelections } from '@/lib/civic-voting/voting-proposals';
+import { ConsultationApprovalPicker } from '@/pages/governance/civic-voting-election/ConsultationApprovalPicker';
 import { formatReceipt } from '@/pages/governance/civic-voting-election/consultation-receipt';
 import type { useCivicVotingElection } from '@/pages/governance/civic-voting-election/useCivicVotingElection';
 
@@ -25,7 +27,7 @@ function formatDate(date: Date | undefined, language: string): string {
  */
 export function CivicVotingConsultationVote({ model }: { model: CivicVotingElectionModel }) {
   const {
-    myOption, myReceipt, eligibilityReason, votingWindow, casting, withdrawing, t, language, user,
+    myOption, myOptions, myReceipt, eligibilityReason, votingWindow, casting, withdrawing, t, language, user,
     votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt,
     directoryVisible, directoryBusy, toggleDirectoryPresence, detail,
   } = model;
@@ -42,6 +44,9 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
         .map((candidate) => ({ key: String(candidate.optionKey), label: consultationOptionLabel(t, candidate.optionKey, candidate.displayName) }))
     : DEFAULT_OPTION_KEYS.map((key) => ({ key, label: consultationOptionLabel(t, key) }));
   const optionLabel = (key: string) => options.find((option) => option.key === key)?.label ?? consultationOptionLabel(t, key);
+  const approval = readBallotMethod(detail?.election.metadata) === 'approval';
+  const maxSelections = readMaxSelections(detail?.election.metadata, options.length);
+  const picks: string[] = approval ? (myOptions ?? []) : myOption ? [myOption] : [];
   const outcome = readConsultationOutcome(detail?.election.metadata);
   const outcomeLine = outcome ? describeConsultationOutcome(outcome, optionLabel) : null;
   const outcomeBlock = outcomeLine ? (
@@ -143,8 +148,8 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
       {myOption ? (
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-xs text-muted-foreground">
-            {t('civicVoting.proposals.yourChoice')}:{' '}
-            <span className="font-medium text-foreground">{optionLabel(myOption)}</span>
+            {t(approval ? 'civicBallot.yourChoices' : 'civicVoting.proposals.yourChoice')}:{' '}
+            <span className="font-medium text-foreground">{picks.map(optionLabel).join(', ')}</span>
           </p>
           <Button
             type="button"
@@ -158,20 +163,32 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
           </Button>
         </div>
       ) : null}
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => (
-          <Button
-            key={option.key}
-            type="button"
-            size="sm"
-            variant={myOption === option.key ? 'default' : 'outline'}
-            disabled={casting || withdrawing || blocked}
-            onClick={() => void castConsultation(option.key)}
-          >
-            {option.label}
-          </Button>
-        ))}
-      </div>
+      {approval ? (
+        <ConsultationApprovalPicker
+          options={options}
+          selected={picks}
+          max={maxSelections}
+          disabled={withdrawing || blocked}
+          casting={casting}
+          onCast={(keys) => void castConsultation(keys)}
+          t={t}
+        />
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {options.map((option) => (
+            <Button
+              key={option.key}
+              type="button"
+              size="sm"
+              variant={myOption === option.key ? 'default' : 'outline'}
+              disabled={casting || withdrawing || blocked}
+              onClick={() => void castConsultation(option.key)}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      )}
       <p className="text-xs text-muted-foreground">
         {t('civicVoting.proposals.changeUntilClose')}
         {closesText ? ` ${closesText}` : ''}

@@ -31,9 +31,25 @@ export type VotingProposal = {
   options: ProposalOption[];
   quorum: number | null;
   passThresholdPercent: number | null;
+  ballotMethod: BallotMethod;
+  maxSelections: number | null;
 };
 
 export type ProposalOption = { key: string; label: string };
+
+/** How a member fills the ballot: one option, or several (approval voting). */
+export type BallotMethod = 'single' | 'approval';
+
+export function readBallotMethod(metadata: Record<string, unknown> | null | undefined): BallotMethod {
+  return metadata?.ballot_method === 'approval' ? 'approval' : 'single';
+}
+
+/** Picks allowed on one ballot: `max_selections` when set, otherwise every option. */
+export function readMaxSelections(metadata: Record<string, unknown> | null | undefined, optionCount: number): number {
+  if (readBallotMethod(metadata) !== 'approval') return 1;
+  const raw = Number(metadata?.max_selections);
+  return Number.isFinite(raw) && raw >= 2 ? Math.min(raw, Math.max(optionCount, 2)) : Math.max(optionCount, 2);
+}
 
 function readOptions(metadata: Record<string, unknown>): ProposalOption[] {
   const raw = metadata.options;
@@ -98,6 +114,8 @@ function mapProposal(row: ProposalRow): VotingProposal {
     options: readOptions(metadata),
     quorum: readNumber(metadata.quorum),
     passThresholdPercent: readNumber(metadata.pass_threshold_percent),
+    ballotMethod: readBallotMethod(metadata),
+    maxSelections: readNumber(metadata.max_selections),
   };
 }
 
@@ -167,13 +185,14 @@ export async function publishVotingProposal(proposalId: string): Promise<string>
 
 export type ConsultationCastResult = { ballotId: string; receipt: string };
 
+/** One option key, or several on an approval ballot; the server seals them together. */
 export async function castConsultationBallot(
   electionId: string,
-  optionKey: string,
+  choice: string | string[],
 ): Promise<ConsultationCastResult> {
   const { data, error } = await db.rpc('cast_consultation_ballot', {
     p_election_id: electionId,
-    p_option_key: optionKey,
+    p_option_keys: Array.isArray(choice) ? choice : [choice],
   });
   if (error) throw new Error(error.message);
   const row = (data || {}) as { ballot_id?: string; receipt?: string };
@@ -188,15 +207,23 @@ export async function withdrawConsultationBallot(electionId: string): Promise<bo
   return Boolean(data);
 }
 
-export type MyConsultationBallot = { optionKey: string | null; receipt: string | null; castAt: string | null };
+export type MyConsultationBallot = {
+  /** First pick; the only one on a single-choice ballot. */
+  optionKey: string | null;
+  optionKeys: string[];
+  receipt: string | null;
+  castAt: string | null;
+};
 
 /** The member's own counted ballot (choice unsealed server-side for the owner only). */
 export async function myConsultationBallot(electionId: string): Promise<MyConsultationBallot | null> {
   const { data, error } = await db.rpc('my_consultation_ballot', { p_election_id: electionId });
   if (error || !data) return null;
-  const row = data as { option_key?: string | null; receipt?: string | null; cast_at?: string | null };
+  const row = data as { option_key?: string | null; option_keys?: unknown; receipt?: string | null; cast_at?: string | null };
+  const optionKeys = Array.isArray(row.option_keys) ? row.option_keys.map(String) : row.option_key ? [String(row.option_key)] : [];
   return {
-    optionKey: row.option_key ? String(row.option_key) : null,
+    optionKey: optionKeys[0] ?? null,
+    optionKeys,
     receipt: row.receipt ? String(row.receipt) : null,
     castAt: row.cast_at ? String(row.cast_at) : null,
   };
@@ -280,6 +307,9 @@ export async function updateVotingProposalSettings(input: {
   options?: Array<{ key?: string; label: string }> | null;
   quorum?: number | null;
   passThresholdPercent?: number | null;
+  ballotMethod?: BallotMethod | null;
+  /** Approval only: picks allowed per ballot. */
+  maxSelections?: number | null;
 }): Promise<void> {
   const { error } = await db.rpc('update_voting_proposal_settings', {
     p_proposal_id: input.proposalId,
@@ -290,6 +320,8 @@ export async function updateVotingProposalSettings(input: {
     p_options: input.options && input.options.length > 0 ? input.options : null,
     p_quorum: input.quorum ?? null,
     p_pass_threshold: input.passThresholdPercent ?? null,
+    p_ballot_method: input.ballotMethod ?? null,
+    p_max_selections: input.maxSelections ?? null,
   });
   if (error) throw new Error(error.message);
 }

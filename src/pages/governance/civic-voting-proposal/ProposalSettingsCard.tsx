@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import type { VotingProposal } from '@/lib/civic-voting';
+import type { BallotMethod, VotingProposal } from '@/lib/civic-voting';
 import { fromLocalInput, toLocalInput } from '@/pages/governance/civic-voting-proposal/proposal-settings-time';
 import { DEFAULT_OPTION_LABELS, parseOptionLines } from '@/pages/governance/civic-voting-proposal/proposal-options';
 
@@ -19,6 +19,8 @@ export type ProposalSettingsInput = {
   options: Array<{ label: string }>;
   quorum: number | null;
   passThresholdPercent: number | null;
+  ballotMethod: BallotMethod;
+  maxSelections: number | null;
 };
 
 /** Draft-only settings the author (or a manager) controls: scope, opening and closing time. */
@@ -44,8 +46,12 @@ export function ProposalSettingsCard({
   const [threshold, setThreshold] = useState(
     proposal.passThresholdPercent === null ? '' : String(proposal.passThresholdPercent),
   );
+  const [ballotMethod, setBallotMethod] = useState<BallotMethod>(proposal.ballotMethod);
+  const [maxSelections, setMaxSelections] = useState(proposal.maxSelections === null ? '' : String(proposal.maxSelections));
   const optionCount = optionsText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).length;
   const optionsValid = optionCount >= 2 && optionCount <= 12;
+  const customOptions = parseOptionLines(optionsText).length > 0;
+  const approvalValid = ballotMethod !== 'approval' || customOptions;
   if (proposal.status !== 'draft') return null;
 
   return (
@@ -103,6 +109,34 @@ export function ProposalSettingsCard({
       </label>
       <p className="text-xs text-muted-foreground">{t('proposalSupport.optionsHint')}</p>
 
+      <fieldset className="space-y-2">
+        <legend className="text-xs font-medium text-muted-foreground">{t('proposalSupport.ballotMethodLabel')}</legend>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button type="button" size="sm" variant={ballotMethod === 'single' ? 'default' : 'outline'} onClick={() => setBallotMethod('single')}>
+            {t('proposalSupport.ballotMethodSingle')}
+          </Button>
+          <Button type="button" size="sm" variant={ballotMethod === 'approval' ? 'default' : 'outline'} onClick={() => setBallotMethod('approval')} data-testid="ballot-method-approval">
+            {t('proposalSupport.ballotMethodApproval')}
+          </Button>
+          {ballotMethod === 'approval' ? (
+            <Input
+              type="number"
+              min={2}
+              max={Math.max(2, optionCount)}
+              inputMode="numeric"
+              value={maxSelections}
+              onChange={(event) => setMaxSelections(event.target.value)}
+              className="h-9 w-24"
+              aria-label={t('proposalSupport.maxSelectionsLabel')}
+              placeholder={String(Math.max(2, optionCount))}
+            />
+          ) : null}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {ballotMethod === 'approval' && !customOptions ? t('proposalSupport.approvalNeedsOptions') : t('proposalSupport.ballotMethodHint')}
+        </p>
+      </fieldset>
+
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="space-y-1 text-xs text-muted-foreground">
           <span>{t('proposalSupport.quorumLabel')}</span>
@@ -118,7 +152,7 @@ export function ProposalSettingsCard({
         type="button"
         size="sm"
         variant="outline"
-        disabled={busy || !optionsValid || (scopeKind === 'country' && !/^[A-Z]{2}$/.test(country))}
+        disabled={busy || !optionsValid || !approvalValid || (scopeKind === 'country' && !/^[A-Z]{2}$/.test(country))}
         onClick={() =>
           onSave({
             scopeKind,
@@ -128,6 +162,8 @@ export function ProposalSettingsCard({
             options: parseOptionLines(optionsText),
             quorum: quorum.trim() === '' ? null : Math.max(0, Math.floor(Number(quorum) || 0)),
             passThresholdPercent: threshold.trim() === '' ? null : Math.min(100, Math.max(0, Number(threshold) || 0)),
+            ballotMethod,
+            maxSelections: ballotMethod === 'approval' && maxSelections.trim() !== '' ? Math.max(2, Math.floor(Number(maxSelections) || 0)) : null,
           })
         }
       >

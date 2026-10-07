@@ -8,6 +8,9 @@ export type ConsultationOutcome = {
   /** null when the ballot has no Support/Oppose pair (custom options). */
   passed: boolean | null;
   leadingOptionKey: string | null;
+  ballotMethod: 'single' | 'approval';
+  /** Approval ballots: every pick counted; null on single-choice ballots. */
+  approvalsTotal: number | null;
 };
 
 const num = (value: unknown): number | null => {
@@ -28,6 +31,8 @@ export function readConsultationOutcome(metadata: Record<string, unknown> | null
     supportSharePercent: num(row.support_share_percent),
     passed: typeof row.passed === 'boolean' ? row.passed : null,
     leadingOptionKey: row.leading_option_key ? String(row.leading_option_key) : null,
+    ballotMethod: row.ballot_method === 'approval' ? 'approval' : 'single',
+    approvalsTotal: num(row.approvals_total),
   };
 }
 

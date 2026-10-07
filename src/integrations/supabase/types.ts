@@ -8226,6 +8226,8 @@ isOneToOne: false
                            },
 "cast_consultation_ballot":
 { Args: { "p_election_id": string,"p_option_key": string }; Returns: Json
+                           } |
+{ Args: { "p_election_id": string,"p_option_keys": (string)[] }; Returns: Json
                            },
 "civi_caller_can_review_interactions":
 { Args: Record<PropertyKey, never>; Returns: boolean
@@ -8238,6 +8240,9 @@ isOneToOne: false
                            },
 "civic_can_manage_voting_proposals":
 { Args: { "p_profile_id": string }; Returns: boolean
+                           },
+"civic_choice_keys":
+{ Args: { "p_payload": string }; Returns: string[]
                            },
 "civic_close_due_elections":
 { Args: Record<PropertyKey, never>; Returns: number
@@ -9976,7 +9981,7 @@ isOneToOne: false
 { Args: { "p_space_id": string,"payload": Json }; Returns: undefined
                            },
 "update_voting_proposal_settings":
-{ Args: { "p_options"?: Json,"p_pass_threshold"?: number,"p_proposal_id": string,"p_quorum"?: number,"p_scope_country_code"?: string,"p_scope_kind"?: string,"p_voting_closes_at"?: string,"p_voting_opens_at"?: string }; Returns: Json
+{ Args: { "p_ballot_method"?: string,"p_max_selections"?: number,"p_options"?: Json,"p_pass_threshold"?: number,"p_proposal_id": string,"p_quorum"?: number,"p_scope_country_code"?: string,"p_scope_kind"?: string,"p_voting_closes_at"?: string,"p_voting_opens_at"?: string }; Returns: Json
                            },
 "upsert_content_item_from_source":
 { Args: { "target_author_id": string,"target_body_preview"?: string,"target_content_type": string,"target_metadata"?: Json,"target_professional_domain"?: string,"target_review_status"?: Database["public"]['Enums']["content_review_status"],"target_source_id": string,"target_source_table": string,"target_title"?: string }; Returns: undefined

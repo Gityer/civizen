@@ -156,3 +156,38 @@ describe('CivicVotingConsultationVote with custom options', () => {
     expect(screen.getByTestId('consultation-outcome').textContent).toContain('civicBallot.outcomePassed');
   });
 });
+
+describe('CivicVotingConsultationVote approval ballots', () => {
+  const approvalDetail = {
+    election: { status: 'open', metadata: { ballot_method: 'approval', max_selections: 2 } },
+    contests: [{
+      candidates: [
+        { optionKey: 'park', displayName: 'Park' },
+        { optionKey: 'library', displayName: 'Library' },
+        { optionKey: 'clinic', displayName: 'Clinic' },
+      ],
+    }],
+  };
+
+  it('lets a member pick up to the maximum and casts the picks together', () => {
+    const castConsultation = vi.fn();
+    renderAt(makeModel({ user: { id: 'u1' }, myOptions: [], castConsultation, detail: approvalDetail }));
+    expect(screen.getByTestId('consultation-approval')).toBeTruthy();
+    fireEvent.click(screen.getByText('Park'));
+    fireEvent.click(screen.getByText('Library'));
+    expect(screen.getByText('Clinic').closest('button')?.disabled).toBe(true);
+    fireEvent.click(screen.getByTestId('consultation-cast-approval'));
+    expect(castConsultation).toHaveBeenCalledWith(['park', 'library']);
+  });
+
+  it('shows the current picks and keeps the cast button idle until something changes', () => {
+    const castConsultation = vi.fn();
+    renderAt(makeModel({ user: { id: 'u1' }, myOption: 'park', myOptions: ['park', 'clinic'], myReceipt: 'abc', castConsultation, detail: approvalDetail }));
+    expect(screen.getByText('Park, Clinic')).toBeTruthy();
+    expect((screen.getByTestId('consultation-cast-approval') as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByText('Clinic'));
+    expect((screen.getByTestId('consultation-cast-approval') as HTMLButtonElement).disabled).toBe(false);
+    fireEvent.click(screen.getByTestId('consultation-cast-approval'));
+    expect(castConsultation).toHaveBeenCalledWith(['park']);
+  });
+});
