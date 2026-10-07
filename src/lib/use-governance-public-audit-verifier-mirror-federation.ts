@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import {
   countOpenGovernancePublicAuditExternalExecutionPagesForPageKeySubstring,
   GOVERNANCE_PUBLIC_AUDIT_EXTERNAL_EXECUTION_PAGE_BOARD_MAX_PAGES,
@@ -166,34 +166,34 @@ export function useGovernancePublicAuditVerifierMirrorFederation(args: { latestB
         target_batch_id: args.latestBatchId,
         max_entries: 40,
       }),
-      supabaseUntyped.rpc('governance_public_audit_verifier_federation_exchange_summary', {
+      supabase.rpc('governance_public_audit_verifier_federation_exchange_summary', {
         target_batch_id: args.latestBatchId,
         requested_lookback_hours: 336,
       }),
-      supabaseUntyped.rpc('governance_public_audit_verifier_federation_exchange_board', {
+      supabase.rpc('governance_public_audit_verifier_federation_exchange_board', {
         target_batch_id: args.latestBatchId,
         target_package_id: null,
         max_entries: 80,
       }),
-      supabaseUntyped.rpc('gpav_fed_exchange_receipt_policy_summary', {
+      supabase.rpc('gpav_fed_exchange_receipt_policy_summary', {
         requested_policy_key: 'default',
       }),
-      supabaseUntyped.rpc('gpav_fed_exchange_receipt_automation_status'),
-      supabaseUntyped.rpc('gpav_fed_exchange_receipt_automation_run_history', {
-        requested_lookback_hours: 336,
-        max_runs: 40,
+      supabase.rpc('gpav_fed_exchange_receipt_automation_status'),
+      supabase.rpc('gpav_fed_exchange_receipt_automation_run_history', {
+        p_requested_lookback_hours: 336,
+        p_max_runs: 40,
       }),
-      supabaseUntyped.rpc('governance_public_audit_external_execution_page_history', {
+      supabase.rpc('governance_public_audit_external_execution_page_history', {
         requested_page_key_substring: 'verifier_federation_exchange_receipt',
         requested_lookback_hours: 336,
         max_pages: 120,
       }),
-      supabaseUntyped.rpc('gpav_fed_exchange_receipt_policy_event_history', {
+      supabase.rpc('gpav_fed_exchange_receipt_policy_event_history', {
         requested_policy_key: 'default',
         requested_lookback_hours: 336,
         max_events: 120,
       }),
-      supabaseUntyped
+      supabase
         .from('governance_public_audit_verifier_mirror_federation_worker_runs')
         .select(
           'id, run_scope, run_status, discovered_request_count, approved_request_count, onboarded_request_count, open_alert_count, observed_at',
