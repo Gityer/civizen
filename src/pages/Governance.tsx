@@ -21,7 +21,7 @@ import { GovernanceHubIdentityVerificationCard } from '@/components/governance/G
 import { WorldCitizenshipStatusNotice } from '@/components/institutional/WorldCitizenshipStatusNotice';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import type { Database, Json } from '@/integrations/supabase/types';
 import { coerceCitizenshipStatus, deriveProjectedCitizenshipStatus } from '@/lib/civic-status';
 import {
@@ -150,8 +150,8 @@ async function resolveGovernanceExecutionNotReadyMessage(
   const [thresholdRes, guardianRes, federationRes, relayRes] = await Promise.all([
     supabase.rpc('governance_proposal_meets_execution_threshold', { target_proposal_id: proposalId }),
     supabase.rpc('governance_proposal_meets_guardian_signoff', { target_proposal_id: proposalId }),
-    supabaseUntyped.rpc('governance_proposal_meets_verifier_federation_distribution_gate', { target_proposal_id: proposalId }),
-    supabaseUntyped.rpc('governance_proposal_meets_guardian_relay_distribution_gate', { target_proposal_id: proposalId }),
+    supabase.rpc('governance_proposal_meets_verifier_federation_distribution_gate', { target_proposal_id: proposalId }),
+    supabase.rpc('governance_proposal_meets_guardian_relay_distribution_gate', { target_proposal_id: proposalId }),
   ]);
   const gateError = thresholdRes.error || guardianRes.error || federationRes.error || relayRes.error;
   if (gateError) {
@@ -868,13 +868,13 @@ export default function Governance() {
         .limit(1)
         .maybeSingle(),
       supabase.rpc('governance_public_audit_verifier_mirror_failover_policy_summary', { requested_policy_key: 'default' }),
-      supabaseUntyped.rpc('governance_proposal_meets_verifier_federation_distribution_gate', { target_proposal_id: gateProposalId }),
+      supabase.rpc('governance_proposal_meets_verifier_federation_distribution_gate', { target_proposal_id: gateProposalId }),
       supabase.rpc('governance_public_audit_verifier_mirror_federation_operations_s', {
         requested_policy_key: 'default',
         requested_lookback_hours: 24,
         requested_alert_sla_hours: 12,
       }),
-      supabaseUntyped.rpc('governance_proposal_meets_guardian_relay_distribution_gate', { target_proposal_id: gateProposalId }),
+      supabase.rpc('governance_proposal_meets_guardian_relay_distribution_gate', { target_proposal_id: gateProposalId }),
       supabase.rpc('governance_proposal_guardian_relay_operations_summary', {
         target_proposal_id: gateProposalId,
         requested_policy_key: 'guardian_relay_default',

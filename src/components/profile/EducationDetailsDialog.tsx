@@ -42,7 +42,7 @@ import {
   type GeoRegionOption,
 } from '@/lib/geo-locations';
 import { cn } from '@/lib/utils';
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { AUTOSAVE_MS, canHoverOpen, selectedOptionClass, type AutosaveStatus } from '@/components/profile/details-dialog-helpers';
 
@@ -339,7 +339,7 @@ export function EducationDetailsDialog({
     const load = async () => {
       hydratedRef.current = false;
       setLoading(true);
-      const { data, error } = await supabaseUntyped
+      const { data, error } = await supabase
         .from('profile_education_entries')
         .select(
           'id, education_level, institution_name, country_code, region_code, city, department, major, year_start, year_end, verification_status, certificate_path',
@@ -490,13 +490,13 @@ export function EducationDetailsDialog({
     const payload = buildPayload(verificationStatusRef.current, nextForm);
     const currentId = entryIdRef.current;
     const { data, error } = currentId
-      ? await supabaseUntyped
+      ? await supabase
           .from('profile_education_entries')
           .update(payload)
           .eq('id', currentId)
           .select('id')
           .maybeSingle()
-      : await supabaseUntyped
+      : await supabase
           .from('profile_education_entries')
           .upsert(payload, { onConflict: 'profile_id' })
           .select('id')
@@ -612,13 +612,13 @@ export function EducationDetailsDialog({
 
       const currentId = entryIdRef.current;
       const { data, error } = currentId
-        ? await supabaseUntyped
+        ? await supabase
             .from('profile_education_entries')
             .update(payload)
             .eq('id', currentId)
             .select('id')
             .maybeSingle()
-        : await supabaseUntyped
+        : await supabase
             .from('profile_education_entries')
             .upsert(payload, { onConflict: 'profile_id' })
             .select('id')

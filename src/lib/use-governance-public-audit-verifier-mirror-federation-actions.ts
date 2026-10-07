@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { asIntegerOrNull, asNumericOrNull } from '@/lib/governance-rpc';
 import { useGovernancePublicAuditVerifierFederationDistributionActions } from '@/lib/use-governance-public-audit-verifier-federation-distribution-actions';
 import { useGovernancePublicAuditVerifierMirrorFederationOpsActions } from '@/lib/use-governance-public-audit-verifier-mirror-federation-ops-actions';
@@ -240,7 +240,7 @@ export function useGovernancePublicAuditVerifierMirrorFederationActions({
     setRunningFederationExchangeReceiptAutomationCheck(true);
 
     const lookbackParsed = asIntegerOrNull(draft.lookbackHours);
-    const { error } = await supabaseUntyped.rpc('run_gpav_fed_exchange_receipt_automation_check', {
+    const { error } = await supabase.rpc('run_gpav_fed_exchange_receipt_automation_check', {
       requested_lookback_hours: lookbackParsed ?? null,
       trigger_source: 'steward_manual',
       run_message: draft.runMessage.trim() || null,
@@ -265,7 +265,7 @@ export function useGovernancePublicAuditVerifierMirrorFederationActions({
     if (!pageId) return;
     setAcknowledgingFederationExchangeReceiptEscalationPageId(pageId);
     const notes = window.prompt('Optional acknowledgement notes for this federation exchange receipt escalation page:', '');
-    const { error } = await supabaseUntyped.rpc('acknowledge_governance_public_audit_external_execution_page', {
+    const { error } = await supabase.rpc('acknowledge_governance_public_audit_external_execution_page', {
       target_page_id: pageId,
       acknowledgement_notes: notes?.trim() || null,
     });

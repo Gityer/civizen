@@ -1,10 +1,10 @@
 /** Persisted declared Civizen context. Not a score input. */
 
 import { supabase } from '@/integrations/supabase/client';
-import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
+import type { SupabaseDbClient } from '@/integrations/supabase/client-type';
 import type { DeclaredContext } from '@/lib/civizen-context-model';
 
-type DbClient = Pick<UntypedSupabaseClient, 'from'>;
+type DbClient = Pick<SupabaseDbClient, 'from'>;
 
 export type PersistedDeclaredContext = DeclaredContext & {
   contributionInterests: string[];

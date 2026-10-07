@@ -18,7 +18,7 @@ import {
   type CategoryObservation,
 } from '@/lib/civizen-score-model';
 import { supabase } from '@/integrations/supabase/client';
-import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
+import type { SupabaseDbClient } from '@/integrations/supabase/client-type';
 
 export type PerformancePeerRating = {
   id?: string;
@@ -53,7 +53,7 @@ const PLATFORM_DIRECT_TYPES = new Set([
   'opportunity_participation',
 ]);
 
-type DbClient = UntypedSupabaseClient;
+type DbClient = SupabaseDbClient;
 
 function mean(values: number[]): number {
   if (values.length === 0) return 0;

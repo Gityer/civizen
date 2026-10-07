@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
+import type { SupabaseDbClient } from '@/integrations/supabase/client-type';
 import {
   estimateContributionEvent,
   syncContributionEvents,
@@ -168,14 +168,14 @@ export function contributionEventsFromDevelopmentStories(
 
 export async function recordDevelopmentOutcome(
   input: DevelopmentOutcomeCaptureInput,
-  options?: { profileId?: string; userId?: string | null; sync?: boolean; client?: UntypedSupabaseClient },
+  options?: { profileId?: string; userId?: string | null; sync?: boolean; client?: SupabaseDbClient },
 ): Promise<{
   stories: DevelopmentStoryEvidenceInput[];
   evaluation: ReturnType<typeof evaluateDevelopmentContributionEvidence>;
   events: ContributionEvent[];
 }> {
   const planned = planDevelopmentOutcomeStories(input);
-  const client: UntypedSupabaseClient = options?.client ?? supabase;
+  const client: SupabaseDbClient = options?.client ?? supabase;
   if (options?.sync !== false && options?.profileId) {
     for (const story of planned.stories) {
       const { error } = await client.rpc('ingest_development_story', {

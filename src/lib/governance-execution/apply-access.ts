@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '@/integrations/supabase/types';
-import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
+import type { SupabaseDbClient } from '@/integrations/supabase/client-type';
 
 import type {
   GovernanceExecutionApplyResult,
@@ -10,7 +10,7 @@ import type {
 } from './types';
 
 export async function applyRolePermissionExecution(args: {
-  client: UntypedSupabaseClient;
+  client: SupabaseDbClient;
   spec: Extract<GovernanceProposalExecutionSpec, { actionType: 'grant_role_permission' | 'revoke_role_permission' }>;
 }) {
   if (args.spec.actionType === 'grant_role_permission') {

@@ -37,7 +37,8 @@ import {
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
+import type { Json, TablesInsert } from '@/integrations/supabase/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CiviAssistantHeading, CiviAvatar, CiviInboxRow } from '@/components/ui/civi-avatar';
 import { ChatMessageRow } from '@/components/ui/chat-message-row';
@@ -626,7 +627,7 @@ export function ChatBar({
       return;
     }
     let cancelled = false;
-    void Promise.resolve(supabaseUntyped.rpc('private_list_my_blocked_profiles'))
+    void Promise.resolve(supabase.rpc('private_list_my_blocked_profiles'))
       .then(({ data, error }) => {
         if (cancelled) return;
         if (error || !Array.isArray(data)) {
@@ -786,8 +787,8 @@ export function ChatBar({
       if (!profile?.id) return;
       const wasBlocked = blockedProfileIds.has(targetProfileId);
       const { error } = wasBlocked
-        ? await supabaseUntyped.rpc('private_unblock_profile', { target_profile_id: targetProfileId })
-        : await supabaseUntyped.rpc('private_block_profile', { target_profile_id: targetProfileId });
+        ? await supabase.rpc('private_unblock_profile', { target_profile_id: targetProfileId })
+        : await supabase.rpc('private_block_profile', { target_profile_id: targetProfileId });
       if (error) {
         console.error('ChatBar: toggle block failed', error);
         toast.error(tRef.current('chatBar.private.profile.blockActionFailed'));
@@ -1004,7 +1005,7 @@ export function ChatBar({
     const targetMessage = reportTargetMessageId
       ? messages.find((message) => message.id === reportTargetMessageId) ?? null
       : null;
-    const reportContext: Record<string, unknown> = targetMessage
+    const reportContext: Json = targetMessage
       ? {
           source: 'private_message',
           conversation_id: selectedConversationId,
@@ -1018,7 +1019,7 @@ export function ChatBar({
           conversation_id: selectedConversationId,
         };
     setReportSubmitting(true);
-    const { error } = await supabaseUntyped.from('reports').insert({
+    const { error } = await supabase.from('reports').insert({
       reporter_id: profile.id,
       reported_user_id: threadMemberProfileId,
       reason,
@@ -2261,7 +2262,7 @@ export function ChatBar({
     const activeKind = resolveConversationKind(conversationId, conversations, conversationKindByIdRef);
     const useE2ee = activeKind === 'direct' && directDmE2eeReady;
 
-    let insertPayload: Record<string, unknown> = {
+    let insertPayload: TablesInsert<'private_messages'> = {
       conversation_id: conversationId,
       sender_id: messageObj.sender_id,
       content,
@@ -2285,7 +2286,7 @@ export function ChatBar({
     }
 
     try {
-      const { data: inserted, error } = await supabaseUntyped
+      const { data: inserted, error } = await supabase
         .from('private_messages')
         .insert(insertPayload)
         .select(PRIVATE_MESSAGES_LIST_SELECT)
@@ -2722,7 +2723,7 @@ export function ChatBar({
       conversationKindByIdRef,
     );
     const useE2ee = activeKind === 'direct' && directDmE2eeReady;
-    let insertPayload: Record<string, unknown> = {
+    let insertPayload: TablesInsert<'private_messages'> = {
       conversation_id: selectedConversationId,
       sender_id: message.sender_id,
       content: message.content,
@@ -2746,7 +2747,7 @@ export function ChatBar({
     }
 
     try {
-      const { data: inserted, error } = await supabaseUntyped
+      const { data: inserted, error } = await supabase
         .from('private_messages')
         .insert(insertPayload)
         .select(PRIVATE_MESSAGES_LIST_SELECT)

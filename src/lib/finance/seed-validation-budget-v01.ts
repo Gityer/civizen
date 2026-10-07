@@ -2,7 +2,7 @@
  * Client-side idempotent seed for Civizen Pre-Major-Build Validation Program v0.1.
  * Does not recreate Civizen Draft Budget v0.1 (retired). Creates no commitments/receipts/allocations.
  */
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import {
   VALIDATION_BUDGET_GROUPS_V01,
   VALIDATION_BUDGET_LINES_V01,
@@ -24,7 +24,7 @@ export type SeedValidationBudgetResult = {
 };
 
 export async function seedValidationBudgetV01(): Promise<Result<SeedValidationBudgetResult>> {
-  const existing = await supabaseUntyped
+  const existing = await supabase
     .from('project_budgets')
     .select('id')
     .eq('name', VALIDATION_BUDGET_V01.name)
@@ -34,7 +34,7 @@ export async function seedValidationBudgetV01(): Promise<Result<SeedValidationBu
   if (existing.error) return { ok: false, message: existing.error.message };
   if (existing.data) {
     const budgetId = (existing.data as { id: string }).id;
-    const groups = await supabaseUntyped
+    const groups = await supabase
       .from('budget_expense_groups')
       .select('id')
       .eq('budget_id', budgetId);
@@ -42,7 +42,7 @@ export async function seedValidationBudgetV01(): Promise<Result<SeedValidationBu
     let lineCount = 0;
     let plannedTotalMinor = 0;
     if (groupIds.length > 0) {
-      const lines = await supabaseUntyped
+      const lines = await supabase
         .from('budget_line_items')
         .select('id, planned_minor')
         .in('group_id', groupIds);
@@ -62,10 +62,10 @@ export async function seedValidationBudgetV01(): Promise<Result<SeedValidationBu
     };
   }
 
-  const { data: userData } = await supabaseUntyped.auth.getUser();
+  const { data: userData } = await supabase.auth.getUser();
   const actor = userData.user?.id ?? null;
 
-  const inserted = await supabaseUntyped
+  const inserted = await supabase
     .from('project_budgets')
     .insert({
       name: VALIDATION_BUDGET_V01.name,
@@ -92,7 +92,7 @@ export async function seedValidationBudgetV01(): Promise<Result<SeedValidationBu
   const groupIdByKey = new Map<string, string>();
 
   for (const group of VALIDATION_BUDGET_GROUPS_V01) {
-    const g = await supabaseUntyped
+    const g = await supabase
       .from('budget_expense_groups')
       .insert({
         budget_id: budgetId,
@@ -109,7 +109,7 @@ export async function seedValidationBudgetV01(): Promise<Result<SeedValidationBu
   for (const line of VALIDATION_BUDGET_LINES_V01) {
     const groupId = groupIdByKey.get(line.groupKey);
     if (!groupId) return { ok: false, message: `Missing group ${line.groupKey}` };
-    const li = await supabaseUntyped.from('budget_line_items').insert({
+    const li = await supabase.from('budget_line_items').insert({
       group_id: groupId,
       title: validationLineTitle(line),
       description: validationLineDescription(line),
@@ -129,7 +129,7 @@ export async function seedValidationBudgetV01(): Promise<Result<SeedValidationBu
     if (li.error) return { ok: false, message: li.error.message };
   }
 
-  await supabaseUntyped.from('budget_revisions').insert({
+  await supabase.from('budget_revisions').insert({
     budget_id: budgetId,
     change_summary: 'Seeded Pre-Major-Build Validation Program v0.1 (base scenario working estimates)',
     changed_fields: ['seed', 'validation-budget-v0.1'],
@@ -138,7 +138,7 @@ export async function seedValidationBudgetV01(): Promise<Result<SeedValidationBu
     actor_user_id: actor,
   });
 
-  await supabaseUntyped.rpc('finance_write_audit', {
+  await supabase.rpc('finance_write_audit', {
     p_event_type: 'budget_seeded_validation_v01',
     p_entity_type: 'project_budget',
     p_entity_id: budgetId,

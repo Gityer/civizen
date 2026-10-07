@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { usePageSecondaryNav } from '@/hooks/usePageSecondaryNav';
-import { supabase } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { buildScoreFromProfileActivity, type CivizenScoreResponse } from '@/lib/civizen-score';
 import { ownProfileRingDisplay } from '@/lib/civizen-score-ring-display';
 import { scoreProgressCaption } from '@/lib/civizen-score-caption';

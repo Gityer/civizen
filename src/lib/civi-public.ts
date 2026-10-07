@@ -1,4 +1,4 @@
-import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import {
   classifyCiviInteractionSource,
   shouldRecordCiviInteraction,
@@ -22,7 +22,7 @@ export function sanitizeCiviPublicHistory(history: HistoryTurn[]): HistoryTurn[]
 
 export async function listCiviLearnedMemories(): Promise<CiviLearnedMemory[]> {
   try {
-    const { data, error } = await supabaseUntyped.rpc('list_civi_learned_memories', { p_limit: 200 });
+    const { data, error } = await supabase.rpc('list_civi_learned_memories', { p_limit: 200 });
     if (error || !Array.isArray(data)) return [];
     return data.map(learnedMemoryFromRow).filter((row): row is CiviLearnedMemory => Boolean(row));
   } catch {
@@ -34,7 +34,7 @@ async function recordPublicFallbackInteraction(question: string, prep: NelaTurnP
   const source = classifyCiviInteractionSource({ prep, usedModel: false });
   if (!shouldRecordCiviInteraction({ question, source })) return;
   try {
-    await supabaseUntyped.rpc('ingest_civi_interaction', {
+    await supabase.rpc('ingest_civi_interaction', {
       p_audience: 'guest',
       p_channel: 'public',
       p_question: question.slice(0, CIVI_PUBLIC_MESSAGE_MAX),

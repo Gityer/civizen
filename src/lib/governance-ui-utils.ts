@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
+import type { SupabaseDbClient } from '@/integrations/supabase/client-type';
 import type { Database } from '@/integrations/supabase/types';
 import { tallyGovernanceVotes } from '@/lib/governance-proposals';
 import type {
@@ -178,9 +178,7 @@ export async function transferConstitutionalOffice(
   client: Client,
   input: { officeKey: ConstitutionalOfficeKey; newHolderId: string; reason?: string | null; notes?: string | null },
 ): Promise<OfficeChangeResult> {
-  // The function is newer than the generated types, so the call goes through the untyped client shape.
-  const rpc = (client as unknown as UntypedSupabaseClient).rpc.bind(client);
-  const { error } = await rpc('transfer_constitutional_office', {
+  const { error } = await client.rpc('transfer_constitutional_office', {
     p_office_key: input.officeKey,
     p_new_holder: input.newHolderId,
     p_reason: input.reason?.trim() || null,

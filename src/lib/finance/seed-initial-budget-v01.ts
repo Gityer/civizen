@@ -3,7 +3,7 @@
  * Not used by ordinary app startup. Requires force: true (or VITE_ALLOW_DEMO_BUDGET_SEED=true).
  * Prefer SQL: scripts/db/local-dev-only/seed-initial-working-budget-v01.sql
  */
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import {
   INITIAL_BUDGET_GROUPS_V01,
   INITIAL_BUDGET_LINES_V01,
@@ -39,7 +39,7 @@ export async function seedInitialWorkingBudgetV01(options?: {
     };
   }
 
-  const existing = await supabaseUntyped
+  const existing = await supabase
     .from('project_budgets')
     .select('id')
     .eq('name', INITIAL_BUDGET_V01.name)
@@ -49,14 +49,14 @@ export async function seedInitialWorkingBudgetV01(options?: {
   if (existing.error) return { ok: false, message: existing.error.message };
   if (existing.data) {
     const budgetId = (existing.data as { id: string }).id;
-    const groups = await supabaseUntyped
+    const groups = await supabase
       .from('budget_expense_groups')
       .select('id')
       .eq('budget_id', budgetId);
     const groupIds = ((groups.data as { id: string }[] | null) ?? []).map((g) => g.id);
     let lineCount = 0;
     if (groupIds.length > 0) {
-      const lines = await supabaseUntyped
+      const lines = await supabase
         .from('budget_line_items')
         .select('id')
         .in('group_id', groupIds);
@@ -73,10 +73,10 @@ export async function seedInitialWorkingBudgetV01(options?: {
     };
   }
 
-  const { data: userData } = await supabaseUntyped.auth.getUser();
+  const { data: userData } = await supabase.auth.getUser();
   const actor = userData.user?.id ?? null;
 
-  const inserted = await supabaseUntyped
+  const inserted = await supabase
     .from('project_budgets')
     .insert({
       name: INITIAL_BUDGET_V01.name,
@@ -104,7 +104,7 @@ export async function seedInitialWorkingBudgetV01(options?: {
   const groupIdByKey = new Map<string, string>();
 
   for (const group of INITIAL_BUDGET_GROUPS_V01) {
-    const g = await supabaseUntyped
+    const g = await supabase
       .from('budget_expense_groups')
       .insert({
         budget_id: budgetId,
@@ -121,7 +121,7 @@ export async function seedInitialWorkingBudgetV01(options?: {
   for (const line of INITIAL_BUDGET_LINES_V01) {
     const groupId = groupIdByKey.get(line.groupKey);
     if (!groupId) return { ok: false, message: `Missing group ${line.groupKey}` };
-    const li = await supabaseUntyped.from('budget_line_items').insert({
+    const li = await supabase.from('budget_line_items').insert({
       group_id: groupId,
       title: line.title,
       description: line.description,
@@ -139,7 +139,7 @@ export async function seedInitialWorkingBudgetV01(options?: {
     if (li.error) return { ok: false, message: li.error.message };
   }
 
-  await supabaseUntyped.from('budget_revisions').insert({
+  await supabase.from('budget_revisions').insert({
     budget_id: budgetId,
     change_summary: 'Seeded Draft Budget v0.1 structure (all amounts TBD/0)',
     changed_fields: ['seed', 'initial-working-budget-v0.1'],
@@ -148,7 +148,7 @@ export async function seedInitialWorkingBudgetV01(options?: {
     actor_user_id: actor,
   });
 
-  await supabaseUntyped.rpc('finance_write_audit', {
+  await supabase.rpc('finance_write_audit', {
     p_event_type: 'budget_seeded_v01',
     p_entity_type: 'project_budget',
     p_entity_id: budgetId,

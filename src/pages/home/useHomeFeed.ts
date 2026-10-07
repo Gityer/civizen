@@ -1,4 +1,4 @@
-import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { countSkillsFromEntry, declaredSkillNamesFromEntry } from '@/lib/profile-skills';
 import { countTrainingsFromEntry } from '@/lib/profile-trainings';
 import { parseExperienceEntries, cumulativeExperienceMonths } from '@/lib/profile-experience';
@@ -208,21 +208,21 @@ export function useHomeFeed({ endorsements, setEndorsements, setEducationCount, 
           .select('*')
           .eq('endorsed_id', profile.id)
           .eq('is_hidden', false),
-        supabaseUntyped
+        supabase
           .from('profile_education_entries')
           .select('id, education_level, verification_status')
           .eq('profile_id', profile.id),
-        supabaseUntyped
+        supabase
           .from('profile_training_entries')
           .select('training_names')
           .eq('profile_id', profile.id)
           .maybeSingle(),
-        supabaseUntyped
+        supabase
           .from('profile_skills_entries')
           .select('hard_skill_names, soft_skill_names, skill_names')
           .eq('profile_id', profile.id)
           .maybeSingle(),
-        supabaseUntyped
+        supabase
           .from('profile_experience_entries')
           .select('experiences')
           .eq('profile_id', profile.id)

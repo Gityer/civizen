@@ -40,7 +40,7 @@ import {
   type ExperienceEntry,
 } from '@/lib/profile-experience';
 import { cn } from '@/lib/utils';
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DemonstratedExperienceEvidence } from '@/components/profile/DemonstratedExperienceEvidence';
 import { AUTOSAVE_MS, canHoverOpen, selectedOptionClass, type AutosaveStatus } from '@/components/profile/details-dialog-helpers';
@@ -484,7 +484,7 @@ export function ExperienceDetailsDialog({
     const load = async () => {
       hydratedRef.current = false;
       setLoading(true);
-      const { data, error } = await supabaseUntyped
+      const { data, error } = await supabase
         .from('profile_experience_entries')
         .select('id, experiences')
         .eq('profile_id', profileId)
@@ -539,13 +539,13 @@ export function ExperienceDetailsDialog({
     };
     const currentId = entryIdRef.current;
     const { data, error } = currentId
-      ? await supabaseUntyped
+      ? await supabase
           .from('profile_experience_entries')
           .update(payload)
           .eq('id', currentId)
           .select('id')
           .maybeSingle()
-      : await supabaseUntyped
+      : await supabase
           .from('profile_experience_entries')
           .upsert(payload, { onConflict: 'profile_id' })
           .select('id')

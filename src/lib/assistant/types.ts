@@ -1,3 +1,5 @@
+import type { AssistantLanguage } from './language';
+
 export const ASSISTANT_CAPABILITY_STATUSES = [
   'implemented',
   'experimental',
@@ -39,6 +41,8 @@ export type AssistantFaqItem = {
   id: string;
   question: string;
   answer: string;
+  /** Hand-written answers for non-English questions; the English answer stays canonical. */
+  localizedAnswers?: Partial<Record<Exclude<AssistantLanguage, 'en'>, string>>;
   aliases: string[];
   capabilityIds: string[];
   sourceRefs: string[];
@@ -149,6 +153,7 @@ export type ExternalResourceAdapter = {
 
 export type NelaDiagnostics = {
   resolvedQuery: string;
+  language: AssistantLanguage;
   isVerification: boolean;
   previousUserQuestion: string | null;
   matchedFaqId: string | null;

@@ -1,4 +1,4 @@
-import { supabase, type UntypedSupabaseClient } from '@/integrations/supabase/untyped';
+import { supabase, type SupabaseDbClient } from '@/integrations/supabase/client-type';
 import { categorizeSolutionIssue } from '@/lib/solution-categorize';
 import { getSolutionAuthority } from '@/lib/solution-authorities';
 import type {
@@ -14,8 +14,8 @@ type SupabaseErrorLike = { code?: string | null; message?: string | null; detail
 
 /** Minimal client for tables not yet in generated Database types. */
 type SolutionsClient = {
-  from: UntypedSupabaseClient['from'];
-  channel: UntypedSupabaseClient['channel'];
+  from: SupabaseDbClient['from'];
+  channel: SupabaseDbClient['channel'];
   removeChannel: (channel: unknown) => Promise<unknown>;
   functions: {
     invoke: (

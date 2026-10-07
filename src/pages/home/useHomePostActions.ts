@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { supabase } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { isRecordablePostId } from '@/lib/post-views';
 import { buildHomeFeedItems, type PostPreview } from '@/lib/post-reposts';

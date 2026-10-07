@@ -21,7 +21,7 @@ import { pageRegistry, type PageId, type SectionId } from '@/lib/feature-registr
 import { permissionMetadata, permissionMetadataMap } from '@/lib/permission-metadata';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -174,8 +174,8 @@ export default function PermissionsAdmin() {
     }));
 
     const operation = enabled
-      ? supabaseUntyped.from('role_permissions').delete().eq('role', role).eq('permission', permission)
-      : supabaseUntyped.from('role_permissions').insert({ role, permission });
+      ? supabase.from('role_permissions').delete().eq('role', role).eq('permission', permission)
+      : supabase.from('role_permissions').insert({ role, permission });
 
     const { error } = await operation;
 

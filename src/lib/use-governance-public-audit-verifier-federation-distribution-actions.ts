@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-import { supabase, supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { asIntegerOrNull } from '@/lib/governance-rpc';
 
 interface UseGovernancePublicAuditVerifierFederationDistributionActionsArgs {
@@ -173,7 +173,7 @@ export function useGovernancePublicAuditVerifierFederationDistributionActions({
     }
 
     setRecordingFederationExchangeAttestation(true);
-    const { error } = await supabaseUntyped.rpc('record_governance_public_audit_verifier_federation_exchange', {
+    const { error } = await supabase.rpc('record_governance_public_audit_verifier_federation_exchange', {
       target_package_id: packageId,
       operator_label: operatorLabel,
       operator_identity_uri: draft.operatorIdentityUri.trim() || null,
@@ -217,7 +217,7 @@ export function useGovernancePublicAuditVerifierFederationDistributionActions({
     }
 
     setVerifyingFederationExchangeReceipt(true);
-    const { error } = await supabaseUntyped.rpc('gpav_verify_federation_exchange_receipt', {
+    const { error } = await supabase.rpc('gpav_verify_federation_exchange_receipt', {
       target_attestation_id: attestationId,
       receipt_verified: draft.receiptVerified,
       receipt_verification_notes: draft.receiptVerificationNotes.trim() || null,
@@ -262,7 +262,7 @@ export function useGovernancePublicAuditVerifierFederationDistributionActions({
     }
 
     setSavingFederationExchangeReceiptPolicy(true);
-    const { error } = await supabaseUntyped.rpc('set_gpav_fed_exchange_receipt_policy', {
+    const { error } = await supabase.rpc('set_gpav_fed_exchange_receipt_policy', {
       requested_policy_key: 'default',
       requested_policy_name: 'Default federation exchange receipt escalation policy',
       requested_lookback_hours: lookbackHours,
@@ -294,7 +294,7 @@ export function useGovernancePublicAuditVerifierFederationDistributionActions({
     if (!trimmed) return;
 
     setRollingBackFederationExchangeReceiptPolicyEventId(trimmed);
-    const { error } = await supabaseUntyped.rpc('rollback_gpav_fed_exchange_receipt_policy_to_event', {
+    const { error } = await supabase.rpc('rollback_gpav_fed_exchange_receipt_policy_to_event', {
       target_event_id: trimmed,
       max_rollback_age_hours: 336,
       required_policy_schema_version: '1',

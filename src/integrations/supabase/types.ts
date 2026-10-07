@@ -27,6 +27,7 @@ export type Database = {
                   Row: {
                     "created_at": string,"decision": Database["public"]['Enums']["activation_review_decision"],"id": string,"metadata": NonNullable<Json>,"notes": string | null,"review_id": string,"reviewer_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"decision": Database["public"]['Enums']["activation_review_decision"],"id"?: string,"metadata"?: NonNullable<Json>,"notes"?: string | null,"review_id": string,"reviewer_id"?: string | null
                   }
@@ -52,6 +53,7 @@ isOneToOne: false
                   Row: {
                     "adapter_key": string,"adapter_name": string,"adapter_type": Database["public"]['Enums']["activation_demographic_feed_adapter_type"],"added_by": string | null,"country_code": string,"created_at": string,"endpoint_url": string | null,"id": string,"is_active": boolean,"key_algorithm": string,"last_ingested_at": string | null,"metadata": NonNullable<Json>,"public_signer_key": string,"scope_type": Database["public"]['Enums']["activation_scope_type"],"updated_at": string,"worker_sweep_interval_minutes": number | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "adapter_key": string,"adapter_name": string,"adapter_type"?: Database["public"]['Enums']["activation_demographic_feed_adapter_type"],"added_by"?: string | null,"country_code"?: string,"created_at"?: string,"endpoint_url"?: string | null,"id"?: string,"is_active"?: boolean,"key_algorithm"?: string,"last_ingested_at"?: string | null,"metadata"?: NonNullable<Json>,"public_signer_key": string,"scope_type"?: Database["public"]['Enums']["activation_scope_type"],"updated_at"?: string,"worker_sweep_interval_minutes"?: number | null
                   }
@@ -71,6 +73,7 @@ isOneToOne: false
                   Row: {
                     "adapter_id": string,"country_code": string,"created_at": string,"id": string,"ingested_by": string | null,"ingestion_metadata": NonNullable<Json>,"ingestion_notes": string | null,"ingestion_status": string,"observed_at": string,"payload_hash": string | null,"payload_signature": string | null,"scope_type": Database["public"]['Enums']["activation_scope_type"],"signature_verified": boolean,"signed_payload": string | null,"snapshot_id": string | null,"target_population": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "adapter_id": string,"country_code"?: string,"created_at"?: string,"id"?: string,"ingested_by"?: string | null,"ingestion_metadata"?: NonNullable<Json>,"ingestion_notes"?: string | null,"ingestion_status"?: string,"observed_at": string,"payload_hash"?: string | null,"payload_signature"?: string | null,"scope_type": Database["public"]['Enums']["activation_scope_type"],"signature_verified"?: boolean,"signed_payload"?: string | null,"snapshot_id"?: string | null,"target_population": number
                   }
@@ -102,6 +105,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"escalation_enabled": boolean,"escalation_severity": string,"freshness_hours": number,"id": string,"metadata": NonNullable<Json>,"minimum_adapter_issues_for_escalation": number,"policy_key": string,"policy_name": string,"policy_schema_version": number,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"escalation_enabled"?: boolean,"escalation_severity"?: string,"freshness_hours"?: number,"id"?: string,"metadata"?: NonNullable<Json>,"minimum_adapter_issues_for_escalation"?: number,"policy_key": string,"policy_name": string,"policy_schema_version"?: number,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -121,6 +125,7 @@ isOneToOne: false
                   Row: {
                     "actor_profile_id": string | null,"created_at": string,"event_message": string,"event_type": string,"id": string,"metadata": NonNullable<Json>,"policy_key": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_profile_id"?: string | null,"created_at"?: string,"event_message": string,"event_type": string,"id"?: string,"metadata"?: NonNullable<Json>,"policy_key": string
                   }
@@ -140,6 +145,7 @@ isOneToOne: false
                   Row: {
                     "adapter_id": string,"attempt_count": number,"claim_expires_at": string | null,"claimed_at": string | null,"completed_at": string | null,"created_at": string,"created_by": string | null,"error_message": string | null,"id": string,"metadata": NonNullable<Json>,"requested_at": string,"status": string,"updated_at": string,"worker_identity": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "adapter_id": string,"attempt_count"?: number,"claim_expires_at"?: string | null,"claimed_at"?: string | null,"completed_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"error_message"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"requested_at"?: string,"status"?: string,"updated_at"?: string,"worker_identity"?: string | null
                   }
@@ -165,6 +171,7 @@ isOneToOne: false
                   Row: {
                     "adapter_id": string,"alert_message": string,"alert_severity": string,"alert_type": Database["public"]['Enums']["activation_demographic_feed_alert_type"],"created_at": string,"created_by": string | null,"id": string,"metadata": NonNullable<Json>,"observed_at": string,"payload_hash": string | null,"resolved_at": string | null,"run_status": Database["public"]['Enums']["activation_demographic_feed_worker_status"],"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "adapter_id": string,"alert_message": string,"alert_severity"?: string,"alert_type": Database["public"]['Enums']["activation_demographic_feed_alert_type"],"created_at"?: string,"created_by"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"observed_at"?: string,"payload_hash"?: string | null,"resolved_at"?: string | null,"run_status": Database["public"]['Enums']["activation_demographic_feed_worker_status"],"updated_at"?: string
                   }
@@ -190,6 +197,7 @@ isOneToOne: false
                   Row: {
                     "adapter_issue_count": number,"created_at": string,"force_reschedule_applied": boolean,"id": string,"jobs_enqueued_count": number,"metadata": NonNullable<Json>,"open_or_ack_page_count": number,"run_finished_at": string | null,"run_message": string | null,"run_started_at": string,"run_status": string,"trigger_source": string,"triggered_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "adapter_issue_count"?: number,"created_at"?: string,"force_reschedule_applied"?: boolean,"id"?: string,"jobs_enqueued_count"?: number,"metadata"?: NonNullable<Json>,"open_or_ack_page_count"?: number,"run_finished_at"?: string | null,"run_message"?: string | null,"run_started_at"?: string,"run_status": string,"trigger_source": string,"triggered_by"?: string | null
                   }
@@ -209,6 +217,7 @@ isOneToOne: false
                   Row: {
                     "claim_ttl_minutes": number,"default_interval_minutes": number,"id": string,"policy_key": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "claim_ttl_minutes"?: number,"default_interval_minutes"?: number,"id"?: string,"policy_key": string,"updated_at"?: string
                   }
@@ -222,6 +231,7 @@ isOneToOne: false
                   Row: {
                     "country_code": string,"created_at": string,"created_by": string | null,"id": string,"ingestion_notes": string | null,"jurisdiction_label": string,"metadata": NonNullable<Json>,"observed_at": string,"scope_type": Database["public"]['Enums']["activation_scope_type"],"source_label": string,"source_url": string | null,"target_population": number,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "country_code"?: string,"created_at"?: string,"created_by"?: string | null,"id"?: string,"ingestion_notes"?: string | null,"jurisdiction_label"?: string,"metadata"?: NonNullable<Json>,"observed_at"?: string,"scope_type": Database["public"]['Enums']["activation_scope_type"],"source_label": string,"source_url"?: string | null,"target_population": number,"updated_at"?: string
                   }
@@ -241,6 +251,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"created_by": string | null,"evidence_type": string,"id": string,"metadata": NonNullable<Json>,"metric_key": string | null,"metric_value": number | null,"notes": string | null,"observed_at": string | null,"review_id": string,"source_label": string | null,"source_url": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"created_by"?: string | null,"evidence_type": string,"id"?: string,"metadata"?: NonNullable<Json>,"metric_key"?: string | null,"metric_value"?: number | null,"notes"?: string | null,"observed_at"?: string | null,"review_id": string,"source_label"?: string | null,"source_url"?: string | null,"updated_at"?: string
                   }
@@ -266,6 +277,7 @@ isOneToOne: false
                   Row: {
                     "country_code": string,"created_at": string,"declaration_notes": string | null,"declared_at": string | null,"declared_by": string | null,"eligible_verified_citizens_count": number,"id": string,"jurisdiction_label": string,"metadata": NonNullable<Json>,"opened_at": string,"opened_by": string | null,"review_notes": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"scope_type": Database["public"]['Enums']["activation_scope_type"],"status": Database["public"]['Enums']["activation_review_status"],"target_population": number | null,"threshold_percent": number,"updated_at": string,"verified_citizens_count": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "country_code"?: string,"created_at"?: string,"declaration_notes"?: string | null,"declared_at"?: string | null,"declared_by"?: string | null,"eligible_verified_citizens_count"?: number,"id"?: string,"jurisdiction_label"?: string,"metadata"?: NonNullable<Json>,"opened_at"?: string,"opened_by"?: string | null,"review_notes"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"scope_type": Database["public"]['Enums']["activation_scope_type"],"status"?: Database["public"]['Enums']["activation_review_status"],"target_population"?: number | null,"threshold_percent"?: number,"updated_at"?: string,"verified_citizens_count"?: number
                   }
@@ -297,6 +309,7 @@ isOneToOne: false
                   Row: {
                     "agreement_id": string,"byte_size": number | null,"content_type": string | null,"created_at": string,"file_name": string,"file_path": string,"fingerprint": string | null,"id": string,"kind": string,"uploaded_by": string | null,"version_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreement_id": string,"byte_size"?: number | null,"content_type"?: string | null,"created_at"?: string,"file_name": string,"file_path": string,"fingerprint"?: string | null,"id"?: string,"kind"?: string,"uploaded_by"?: string | null,"version_id"?: string | null
                   }
@@ -328,6 +341,7 @@ isOneToOne: false
                   Row: {
                     "actor_profile_id": string | null,"agreement_id": string,"created_at": string,"event_type": string,"id": string,"metadata": NonNullable<Json>,"party_id": string | null,"version_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_profile_id"?: string | null,"agreement_id": string,"created_at"?: string,"event_type": string,"id"?: string,"metadata"?: NonNullable<Json>,"party_id"?: string | null,"version_id"?: string | null
                   }
@@ -365,6 +379,7 @@ isOneToOne: false
                   Row: {
                     "agreement_id": string,"contact": string | null,"created_at": string,"display_name": string,"id": string,"legal_name": string | null,"party_kind": string,"profile_id": string | null,"representative_name": string | null,"representative_title": string | null,"role_in_agreement": string | null,"snapshot": NonNullable<Json>,"sort_order": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreement_id": string,"contact"?: string | null,"created_at"?: string,"display_name": string,"id"?: string,"legal_name"?: string | null,"party_kind": string,"profile_id"?: string | null,"representative_name"?: string | null,"representative_title"?: string | null,"role_in_agreement"?: string | null,"snapshot"?: NonNullable<Json>,"sort_order"?: number
                   }
@@ -390,6 +405,7 @@ isOneToOne: false
                   Row: {
                     "last_value": number,"year": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "last_value"?: number,"year": number
                   }
@@ -403,6 +419,7 @@ isOneToOne: false
                   Row: {
                     "agreement_id": string,"created_at": string,"entity_id": string | null,"entity_type": string,"id": string,"label_snapshot": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreement_id": string,"created_at"?: string,"entity_id"?: string | null,"entity_type": string,"id"?: string,"label_snapshot": string
                   }
@@ -422,6 +439,7 @@ isOneToOne: false
                   Row: {
                     "agreement_id": string,"author_profile_id": string | null,"body": string,"created_at": string,"id": string,"version_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreement_id": string,"author_profile_id"?: string | null,"body": string,"created_at"?: string,"id"?: string,"version_id"?: string | null
                   }
@@ -453,6 +471,7 @@ isOneToOne: false
                   Row: {
                     "agreement_id": string,"created_at": string,"display_name": string | null,"id": string,"kind": string,"party_id": string,"profile_id": string | null,"title_snapshot": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreement_id": string,"created_at"?: string,"display_name"?: string | null,"id"?: string,"kind"?: string,"party_id": string,"profile_id"?: string | null,"title_snapshot"?: string | null
                   }
@@ -484,6 +503,7 @@ isOneToOne: false
                   Row: {
                     "agreement_id": string,"authority_attested": boolean,"electronic_records_consent": boolean,"electronic_signature_consent": boolean,"fingerprint": string,"id": string,"metadata": NonNullable<Json>,"party_id": string,"party_name_snapshot": string,"representative_title_snapshot": string | null,"role_snapshot": string | null,"signatory_id": string,"signed_at": string,"signer_name_snapshot": string,"signer_profile_id": string | null,"signer_user_id": string | null,"signing_method": string,"status": string,"version_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreement_id": string,"authority_attested"?: boolean,"electronic_records_consent"?: boolean,"electronic_signature_consent"?: boolean,"fingerprint": string,"id"?: string,"metadata"?: NonNullable<Json>,"party_id": string,"party_name_snapshot": string,"representative_title_snapshot"?: string | null,"role_snapshot"?: string | null,"signatory_id": string,"signed_at"?: string,"signer_name_snapshot": string,"signer_profile_id"?: string | null,"signer_user_id"?: string | null,"signing_method"?: string,"status"?: string,"version_id": string
                   }
@@ -527,6 +547,7 @@ isOneToOne: false
                   Row: {
                     "agreement_id": string,"attachments_snapshot": NonNullable<Json>,"change_note": string | null,"content": NonNullable<Json>,"created_at": string,"created_by": string | null,"fingerprint": string | null,"id": string,"locked_at": string | null,"parties_snapshot": NonNullable<Json>,"signatories_snapshot": NonNullable<Json>,"version_number": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreement_id": string,"attachments_snapshot"?: NonNullable<Json>,"change_note"?: string | null,"content"?: NonNullable<Json>,"created_at"?: string,"created_by"?: string | null,"fingerprint"?: string | null,"id"?: string,"locked_at"?: string | null,"parties_snapshot"?: NonNullable<Json>,"signatories_snapshot"?: NonNullable<Json>,"version_number": number
                   }
@@ -552,6 +573,7 @@ isOneToOne: false
                   Row: {
                     "activated_at": string | null,"agreement_type": string | null,"amends_agreement_id": string | null,"body_markdown": string,"buyer_profile_id": string | null,"buyer_signed_at": string | null,"completed_at": string | null,"created_at": string,"current_version_id": string | null,"effective_at": string | null,"end_at": string | null,"executed_at": string | null,"executed_version_id": string | null,"execution_method": string | null,"id": string,"initiator_profile_id": string,"listing_kind_snapshot": string,"listing_price_lumens_snapshot": number | null,"listing_title_snapshot": string | null,"market_listing_id": string | null,"owner_profile_id": string | null,"party_reference": string | null,"reference_code": string | null,"seller_profile_id": string | null,"seller_signed_at": string | null,"signed_at": string | null,"signed_snapshot": Json | null,"status": string,"summary": string | null,"template_key": string | null,"terminated_at": string | null,"termination_reason": string | null,"title": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "activated_at"?: string | null,"agreement_type"?: string | null,"amends_agreement_id"?: string | null,"body_markdown": string,"buyer_profile_id"?: string | null,"buyer_signed_at"?: string | null,"completed_at"?: string | null,"created_at"?: string,"current_version_id"?: string | null,"effective_at"?: string | null,"end_at"?: string | null,"executed_at"?: string | null,"executed_version_id"?: string | null,"execution_method"?: string | null,"id"?: string,"initiator_profile_id": string,"listing_kind_snapshot"?: string,"listing_price_lumens_snapshot"?: number | null,"listing_title_snapshot"?: string | null,"market_listing_id"?: string | null,"owner_profile_id"?: string | null,"party_reference"?: string | null,"reference_code"?: string | null,"seller_profile_id"?: string | null,"seller_signed_at"?: string | null,"signed_at"?: string | null,"signed_snapshot"?: Json | null,"status"?: string,"summary"?: string | null,"template_key"?: string | null,"terminated_at"?: string | null,"termination_reason"?: string | null,"title"?: string | null,"updated_at"?: string
                   }
@@ -613,6 +635,7 @@ isOneToOne: false
                   Row: {
                     "assignment_id": string,"created_at": string,"failure_reason": string | null,"finished_at": string | null,"id": string,"input_context": NonNullable<Json>,"output_summary": string | null,"revision_number": number,"started_at": string | null,"status": string,"task_id": string | null,"triggered_by": string,"usage_metadata": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "assignment_id": string,"created_at"?: string,"failure_reason"?: string | null,"finished_at"?: string | null,"id"?: string,"input_context"?: NonNullable<Json>,"output_summary"?: string | null,"revision_number"?: number,"started_at"?: string | null,"status"?: string,"task_id"?: string | null,"triggered_by"?: string,"usage_metadata"?: NonNullable<Json>
                   }
@@ -638,6 +661,7 @@ isOneToOne: false
                   Row: {
                     "capability_profile": NonNullable<Json>,"created_at": string,"description": string | null,"display_name": string,"id": string,"model_ref": string | null,"provider_ref": string | null,"role_type": string,"slug": string,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "capability_profile"?: NonNullable<Json>,"created_at"?: string,"description"?: string | null,"display_name": string,"id": string,"model_ref"?: string | null,"provider_ref"?: string | null,"role_type": string,"slug": string,"status"?: string,"updated_at"?: string
                   }
@@ -651,6 +675,7 @@ isOneToOne: false
                   Row: {
                     "archived_at": string | null,"budget_id": string,"created_at": string,"description": string | null,"display_order": number,"id": string,"name": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "archived_at"?: string | null,"budget_id": string,"created_at"?: string,"description"?: string | null,"display_order"?: number,"id"?: string,"name": string,"updated_at"?: string
                   }
@@ -670,6 +695,7 @@ isOneToOne: false
                   Row: {
                     "actual_minor": number,"committed_minor": number,"created_at": string,"created_by": string | null,"currency": string,"description": string | null,"funding_restriction_tag": string | null,"group_id": string,"id": string,"owner_label": string | null,"period_label": string | null,"planned_minor": number,"public_description": string | null,"publish_flag": boolean,"status": string,"title": string,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "actual_minor"?: number,"committed_minor"?: number,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"description"?: string | null,"funding_restriction_tag"?: string | null,"group_id": string,"id"?: string,"owner_label"?: string | null,"period_label"?: string | null,"planned_minor"?: number,"public_description"?: string | null,"publish_flag"?: boolean,"status"?: string,"title": string,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -689,6 +715,7 @@ isOneToOne: false
                   Row: {
                     "action": string,"actor_user_id": string | null,"budget_id": string,"created_at": string,"id": string,"note": string | null,"public_snapshot": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "action": string,"actor_user_id"?: string | null,"budget_id": string,"created_at"?: string,"id"?: string,"note"?: string | null,"public_snapshot"?: NonNullable<Json>
                   }
@@ -708,6 +735,7 @@ isOneToOne: false
                   Row: {
                     "actor_user_id": string | null,"approval_reference": string | null,"budget_id": string,"change_summary": string,"changed_fields": NonNullable<Json>,"created_at": string,"id": string,"reason": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_user_id"?: string | null,"approval_reference"?: string | null,"budget_id": string,"change_summary": string,"changed_fields"?: NonNullable<Json>,"created_at"?: string,"id"?: string,"reason"?: string | null
                   }
@@ -727,6 +755,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"request_note": string | null,"requester_profile_id": string,"reviewed_at": string | null,"reviewed_by": string | null,"status": string,"target_profile_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"request_note"?: string | null,"requester_profile_id": string,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"status"?: string,"target_profile_id": string,"updated_at"?: string
                   }
@@ -758,6 +787,7 @@ isOneToOne: false
                   Row: {
                     "author_profile_id": string,"challenge_id": string,"created_at": string,"expected_result": string,"id": string,"implementation_approach": string | null,"rationale": string,"resources_needed": string | null,"risks": string | null,"status": string,"supporting_evidence": string | null,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "author_profile_id": string,"challenge_id": string,"created_at"?: string,"expected_result": string,"id"?: string,"implementation_approach"?: string | null,"rationale": string,"resources_needed"?: string | null,"risks"?: string | null,"status"?: string,"supporting_evidence"?: string | null,"title": string,"updated_at"?: string
                   }
@@ -783,6 +813,7 @@ isOneToOne: false
                   Row: {
                     "activated_at": string,"activated_by": string | null,"country_code": string,"created_at": string,"id": string,"notes": string | null,"profile_id": string,"scope_type": Database["public"]['Enums']["activation_scope_type"]
                   }
+                  ComputedFields: never
                   Insert: {
                     "activated_at"?: string,"activated_by"?: string | null,"country_code"?: string,"created_at"?: string,"id"?: string,"notes"?: string | null,"profile_id": string,"scope_type": Database["public"]['Enums']["activation_scope_type"]
                   }
@@ -808,6 +839,7 @@ isOneToOne: false
                   Row: {
                     "actor_profile_id": string | null,"answer": string,"answer_source": string,"audience": string,"channel": string,"conversation_id": string | null,"created_at": string,"id": string,"question": string,"remembered": boolean
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_profile_id"?: string | null,"answer": string,"answer_source": string,"audience": string,"channel": string,"conversation_id"?: string | null,"created_at"?: string,"id"?: string,"question": string,"remembered"?: boolean
                   }
@@ -827,6 +859,7 @@ isOneToOne: false
                   Row: {
                     "answer": string,"created_at": string,"hit_count": number,"id": string,"kind": string,"last_used_at": string | null,"question": string,"question_key": string,"source": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "answer": string,"created_at"?: string,"hit_count"?: number,"id"?: string,"kind": string,"last_used_at"?: string | null,"question": string,"question_key": string,"source"?: string,"updated_at"?: string
                   }
@@ -840,6 +873,7 @@ isOneToOne: false
                   Row: {
                     "accessibility_reason": string,"assistant_confirmed_at": string | null,"assistant_profile_id": string,"audit_notes": string,"ballot_commitment": string | null,"created_at": string,"election_id": string,"id": string,"metadata": NonNullable<Json>,"status": Database["public"]['Enums']["civic_assisted_ballot_status"],"steward_confirmed_at": string | null,"steward_profile_id": string | null,"updated_at": string,"voter_profile_id": string,"witness_confirmed_at": string | null,"witness_profile_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "accessibility_reason"?: string,"assistant_confirmed_at"?: string | null,"assistant_profile_id": string,"audit_notes"?: string,"ballot_commitment"?: string | null,"created_at"?: string,"election_id": string,"id"?: string,"metadata"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["civic_assisted_ballot_status"],"steward_confirmed_at"?: string | null,"steward_profile_id"?: string | null,"updated_at"?: string,"voter_profile_id": string,"witness_confirmed_at"?: string | null,"witness_profile_id"?: string | null
                   }
@@ -883,6 +917,7 @@ isOneToOne: false
                   Row: {
                     "ballot_id": string,"candidate_id": string | null,"contest_id": string,"created_at": string,"id": string,"is_abstain": boolean,"rank": number | null,"selection_ciphertext": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "ballot_id": string,"candidate_id"?: string | null,"contest_id": string,"created_at"?: string,"id"?: string,"is_abstain"?: boolean,"rank"?: number | null,"selection_ciphertext"?: string | null
                   }
@@ -914,6 +949,7 @@ isOneToOne: false
                   Row: {
                     "ballot_commitment": string,"cast_at": string,"created_at": string,"election_id": string,"encrypted_payload": string | null,"id": string,"inclusion_proof_salt": string | null,"is_countable": boolean,"is_duress": boolean,"metadata": NonNullable<Json>,"profile_id": string,"session_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "ballot_commitment": string,"cast_at"?: string,"created_at"?: string,"election_id": string,"encrypted_payload"?: string | null,"id"?: string,"inclusion_proof_salt"?: string | null,"is_countable"?: boolean,"is_duress"?: boolean,"metadata"?: NonNullable<Json>,"profile_id": string,"session_id": string
                   }
@@ -945,6 +981,7 @@ isOneToOne: true
                   Row: {
                     "candidate_id": string | null,"challenger_id": string,"contest_id": string,"created_at": string,"election_id": string,"id": string,"metadata": NonNullable<Json>,"reason": string,"resolution_notes": string | null,"resolved_at": string | null,"resolved_by": string | null,"status": Database["public"]['Enums']["civic_challenge_status"],"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "candidate_id"?: string | null,"challenger_id": string,"contest_id": string,"created_at"?: string,"election_id": string,"id"?: string,"metadata"?: NonNullable<Json>,"reason": string,"resolution_notes"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["civic_challenge_status"],"updated_at"?: string
                   }
@@ -988,6 +1025,7 @@ isOneToOne: false
                   Row: {
                     "contest_id": string,"created_at": string,"display_name": string,"id": string,"is_write_in_slot": boolean,"metadata": NonNullable<Json>,"option_key": string | null,"profile_id": string | null,"sort_order": number,"statement": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "contest_id": string,"created_at"?: string,"display_name": string,"id"?: string,"is_write_in_slot"?: boolean,"metadata"?: NonNullable<Json>,"option_key"?: string | null,"profile_id"?: string | null,"sort_order"?: number,"statement"?: string,"updated_at"?: string
                   }
@@ -1013,6 +1051,7 @@ isOneToOne: false
                   Row: {
                     "auditor_id": string | null,"created_at": string,"election_id": string,"id": string,"metadata": NonNullable<Json>,"process_notes": string,"reviewed_at": string | null,"sample_bucket": string,"session_id": string,"status": Database["public"]['Enums']["civic_canvass_sample_status"],"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "auditor_id"?: string | null,"created_at"?: string,"election_id": string,"id"?: string,"metadata"?: NonNullable<Json>,"process_notes"?: string,"reviewed_at"?: string | null,"sample_bucket"?: string,"session_id": string,"status"?: Database["public"]['Enums']["civic_canvass_sample_status"],"updated_at"?: string
                   }
@@ -1044,6 +1083,7 @@ isOneToOne: false
                   Row: {
                     "android_version_code": number | null,"app_release_id": string,"app_version": string,"attestation_ok": boolean,"checked_at": string,"created_at": string,"device_registration_id": string | null,"expected_release_id": string | null,"id": string,"metadata": NonNullable<Json>,"package_fingerprint": string | null,"profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "android_version_code"?: number | null,"app_release_id": string,"app_version": string,"attestation_ok"?: boolean,"checked_at"?: string,"created_at"?: string,"device_registration_id"?: string | null,"expected_release_id"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"package_fingerprint"?: string | null,"profile_id": string
                   }
@@ -1069,6 +1109,7 @@ isOneToOne: false
                   Row: {
                     "consented_at": string | null,"created_at": string,"election_id": string,"profile_id": string,"updated_at": string,"visible": boolean,"withdrawn_at": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "consented_at"?: string | null,"created_at"?: string,"election_id": string,"profile_id": string,"updated_at"?: string,"visible"?: boolean,"withdrawn_at"?: string | null
                   }
@@ -1094,6 +1135,7 @@ isOneToOne: false
                   Row: {
                     "allow_abstain": boolean,"contest_kind": Database["public"]['Enums']["civic_contest_kind"],"created_at": string,"election_id": string,"id": string,"metadata": NonNullable<Json>,"office_key": string | null,"seat_count": number,"sort_order": number,"summary": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "allow_abstain"?: boolean,"contest_kind"?: Database["public"]['Enums']["civic_contest_kind"],"created_at"?: string,"election_id": string,"id"?: string,"metadata"?: NonNullable<Json>,"office_key"?: string | null,"seat_count"?: number,"sort_order"?: number,"summary"?: string,"title": string,"updated_at"?: string
                   }
@@ -1113,6 +1155,7 @@ isOneToOne: false
                   Row: {
                     "attestation_checked_at": string | null,"attestation_status": string,"created_at": string,"device_fingerprint_hash": string | null,"id": string,"is_active": boolean,"last_seen_at": string | null,"metadata": NonNullable<Json>,"platform": string,"profile_id": string,"push_token": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "attestation_checked_at"?: string | null,"attestation_status"?: string,"created_at"?: string,"device_fingerprint_hash"?: string | null,"id"?: string,"is_active"?: boolean,"last_seen_at"?: string | null,"metadata"?: NonNullable<Json>,"platform": string,"profile_id": string,"push_token"?: string | null,"updated_at"?: string
                   }
@@ -1132,6 +1175,7 @@ isOneToOne: false
                   Row: {
                     "acknowledged_at": string | null,"acknowledged_by": string | null,"created_at": string,"election_id": string | null,"id": string,"metadata": NonNullable<Json>,"profile_id": string,"session_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "acknowledged_at"?: string | null,"acknowledged_by"?: string | null,"created_at"?: string,"election_id"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"profile_id": string,"session_id"?: string | null
                   }
@@ -1169,6 +1213,7 @@ isOneToOne: false
                   Row: {
                     "alert_enabled": boolean,"created_at": string,"duress_pin_hash": string,"enrolled_at": string,"id": string,"metadata": NonNullable<Json>,"pin_salt": string,"profile_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "alert_enabled"?: boolean,"created_at"?: string,"duress_pin_hash": string,"enrolled_at"?: string,"id"?: string,"metadata"?: NonNullable<Json>,"pin_salt": string,"profile_id": string,"updated_at"?: string
                   }
@@ -1188,6 +1233,7 @@ isOneToOne: true
                   Row: {
                     "accredited_at": string,"accredited_by": string | null,"created_at": string,"election_id": string,"id": string,"is_active": boolean,"metadata": NonNullable<Json>,"observer_role": string,"profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "accredited_at"?: string,"accredited_by"?: string | null,"created_at"?: string,"election_id": string,"id"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"observer_role"?: string,"profile_id": string
                   }
@@ -1215,10 +1261,31 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"civic_election_secrets": {
+                  Row: {
+                    "created_at": string,"election_id": string,"secret": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"election_id": string,"secret": string
+                  }
+                  Update: {
+                    "created_at"?: string,"election_id"?: string,"secret"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "civic_election_secrets_election_id_fkey"
+      columns: ["election_id"]
+isOneToOne: true
+      referencedRelation: "civic_elections"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"civic_elections": {
                   Row: {
                     "ballot_box_commitment": string | null,"body": string,"canvass_sample_rate": number,"challenge_closes_at": string | null,"challenge_opens_at": string | null,"created_at": string,"created_by": string | null,"eligibility_roster_commitment": string | null,"id": string,"max_attempts": number,"metadata": NonNullable<Json>,"primary_window_seconds": number,"require_face_liveness": boolean,"require_home_presence": boolean,"require_solitude": boolean,"retry_spacing_hours": number,"scope_country_code": string | null,"scope_locality_code": string | null,"scope_region_code": string | null,"security_class": Database["public"]['Enums']["civic_election_security_class"],"status": Database["public"]['Enums']["civic_election_status"],"summary": string,"tier": Database["public"]['Enums']["civic_election_tier"],"title": string,"updated_at": string,"voting_closes_at": string,"voting_opens_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "ballot_box_commitment"?: string | null,"body"?: string,"canvass_sample_rate"?: number,"challenge_closes_at"?: string | null,"challenge_opens_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"eligibility_roster_commitment"?: string | null,"id"?: string,"max_attempts"?: number,"metadata"?: NonNullable<Json>,"primary_window_seconds"?: number,"require_face_liveness"?: boolean,"require_home_presence"?: boolean,"require_solitude"?: boolean,"retry_spacing_hours"?: number,"scope_country_code"?: string | null,"scope_locality_code"?: string | null,"scope_region_code"?: string | null,"security_class"?: Database["public"]['Enums']["civic_election_security_class"],"status"?: Database["public"]['Enums']["civic_election_status"],"summary"?: string,"tier"?: Database["public"]['Enums']["civic_election_tier"],"title": string,"updated_at"?: string,"voting_closes_at": string,"voting_opens_at": string
                   }
@@ -1238,6 +1305,7 @@ isOneToOne: false
                   Row: {
                     "address_line": string | null,"consent_recorded_at": string | null,"cooling_off_until": string | null,"country_code": string | null,"created_at": string,"geofence_radius_meters": number,"id": string,"is_active": boolean,"label": string,"latitude": number | null,"locality_code": string | null,"longitude": number | null,"metadata": NonNullable<Json>,"presence_pattern": NonNullable<Json>,"profile_id": string,"region_code": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "address_line"?: string | null,"consent_recorded_at"?: string | null,"cooling_off_until"?: string | null,"country_code"?: string | null,"created_at"?: string,"geofence_radius_meters"?: number,"id"?: string,"is_active"?: boolean,"label"?: string,"latitude"?: number | null,"locality_code"?: string | null,"longitude"?: number | null,"metadata"?: NonNullable<Json>,"presence_pattern"?: NonNullable<Json>,"profile_id": string,"region_code"?: string | null,"updated_at"?: string
                   }
@@ -1257,6 +1325,7 @@ isOneToOne: true
                   Row: {
                     "created_at": string,"detail": NonNullable<Json>,"election_id": string | null,"id": string,"profile_id": string | null,"score": number,"session_id": string | null,"severity": Database["public"]['Enums']["civic_risk_severity"],"signal_key": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"detail"?: NonNullable<Json>,"election_id"?: string | null,"id"?: string,"profile_id"?: string | null,"score"?: number,"session_id"?: string | null,"severity"?: Database["public"]['Enums']["civic_risk_severity"],"signal_key": string
                   }
@@ -1288,6 +1357,7 @@ isOneToOne: false
                   Row: {
                     "check_kind": Database["public"]['Enums']["civic_verification_check_kind"],"created_at": string,"detail": NonNullable<Json>,"id": string,"result": Database["public"]['Enums']["civic_verification_check_result"],"score": number | null,"session_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "check_kind": Database["public"]['Enums']["civic_verification_check_kind"],"created_at"?: string,"detail"?: NonNullable<Json>,"id"?: string,"result": Database["public"]['Enums']["civic_verification_check_result"],"score"?: number | null,"session_id": string
                   }
@@ -1307,6 +1377,7 @@ isOneToOne: false
                   Row: {
                     "attempt_number": number,"completed_at": string | null,"created_at": string,"device_registration_id": string | null,"election_id": string,"failure_reason": string | null,"id": string,"metadata": NonNullable<Json>,"notified_at": string | null,"profile_id": string,"scheduled_for": string,"started_at": string | null,"status": Database["public"]['Enums']["civic_vote_session_status"],"updated_at": string,"window_closes_at": string | null,"window_opens_at": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "attempt_number"?: number,"completed_at"?: string | null,"created_at"?: string,"device_registration_id"?: string | null,"election_id": string,"failure_reason"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"notified_at"?: string | null,"profile_id": string,"scheduled_for": string,"started_at"?: string | null,"status"?: Database["public"]['Enums']["civic_vote_session_status"],"updated_at"?: string,"window_closes_at"?: string | null,"window_opens_at"?: string | null
                   }
@@ -1338,6 +1409,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"election_id": string,"eligibility_hash": string,"id": string,"is_eligible": boolean,"profile_id": string,"reasons": (string)[],"snapshot": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"election_id": string,"eligibility_hash": string,"id"?: string,"is_eligible"?: boolean,"profile_id": string,"reasons"?: (string)[],"snapshot"?: NonNullable<Json>
                   }
@@ -1363,6 +1435,7 @@ isOneToOne: false
                   Row: {
                     "actor_id": string | null,"created_at": string,"election_id": string | null,"event_hash": string,"event_type": string,"id": string,"payload": NonNullable<Json>,"prev_event_hash": string | null,"session_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_id"?: string | null,"created_at"?: string,"election_id"?: string | null,"event_hash": string,"event_type": string,"id"?: string,"payload"?: NonNullable<Json>,"prev_event_hash"?: string | null,"session_id"?: string | null
                   }
@@ -1390,10 +1463,37 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"civic_voting_proposal_support": {
+                  Row: {
+                    "created_at": string,"profile_id": string,"proposal_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"profile_id": string,"proposal_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"profile_id"?: string,"proposal_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "civic_voting_proposal_support_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "civic_voting_proposal_support_proposal_id_fkey"
+      columns: ["proposal_id"]
+isOneToOne: false
+      referencedRelation: "civic_voting_proposals"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"civic_voting_proposals": {
                   Row: {
                     "body": string,"consultation_kind": string,"created_at": string,"created_by_profile_id": string,"election_id": string | null,"id": string,"matter_id": string,"metadata": NonNullable<Json>,"published_at": string | null,"published_by_profile_id": string | null,"scope_country_code": string | null,"scope_kind": string,"scope_locality_code": string | null,"scope_region_code": string | null,"status": string,"summary": string,"title": string,"updated_at": string,"voting_closes_at": string | null,"voting_opens_at": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "body"?: string,"consultation_kind"?: string,"created_at"?: string,"created_by_profile_id": string,"election_id"?: string | null,"id"?: string,"matter_id": string,"metadata"?: NonNullable<Json>,"published_at"?: string | null,"published_by_profile_id"?: string | null,"scope_country_code"?: string | null,"scope_kind"?: string,"scope_locality_code"?: string | null,"scope_region_code"?: string | null,"status"?: string,"summary"?: string,"title": string,"updated_at"?: string,"voting_closes_at"?: string | null,"voting_opens_at"?: string | null
                   }
@@ -1431,6 +1531,7 @@ isOneToOne: false
                   Row: {
                     "alias": string,"created_at": string,"id": string,"kind": string,"locale": string,"node_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "alias": string,"created_at"?: string,"id"?: string,"kind"?: string,"locale"?: string,"node_id": string
                   }
@@ -1450,6 +1551,7 @@ isOneToOne: false
                   Row: {
                     "code": string,"concept_key": string,"created_at": string,"description": string,"display_name": string,"id": string,"node_type": string,"replaced_by_node_id": string | null,"set_id": string,"short_name": string,"sort_order": number,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "code": string,"concept_key": string,"created_at"?: string,"description"?: string,"display_name": string,"id": string,"node_type": string,"replaced_by_node_id"?: string | null,"set_id": string,"short_name": string,"sort_order"?: number,"status"?: string,"updated_at"?: string
                   }
@@ -1475,6 +1577,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"from_node_id": string,"id": string,"note": string | null,"relationship_type": string,"to_node_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"from_node_id": string,"id"?: string,"note"?: string | null,"relationship_type": string,"to_node_id": string
                   }
@@ -1500,6 +1603,7 @@ isOneToOne: false
                   Row: {
                     "change_rationale": string | null,"created_at": string,"description": string,"effective_from": string | null,"effective_to": string | null,"family_key": string,"id": string,"is_current": boolean,"methodology_doc_ref": string | null,"name": string,"predecessor_id": string | null,"status": string,"successor_id": string | null,"updated_at": string,"version_key": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "change_rationale"?: string | null,"created_at"?: string,"description"?: string,"effective_from"?: string | null,"effective_to"?: string | null,"family_key": string,"id": string,"is_current"?: boolean,"methodology_doc_ref"?: string | null,"name": string,"predecessor_id"?: string | null,"status"?: string,"successor_id"?: string | null,"updated_at"?: string,"version_key": string
                   }
@@ -1525,6 +1629,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"display_name": string,"id": string,"notes": string | null,"slug": string,"status": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"display_name": string,"id": string,"notes"?: string | null,"slug": string,"status"?: string
                   }
@@ -1538,6 +1643,7 @@ isOneToOne: false
                   Row: {
                     "cancelled_at": string | null,"completed_at": string | null,"completion_criteria": string | null,"created_at": string,"created_by_kind": string,"created_by_profile_id": string,"current_action_id": string | null,"description": string | null,"due_at": string | null,"expected_outcome": string | null,"id": string,"lead_kind": string | null,"lead_profile_id": string | null,"lead_unit_label": string | null,"matter_id": string,"parent_id": string,"parent_kind": string,"parent_task_id": string | null,"priority": string,"review_required": boolean,"start_at": string | null,"status": string,"submitted_at": string | null,"title": string,"updated_at": string,"waiting_condition": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "cancelled_at"?: string | null,"completed_at"?: string | null,"completion_criteria"?: string | null,"created_at"?: string,"created_by_kind": string,"created_by_profile_id": string,"current_action_id"?: string | null,"description"?: string | null,"due_at"?: string | null,"expected_outcome"?: string | null,"id"?: string,"lead_kind"?: string | null,"lead_profile_id"?: string | null,"lead_unit_label"?: string | null,"matter_id": string,"parent_id": string,"parent_kind"?: string,"parent_task_id"?: string | null,"priority"?: string,"review_required"?: boolean,"start_at"?: string | null,"status"?: string,"submitted_at"?: string | null,"title": string,"updated_at"?: string,"waiting_condition"?: string | null
                   }
@@ -1575,6 +1681,7 @@ isOneToOne: false
                   Row: {
                     "affected": string | null,"area_node_id": string | null,"completed_at": string | null,"completed_by": string | null,"constraints": string | null,"context_detail": string | null,"created_at": string,"evidence_links": string | null,"id": string,"lessons_learned": string | null,"outcome_evidence": string | null,"outcome_summary": string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources": string | null,"scope_text": string | null,"selected_proposal_id": string | null,"status": string,"success_criteria": string,"success_criteria_result": string | null,"title": string,"updated_at": string,"why_it_matters": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"status"?: string,"success_criteria": string,"success_criteria_result"?: string | null,"title": string,"updated_at"?: string,"why_it_matters": string
                   }
@@ -1618,6 +1725,7 @@ isOneToOne: false
                   Row: {
                     "assigned_at": string,"assigned_by": string | null,"created_at": string,"ended_at": string | null,"id": string,"is_active": boolean,"metadata": NonNullable<Json>,"notes": string | null,"office_key": Database["public"]['Enums']["constitutional_office_key"],"profile_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "assigned_at"?: string,"assigned_by"?: string | null,"created_at"?: string,"ended_at"?: string | null,"id"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"notes"?: string | null,"office_key": Database["public"]['Enums']["constitutional_office_key"],"profile_id": string,"updated_at"?: string
                   }
@@ -1643,6 +1751,7 @@ isOneToOne: false
                   Row: {
                     "allowed_professions": (string)[],"contribution_policy": string,"created_at": string,"default_content_types": (string)[],"default_moderation_lane": Database["public"]['Enums']["content_moderation_lane"],"description": string,"id": string,"label": string,"required_contribution_permission": Database["public"]['Enums']["app_permission"],"required_review_permission": Database["public"]['Enums']["app_permission"],"sort_order": number,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "allowed_professions"?: (string)[],"contribution_policy": string,"created_at"?: string,"default_content_types"?: (string)[],"default_moderation_lane": Database["public"]['Enums']["content_moderation_lane"],"description": string,"id": string,"label": string,"required_contribution_permission": Database["public"]['Enums']["app_permission"],"required_review_permission": Database["public"]['Enums']["app_permission"],"sort_order"?: number,"updated_at"?: string
                   }
@@ -1656,6 +1765,7 @@ isOneToOne: false
                   Row: {
                     "allowed_professions": (string)[],"allowed_roles": (Database["public"]['Enums']["app_role"])[],"category_id": string,"content_type": string,"created_at": string,"moderation_lane": Database["public"]['Enums']["content_moderation_lane"],"required_permission": Database["public"]['Enums']["app_permission"],"requires_approved_profession": boolean,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "allowed_professions"?: (string)[],"allowed_roles"?: (Database["public"]['Enums']["app_role"])[],"category_id": string,"content_type"?: string,"created_at"?: string,"moderation_lane": Database["public"]['Enums']["content_moderation_lane"],"required_permission": Database["public"]['Enums']["app_permission"],"requires_approved_profession"?: boolean,"updated_at"?: string
                   }
@@ -1675,6 +1785,7 @@ isOneToOne: false
                   Row: {
                     "author_id": string | null,"body_preview": string | null,"category_id": string,"classification_confidence": number,"classification_method": string,"classification_reasons": NonNullable<Json>,"content_type": string,"contribution_policy": string,"created_at": string,"id": string,"metadata": NonNullable<Json>,"moderation_lane": Database["public"]['Enums']["content_moderation_lane"],"professional_domain": string,"review_status": Database["public"]['Enums']["content_review_status"],"reviewed_at": string | null,"reviewer_id": string | null,"source_id": string | null,"source_table": string | null,"submitted_at": string | null,"title": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "author_id"?: string | null,"body_preview"?: string | null,"category_id"?: string,"classification_confidence"?: number,"classification_method"?: string,"classification_reasons"?: NonNullable<Json>,"content_type"?: string,"contribution_policy"?: string,"created_at"?: string,"id"?: string,"metadata"?: NonNullable<Json>,"moderation_lane"?: Database["public"]['Enums']["content_moderation_lane"],"professional_domain"?: string,"review_status"?: Database["public"]['Enums']["content_review_status"],"reviewed_at"?: string | null,"reviewer_id"?: string | null,"source_id"?: string | null,"source_table"?: string | null,"submitted_at"?: string | null,"title"?: string | null,"updated_at"?: string
                   }
@@ -1706,6 +1817,7 @@ isOneToOne: false
                   Row: {
                     "cause": string,"contribution_source_id": string,"contribution_source_table": string,"created_at": string,"evidence_record_id": string | null,"id": string,"model_version": string,"observation": number | null,"profile_id": string,"realized_impact": number | null,"snapshot": NonNullable<Json>,"stage": string | null,"verification_kind": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "cause": string,"contribution_source_id": string,"contribution_source_table": string,"created_at"?: string,"evidence_record_id"?: string | null,"id"?: string,"model_version": string,"observation"?: number | null,"profile_id": string,"realized_impact"?: number | null,"snapshot"?: NonNullable<Json>,"stage"?: string | null,"verification_kind"?: string | null
                   }
@@ -1731,6 +1843,7 @@ isOneToOne: false
                   Row: {
                     "affected": boolean,"conflict_disclosed": boolean,"conflict_type": string | null,"contribution_source_id": string,"contribution_source_table": string,"created_at": string,"evaluator_profile_id": string,"evaluator_role": string,"id": string,"kind": string,"occurred_at": string,"payload": NonNullable<Json>,"ratings": NonNullable<Json>,"reason": string | null,"relationship_context": string | null,"reweight_reason": string | null,"subject_profile_id": string,"validation_status": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "affected"?: boolean,"conflict_disclosed"?: boolean,"conflict_type"?: string | null,"contribution_source_id": string,"contribution_source_table": string,"created_at"?: string,"evaluator_profile_id": string,"evaluator_role": string,"id"?: string,"kind": string,"occurred_at"?: string,"payload"?: NonNullable<Json>,"ratings"?: NonNullable<Json>,"reason"?: string | null,"relationship_context"?: string | null,"reweight_reason"?: string | null,"subject_profile_id": string,"validation_status"?: string | null
                   }
@@ -1756,6 +1869,7 @@ isOneToOne: false
                   Row: {
                     "application_deadline": string | null,"area_node_id": string | null,"compensation_status": string,"created_at": string,"description": string | null,"estimated_effort": string | null,"evaluation_criteria": string | null,"evaluation_dimensions": (string)[],"evidence_requirements": string | null,"expected_outcome": string | null,"id": string,"implementation_project_id": string | null,"is_remote": boolean,"knowledge_gap_id": string | null,"knowledge_space_id": string | null,"location_text": string | null,"opportunity_kind": string,"optional_skills": (string)[],"program_id": string | null,"publisher_profile_id": string,"required_skills": (string)[],"status": string,"summary": string,"title": string,"updated_at": string,"work_ends_at": string | null,"work_starts_at": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "application_deadline"?: string | null,"area_node_id"?: string | null,"compensation_status"?: string,"created_at"?: string,"description"?: string | null,"estimated_effort"?: string | null,"evaluation_criteria"?: string | null,"evaluation_dimensions"?: (string)[],"evidence_requirements"?: string | null,"expected_outcome"?: string | null,"id"?: string,"implementation_project_id"?: string | null,"is_remote"?: boolean,"knowledge_gap_id"?: string | null,"knowledge_space_id"?: string | null,"location_text"?: string | null,"opportunity_kind"?: string,"optional_skills"?: (string)[],"program_id"?: string | null,"publisher_profile_id": string,"required_skills"?: (string)[],"status"?: string,"summary": string,"title": string,"updated_at"?: string,"work_ends_at"?: string | null,"work_starts_at"?: string | null
                   }
@@ -1805,6 +1919,7 @@ isOneToOne: false
                   Row: {
                     "area_node_id": string | null,"created_at": string,"description": string | null,"id": string,"program_kind": string,"publisher_profile_id": string,"seed_key": string | null,"status": string,"summary": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"program_kind"?: string,"publisher_profile_id": string,"seed_key"?: string | null,"status"?: string,"summary": string,"title": string,"updated_at"?: string
                   }
@@ -1830,6 +1945,7 @@ isOneToOne: false
                   Row: {
                     "contributor_id": string,"created_at": string,"created_by": string | null,"evidence_url": string | null,"id": string,"impact_score": number | null,"notes": string | null,"quality_score": number | null,"reviewer_user_id": string | null,"status": string,"updated_at": string,"verified_points": number,"work_type": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "contributor_id": string,"created_at"?: string,"created_by"?: string | null,"evidence_url"?: string | null,"id"?: string,"impact_score"?: number | null,"notes"?: string | null,"quality_score"?: number | null,"reviewer_user_id"?: string | null,"status"?: string,"updated_at"?: string,"verified_points"?: number,"work_type": string
                   }
@@ -1849,6 +1965,7 @@ isOneToOne: false
                   Row: {
                     "contributor_type": string,"created_at": string,"created_by": string | null,"display_name": string,"id": string,"payout_status": string,"tax_status": string,"updated_at": string,"user_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "contributor_type"?: string,"created_at"?: string,"created_by"?: string | null,"display_name": string,"id"?: string,"payout_status"?: string,"tax_status"?: string,"updated_at"?: string,"user_id"?: string | null
                   }
@@ -1862,6 +1979,7 @@ isOneToOne: false
                   Row: {
                     "area": string,"author_id": string,"chat_id": string | null,"commit_sha": string | null,"confidence_score": number | null,"created_at": string,"created_features": (string)[],"expected_behavior": string,"id": string,"metadata": NonNullable<Json>,"original_instruction": string,"pr_number": number | null,"published_at": string | null,"rephrased_description": string,"requested_at": string,"reviewed_at": string | null,"reviewed_by": string | null,"section": string,"source": string,"source_id": string | null,"source_story_key": string | null,"source_type": string,"source_url": string | null,"status": string,"story_kind": string,"title": string,"visibility": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "area": string,"author_id": string,"chat_id"?: string | null,"commit_sha"?: string | null,"confidence_score"?: number | null,"created_at"?: string,"created_features"?: (string)[],"expected_behavior": string,"id"?: string,"metadata"?: NonNullable<Json>,"original_instruction": string,"pr_number"?: number | null,"published_at"?: string | null,"rephrased_description": string,"requested_at"?: string,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"section": string,"source"?: string,"source_id"?: string | null,"source_story_key"?: string | null,"source_type"?: string,"source_url"?: string | null,"status"?: string,"story_kind"?: string,"title": string,"visibility"?: string
                   }
@@ -1887,6 +2005,7 @@ isOneToOne: false
                   Row: {
                     "approved_at": string | null,"approved_by": string | null,"civizen_shared_proceeds_usd": number,"contributor_pool_usd": number,"contributor_share": number,"created_at": string,"created_by": string | null,"founder_reserve_usd": number,"founder_share": number,"id": string,"investor_pool_usd": number,"investor_share": number,"label": string,"mission_reserve_usd": number,"notes": string | null,"period_end": string,"period_start": string,"project_servicing_pool_usd": number,"project_servicing_share": number,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "approved_at"?: string | null,"approved_by"?: string | null,"civizen_shared_proceeds_usd": number,"contributor_pool_usd"?: number,"contributor_share"?: number,"created_at"?: string,"created_by"?: string | null,"founder_reserve_usd"?: number,"founder_share"?: number,"id"?: string,"investor_pool_usd"?: number,"investor_share"?: number,"label": string,"mission_reserve_usd"?: number,"notes"?: string | null,"period_end": string,"period_start": string,"project_servicing_pool_usd"?: number,"project_servicing_share"?: number,"status"?: string,"updated_at"?: string
                   }
@@ -1900,6 +2019,7 @@ isOneToOne: false
                   Row: {
                     "comment": string | null,"created_at": string,"endorsed_id": string,"endorser_id": string,"id": string,"is_hidden": boolean | null,"pillar": Database["public"]['Enums']["pillar_type"],"stars": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "comment"?: string | null,"created_at"?: string,"endorsed_id": string,"endorser_id": string,"id"?: string,"is_hidden"?: boolean | null,"pillar": Database["public"]['Enums']["pillar_type"],"stars": number
                   }
@@ -1925,6 +2045,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"description": string | null,"endorsement_id": string,"file_type": string | null,"file_url": string,"id": string,"uploader_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"description"?: string | null,"endorsement_id": string,"file_type"?: string | null,"file_url": string,"id"?: string,"uploader_id": string
                   }
@@ -1950,6 +2071,7 @@ isOneToOne: false
                   Row: {
                     "actor_user_id": string | null,"allocated_at": string,"amount_minor": number,"created_at": string,"currency": string,"id": string,"line_item_id": string,"override_reason": string | null,"purpose_note": string | null,"receipt_id": string,"reverses_allocation_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_user_id"?: string | null,"allocated_at"?: string,"amount_minor": number,"created_at"?: string,"currency"?: string,"id"?: string,"line_item_id": string,"override_reason"?: string | null,"purpose_note"?: string | null,"receipt_id": string,"reverses_allocation_id"?: string | null
                   }
@@ -1981,6 +2103,7 @@ isOneToOne: false
                   Row: {
                     "actor_user_id": string | null,"created_at": string,"entity_id": string,"entity_type": string,"event_type": string,"id": string,"payload": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_user_id"?: string | null,"created_at"?: string,"entity_id": string,"entity_type": string,"event_type": string,"id"?: string,"payload"?: NonNullable<Json>
                   }
@@ -1994,6 +2117,7 @@ isOneToOne: false
                   Row: {
                     "amount_minor": number,"commitment_date": string,"conditional": boolean,"conditions": string | null,"created_at": string,"created_by": string | null,"currency": string,"evidence_ref": string | null,"id": string,"intended_period": string | null,"restrictions": string | null,"source_id": string,"status": string,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "amount_minor": number,"commitment_date"?: string,"conditional"?: boolean,"conditions"?: string | null,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"evidence_ref"?: string | null,"id"?: string,"intended_period"?: string | null,"restrictions"?: string | null,"source_id": string,"status"?: string,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -2013,6 +2137,7 @@ isOneToOne: false
                   Row: {
                     "actor_user_id": string | null,"adjustment_minor": number,"assessed_user_fee_minor": number,"audit_cost_minor": number,"calculation_note": string,"created_at": string,"currency": string,"id": string,"liable_legal_entity_name": string | null,"liable_party_type": string,"other_allowed_cost_minor": number,"processor_cost_minor": number,"reason": string | null,"related_receipt_id": string | null,"related_transaction_ref": string | null,"rule_version": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_user_id"?: string | null,"adjustment_minor"?: number,"assessed_user_fee_minor": number,"audit_cost_minor"?: number,"calculation_note": string,"created_at"?: string,"currency"?: string,"id"?: string,"liable_legal_entity_name"?: string | null,"liable_party_type": string,"other_allowed_cost_minor"?: number,"processor_cost_minor"?: number,"reason"?: string | null,"related_receipt_id"?: string | null,"related_transaction_ref"?: string | null,"rule_version"?: string
                   }
@@ -2032,6 +2157,7 @@ isOneToOne: false
                   Row: {
                     "category": string,"created_at": string,"created_by": string | null,"currency": string,"display_name": string,"id": string,"internal_notes": string | null,"internal_owner": string | null,"jurisdiction": string | null,"priority": number | null,"probability_pct": number | null,"public_display_name": string | null,"publish_requested_amount": boolean,"publish_source": boolean,"relationship_status": string,"requested_minor": number | null,"updated_at": string,"updated_by": string | null,"website": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "category": string,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"display_name": string,"id"?: string,"internal_notes"?: string | null,"internal_owner"?: string | null,"jurisdiction"?: string | null,"priority"?: number | null,"probability_pct"?: number | null,"public_display_name"?: string | null,"publish_requested_amount"?: boolean,"publish_source"?: boolean,"relationship_status"?: string,"requested_minor"?: number | null,"updated_at"?: string,"updated_by"?: string | null,"website"?: string | null
                   }
@@ -2045,6 +2171,7 @@ isOneToOne: false
                   Row: {
                     "amount_minor": number,"commitment_id": string | null,"created_at": string,"created_by": string | null,"currency": string,"evidence_ref": string | null,"external_reference": string | null,"id": string,"received_date": string,"restriction_tag": string | null,"reverses_receipt_id": string | null,"source_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "amount_minor": number,"commitment_id"?: string | null,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"evidence_ref"?: string | null,"external_reference"?: string | null,"id"?: string,"received_date"?: string,"restriction_tag"?: string | null,"reverses_receipt_id"?: string | null,"source_id": string
                   }
@@ -2076,6 +2203,7 @@ isOneToOne: false
                   Row: {
                     "actor_user_id": string | null,"corrects_event_id": string | null,"created_at": string,"event_at": string,"event_type": string,"evidence_ref": string | null,"id": string,"next_action": string | null,"next_action_at": string | null,"private_notes": string | null,"source_id": string,"summary": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_user_id"?: string | null,"corrects_event_id"?: string | null,"created_at"?: string,"event_at"?: string,"event_type": string,"evidence_ref"?: string | null,"id"?: string,"next_action"?: string | null,"next_action_at"?: string | null,"private_notes"?: string | null,"source_id": string,"summary": string
                   }
@@ -2101,6 +2229,7 @@ isOneToOne: false
                   Row: {
                     "certainty_type": string,"created_at": string,"factor_key": string,"id": string,"note": string | null,"plan_id": string,"profile_id": string,"source_type": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "certainty_type": string,"created_at"?: string,"factor_key": string,"id"?: string,"note"?: string | null,"plan_id": string,"profile_id": string,"source_type": string
                   }
@@ -2126,6 +2255,7 @@ isOneToOne: false
                   Row: {
                     "action_id": string | null,"created_at": string,"id": string,"intervention_key": string,"library_version": string,"plan_id": string,"profile_id": string,"recommendation_model": string,"why_shown": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_id"?: string | null,"created_at"?: string,"id"?: string,"intervention_key": string,"library_version": string,"plan_id": string,"profile_id": string,"recommendation_model": string,"why_shown"?: string | null
                   }
@@ -2157,6 +2287,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"helped": string | null,"id": string,"plan_id": string,"profile_id": string,"qualitative_state": string,"summary_note": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"helped"?: string | null,"id"?: string,"plan_id": string,"profile_id": string,"qualitative_state": string,"summary_note"?: string | null
                   }
@@ -2182,6 +2313,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"note": string | null,"path": string | null,"plan_id": string,"profile_id": string,"support_key": string,"support_type": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"note"?: string | null,"path"?: string | null,"plan_id": string,"profile_id": string,"support_key": string,"support_type": string
                   }
@@ -2207,6 +2339,7 @@ isOneToOne: false
                   Row: {
                     "completed_at": string | null,"concern": string | null,"created_at": string,"desired_outcome": string | null,"domain_key": string,"follow_up_at": string | null,"id": string,"profile_id": string,"reminder_pref": string,"status": string,"title": string,"updated_at": string,"work_intervention_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "completed_at"?: string | null,"concern"?: string | null,"created_at"?: string,"desired_outcome"?: string | null,"domain_key": string,"follow_up_at"?: string | null,"id"?: string,"profile_id": string,"reminder_pref"?: string,"status"?: string,"title": string,"updated_at"?: string,"work_intervention_id"?: string | null
                   }
@@ -2232,6 +2365,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"feedback": string,"id": string,"intervention_key": string,"plan_id": string | null,"profile_id": string,"recommendation_model": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"feedback": string,"id"?: string,"intervention_key": string,"plan_id"?: string | null,"profile_id": string,"recommendation_model"?: string
                   }
@@ -2257,6 +2391,7 @@ isOneToOne: false
                   Row: {
                     "accredited_investor_status": string,"country": string | null,"created_at": string,"created_by": string | null,"email": string | null,"funder_type": string,"id": string,"kyc_status": string,"legal_name": string,"notes": string | null,"public_display_name": string | null,"sanctions_status": string,"tax_profile_status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "accredited_investor_status"?: string,"country"?: string | null,"created_at"?: string,"created_by"?: string | null,"email"?: string | null,"funder_type": string,"id"?: string,"kyc_status"?: string,"legal_name": string,"notes"?: string | null,"public_display_name"?: string | null,"sanctions_status"?: string,"tax_profile_status"?: string,"updated_at"?: string
                   }
@@ -2270,6 +2405,7 @@ isOneToOne: false
                   Row: {
                     "agreement_id": string | null,"amount_original": number,"amount_usd": number | null,"created_at": string,"created_by": string | null,"currency": string,"date_pledged": string | null,"date_received": string | null,"funder_id": string,"id": string,"interest_inquiry_id": string | null,"lane": string,"notes": string | null,"payment_method": string | null,"receipt_id": string | null,"restriction_code": string | null,"restrictions": string | null,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreement_id"?: string | null,"amount_original": number,"amount_usd"?: number | null,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"date_pledged"?: string | null,"date_received"?: string | null,"funder_id": string,"id"?: string,"interest_inquiry_id"?: string | null,"lane": string,"notes"?: string | null,"payment_method"?: string | null,"receipt_id"?: string | null,"restriction_code"?: string | null,"restrictions"?: string | null,"status"?: string,"updated_at"?: string
                   }
@@ -2295,6 +2431,7 @@ isOneToOne: false
                   Row: {
                     "case_type": string,"created_at": string,"created_by": string | null,"funder_id": string | null,"funding_commitment_id": string | null,"id": string,"notes": string | null,"priority": string,"resolved_at": string | null,"resolved_by": string | null,"status": string,"summary": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "case_type": string,"created_at"?: string,"created_by"?: string | null,"funder_id"?: string | null,"funding_commitment_id"?: string | null,"id"?: string,"notes"?: string | null,"priority"?: string,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: string,"summary": string,"updated_at"?: string
                   }
@@ -2320,6 +2457,7 @@ isOneToOne: false
                   Row: {
                     "accept_risk_disclosure": boolean,"accredited_investor_interest": boolean | null,"converted_commitment_id": string | null,"country": string | null,"created_at": string,"currency": string | null,"email": string,"full_name": string,"id": string,"indicated_amount_usd": number | null,"lane": string,"message": string | null,"organization": string | null,"status": string,"updated_at": string,"user_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "accept_risk_disclosure"?: boolean,"accredited_investor_interest"?: boolean | null,"converted_commitment_id"?: string | null,"country"?: string | null,"created_at"?: string,"currency"?: string | null,"email": string,"full_name": string,"id"?: string,"indicated_amount_usd"?: number | null,"lane": string,"message"?: string | null,"organization"?: string | null,"status"?: string,"updated_at"?: string,"user_id"?: string | null
                   }
@@ -2339,6 +2477,7 @@ isOneToOne: false
                   Row: {
                     "actor_user_id": string | null,"created_at": string,"entity_id": string,"entity_type": string,"event_type": string,"id": string,"payload": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_user_id"?: string | null,"created_at"?: string,"entity_id": string,"entity_type": string,"event_type": string,"id"?: string,"payload"?: NonNullable<Json>
                   }
@@ -2352,6 +2491,7 @@ isOneToOne: false
                   Row: {
                     "amount_usd": number,"audit_status": string,"bank_reference": string | null,"created_at": string,"created_by": string | null,"credit_account": string,"currency_original": string | null,"debit_account": string,"id": string,"memo": string | null,"restriction_code": string | null,"source_id": string,"source_type": string,"transaction_hash": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "amount_usd": number,"audit_status"?: string,"bank_reference"?: string | null,"created_at"?: string,"created_by"?: string | null,"credit_account": string,"currency_original"?: string | null,"debit_account": string,"id"?: string,"memo"?: string | null,"restriction_code"?: string | null,"source_id": string,"source_type": string,"transaction_hash"?: string | null
                   }
@@ -2365,6 +2505,7 @@ isOneToOne: false
                   Row: {
                     "amount_usd": number,"created_at": string,"created_by": string | null,"currency": string,"external_reference": string | null,"funding_commitment_id": string,"id": string,"notes": string | null,"provider": string,"received_at": string,"reconciliation_status": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "amount_usd": number,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"external_reference"?: string | null,"funding_commitment_id": string,"id"?: string,"notes"?: string | null,"provider"?: string,"received_at"?: string,"reconciliation_status"?: string
                   }
@@ -2384,6 +2525,7 @@ isOneToOne: false
                   Row: {
                     "amount_usd": number,"contributor_id": string | null,"created_at": string,"distribution_period_id": string,"funder_id": string | null,"id": string,"notes": string | null,"payment_method": string | null,"recipient_id": string | null,"recipient_type": string,"status": string,"tax_document_status": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "amount_usd": number,"contributor_id"?: string | null,"created_at"?: string,"distribution_period_id": string,"funder_id"?: string | null,"id"?: string,"notes"?: string | null,"payment_method"?: string | null,"recipient_id"?: string | null,"recipient_type": string,"status"?: string,"tax_document_status"?: string
                   }
@@ -2415,6 +2557,7 @@ isOneToOne: false
                   Row: {
                     "id": number,"is_published": boolean,"note": string | null,"published_at": string | null,"published_by": string | null,"unpublished_at": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "id"?: number,"is_published"?: boolean,"note"?: string | null,"published_at"?: string | null,"published_by"?: string | null,"unpublished_at"?: string | null,"updated_at"?: string
                   }
@@ -2428,6 +2571,7 @@ isOneToOne: false
                   Row: {
                     "action_scope": string,"actor_id": string,"client_created_at": string,"created_at": string,"id": string,"key_algorithm": string,"payload": NonNullable<Json>,"payload_hash": string,"public_key": string,"signature": string,"target_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_scope": string,"actor_id": string,"client_created_at": string,"created_at"?: string,"id"?: string,"key_algorithm": string,"payload"?: NonNullable<Json>,"payload_hash": string,"public_key": string,"signature": string,"target_id"?: string | null
                   }
@@ -2447,6 +2591,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"domain_key": string,"id": string,"is_mature": boolean,"measured_at": string,"measured_by": string | null,"metadata": NonNullable<Json>,"notes": string | null,"source": string,"threshold_count": number,"threshold_results": NonNullable<Json>,"thresholds_met_count": number,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"domain_key": string,"id"?: string,"is_mature": boolean,"measured_at"?: string,"measured_by"?: string | null,"metadata"?: NonNullable<Json>,"notes"?: string | null,"source"?: string,"threshold_count"?: number,"threshold_results"?: NonNullable<Json>,"thresholds_met_count"?: number,"updated_at"?: string
                   }
@@ -2472,6 +2617,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"description": string,"domain_key": string,"effective_from": string,"effective_until": string | null,"id": string,"is_active": boolean,"metadata": NonNullable<Json>,"required_count": number,"role_keys": (string)[],"threshold_key": string,"threshold_name": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"description"?: string,"domain_key": string,"effective_from"?: string,"effective_until"?: string | null,"id"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"required_count": number,"role_keys"?: (string)[],"threshold_key": string,"threshold_name": string,"updated_at"?: string
                   }
@@ -2491,6 +2637,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"current_is_mature": boolean,"current_snapshot_id": string,"current_threshold_count": number,"current_thresholds_met_count": number,"domain_key": string,"id": string,"metadata": NonNullable<Json>,"previous_is_mature": boolean | null,"previous_snapshot_id": string | null,"previous_threshold_count": number | null,"previous_thresholds_met_count": number | null,"transition_type": string,"trigger_source": string,"triggered_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"current_is_mature": boolean,"current_snapshot_id": string,"current_threshold_count": number,"current_thresholds_met_count": number,"domain_key": string,"id"?: string,"metadata"?: NonNullable<Json>,"previous_is_mature"?: boolean | null,"previous_snapshot_id"?: string | null,"previous_threshold_count"?: number | null,"previous_thresholds_met_count"?: number | null,"transition_type": string,"trigger_source"?: string,"triggered_by"?: string | null
                   }
@@ -2528,6 +2675,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"description": string,"domain_key": string,"is_system_role": boolean,"name": string,"role_key": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"description"?: string,"domain_key": string,"is_system_role"?: boolean,"name": string,"role_key": string,"updated_at"?: string
                   }
@@ -2547,6 +2695,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"description": string,"domain_key": string,"is_active": boolean,"name": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"description"?: string,"domain_key": string,"is_active"?: boolean,"name": string,"updated_at"?: string
                   }
@@ -2560,6 +2709,7 @@ isOneToOne: false
                   Row: {
                     "calculated_at": string,"calculation_version": string,"citizenship_status": Database["public"]['Enums']["citizenship_status"],"civizen_score": number,"created_at": string,"eligible": boolean,"governance_score": number,"id": string,"influence_weight": number,"is_active_citizen": boolean,"is_verified": boolean,"profile_id": string,"reason_codes": (string)[],"source": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "calculated_at"?: string,"calculation_version"?: string,"citizenship_status": Database["public"]['Enums']["citizenship_status"],"civizen_score"?: number,"created_at"?: string,"eligible"?: boolean,"governance_score"?: number,"id"?: string,"influence_weight"?: number,"is_active_citizen"?: boolean,"is_verified"?: boolean,"profile_id": string,"reason_codes"?: (string)[],"source"?: string,"updated_at"?: string
                   }
@@ -2579,6 +2729,7 @@ isOneToOne: true
                   Row: {
                     "approved_max_age_minutes": number,"created_at": string,"escalation_enabled": boolean,"metadata": NonNullable<Json>,"near_expiry_window_minutes": number,"oncall_channel": string,"pending_max_age_hours": number,"policy_key": string,"policy_name": string,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "approved_max_age_minutes"?: number,"created_at"?: string,"escalation_enabled"?: boolean,"metadata"?: NonNullable<Json>,"near_expiry_window_minutes"?: number,"oncall_channel"?: string,"pending_max_age_hours"?: number,"policy_key": string,"policy_name": string,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -2598,6 +2749,7 @@ isOneToOne: false
                   Row: {
                     "actor_profile_id": string | null,"created_at": string,"event_message": string,"event_type": string,"id": string,"metadata": NonNullable<Json>,"policy_key": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_profile_id"?: string | null,"created_at"?: string,"event_message": string,"event_type": string,"id"?: string,"metadata"?: NonNullable<Json>,"policy_key": string
                   }
@@ -2617,6 +2769,7 @@ isOneToOne: false
                   Row: {
                     "actor_profile_id": string | null,"created_at": string,"event_message": string,"event_type": string,"id": string,"metadata": NonNullable<Json>,"request_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_profile_id"?: string | null,"created_at"?: string,"event_message": string,"event_type": string,"id"?: string,"metadata"?: NonNullable<Json>,"request_id": string
                   }
@@ -2642,6 +2795,7 @@ isOneToOne: false
                   Row: {
                     "approved_expires_at": string | null,"consumed_at": string | null,"consumed_by": string | null,"created_at": string,"id": string,"request_reason": string,"request_status": string,"requested_by": string,"review_notes": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"target_profile_id": string,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "approved_expires_at"?: string | null,"consumed_at"?: string | null,"consumed_by"?: string | null,"created_at"?: string,"id"?: string,"request_reason": string,"request_status"?: string,"requested_by": string,"review_notes"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"target_profile_id": string,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -2685,6 +2839,7 @@ isOneToOne: false
                   Row: {
                     "action_type": string,"approval_class": Database["public"]['Enums']["governance_threshold_approval_class"],"created_at": string,"decision_class": Database["public"]['Enums']["governance_decision_class"] | null,"id": string,"is_active": boolean,"metadata": NonNullable<Json>,"min_approval_share": number,"min_approval_votes": number,"min_decisive_votes": number,"min_quorum": number,"notes": string | null,"requires_window_close": boolean,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_type": string,"approval_class"?: Database["public"]['Enums']["governance_threshold_approval_class"],"created_at"?: string,"decision_class"?: Database["public"]['Enums']["governance_decision_class"] | null,"id"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"min_approval_share"?: number,"min_approval_votes"?: number,"min_decisive_votes"?: number,"min_quorum"?: number,"notes"?: string | null,"requires_window_close"?: boolean,"updated_at"?: string
                   }
@@ -2698,6 +2853,7 @@ isOneToOne: false
                   Row: {
                     "assigned_at": string,"assigned_by": string | null,"created_at": string,"id": string,"is_active": boolean,"membership_role": Database["public"]['Enums']["governance_unit_membership_role"],"notes": string | null,"profile_id": string,"unit_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "assigned_at"?: string,"assigned_by"?: string | null,"created_at"?: string,"id"?: string,"is_active"?: boolean,"membership_role"?: Database["public"]['Enums']["governance_unit_membership_role"],"notes"?: string | null,"profile_id": string,"unit_id": string
                   }
@@ -2729,6 +2885,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"description": string,"domain_key": string,"id": string,"is_active": boolean,"is_system_unit": boolean,"name": string,"unit_key": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"description"?: string,"domain_key": string,"id"?: string,"is_active"?: boolean,"is_system_unit"?: boolean,"name": string,"unit_key": string,"updated_at"?: string
                   }
@@ -2748,6 +2905,7 @@ isOneToOne: false
                   Row: {
                     "activated_at": string,"added_by": string | null,"created_at": string,"custody_provider": string | null,"deactivated_at": string | null,"id": string,"is_active": boolean,"key_algorithm": string,"metadata": NonNullable<Json>,"signer_key": string,"signer_label": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "activated_at"?: string,"added_by"?: string | null,"created_at"?: string,"custody_provider"?: string | null,"deactivated_at"?: string | null,"id"?: string,"is_active"?: boolean,"key_algorithm"?: string,"metadata"?: NonNullable<Json>,"signer_key": string,"signer_label"?: string | null,"updated_at"?: string
                   }
@@ -2767,6 +2925,7 @@ isOneToOne: false
                   Row: {
                     "contract_reference": string | null,"created_at": string,"id": string,"is_enabled": boolean,"metadata": NonNullable<Json>,"network": string | null,"notes": string | null,"policy_key": string,"policy_name": string,"required_external_approvals": number,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "contract_reference"?: string | null,"created_at"?: string,"id"?: string,"is_enabled"?: boolean,"metadata"?: NonNullable<Json>,"network"?: string | null,"notes"?: string | null,"policy_key": string,"policy_name": string,"required_external_approvals"?: number,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -2786,6 +2945,7 @@ isOneToOne: false
                   Row: {
                     "acknowledged_at": string | null,"alert_key": string,"alert_message": string,"alert_scope": string,"alert_status": string,"created_at": string,"created_by": string | null,"id": string,"metadata": NonNullable<Json>,"opened_at": string,"proposal_id": string,"resolved_at": string | null,"resolved_by": string | null,"severity": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "acknowledged_at"?: string | null,"alert_key": string,"alert_message": string,"alert_scope": string,"alert_status"?: string,"created_at"?: string,"created_by"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"opened_at"?: string,"proposal_id": string,"resolved_at"?: string | null,"resolved_by"?: string | null,"severity": string,"updated_at"?: string
                   }
@@ -2817,6 +2977,7 @@ isOneToOne: false
                   Row: {
                     "audit_metadata": NonNullable<Json>,"audit_notes": string | null,"captured_at": string,"captured_by": string | null,"chain_proof_match_met": boolean,"created_at": string,"distinct_operators_count": number,"distinct_providers_count": number,"distinct_regions_count": number,"id": string,"min_distinct_relay_operators": number,"min_distinct_relay_providers": number,"min_distinct_relay_regions": number,"overall_diversity_met": boolean,"policy_enabled": boolean,"proposal_id": string,"relay_quorum_met": boolean,"required_relay_attestations": number,"verified_relay_count": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "audit_metadata"?: NonNullable<Json>,"audit_notes"?: string | null,"captured_at"?: string,"captured_by"?: string | null,"chain_proof_match_met"?: boolean,"created_at"?: string,"distinct_operators_count"?: number,"distinct_providers_count"?: number,"distinct_regions_count"?: number,"id"?: string,"min_distinct_relay_operators"?: number,"min_distinct_relay_providers"?: number,"min_distinct_relay_regions"?: number,"overall_diversity_met"?: boolean,"policy_enabled"?: boolean,"proposal_id": string,"relay_quorum_met"?: boolean,"required_relay_attestations"?: number,"verified_relay_count"?: number
                   }
@@ -2842,6 +3003,7 @@ isOneToOne: false
                   Row: {
                     "added_by": string | null,"created_at": string,"endpoint_url": string | null,"id": string,"is_active": boolean,"key_algorithm": string,"metadata": NonNullable<Json>,"relay_infrastructure_provider": string,"relay_jurisdiction_country_code": string,"relay_key": string,"relay_label": string | null,"relay_operator_label": string,"relay_operator_uri": string | null,"relay_region_code": string,"relay_trust_domain": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "added_by"?: string | null,"created_at"?: string,"endpoint_url"?: string | null,"id"?: string,"is_active"?: boolean,"key_algorithm"?: string,"metadata"?: NonNullable<Json>,"relay_infrastructure_provider"?: string,"relay_jurisdiction_country_code"?: string,"relay_key": string,"relay_label"?: string | null,"relay_operator_label"?: string,"relay_operator_uri"?: string | null,"relay_region_code"?: string,"relay_trust_domain"?: string,"updated_at"?: string
                   }
@@ -2861,6 +3023,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"is_enabled": boolean,"max_dominant_relay_jurisdiction_share_percent": number,"max_dominant_relay_operator_share_percent": number,"max_dominant_relay_provider_share_percent": number,"max_dominant_relay_region_share_percent": number,"max_dominant_relay_trust_domain_share_percent": number,"max_open_critical_relay_alerts": number,"metadata": NonNullable<Json>,"min_distinct_relay_jurisdictions": number,"min_distinct_relay_operators": number,"min_distinct_relay_providers": number,"min_distinct_relay_regions": number,"min_distinct_relay_trust_domains": number,"notes": string | null,"policy_key": string,"policy_name": string,"relay_attestation_sla_minutes": number,"require_chain_proof_match": boolean,"require_relay_ops_readiness": boolean,"require_trust_minimized_quorum": boolean,"required_relay_attestations": number,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"is_enabled"?: boolean,"max_dominant_relay_jurisdiction_share_percent"?: number,"max_dominant_relay_operator_share_percent"?: number,"max_dominant_relay_provider_share_percent"?: number,"max_dominant_relay_region_share_percent"?: number,"max_dominant_relay_trust_domain_share_percent"?: number,"max_open_critical_relay_alerts"?: number,"metadata"?: NonNullable<Json>,"min_distinct_relay_jurisdictions"?: number,"min_distinct_relay_operators"?: number,"min_distinct_relay_providers"?: number,"min_distinct_relay_regions"?: number,"min_distinct_relay_trust_domains"?: number,"notes"?: string | null,"policy_key": string,"policy_name": string,"relay_attestation_sla_minutes"?: number,"require_chain_proof_match"?: boolean,"require_relay_ops_readiness"?: boolean,"require_trust_minimized_quorum"?: boolean,"required_relay_attestations"?: number,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -2880,6 +3043,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"created_by": string | null,"error_message": string | null,"id": string,"observed_at": string,"open_alert_count": number,"processed_signer_count": number,"proposal_id": string,"run_payload": NonNullable<Json>,"run_scope": string,"run_status": string,"stale_signer_count": number,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"created_by"?: string | null,"error_message"?: string | null,"id"?: string,"observed_at"?: string,"open_alert_count"?: number,"processed_signer_count"?: number,"proposal_id": string,"run_payload"?: NonNullable<Json>,"run_scope": string,"run_status": string,"stale_signer_count"?: number,"updated_at"?: string
                   }
@@ -2905,6 +3069,7 @@ isOneToOne: false
                   Row: {
                     "actor_id": string | null,"created_at": string,"details": NonNullable<Json>,"execution_status": Database["public"]['Enums']["governance_implementation_status"],"execution_summary": string,"id": string,"implementation_id": string,"proposal_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_id"?: string | null,"created_at"?: string,"details"?: NonNullable<Json>,"execution_status": Database["public"]['Enums']["governance_implementation_status"],"execution_summary"?: string,"id"?: string,"implementation_id": string,"proposal_id": string
                   }
@@ -2936,6 +3101,7 @@ isOneToOne: false
                   Row: {
                     "captured_at": string,"captured_by": string | null,"created_at": string,"id": string,"manifest_hash": string,"manifest_payload": NonNullable<Json>,"manifest_scope": string,"manifest_version": string,"metadata": NonNullable<Json>,"proposal_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "captured_at"?: string,"captured_by"?: string | null,"created_at"?: string,"id"?: string,"manifest_hash": string,"manifest_payload"?: NonNullable<Json>,"manifest_scope": string,"manifest_version": string,"metadata"?: NonNullable<Json>,"proposal_id": string,"updated_at"?: string
                   }
@@ -2961,6 +3127,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"created_by": string | null,"distribution_channel": string,"id": string,"metadata": NonNullable<Json>,"package_id": string,"package_scope": string,"proposal_id": string,"signature": string,"signature_algorithm": string,"signed_at": string,"signer_identity_uri": string | null,"signer_jurisdiction_country_code": string | null,"signer_key": string,"signer_trust_domain": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"created_by"?: string | null,"distribution_channel"?: string,"id"?: string,"metadata"?: NonNullable<Json>,"package_id": string,"package_scope": string,"proposal_id": string,"signature": string,"signature_algorithm": string,"signed_at"?: string,"signer_identity_uri"?: string | null,"signer_jurisdiction_country_code"?: string | null,"signer_key": string,"signer_trust_domain"?: string,"updated_at"?: string
                   }
@@ -2992,6 +3159,7 @@ isOneToOne: false
                   Row: {
                     "captured_at": string,"captured_by": string | null,"created_at": string,"id": string,"metadata": NonNullable<Json>,"package_hash": string,"package_payload": NonNullable<Json>,"package_scope": string,"package_version": string,"proposal_id": string,"source_manifest_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "captured_at"?: string,"captured_by"?: string | null,"created_at"?: string,"id"?: string,"metadata"?: NonNullable<Json>,"package_hash": string,"package_payload"?: NonNullable<Json>,"package_scope": string,"package_version": string,"proposal_id": string,"source_manifest_id": string,"updated_at"?: string
                   }
@@ -3023,6 +3191,7 @@ isOneToOne: false
                   Row: {
                     "actor_id": string | null,"created_at": string,"event_type": string,"id": string,"payload": NonNullable<Json>,"proposal_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_id"?: string | null,"created_at"?: string,"event_type": string,"id"?: string,"payload"?: NonNullable<Json>,"proposal_id": string
                   }
@@ -3048,6 +3217,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"decision": Database["public"]['Enums']["governance_guardian_decision"],"id": string,"proposal_id": string,"rationale": string | null,"signed_at": string,"signer_profile_id": string,"snapshot": NonNullable<Json>,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"decision": Database["public"]['Enums']["governance_guardian_decision"],"id"?: string,"proposal_id": string,"rationale"?: string | null,"signed_at"?: string,"signer_profile_id": string,"snapshot"?: NonNullable<Json>,"updated_at"?: string
                   }
@@ -3073,6 +3243,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"decision": Database["public"]['Enums']["governance_guardian_decision"],"external_signer_id": string,"id": string,"payload_hash": string | null,"proposal_id": string,"rationale": string | null,"signature": string | null,"signature_reference": string | null,"signed_at": string,"signed_message": string | null,"snapshot": NonNullable<Json>,"updated_at": string,"verification_method": string,"verified_at": string,"verified_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"decision": Database["public"]['Enums']["governance_guardian_decision"],"external_signer_id": string,"id"?: string,"payload_hash"?: string | null,"proposal_id": string,"rationale"?: string | null,"signature"?: string | null,"signature_reference"?: string | null,"signed_at"?: string,"signed_message"?: string | null,"snapshot"?: NonNullable<Json>,"updated_at"?: string,"verification_method"?: string,"verified_at"?: string,"verified_by"?: string | null
                   }
@@ -3104,6 +3275,7 @@ isOneToOne: false
                   Row: {
                     "attestation_metadata": NonNullable<Json>,"chain_network": string | null,"chain_reference": string | null,"created_at": string,"decision": Database["public"]['Enums']["governance_guardian_decision"],"external_signer_id": string,"id": string,"payload_hash": string | null,"proposal_id": string,"relay_id": string,"relay_reference": string | null,"status": Database["public"]['Enums']["governance_guardian_relay_attestation_status"],"updated_at": string,"verified_at": string,"verified_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "attestation_metadata"?: NonNullable<Json>,"chain_network"?: string | null,"chain_reference"?: string | null,"created_at"?: string,"decision": Database["public"]['Enums']["governance_guardian_decision"],"external_signer_id": string,"id"?: string,"payload_hash"?: string | null,"proposal_id": string,"relay_id": string,"relay_reference"?: string | null,"status"?: Database["public"]['Enums']["governance_guardian_relay_attestation_status"],"updated_at"?: string,"verified_at"?: string,"verified_by"?: string | null
                   }
@@ -3141,6 +3313,7 @@ isOneToOne: false
                   Row: {
                     "assigned_at": string,"completed_at": string | null,"created_at": string,"created_by": string | null,"id": string,"implementation_summary": string,"metadata": NonNullable<Json>,"proposal_id": string,"started_at": string | null,"status": Database["public"]['Enums']["governance_implementation_status"],"unit_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "assigned_at"?: string,"completed_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"id"?: string,"implementation_summary"?: string,"metadata"?: NonNullable<Json>,"proposal_id": string,"started_at"?: string | null,"status"?: Database["public"]['Enums']["governance_implementation_status"],"unit_id": string,"updated_at"?: string
                   }
@@ -3172,6 +3345,7 @@ isOneToOne: false
                   Row: {
                     "choice": Database["public"]['Enums']["governance_vote_choice"],"created_at": string,"id": string,"proposal_id": string,"rationale": string | null,"snapshot": NonNullable<Json>,"updated_at": string,"voter_id": string,"weight": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "choice": Database["public"]['Enums']["governance_vote_choice"],"created_at"?: string,"id"?: string,"proposal_id": string,"rationale"?: string | null,"snapshot"?: NonNullable<Json>,"updated_at"?: string,"voter_id": string,"weight"?: number
                   }
@@ -3197,6 +3371,7 @@ isOneToOne: false
                   Row: {
                     "approval_threshold": number,"body": string,"bootstrap_mode": boolean,"closes_at": string,"created_at": string,"decision_class": Database["public"]['Enums']["governance_decision_class"],"eligible_voter_count_snapshot": number,"final_decision_summary": string | null,"id": string,"metadata": NonNullable<Json>,"opens_at": string,"proposal_type": string,"proposer_id": string,"required_quorum": number,"resolved_at": string | null,"status": Database["public"]['Enums']["governance_proposal_status"],"summary": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "approval_threshold"?: number,"body"?: string,"bootstrap_mode"?: boolean,"closes_at"?: string,"created_at"?: string,"decision_class"?: Database["public"]['Enums']["governance_decision_class"],"eligible_voter_count_snapshot"?: number,"final_decision_summary"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"opens_at"?: string,"proposal_type"?: string,"proposer_id": string,"required_quorum"?: number,"resolved_at"?: string | null,"status"?: Database["public"]['Enums']["governance_proposal_status"],"summary"?: string,"title": string,"updated_at"?: string
                   }
@@ -3216,6 +3391,7 @@ isOneToOne: false
                   Row: {
                     "adapter_key": string,"adapter_name": string,"added_by": string | null,"attestation_scheme": string,"created_at": string,"endpoint_url": string | null,"id": string,"is_active": boolean,"metadata": NonNullable<Json>,"network": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "adapter_key": string,"adapter_name": string,"added_by"?: string | null,"attestation_scheme"?: string,"created_at"?: string,"endpoint_url"?: string | null,"id"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"network": string,"updated_at"?: string
                   }
@@ -3235,6 +3411,7 @@ isOneToOne: false
                   Row: {
                     "adapter_id": string,"attempt_count": number,"batch_id": string,"block_height": number | null,"claim_expires_at": string | null,"claimed_at": string | null,"claimed_by": string | null,"completed_at": string | null,"created_at": string,"error_message": string | null,"id": string,"immutable_reference": string | null,"max_attempts": number,"metadata": NonNullable<Json>,"network": string,"next_attempt_at": string,"scheduled_at": string,"scheduled_by": string | null,"started_at": string | null,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "adapter_id": string,"attempt_count"?: number,"batch_id": string,"block_height"?: number | null,"claim_expires_at"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"completed_at"?: string | null,"created_at"?: string,"error_message"?: string | null,"id"?: string,"immutable_reference"?: string | null,"max_attempts"?: number,"metadata"?: NonNullable<Json>,"network": string,"next_attempt_at"?: string,"scheduled_at"?: string,"scheduled_by"?: string | null,"started_at"?: string | null,"status"?: string,"updated_at"?: string
                   }
@@ -3266,6 +3443,7 @@ isOneToOne: false
                   Row: {
                     "batch_id": string,"created_at": string,"event_actor_id": string | null,"event_created_at": string,"event_digest": string,"event_id": string,"event_payload": NonNullable<Json>,"event_position": number,"event_source": string,"id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "batch_id": string,"created_at"?: string,"event_actor_id"?: string | null,"event_created_at": string,"event_digest": string,"event_id": string,"event_payload"?: NonNullable<Json>,"event_position": number,"event_source": string,"id"?: string
                   }
@@ -3291,6 +3469,7 @@ isOneToOne: false
                   Row: {
                     "batch_id": string,"created_at": string,"id": string,"proof_payload": NonNullable<Json>,"proof_reference": string | null,"status": Database["public"]['Enums']["governance_public_audit_verification_status"],"updated_at": string,"verification_hash": string | null,"verified_at": string,"verified_by": string | null,"verifier_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "batch_id": string,"created_at"?: string,"id"?: string,"proof_payload"?: NonNullable<Json>,"proof_reference"?: string | null,"status": Database["public"]['Enums']["governance_public_audit_verification_status"],"updated_at"?: string,"verification_hash"?: string | null,"verified_at"?: string,"verified_by"?: string | null,"verifier_id": string
                   }
@@ -3322,6 +3501,7 @@ isOneToOne: false
                   Row: {
                     "anchor_network": string | null,"anchor_proof": Json | null,"anchor_reference": string | null,"anchored_at": string | null,"batch_hash": string,"batch_index": number,"batch_scope": string,"batch_source": string,"created_at": string,"created_by": string | null,"event_count": number,"from_created_at": string | null,"id": string,"metadata": NonNullable<Json>,"previous_batch_hash": string | null,"previous_batch_id": string | null,"to_created_at": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "anchor_network"?: string | null,"anchor_proof"?: Json | null,"anchor_reference"?: string | null,"anchored_at"?: string | null,"batch_hash": string,"batch_index"?: never,"batch_scope"?: string,"batch_source"?: string,"created_at"?: string,"created_by"?: string | null,"event_count"?: number,"from_created_at"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"previous_batch_hash"?: string | null,"previous_batch_id"?: string | null,"to_created_at"?: string | null,"updated_at"?: string
                   }
@@ -3347,6 +3527,7 @@ isOneToOne: false
                   Row: {
                     "acknowledged_at": string | null,"batch_id": string | null,"created_at": string,"created_by": string | null,"id": string,"oncall_channel": string,"opened_at": string,"page_key": string,"page_message": string,"page_payload": NonNullable<Json>,"page_status": string,"resolved_at": string | null,"resolved_by": string | null,"severity": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "acknowledged_at"?: string | null,"batch_id"?: string | null,"created_at"?: string,"created_by"?: string | null,"id"?: string,"oncall_channel": string,"opened_at"?: string,"page_key": string,"page_message": string,"page_payload"?: NonNullable<Json>,"page_status"?: string,"resolved_at"?: string | null,"resolved_by"?: string | null,"severity": string,"updated_at"?: string
                   }
@@ -3378,6 +3559,7 @@ isOneToOne: false
                   Row: {
                     "anchor_max_attempts": number,"claim_ttl_minutes": number,"created_at": string,"is_active": boolean,"metadata": NonNullable<Json>,"oncall_channel": string,"paging_enabled": boolean,"paging_failure_share_percent": number,"paging_stale_pending_minutes": number,"policy_key": string,"policy_name": string,"retry_base_delay_minutes": number,"retry_max_delay_minutes": number,"updated_at": string,"updated_by": string | null,"verifier_max_attempts": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "anchor_max_attempts"?: number,"claim_ttl_minutes"?: number,"created_at"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"oncall_channel"?: string,"paging_enabled"?: boolean,"paging_failure_share_percent"?: number,"paging_stale_pending_minutes"?: number,"policy_key": string,"policy_name": string,"retry_base_delay_minutes"?: number,"retry_max_delay_minutes"?: number,"updated_at"?: string,"updated_by"?: string | null,"verifier_max_attempts"?: number
                   }
@@ -3397,6 +3579,7 @@ isOneToOne: false
                   Row: {
                     "adapter_id": string | null,"anchored_at": string,"anchored_by": string | null,"batch_id": string,"block_height": number | null,"created_at": string,"id": string,"immutable_reference": string,"network": string,"proof_payload": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "adapter_id"?: string | null,"anchored_at"?: string,"anchored_by"?: string | null,"batch_id": string,"block_height"?: number | null,"created_at"?: string,"id"?: string,"immutable_reference": string,"network": string,"proof_payload"?: NonNullable<Json>
                   }
@@ -3428,6 +3611,7 @@ isOneToOne: false
                   Row: {
                     "batch_id": string,"block_height": number | null,"created_at": string,"id": string,"network": string,"proof_payload": NonNullable<Json>,"proof_reference": string,"recorded_at": string,"recorded_by": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "batch_id": string,"block_height"?: number | null,"created_at"?: string,"id"?: string,"network": string,"proof_payload"?: NonNullable<Json>,"proof_reference": string,"recorded_at"?: string,"recorded_by"?: string | null,"updated_at"?: string
                   }
@@ -3453,6 +3637,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"is_enabled": boolean,"metadata": NonNullable<Json>,"notes": string | null,"policy_key": string,"policy_name": string,"required_network_proof_count": number,"required_verified_count": number,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"is_enabled"?: boolean,"metadata"?: NonNullable<Json>,"notes"?: string | null,"policy_key": string,"policy_name": string,"required_network_proof_count"?: number,"required_verified_count"?: number,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -3472,6 +3657,7 @@ isOneToOne: false
                   Row: {
                     "attestation_metadata": NonNullable<Json>,"attestation_notes": string | null,"attestation_verdict": string,"attested_at": string,"attested_by": string,"batch_id": string,"exchange_channel": string,"id": string,"operator_identity_uri": string | null,"operator_jurisdiction_country_code": string | null,"operator_label": string,"operator_trust_domain": string,"package_hash": string,"package_id": string,"receipt_payload": Json | null,"receipt_signature": string | null,"receipt_signature_algorithm": string | null,"receipt_signer_key": string | null,"receipt_verification_notes": string | null,"receipt_verified": boolean | null,"receipt_verified_at": string | null,"receipt_verified_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "attestation_metadata"?: NonNullable<Json>,"attestation_notes"?: string | null,"attestation_verdict"?: string,"attested_at"?: string,"attested_by": string,"batch_id": string,"exchange_channel"?: string,"id"?: string,"operator_identity_uri"?: string | null,"operator_jurisdiction_country_code"?: string | null,"operator_label": string,"operator_trust_domain"?: string,"package_hash": string,"package_id": string,"receipt_payload"?: Json | null,"receipt_signature"?: string | null,"receipt_signature_algorithm"?: string | null,"receipt_signer_key"?: string | null,"receipt_verification_notes"?: string | null,"receipt_verified"?: boolean | null,"receipt_verified_at"?: string | null,"receipt_verified_by"?: string | null
                   }
@@ -3509,6 +3695,7 @@ isOneToOne: false
                   Row: {
                     "batch_id": string,"created_at": string,"created_by": string | null,"distribution_channel": string,"id": string,"metadata": NonNullable<Json>,"package_id": string,"package_scope": string,"signature": string,"signature_algorithm": string,"signed_at": string,"signer_identity_uri": string | null,"signer_jurisdiction_country_code": string | null,"signer_key": string,"signer_trust_domain": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "batch_id": string,"created_at"?: string,"created_by"?: string | null,"distribution_channel"?: string,"id"?: string,"metadata"?: NonNullable<Json>,"package_id": string,"package_scope": string,"signature": string,"signature_algorithm": string,"signed_at"?: string,"signer_identity_uri"?: string | null,"signer_jurisdiction_country_code"?: string | null,"signer_key": string,"signer_trust_domain"?: string,"updated_at"?: string
                   }
@@ -3540,6 +3727,7 @@ isOneToOne: false
                   Row: {
                     "batch_id": string,"captured_at": string,"captured_by": string | null,"created_at": string,"id": string,"metadata": NonNullable<Json>,"package_hash": string,"package_payload": NonNullable<Json>,"package_scope": string,"package_version": string,"source_directory_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "batch_id": string,"captured_at"?: string,"captured_by"?: string | null,"created_at"?: string,"id"?: string,"metadata"?: NonNullable<Json>,"package_hash": string,"package_payload"?: NonNullable<Json>,"package_scope": string,"package_version": string,"source_directory_id": string,"updated_at"?: string
                   }
@@ -3571,6 +3759,7 @@ isOneToOne: false
                   Row: {
                     "attempt_count": number,"batch_id": string,"claim_expires_at": string | null,"claimed_at": string | null,"claimed_by": string | null,"completed_at": string | null,"created_at": string,"error_message": string | null,"id": string,"max_attempts": number,"metadata": NonNullable<Json>,"next_attempt_at": string,"result_reference": string | null,"scheduled_at": string,"scheduled_by": string | null,"started_at": string | null,"status": Database["public"]['Enums']["governance_public_audit_verifier_job_status"],"updated_at": string,"verifier_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "attempt_count"?: number,"batch_id": string,"claim_expires_at"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"completed_at"?: string | null,"created_at"?: string,"error_message"?: string | null,"id"?: string,"max_attempts"?: number,"metadata"?: NonNullable<Json>,"next_attempt_at"?: string,"result_reference"?: string | null,"scheduled_at"?: string,"scheduled_by"?: string | null,"started_at"?: string | null,"status"?: Database["public"]['Enums']["governance_public_audit_verifier_job_status"],"updated_at"?: string,"verifier_id": string
                   }
@@ -3602,6 +3791,7 @@ isOneToOne: false
                   Row: {
                     "batch_id": string | null,"check_payload": NonNullable<Json>,"check_status": string,"checked_at": string,"checked_by": string | null,"created_at": string,"error_message": string | null,"id": string,"latency_ms": number | null,"mirror_id": string,"observed_batch_hash": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "batch_id"?: string | null,"check_payload"?: NonNullable<Json>,"check_status": string,"checked_at"?: string,"checked_by"?: string | null,"created_at"?: string,"error_message"?: string | null,"id"?: string,"latency_ms"?: number | null,"mirror_id": string,"observed_batch_hash"?: string | null,"updated_at"?: string
                   }
@@ -3633,6 +3823,7 @@ isOneToOne: false
                   Row: {
                     "batch_id": string | null,"created_at": string,"directory_hash": string,"directory_payload": NonNullable<Json>,"directory_version": string,"id": string,"metadata": NonNullable<Json>,"published_at": string,"published_by": string | null,"signature": string,"signature_algorithm": string,"signer_id": string,"signer_key": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "batch_id"?: string | null,"created_at"?: string,"directory_hash": string,"directory_payload"?: NonNullable<Json>,"directory_version"?: string,"id"?: string,"metadata"?: NonNullable<Json>,"published_at"?: string,"published_by"?: string | null,"signature": string,"signature_algorithm"?: string,"signer_id": string,"signer_key": string,"updated_at"?: string
                   }
@@ -3664,6 +3855,7 @@ isOneToOne: false
                   Row: {
                     "attestation_decision": string,"attestation_payload": NonNullable<Json>,"attestation_signature": string,"attested_at": string,"attested_by": string | null,"created_at": string,"directory_id": string,"id": string,"signer_id": string,"signer_key": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "attestation_decision": string,"attestation_payload"?: NonNullable<Json>,"attestation_signature": string,"attested_at"?: string,"attested_by"?: string | null,"created_at"?: string,"directory_id": string,"id"?: string,"signer_id": string,"signer_key": string,"updated_at"?: string
                   }
@@ -3695,6 +3887,7 @@ isOneToOne: false
                   Row: {
                     "added_by": string | null,"created_at": string,"governance_last_reviewed_at": string | null,"governance_status": string,"id": string,"is_active": boolean,"metadata": NonNullable<Json>,"public_key": string,"signer_key": string,"signer_label": string | null,"signing_algorithm": string,"trust_tier": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "added_by"?: string | null,"created_at"?: string,"governance_last_reviewed_at"?: string | null,"governance_status"?: string,"id"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"public_key": string,"signer_key": string,"signer_label"?: string | null,"signing_algorithm"?: string,"trust_tier"?: string,"updated_at"?: string
                   }
@@ -3714,6 +3907,7 @@ isOneToOne: false
                   Row: {
                     "candidate_key": string,"candidate_label": string | null,"candidate_status": string,"created_at": string,"discovery_confidence": number,"discovery_run_id": string | null,"endpoint_url": string,"first_seen_at": string,"id": string,"jurisdiction_country_code": string,"last_seen_at": string,"metadata": NonNullable<Json>,"mirror_type": string,"operator_label": string,"region_code": string,"source_id": string,"trust_domain": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "candidate_key": string,"candidate_label"?: string | null,"candidate_status"?: string,"created_at"?: string,"discovery_confidence"?: number,"discovery_run_id"?: string | null,"endpoint_url": string,"first_seen_at"?: string,"id"?: string,"jurisdiction_country_code"?: string,"last_seen_at"?: string,"metadata"?: NonNullable<Json>,"mirror_type"?: string,"operator_label"?: string,"region_code"?: string,"source_id": string,"trust_domain"?: string,"updated_at"?: string
                   }
@@ -3739,6 +3933,7 @@ isOneToOne: false
                   Row: {
                     "accepted_candidate_count": number,"batch_id": string | null,"created_at": string,"created_by": string | null,"discovered_count": number,"error_message": string | null,"id": string,"observed_at": string,"run_payload": NonNullable<Json>,"run_status": string,"source_id": string,"stale_candidate_count": number,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "accepted_candidate_count"?: number,"batch_id"?: string | null,"created_at"?: string,"created_by"?: string | null,"discovered_count"?: number,"error_message"?: string | null,"id"?: string,"observed_at"?: string,"run_payload"?: NonNullable<Json>,"run_status": string,"source_id": string,"stale_candidate_count"?: number,"updated_at"?: string
                   }
@@ -3770,6 +3965,7 @@ isOneToOne: false
                   Row: {
                     "added_by": string | null,"created_at": string,"discovery_scope": string,"endpoint_url": string,"id": string,"is_active": boolean,"metadata": NonNullable<Json>,"source_key": string,"source_label": string | null,"trust_tier": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "added_by"?: string | null,"created_at"?: string,"discovery_scope"?: string,"endpoint_url": string,"id"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"source_key": string,"source_label"?: string | null,"trust_tier"?: string,"updated_at"?: string
                   }
@@ -3789,6 +3985,7 @@ isOneToOne: false
                   Row: {
                     "cooldown_minutes": number,"created_at": string,"created_by": string | null,"id": string,"is_active": boolean,"max_failures_before_cooldown": number,"max_mirror_candidates": number,"max_mirror_latency_ms": number,"max_open_critical_federation_alerts": number,"metadata": NonNullable<Json>,"min_healthy_mirrors": number,"min_independent_directory_signers": number,"min_onboarded_federation_operators": number,"min_policy_ratification_approvals": number,"min_signer_governance_independent_approvals": number,"mirror_selection_strategy": string,"policy_key": string,"policy_name": string,"prefer_same_region": boolean,"require_federation_ops_readiness": boolean,"require_policy_ratification": boolean,"require_signer_governance_approval": boolean,"required_distinct_operators": number,"required_distinct_regions": number,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "cooldown_minutes"?: number,"created_at"?: string,"created_by"?: string | null,"id"?: string,"is_active"?: boolean,"max_failures_before_cooldown"?: number,"max_mirror_candidates"?: number,"max_mirror_latency_ms"?: number,"max_open_critical_federation_alerts"?: number,"metadata"?: NonNullable<Json>,"min_healthy_mirrors"?: number,"min_independent_directory_signers"?: number,"min_onboarded_federation_operators"?: number,"min_policy_ratification_approvals"?: number,"min_signer_governance_independent_approvals"?: number,"mirror_selection_strategy"?: string,"policy_key": string,"policy_name": string,"prefer_same_region"?: boolean,"require_federation_ops_readiness"?: boolean,"require_policy_ratification"?: boolean,"require_signer_governance_approval"?: boolean,"required_distinct_operators"?: number,"required_distinct_regions"?: number,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -3814,6 +4011,7 @@ isOneToOne: false
                   Row: {
                     "acknowledged_at": string | null,"alert_key": string,"alert_message": string,"alert_scope": string,"alert_status": string,"created_at": string,"created_by": string | null,"id": string,"metadata": NonNullable<Json>,"opened_at": string,"resolved_at": string | null,"resolved_by": string | null,"severity": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "acknowledged_at"?: string | null,"alert_key": string,"alert_message": string,"alert_scope": string,"alert_status"?: string,"created_at"?: string,"created_by"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"opened_at"?: string,"resolved_at"?: string | null,"resolved_by"?: string | null,"severity": string,"updated_at"?: string
                   }
@@ -3839,6 +4037,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"metadata": NonNullable<Json>,"onboarded_mirror_id": string | null,"operator_id": string,"operator_key": string,"request_status": string,"requested_by": string | null,"requested_endpoint_url": string,"requested_jurisdiction_country_code": string,"requested_mirror_key": string,"requested_mirror_label": string | null,"requested_mirror_type": string,"requested_region_code": string,"requested_trust_domain": string,"review_notes": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"metadata"?: NonNullable<Json>,"onboarded_mirror_id"?: string | null,"operator_id": string,"operator_key": string,"request_status"?: string,"requested_by"?: string | null,"requested_endpoint_url": string,"requested_jurisdiction_country_code"?: string,"requested_mirror_key": string,"requested_mirror_label"?: string | null,"requested_mirror_type"?: string,"requested_region_code"?: string,"requested_trust_domain"?: string,"review_notes"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"updated_at"?: string
                   }
@@ -3876,6 +4075,7 @@ isOneToOne: false
                   Row: {
                     "contact_endpoint": string | null,"created_at": string,"created_by": string | null,"id": string,"jurisdiction_country_code": string,"metadata": NonNullable<Json>,"onboarding_status": string,"operator_key": string,"operator_label": string | null,"trust_domain": string,"updated_at": string,"updated_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "contact_endpoint"?: string | null,"created_at"?: string,"created_by"?: string | null,"id"?: string,"jurisdiction_country_code"?: string,"metadata"?: NonNullable<Json>,"onboarding_status"?: string,"operator_key": string,"operator_label"?: string | null,"trust_domain"?: string,"updated_at"?: string,"updated_by"?: string | null
                   }
@@ -3901,6 +4101,7 @@ isOneToOne: false
                   Row: {
                     "approved_request_count": number,"created_at": string,"created_by": string | null,"discovered_request_count": number,"error_message": string | null,"id": string,"observed_at": string,"onboarded_request_count": number,"open_alert_count": number,"run_payload": NonNullable<Json>,"run_scope": string,"run_status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "approved_request_count"?: number,"created_at"?: string,"created_by"?: string | null,"discovered_request_count"?: number,"error_message"?: string | null,"id"?: string,"observed_at"?: string,"onboarded_request_count"?: number,"open_alert_count"?: number,"run_payload"?: NonNullable<Json>,"run_scope": string,"run_status": string,"updated_at"?: string
                   }
@@ -3920,6 +4121,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"policy_hash": string,"policy_key": string,"ratification_decision": string,"ratification_payload": NonNullable<Json>,"ratification_signature": string,"ratified_at": string,"ratified_by": string | null,"signer_id": string,"signer_key": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"policy_hash": string,"policy_key": string,"ratification_decision": string,"ratification_payload"?: NonNullable<Json>,"ratification_signature": string,"ratified_at"?: string,"ratified_by"?: string | null,"signer_id": string,"signer_key": string,"updated_at"?: string
                   }
@@ -3945,6 +4147,7 @@ isOneToOne: false
                   Row: {
                     "attempt_count": number,"batch_id": string | null,"completed_at": string | null,"completed_by": string | null,"created_at": string,"created_by": string | null,"error_message": string | null,"id": string,"max_attempts": number,"metadata": NonNullable<Json>,"mirror_id": string,"observed_batch_hash": string | null,"observed_check_status": string | null,"observed_latency_ms": number | null,"probe_timeout_ms": number,"scheduled_at": string,"started_at": string | null,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "attempt_count"?: number,"batch_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"created_at"?: string,"created_by"?: string | null,"error_message"?: string | null,"id"?: string,"max_attempts"?: number,"metadata"?: NonNullable<Json>,"mirror_id": string,"observed_batch_hash"?: string | null,"observed_check_status"?: string | null,"observed_latency_ms"?: number | null,"probe_timeout_ms"?: number,"scheduled_at"?: string,"started_at"?: string | null,"status"?: string,"updated_at"?: string
                   }
@@ -3982,6 +4185,7 @@ isOneToOne: false
                   Row: {
                     "attestation_decision": string,"attestation_payload": NonNullable<Json>,"attestation_signature": string,"attested_at": string,"attested_by": string | null,"attestor_signer_id": string,"attestor_signer_key": string,"created_at": string,"id": string,"target_signer_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "attestation_decision": string,"attestation_payload"?: NonNullable<Json>,"attestation_signature": string,"attested_at"?: string,"attested_by"?: string | null,"attestor_signer_id": string,"attestor_signer_key": string,"created_at"?: string,"id"?: string,"target_signer_id": string,"updated_at"?: string
                   }
@@ -4013,6 +4217,7 @@ isOneToOne: false
                   Row: {
                     "added_by": string | null,"created_at": string,"endpoint_url": string,"id": string,"is_active": boolean,"jurisdiction_country_code": string,"metadata": NonNullable<Json>,"mirror_key": string,"mirror_label": string | null,"mirror_type": string,"operator_label": string,"region_code": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "added_by"?: string | null,"created_at"?: string,"endpoint_url": string,"id"?: string,"is_active"?: boolean,"jurisdiction_country_code"?: string,"metadata"?: NonNullable<Json>,"mirror_key": string,"mirror_label"?: string | null,"mirror_type"?: string,"operator_label"?: string,"region_code"?: string,"updated_at"?: string
                   }
@@ -4032,6 +4237,7 @@ isOneToOne: false
                   Row: {
                     "added_by": string | null,"created_at": string,"endpoint_url": string | null,"id": string,"is_active": boolean,"key_algorithm": string,"metadata": NonNullable<Json>,"updated_at": string,"verifier_key": string,"verifier_label": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "added_by"?: string | null,"created_at"?: string,"endpoint_url"?: string | null,"id"?: string,"is_active"?: boolean,"key_algorithm"?: string,"metadata"?: NonNullable<Json>,"updated_at"?: string,"verifier_key": string,"verifier_label"?: string | null
                   }
@@ -4051,6 +4257,7 @@ isOneToOne: false
                   Row: {
                     "appeal_reason": string,"created_at": string,"evidence_notes": string | null,"id": string,"metadata": NonNullable<Json>,"opened_at": string,"profile_id": string,"resolution_notes": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"sanction_id": string,"status": Database["public"]['Enums']["governance_sanction_appeal_status"],"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "appeal_reason"?: string,"created_at"?: string,"evidence_notes"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"opened_at"?: string,"profile_id": string,"resolution_notes"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"sanction_id": string,"status"?: Database["public"]['Enums']["governance_sanction_appeal_status"],"updated_at"?: string
                   }
@@ -4082,6 +4289,7 @@ isOneToOne: false
                   Row: {
                     "blocks_execution": boolean,"blocks_governance_all": boolean,"blocks_proposal_creation": boolean,"blocks_verification_review": boolean,"blocks_voting": boolean,"created_at": string,"ends_at": string | null,"id": string,"is_active": boolean,"issued_by": string | null,"lifted_at": string | null,"lifted_by": string | null,"metadata": NonNullable<Json>,"notes": string | null,"profile_id": string,"reason": string,"starts_at": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "blocks_execution"?: boolean,"blocks_governance_all"?: boolean,"blocks_proposal_creation"?: boolean,"blocks_verification_review"?: boolean,"blocks_voting"?: boolean,"created_at"?: string,"ends_at"?: string | null,"id"?: string,"is_active"?: boolean,"issued_by"?: string | null,"lifted_at"?: string | null,"lifted_by"?: string | null,"metadata"?: NonNullable<Json>,"notes"?: string | null,"profile_id": string,"reason"?: string,"starts_at"?: string,"updated_at"?: string
                   }
@@ -4113,6 +4321,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"critical_backlog": boolean,"id": string,"metadata": NonNullable<Json>,"open_or_ack_page_count": number,"receipt_pending_count": number,"requested_lookback_hours": number | null,"run_finished_at": string | null,"run_message": string | null,"run_started_at": string,"run_status": string,"stale_receipt_count": number,"trigger_source": string,"triggered_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"critical_backlog"?: boolean,"id"?: string,"metadata"?: NonNullable<Json>,"open_or_ack_page_count"?: number,"receipt_pending_count"?: number,"requested_lookback_hours"?: number | null,"run_finished_at"?: string | null,"run_message"?: string | null,"run_started_at"?: string,"run_status": string,"stale_receipt_count"?: number,"trigger_source": string,"triggered_by"?: string | null
                   }
@@ -4132,6 +4341,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"critical_pending_threshold": number,"critical_stale_receipt_count_threshold": number,"escalation_enabled": boolean,"id": string,"lookback_hours": number,"metadata": NonNullable<Json>,"oncall_channel": string,"policy_key": string,"policy_name": string,"receipt_max_verification_age_hours": number,"updated_at": string,"updated_by": string | null,"warning_pending_threshold": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"critical_pending_threshold"?: number,"critical_stale_receipt_count_threshold"?: number,"escalation_enabled"?: boolean,"id"?: string,"lookback_hours"?: number,"metadata"?: NonNullable<Json>,"oncall_channel"?: string,"policy_key": string,"policy_name": string,"receipt_max_verification_age_hours"?: number,"updated_at"?: string,"updated_by"?: string | null,"warning_pending_threshold"?: number
                   }
@@ -4151,6 +4361,7 @@ isOneToOne: false
                   Row: {
                     "actor_profile_id": string | null,"created_at": string,"event_message": string,"event_type": string,"id": string,"metadata": NonNullable<Json>,"policy_key": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_profile_id"?: string | null,"created_at"?: string,"event_message": string,"event_type": string,"id"?: string,"metadata"?: NonNullable<Json>,"policy_key": string
                   }
@@ -4170,6 +4381,7 @@ isOneToOne: false
                   Row: {
                     "action_id": string,"comment": string | null,"created_at": string,"helped": string,"id": string,"profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_id": string,"comment"?: string | null,"created_at"?: string,"helped": string,"id"?: string,"profile_id": string
                   }
@@ -4195,6 +4407,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"dismissed": boolean,"domain": string,"follow_up_at": string | null,"id": string,"intervention_key": string | null,"kind": string,"library_version": string | null,"member_note": string | null,"not_relevant": boolean,"plan_id": string | null,"profile_id": string,"recommendation_model": string | null,"related_path": string | null,"selection_id": string | null,"status": string,"target_date": string | null,"title": string,"why": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"dismissed"?: boolean,"domain": string,"follow_up_at"?: string | null,"id"?: string,"intervention_key"?: string | null,"kind": string,"library_version"?: string | null,"member_note"?: string | null,"not_relevant"?: boolean,"plan_id"?: string | null,"profile_id": string,"recommendation_model"?: string | null,"related_path"?: string | null,"selection_id"?: string | null,"status"?: string,"target_date"?: string | null,"title": string,"why": string
                   }
@@ -4226,6 +4439,7 @@ isOneToOne: false
                   Row: {
                     "allowed_use": string,"created_at": string,"id": string,"instrument_references": Json | null,"interpretation_rules": NonNullable<Json>,"language": string,"license": string | null,"name": string,"publisher": string | null,"questions": NonNullable<Json>,"scoring_logic": NonNullable<Json>,"slug": string,"source_url": string | null,"version": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "allowed_use"?: string,"created_at"?: string,"id"?: string,"instrument_references"?: Json | null,"interpretation_rules"?: NonNullable<Json>,"language"?: string,"license"?: string | null,"name": string,"publisher"?: string | null,"questions"?: NonNullable<Json>,"scoring_logic"?: NonNullable<Json>,"slug": string,"source_url"?: string | null,"version": string
                   }
@@ -4239,6 +4453,7 @@ isOneToOne: false
                   Row: {
                     "answers": NonNullable<Json>,"created_at": string,"id": string,"instrument_id": string,"internal_score": Json | null,"profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "answers"?: NonNullable<Json>,"created_at"?: string,"id"?: string,"instrument_id": string,"internal_score"?: Json | null,"profile_id": string
                   }
@@ -4264,6 +4479,7 @@ isOneToOne: false
                   Row: {
                     "category": string,"cause_group": string,"confirmed": boolean,"created_at": string,"domain": string | null,"id": string,"is_ai_suggestion": boolean,"note": string | null,"polarity": string,"profile_id": string,"source_id": string | null,"source_kind": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "category": string,"cause_group": string,"confirmed"?: boolean,"created_at"?: string,"domain"?: string | null,"id"?: string,"is_ai_suggestion"?: boolean,"note"?: string | null,"polarity"?: string,"profile_id": string,"source_id"?: string | null,"source_kind": string
                   }
@@ -4283,6 +4499,7 @@ isOneToOne: false
                   Row: {
                     "affecting_most": string | null,"areas": NonNullable<Json>,"created_at": string,"feeling": string,"id": string,"note": string | null,"profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "affecting_most"?: string | null,"areas"?: NonNullable<Json>,"created_at"?: string,"feeling": string,"id"?: string,"note"?: string | null,"profile_id": string
                   }
@@ -4302,6 +4519,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"domain": string,"id": string,"profile_id": string,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"domain": string,"id"?: string,"profile_id": string,"status"?: string,"updated_at"?: string
                   }
@@ -4321,6 +4539,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"domain_answers": NonNullable<Json>,"help_areas": (string)[],"id": string,"instrument_slug": string | null,"month_start": string,"profile_id": string,"updated_at": string,"wants_help": boolean
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"domain_answers"?: NonNullable<Json>,"help_areas"?: (string)[],"id"?: string,"instrument_slug"?: string | null,"month_start": string,"profile_id": string,"updated_at"?: string,"wants_help"?: boolean
                   }
@@ -4340,6 +4559,7 @@ isOneToOne: false
                   Row: {
                     "id": string,"min_cohort_size": number,"notes": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "id"?: string,"min_cohort_size"?: number,"notes"?: string | null,"updated_at"?: string
                   }
@@ -4353,6 +4573,7 @@ isOneToOne: false
                   Row: {
                     "checkins_enabled": boolean,"created_at": string,"optional_sharing_enabled": boolean,"profile_id": string,"recommendations_enabled": boolean,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "checkins_enabled"?: boolean,"created_at"?: string,"optional_sharing_enabled"?: boolean,"profile_id": string,"recommendations_enabled"?: boolean,"updated_at"?: string
                   }
@@ -4372,6 +4593,7 @@ isOneToOne: true
                   Row: {
                     "computed_at": string,"confidence": string,"domain_internal": NonNullable<Json>,"domain_levels": NonNullable<Json>,"high_priority_domains": (string)[],"id": string,"model_version": string,"overall_internal": number | null,"overall_level": string | null,"profile_id": string,"strongest_domains": (string)[],"trend": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "computed_at"?: string,"confidence"?: string,"domain_internal"?: NonNullable<Json>,"domain_levels"?: NonNullable<Json>,"high_priority_domains"?: (string)[],"id"?: string,"model_version"?: string,"overall_internal"?: number | null,"overall_level"?: string | null,"profile_id": string,"strongest_domains"?: (string)[],"trend"?: string
                   }
@@ -4391,6 +4613,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"domain_answers": NonNullable<Json>,"id": string,"profile_id": string,"updated_at": string,"week_start": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"domain_answers"?: NonNullable<Json>,"id"?: string,"profile_id": string,"updated_at"?: string,"week_start": string
                   }
@@ -4410,6 +4633,7 @@ isOneToOne: false
                   Row: {
                     "domain": string,"evidence_strength": string,"factor_category": string | null,"human_outcome": string,"id": string,"intervention": string,"intervention_category": string | null,"limitations": string,"operational_outcome": string,"problem": string,"published_at": string,"published_by": string,"replication_notes": string | null,"review_id": string,"solution_record_id": string | null,"status": string,"title": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "domain": string,"evidence_strength": string,"factor_category"?: string | null,"human_outcome": string,"id"?: string,"intervention": string,"intervention_category"?: string | null,"limitations": string,"operational_outcome": string,"problem": string,"published_at"?: string,"published_by": string,"replication_notes"?: string | null,"review_id": string,"solution_record_id"?: string | null,"status": string,"title": string
                   }
@@ -4441,6 +4665,7 @@ isOneToOne: false
                   Row: {
                     "action": string,"actor_profile_id": string,"created_at": string,"id": string,"review_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "action": string,"actor_profile_id": string,"created_at"?: string,"id"?: string,"review_id"?: string | null
                   }
@@ -4466,6 +4691,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"created_by": string,"event_type": string,"id": string,"note": string | null,"occurred_at": string,"review_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"created_by": string,"event_type": string,"id"?: string,"note"?: string | null,"occurred_at"?: string,"review_id": string
                   }
@@ -4491,6 +4717,7 @@ isOneToOne: false
                   Row: {
                     "aggregate_snapshot_id": string,"created_at": string,"evidence_role": string,"id": string,"period_order": number,"review_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "aggregate_snapshot_id": string,"created_at"?: string,"evidence_role": string,"id"?: string,"period_order"?: number,"review_id": string
                   }
@@ -4516,6 +4743,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"created_by": string,"factor_kind": string,"id": string,"note": string,"review_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"created_by": string,"factor_kind": string,"id"?: string,"note": string,"review_id": string
                   }
@@ -4541,6 +4769,7 @@ isOneToOne: false
                   Row: {
                     "challenge_id": string | null,"closed_at": string | null,"closed_reason": string | null,"comparison_model_version": string,"composition_caveat": boolean,"created_at": string,"created_by": string,"evaluation_planned": boolean,"evidence_model_version": string,"evidence_strength": string,"governance_solution_id": string | null,"id": string,"interpretation": string | null,"intervention_action_id": string | null,"intervention_started_at": string | null,"intervention_title": string,"next_review_window": string | null,"objective": string,"operational_outcome": string | null,"overlapping_interventions": boolean,"project_id": string | null,"published_public": boolean,"research_reference": string | null,"scope_id": string,"solution_record_id": string | null,"status": string,"systemic_issue_candidate_id": string | null,"target_domain": string,"target_factor": string | null,"uncertainty_note": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "challenge_id"?: string | null,"closed_at"?: string | null,"closed_reason"?: string | null,"comparison_model_version"?: string,"composition_caveat"?: boolean,"created_at"?: string,"created_by": string,"evaluation_planned"?: boolean,"evidence_model_version"?: string,"evidence_strength"?: string,"governance_solution_id"?: string | null,"id"?: string,"interpretation"?: string | null,"intervention_action_id"?: string | null,"intervention_started_at"?: string | null,"intervention_title": string,"next_review_window"?: string | null,"objective": string,"operational_outcome"?: string | null,"overlapping_interventions"?: boolean,"project_id"?: string | null,"published_public"?: boolean,"research_reference"?: string | null,"scope_id": string,"solution_record_id"?: string | null,"status"?: string,"systemic_issue_candidate_id"?: string | null,"target_domain": string,"target_factor"?: string | null,"uncertainty_note"?: string | null,"updated_at"?: string
                   }
@@ -4602,6 +4831,7 @@ isOneToOne: false
                   Row: {
                     "artifact_hash": string | null,"artifact_kind": Database["public"]['Enums']["identity_verification_artifact_kind"],"case_id": string,"created_at": string,"created_by": string | null,"id": string,"metadata": NonNullable<Json>,"storage_path": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "artifact_hash"?: string | null,"artifact_kind": Database["public"]['Enums']["identity_verification_artifact_kind"],"case_id": string,"created_at"?: string,"created_by"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"storage_path"?: string | null
                   }
@@ -4627,6 +4857,7 @@ isOneToOne: false
                   Row: {
                     "contact_info_completed": boolean,"created_at": string,"discrepancy_flags": (string)[],"id": string,"last_reviewed_by": string | null,"live_verification_completed": boolean,"metadata": NonNullable<Json>,"notes": string | null,"personal_info_completed": boolean,"profile_id": string,"resolved_at": string | null,"reviewed_at": string | null,"status": Database["public"]['Enums']["identity_verification_case_status"],"submitted_at": string | null,"updated_at": string,"verification_method": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "contact_info_completed"?: boolean,"created_at"?: string,"discrepancy_flags"?: (string)[],"id"?: string,"last_reviewed_by"?: string | null,"live_verification_completed"?: boolean,"metadata"?: NonNullable<Json>,"notes"?: string | null,"personal_info_completed"?: boolean,"profile_id": string,"resolved_at"?: string | null,"reviewed_at"?: string | null,"status"?: Database["public"]['Enums']["identity_verification_case_status"],"submitted_at"?: string | null,"updated_at"?: string,"verification_method"?: string
                   }
@@ -4652,6 +4883,7 @@ isOneToOne: true
                   Row: {
                     "id": string,"provider_key": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "id"?: string,"provider_key": string
                   }
@@ -4665,6 +4897,7 @@ isOneToOne: true
                   Row: {
                     "case_id": string,"created_at": string,"decision": Database["public"]['Enums']["identity_verification_decision"],"id": string,"notes": string | null,"reviewer_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "case_id": string,"created_at"?: string,"decision": Database["public"]['Enums']["identity_verification_decision"],"id"?: string,"notes"?: string | null,"reviewer_id"?: string | null
                   }
@@ -4690,6 +4923,7 @@ isOneToOne: false
                   Row: {
                     "challenge_id": string,"created_at": string,"id": string,"key_steps": string | null,"outcome_evidence": string | null,"proposal_id": string,"publisher_profile_id": string,"status": string,"summary": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "challenge_id": string,"created_at"?: string,"id"?: string,"key_steps"?: string | null,"outcome_evidence"?: string | null,"proposal_id": string,"publisher_profile_id": string,"status"?: string,"summary": string,"title": string,"updated_at"?: string
                   }
@@ -4721,6 +4955,7 @@ isOneToOne: false
                   Row: {
                     "capital_points": number,"created_at": string,"created_by": string | null,"funder_id": string,"funding_commitment_id": string,"id": string,"legal_instrument_id": string | null,"round_id": string | null,"verified_capital_usd": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "capital_points": number,"created_at"?: string,"created_by"?: string | null,"funder_id": string,"funding_commitment_id": string,"id"?: string,"legal_instrument_id"?: string | null,"round_id"?: string | null,"verified_capital_usd": number
                   }
@@ -4746,6 +4981,7 @@ isOneToOne: true
                   Row: {
                     "challenge_id": string | null,"created_at": string,"description": string,"gap_kind": string,"id": string,"opportunity_id": string | null,"program_id": string,"publisher_profile_id": string,"resolution_notes": string | null,"result_resource_id": string | null,"result_solution_record_id": string | null,"space_id": string,"status": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "challenge_id"?: string | null,"created_at"?: string,"description": string,"gap_kind"?: string,"id"?: string,"opportunity_id"?: string | null,"program_id": string,"publisher_profile_id": string,"resolution_notes"?: string | null,"result_resource_id"?: string | null,"result_solution_record_id"?: string | null,"space_id": string,"status"?: string,"title": string,"updated_at"?: string
                   }
@@ -4801,6 +5037,7 @@ isOneToOne: false
                   Row: {
                     "attribution_kind": string,"created_at": string,"id": string,"organization_name": string | null,"profile_id": string | null,"resource_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "attribution_kind": string,"created_at"?: string,"id"?: string,"organization_name"?: string | null,"profile_id"?: string | null,"resource_id": string
                   }
@@ -4826,6 +5063,7 @@ isOneToOne: false
                   Row: {
                     "body_text": string | null,"challenge_id": string | null,"created_at": string,"external_url": string | null,"id": string,"opportunity_id": string | null,"pathway_order": number | null,"program_id": string,"publisher_profile_id": string,"related_skills": (string)[],"resource_type": string,"reviewer_notes": string | null,"solution_record_id": string | null,"source_evidence": string | null,"space_id": string,"status": string,"summary": string,"title": string,"uncertainty_notes": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "body_text"?: string | null,"challenge_id"?: string | null,"created_at"?: string,"external_url"?: string | null,"id"?: string,"opportunity_id"?: string | null,"pathway_order"?: number | null,"program_id": string,"publisher_profile_id": string,"related_skills"?: (string)[],"resource_type"?: string,"reviewer_notes"?: string | null,"solution_record_id"?: string | null,"source_evidence"?: string | null,"space_id": string,"status"?: string,"summary": string,"title": string,"uncertainty_notes"?: string | null,"updated_at"?: string
                   }
@@ -4875,6 +5113,7 @@ isOneToOne: false
                   Row: {
                     "area_node_id": string | null,"created_at": string,"description": string | null,"id": string,"program_id": string,"publisher_profile_id": string,"status": string,"summary": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"program_id": string,"publisher_profile_id": string,"status"?: string,"summary": string,"title": string,"updated_at"?: string
                   }
@@ -4906,6 +5145,7 @@ isOneToOne: false
                   Row: {
                     "body": string | null,"created_at": string,"id": string,"label": string,"section_id": string,"slug": string,"sort_order": number,"summary": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "body"?: string | null,"created_at"?: string,"id"?: string,"label": string,"section_id": string,"slug": string,"sort_order"?: number,"summary": string,"updated_at"?: string
                   }
@@ -4925,6 +5165,7 @@ isOneToOne: false
                   Row: {
                     "author_id": string,"contribution_type": Database["public"]['Enums']["law_contribution_type"],"created_at": string,"id": string,"note": string,"reviewed_at": string | null,"reviewer_id": string | null,"reviewer_notes": string | null,"source_id": string | null,"source_reference": string | null,"status": Database["public"]['Enums']["law_contribution_status"],"title": string,"track": Database["public"]['Enums']["law_track"],"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "author_id": string,"contribution_type": Database["public"]['Enums']["law_contribution_type"],"created_at"?: string,"id"?: string,"note": string,"reviewed_at"?: string | null,"reviewer_id"?: string | null,"reviewer_notes"?: string | null,"source_id"?: string | null,"source_reference"?: string | null,"status"?: Database["public"]['Enums']["law_contribution_status"],"title": string,"track": Database["public"]['Enums']["law_track"],"updated_at"?: string
                   }
@@ -4956,6 +5197,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"slug": string,"sort_order": number,"source_id": string,"summary": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"slug": string,"sort_order"?: number,"source_id": string,"summary": string,"title": string,"updated_at"?: string
                   }
@@ -4975,6 +5217,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"domain": string,"id": string,"instrument": string,"is_published": boolean,"jurisdiction": string,"slug": string,"sort_order": number,"source_url": string | null,"summary": string,"title": string,"track": Database["public"]['Enums']["law_track"],"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"domain": string,"id"?: string,"instrument": string,"is_published"?: boolean,"jurisdiction": string,"slug": string,"sort_order"?: number,"source_url"?: string | null,"summary": string,"title": string,"track": Database["public"]['Enums']["law_track"],"updated_at"?: string
                   }
@@ -4988,6 +5231,7 @@ isOneToOne: false
                   Row: {
                     "business_name_normalized": string | null,"created_at": string,"id": string,"linked_profile_id": string,"owner_profile_id": string,"relationship_type": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "business_name_normalized"?: string | null,"created_at"?: string,"id"?: string,"linked_profile_id": string,"owner_profile_id": string,"relationship_type"?: string,"updated_at"?: string
                   }
@@ -5013,6 +5257,7 @@ isOneToOne: false
                   Row: {
                     "amount_lumens": number,"created_at": string,"entry_kind": string,"from_profile_id": string | null,"id": string,"idempotency_key": string,"market_listing_id": string | null,"memo": string | null,"to_profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "amount_lumens": number,"created_at"?: string,"entry_kind": string,"from_profile_id"?: string | null,"id"?: string,"idempotency_key": string,"market_listing_id"?: string | null,"memo"?: string | null,"to_profile_id": string
                   }
@@ -5044,6 +5289,7 @@ isOneToOne: false
                   Row: {
                     "balance_lumens": number,"currency_code": string,"profile_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "balance_lumens"?: number,"currency_code"?: string,"profile_id": string,"updated_at"?: string
                   }
@@ -5063,6 +5309,7 @@ isOneToOne: true
                   Row: {
                     "age": string | null,"city": string | null,"company_name": string | null,"country_code": string | null,"created_at": string,"days": (string)[],"full_name": string,"hours_from": string | null,"hours_to": string | null,"id": string,"job_types": (string)[],"languages": (string)[],"mode": string,"notes": string | null,"pay_amount": string | null,"pay_period": string | null,"phone_country_code": string | null,"phone_number": string | null,"profile_id": string | null,"region_code": string | null,"status": string,"terms": (string)[],"updated_at": string,"user_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "age"?: string | null,"city"?: string | null,"company_name"?: string | null,"country_code"?: string | null,"created_at"?: string,"days"?: (string)[],"full_name"?: string,"hours_from"?: string | null,"hours_to"?: string | null,"id"?: string,"job_types"?: (string)[],"languages"?: (string)[],"mode": string,"notes"?: string | null,"pay_amount"?: string | null,"pay_period"?: string | null,"phone_country_code"?: string | null,"phone_number"?: string | null,"profile_id"?: string | null,"region_code"?: string | null,"status"?: string,"terms"?: (string)[],"updated_at"?: string,"user_id"?: string | null
                   }
@@ -5082,6 +5329,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"description": string | null,"id": string,"listing_kind": string,"price_lumens": number,"remaining_quantity": number,"seller_profile_id": string,"status": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"description"?: string | null,"id"?: string,"listing_kind"?: string,"price_lumens": number,"remaining_quantity"?: number,"seller_profile_id": string,"status"?: string,"title": string,"updated_at"?: string
                   }
@@ -5101,6 +5349,7 @@ isOneToOne: false
                   Row: {
                     "action_type": string,"assigned_agent_id": string | null,"assigned_kind": string,"assigned_profile_id": string | null,"assigned_unit_label": string | null,"completed_at": string | null,"completed_by_agent_id": string | null,"completed_by_kind": string | null,"completed_by_profile_id": string | null,"completion_action": string | null,"context_id": string | null,"context_kind": string,"created_at": string,"due_at": string,"escalation_policy_id": string | null,"id": string,"matter_id": string,"reminder_at": string,"status": string,"timeout_action": string,"timing_policy_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_type": string,"assigned_agent_id"?: string | null,"assigned_kind": string,"assigned_profile_id"?: string | null,"assigned_unit_label"?: string | null,"completed_at"?: string | null,"completed_by_agent_id"?: string | null,"completed_by_kind"?: string | null,"completed_by_profile_id"?: string | null,"completion_action"?: string | null,"context_id"?: string | null,"context_kind"?: string,"created_at"?: string,"due_at": string,"escalation_policy_id"?: string | null,"id"?: string,"matter_id": string,"reminder_at": string,"status"?: string,"timeout_action"?: string,"timing_policy_id": string
                   }
@@ -5156,6 +5405,7 @@ isOneToOne: false
                   Row: {
                     "artifact_type": string,"assignment_id": string,"body": string,"created_at": string,"generated_by_agent_id": string,"id": string,"matter_id": string,"review_status": string,"run_id": string,"source_references": NonNullable<Json>,"title": string,"verification_state": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "artifact_type": string,"assignment_id": string,"body": string,"created_at"?: string,"generated_by_agent_id": string,"id"?: string,"matter_id": string,"review_status"?: string,"run_id": string,"source_references"?: NonNullable<Json>,"title": string,"verification_state"?: string
                   }
@@ -5193,6 +5443,7 @@ isOneToOne: false
                   Row: {
                     "agent_id": string,"allowed_capabilities": (string)[],"allowed_context": (string)[],"assigned_at": string,"assigned_by_kind": string,"assigned_by_profile_id": string | null,"cancelled_at": string | null,"coding_policy": NonNullable<Json>,"completed_at": string | null,"id": string,"instructions": string,"matter_id": string,"max_run_attempts": number,"role_purpose": string | null,"started_at": string | null,"status": string,"supervising_kind": string,"supervising_profile_id": string,"task_id": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "agent_id": string,"allowed_capabilities"?: (string)[],"allowed_context"?: (string)[],"assigned_at"?: string,"assigned_by_kind": string,"assigned_by_profile_id"?: string | null,"cancelled_at"?: string | null,"coding_policy"?: NonNullable<Json>,"completed_at"?: string | null,"id"?: string,"instructions": string,"matter_id": string,"max_run_attempts"?: number,"role_purpose"?: string | null,"started_at"?: string | null,"status"?: string,"supervising_kind": string,"supervising_profile_id": string,"task_id"?: string | null,"updated_at"?: string
                   }
@@ -5236,6 +5487,7 @@ isOneToOne: false
                   Row: {
                     "body_text": string | null,"byte_size": number | null,"comment_id": string | null,"content_type": string | null,"created_at": string,"decision_id": string | null,"file_name": string | null,"file_path": string | null,"id": string,"kind": string,"label": string | null,"matter_id": string,"resolution_id": string | null,"task_id": string | null,"uploaded_by_profile_id": string,"url": string | null,"visibility": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "body_text"?: string | null,"byte_size"?: number | null,"comment_id"?: string | null,"content_type"?: string | null,"created_at"?: string,"decision_id"?: string | null,"file_name"?: string | null,"file_path"?: string | null,"id"?: string,"kind"?: string,"label"?: string | null,"matter_id": string,"resolution_id"?: string | null,"task_id"?: string | null,"uploaded_by_profile_id": string,"url"?: string | null,"visibility"?: string | null
                   }
@@ -5285,6 +5537,7 @@ isOneToOne: false
                   Row: {
                     "allowed": boolean,"category": string | null,"command_text": string,"created_at": string,"exit_code": number | null,"id": string,"output_excerpt": string | null,"reason": string | null,"run_id": string,"workspace_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "allowed": boolean,"category"?: string | null,"command_text": string,"created_at"?: string,"exit_code"?: number | null,"id"?: string,"output_excerpt"?: string | null,"reason"?: string | null,"run_id": string,"workspace_id": string
                   }
@@ -5310,6 +5563,7 @@ isOneToOne: false
                   Row: {
                     "assignment_id": string,"base_commit_sha": string,"completed_at": string | null,"created_at": string,"id": string,"matter_id": string,"primary_dirty_summary": string | null,"repository_id": string,"run_id": string,"started_at": string | null,"status": string,"workspace_ref": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "assignment_id": string,"base_commit_sha": string,"completed_at"?: string | null,"created_at"?: string,"id"?: string,"matter_id": string,"primary_dirty_summary"?: string | null,"repository_id": string,"run_id": string,"started_at"?: string | null,"status"?: string,"workspace_ref": string
                   }
@@ -5347,6 +5601,7 @@ isOneToOne: false
                   Row: {
                     "agent_id": string | null,"author_kind": string,"author_profile_id": string | null,"body": string,"created_at": string,"id": string,"is_ai_agent": boolean,"matter_id": string,"mentioned_profile_ids": (string)[],"parent_id": string | null,"run_id": string | null,"task_id": string | null,"visibility": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "agent_id"?: string | null,"author_kind": string,"author_profile_id"?: string | null,"body": string,"created_at"?: string,"id"?: string,"is_ai_agent"?: boolean,"matter_id": string,"mentioned_profile_ids"?: (string)[],"parent_id"?: string | null,"run_id"?: string | null,"task_id"?: string | null,"visibility"?: string | null
                   }
@@ -5396,6 +5651,7 @@ isOneToOne: false
                   Row: {
                     "decision_id": string,"task_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "decision_id": string,"task_id": string
                   }
@@ -5421,6 +5677,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"decided_at": string | null,"decided_by_kind": string | null,"decided_by_profile_id": string | null,"id": string,"matter_id": string,"proposed_by_kind": string,"proposed_by_profile_id": string,"rationale": string | null,"statement": string,"status": string,"title": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"decided_at"?: string | null,"decided_by_kind"?: string | null,"decided_by_profile_id"?: string | null,"id"?: string,"matter_id": string,"proposed_by_kind": string,"proposed_by_profile_id": string,"rationale"?: string | null,"statement": string,"status"?: string,"title": string
                   }
@@ -5452,6 +5709,7 @@ isOneToOne: false
                   Row: {
                     "action_id": string,"executed_at": string,"step_order": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_id": string,"executed_at"?: string,"step_order": number
                   }
@@ -5471,6 +5729,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"display_name": string,"id": string,"max_depth": number,"notes": string | null,"timeout_behavior": string,"trigger_action_type": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"display_name": string,"id": string,"max_depth"?: number,"notes"?: string | null,"timeout_behavior": string,"trigger_action_type"?: string | null
                   }
@@ -5484,6 +5743,7 @@ isOneToOne: false
                   Row: {
                     "action_type": string,"matter_type": string,"policy_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_type": string,"matter_type": string,"policy_id": string
                   }
@@ -5503,6 +5763,7 @@ isOneToOne: false
                   Row: {
                     "after_hours": number,"id": string,"policy_id": string,"step_behavior": string,"step_order": number,"target_profile_id": string | null,"target_role": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "after_hours": number,"id"?: string,"policy_id": string,"step_behavior": string,"step_order": number,"target_profile_id"?: string | null,"target_role": string
                   }
@@ -5528,6 +5789,7 @@ isOneToOne: false
                   Row: {
                     "comment": string | null,"created_at": string,"dimension": string,"evaluator_kind": string,"evaluator_profile_id": string,"evaluator_role": string,"id": string,"matter_id": string,"rating": string,"resolution_id": string | null,"visibility": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "comment"?: string | null,"created_at"?: string,"dimension": string,"evaluator_kind": string,"evaluator_profile_id": string,"evaluator_role": string,"id"?: string,"matter_id": string,"rating": string,"resolution_id"?: string | null,"visibility"?: string
                   }
@@ -5559,6 +5821,7 @@ isOneToOne: false
                   Row: {
                     "actor_agent_id": string | null,"actor_kind": string,"actor_profile_id": string | null,"created_at": string,"event_type": string,"id": string,"is_system": boolean,"matter_id": string,"payload": NonNullable<Json>,"summary": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_agent_id"?: string | null,"actor_kind": string,"actor_profile_id"?: string | null,"created_at"?: string,"event_type": string,"id"?: string,"is_system"?: boolean,"matter_id": string,"payload"?: NonNullable<Json>,"summary": string
                   }
@@ -5590,6 +5853,7 @@ isOneToOne: false
                   Row: {
                     "action_id": string | null,"completed_at": string | null,"created_at": string,"created_by_profile_id": string,"human_outcome_review_id": string | null,"id": string,"matter_id": string,"notes": string | null,"outcome_question": string,"resolution_id": string | null,"result": string | null,"review_due_at": string,"reviewer_kind": string,"reviewer_profile_id": string,"status": string,"target_indicator": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_id"?: string | null,"completed_at"?: string | null,"created_at"?: string,"created_by_profile_id": string,"human_outcome_review_id"?: string | null,"id"?: string,"matter_id": string,"notes"?: string | null,"outcome_question": string,"resolution_id"?: string | null,"result"?: string | null,"review_due_at": string,"reviewer_kind": string,"reviewer_profile_id": string,"status"?: string,"target_indicator"?: string | null
                   }
@@ -5633,6 +5897,7 @@ isOneToOne: false
                   Row: {
                     "actor_agent_id": string | null,"actor_kind": string,"actor_profile_id": string | null,"actor_unit_label": string | null,"added_at": string,"id": string,"matter_id": string,"role": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_agent_id"?: string | null,"actor_kind": string,"actor_profile_id"?: string | null,"actor_unit_label"?: string | null,"added_at"?: string,"id"?: string,"matter_id": string,"role": string
                   }
@@ -5664,6 +5929,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"created_by_profile_id": string,"from_matter_id": string,"id": string,"relationship_kind": string,"to_matter_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"created_by_profile_id": string,"from_matter_id": string,"id"?: string,"relationship_kind": string,"to_matter_id": string
                   }
@@ -5695,6 +5961,7 @@ isOneToOne: false
                   Row: {
                     "action_id": string,"id": string,"reminder_kind": string,"sent_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_id": string,"id"?: string,"reminder_kind": string,"sent_at"?: string
                   }
@@ -5714,6 +5981,7 @@ isOneToOne: false
                   Row: {
                     "actions_taken": string | null,"attempt_number": number,"closed_at": string | null,"closure_kind": string | null,"created_at": string,"evaluator_position": string | null,"id": string,"initiator_position": string | null,"limitations": string | null,"matter_id": string,"outstanding_items": string | null,"proposed_at": string,"proposed_by_kind": string,"proposed_by_profile_id": string,"resolution_kind": string,"resolution_status": string,"responsible_party_position": string,"summary": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actions_taken"?: string | null,"attempt_number": number,"closed_at"?: string | null,"closure_kind"?: string | null,"created_at"?: string,"evaluator_position"?: string | null,"id"?: string,"initiator_position"?: string | null,"limitations"?: string | null,"matter_id": string,"outstanding_items"?: string | null,"proposed_at"?: string,"proposed_by_kind": string,"proposed_by_profile_id": string,"resolution_kind": string,"resolution_status"?: string,"responsible_party_position": string,"summary": string,"updated_at"?: string
                   }
@@ -5739,6 +6007,7 @@ isOneToOne: false
                   Row: {
                     "accepted_at": string | null,"actor_kind": string,"actor_profile_id": string,"actor_unit_label": string | null,"assigned_at": string,"assigned_by_kind": string | null,"assigned_by_profile_id": string | null,"declined_at": string | null,"ended_at": string | null,"id": string,"kind": string,"matter_id": string,"response_action": string | null,"response_reason": string | null,"status": string,"suggested_actor_kind": string | null,"suggested_actor_profile_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "accepted_at"?: string | null,"actor_kind": string,"actor_profile_id": string,"actor_unit_label"?: string | null,"assigned_at"?: string,"assigned_by_kind"?: string | null,"assigned_by_profile_id"?: string | null,"declined_at"?: string | null,"ended_at"?: string | null,"id"?: string,"kind": string,"matter_id": string,"response_action"?: string | null,"response_reason"?: string | null,"status"?: string,"suggested_actor_kind"?: string | null,"suggested_actor_profile_id"?: string | null
                   }
@@ -5776,6 +6045,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"display_name": string,"duration_unit": string,"duration_value": number,"id": string,"notes": string | null,"reminder_unit": string,"reminder_value": number,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"display_name": string,"duration_unit"?: string,"duration_value": number,"id": string,"notes"?: string | null,"reminder_unit"?: string,"reminder_value": number,"updated_at"?: string
                   }
@@ -5789,6 +6059,7 @@ isOneToOne: false
                   Row: {
                     "initial_action_type": string,"matter_type": string,"timeout_behavior": string,"timing_policy_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "initial_action_type": string,"matter_type": string,"timeout_behavior": string,"timing_policy_id": string
                   }
@@ -5808,6 +6079,7 @@ isOneToOne: false
                   Row: {
                     "addressee_kind": string,"addressee_profile_id": string,"addressee_unit_label": string | null,"area_node_id": string | null,"close_kind": string | null,"close_reason": string | null,"closed_at": string | null,"collaborative_work_completed_at": string | null,"collaborative_work_completion_kind": string | null,"collaborative_work_completion_reason": string | null,"collaborative_work_started_at": string | null,"created_at": string,"created_by_profile_id": string,"current_action_id": string | null,"description": string,"id": string,"initiator_kind": string,"initiator_profile_id": string,"initiator_unit_label": string | null,"last_reopened_at": string | null,"latest_resolution_id": string | null,"lifecycle_status": string,"matter_type": string,"reopen_count": number,"resolution_attempt_count": number,"responsible_kind": string,"responsible_profile_id": string,"responsible_unit_label": string | null,"scope_country_code": string | null,"scope_kind": string,"scope_locality_code": string | null,"scope_region_code": string | null,"submitted_at": string | null,"title": string,"updated_at": string,"visibility": string,"waiting_condition": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "addressee_kind": string,"addressee_profile_id": string,"addressee_unit_label"?: string | null,"area_node_id"?: string | null,"close_kind"?: string | null,"close_reason"?: string | null,"closed_at"?: string | null,"collaborative_work_completed_at"?: string | null,"collaborative_work_completion_kind"?: string | null,"collaborative_work_completion_reason"?: string | null,"collaborative_work_started_at"?: string | null,"created_at"?: string,"created_by_profile_id": string,"current_action_id"?: string | null,"description": string,"id"?: string,"initiator_kind": string,"initiator_profile_id": string,"initiator_unit_label"?: string | null,"last_reopened_at"?: string | null,"latest_resolution_id"?: string | null,"lifecycle_status"?: string,"matter_type": string,"reopen_count"?: number,"resolution_attempt_count"?: number,"responsible_kind": string,"responsible_profile_id": string,"responsible_unit_label"?: string | null,"scope_country_code"?: string | null,"scope_kind"?: string,"scope_locality_code"?: string | null,"scope_region_code"?: string | null,"submitted_at"?: string | null,"title": string,"updated_at"?: string,"visibility"?: string,"waiting_condition"?: string | null
                   }
@@ -5857,6 +6129,7 @@ isOneToOne: false
                   Row: {
                     "content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null,"sender_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "content": string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"sender_id": string
                   }
@@ -5876,6 +6149,7 @@ isOneToOne: false
                   Row: {
                     "approval_class": string,"approver_id": string,"created_at": string,"decision": string,"id": string,"notes": string | null,"policy_profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "approval_class": string,"approver_id": string,"created_at"?: string,"decision": string,"id"?: string,"notes"?: string | null,"policy_profile_id": string
                   }
@@ -5901,6 +6175,7 @@ isOneToOne: false
                   Row: {
                     "actor_id": string | null,"created_at": string,"event_type": string,"id": string,"payload": NonNullable<Json>,"policy_profile_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_id"?: string | null,"created_at"?: string,"event_type": string,"id"?: string,"payload"?: NonNullable<Json>,"policy_profile_id"?: string | null
                   }
@@ -5926,6 +6201,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"created_by": string | null,"id": string,"is_active": boolean,"policy_json": NonNullable<Json>,"policy_name": string,"updated_at": string,"version": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"created_by"?: string | null,"id"?: string,"is_active"?: boolean,"policy_json"?: NonNullable<Json>,"policy_name"?: string,"updated_at"?: string,"version"?: string
                   }
@@ -5945,6 +6221,7 @@ isOneToOne: false
                   Row: {
                     "category": string,"count": number,"event_date": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "category": string,"count"?: number,"event_date"?: string,"updated_at"?: string
                   }
@@ -5958,6 +6235,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"decision": string,"evaluator_profile_id": string,"feedback": string | null,"id": string,"impact_score": number | null,"participation_id": string,"quality_score": number | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"decision": string,"evaluator_profile_id": string,"feedback"?: string | null,"id"?: string,"impact_score"?: number | null,"participation_id": string,"quality_score"?: number | null
                   }
@@ -5983,6 +6261,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"created_by": string,"description": string,"id": string,"participation_id": string,"reference_label": string | null,"reference_url": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"created_by": string,"description": string,"id"?: string,"participation_id": string,"reference_label"?: string | null,"reference_url"?: string | null
                   }
@@ -6008,6 +6287,7 @@ isOneToOne: false
                   Row: {
                     "accepted_at": string | null,"accepted_by": string | null,"activated_at": string | null,"application_message": string | null,"applied_at": string,"cancelled_at": string | null,"cancelled_by": string | null,"completed_at": string | null,"completed_by": string | null,"created_at": string,"decline_note": string | null,"declined_at": string | null,"declined_by": string | null,"id": string,"opportunity_id": string,"participant_profile_id": string,"status": string,"submitted_at": string | null,"updated_at": string,"verification_status": string,"withdrawn_at": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "accepted_at"?: string | null,"accepted_by"?: string | null,"activated_at"?: string | null,"application_message"?: string | null,"applied_at"?: string,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"created_at"?: string,"decline_note"?: string | null,"declined_at"?: string | null,"declined_by"?: string | null,"id"?: string,"opportunity_id": string,"participant_profile_id": string,"status"?: string,"submitted_at"?: string | null,"updated_at"?: string,"verification_status"?: string,"withdrawn_at"?: string | null
                   }
@@ -6057,6 +6337,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"evaluation_id": string | null,"id": string,"participation_id": string,"skill_name": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"evaluation_id"?: string | null,"id"?: string,"participation_id": string,"skill_name": string
                   }
@@ -6082,6 +6363,7 @@ isOneToOne: false
                   Row: {
                     "collaboration_score": number | null,"completion_score": number | null,"created_at": string,"evaluator_profile_id": string,"id": string,"impact_score": number | null,"notes": string | null,"outcome_score": number | null,"participation_id": string,"quality_score": number | null,"reliability_score": number | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "collaboration_score"?: number | null,"completion_score"?: number | null,"created_at"?: string,"evaluator_profile_id": string,"id"?: string,"impact_score"?: number | null,"notes"?: string | null,"outcome_score"?: number | null,"participation_id": string,"quality_score"?: number | null,"reliability_score"?: number | null,"updated_at"?: string
                   }
@@ -6107,6 +6389,7 @@ isOneToOne: true
                   Row: {
                     "author_id": string,"content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null,"post_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "author_id": string,"content": string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"post_id": string
                   }
@@ -6132,6 +6415,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"post_id": string,"user_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"post_id": string,"user_id": string
                   }
@@ -6157,6 +6441,7 @@ isOneToOne: false
                   Row: {
                     "commentary_post_id": string | null,"created_at": string,"id": string,"original_post_id": string | null,"reposter_profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "commentary_post_id"?: string | null,"created_at"?: string,"id"?: string,"original_post_id"?: string | null,"reposter_profile_id": string
                   }
@@ -6188,6 +6473,7 @@ isOneToOne: false
                   Row: {
                     "content": string,"created_at": string,"editor_profile_id": string,"id": string,"post_id": string,"revision_number": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "content": string,"created_at"?: string,"editor_profile_id": string,"id"?: string,"post_id": string,"revision_number": number
                   }
@@ -6213,6 +6499,7 @@ isOneToOne: false
                   Row: {
                     "first_viewed_at": string,"id": string,"last_viewed_at": string,"post_id": string,"view_count": number,"viewer_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "first_viewed_at"?: string,"id"?: string,"last_viewed_at"?: string,"post_id": string,"view_count"?: number,"viewer_id": string
                   }
@@ -6238,6 +6525,7 @@ isOneToOne: false
                   Row: {
                     "author_id": string,"content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "author_id": string,"content": string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null
                   }
@@ -6257,6 +6545,7 @@ isOneToOne: false
                   Row: {
                     "conversation_id": string,"hidden_at": string | null,"joined_at": string,"profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "conversation_id": string,"hidden_at"?: string | null,"joined_at"?: string,"profile_id": string
                   }
@@ -6282,6 +6571,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"disappearing_minutes": number,"disappearing_set_by": string | null,"disappearing_started_at": string | null,"id": string,"kind": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"disappearing_minutes"?: number,"disappearing_set_by"?: string | null,"disappearing_started_at"?: string | null,"id": string,"kind": string,"updated_at"?: string
                   }
@@ -6301,6 +6591,7 @@ isOneToOne: false
                   Row: {
                     "blocked_id": string,"blocker_id": string,"created_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "blocked_id": string,"blocker_id": string,"created_at"?: string
                   }
@@ -6326,6 +6617,7 @@ isOneToOne: false
                   Row: {
                     "cipher_nonce": string | null,"cipher_text": string | null,"content": string | null,"conversation_id": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null,"message_kind": string,"sender_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "cipher_nonce"?: string | null,"cipher_text"?: string | null,"content"?: string | null,"conversation_id": string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"message_kind"?: string,"sender_id": string
                   }
@@ -6351,6 +6643,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"description": string,"id": string,"label": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"description": string,"id": string,"label": string,"updated_at"?: string
                   }
@@ -6364,6 +6657,7 @@ isOneToOne: false
                   Row: {
                     "beneficiary_estimate": number,"capacity_estimate": number,"collaboration_estimate": number,"created_at": string,"event_type": string,"id": string,"impact_estimate": number,"occurred_at": string,"profile_id": string,"raw_meta": NonNullable<Json>,"source_id": string,"source_table": string,"summary": string | null,"title": string,"updated_at": string,"verified": boolean
                   }
+                  ComputedFields: never
                   Insert: {
                     "beneficiary_estimate"?: number,"capacity_estimate"?: number,"collaboration_estimate"?: number,"created_at"?: string,"event_type": string,"id"?: string,"impact_estimate"?: number,"occurred_at"?: string,"profile_id": string,"raw_meta"?: NonNullable<Json>,"source_id": string,"source_table": string,"summary"?: string | null,"title"?: string,"updated_at"?: string,"verified"?: boolean
                   }
@@ -6383,6 +6677,7 @@ isOneToOne: false
                   Row: {
                     "contribution_interests": (string)[],"goals": (string)[],"interests": (string)[],"priorities": (string)[],"profile_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "contribution_interests"?: (string)[],"goals"?: (string)[],"interests"?: (string)[],"priorities"?: (string)[],"profile_id": string,"updated_at"?: string
                   }
@@ -6402,6 +6697,7 @@ isOneToOne: true
                   Row: {
                     "certificate_path": string | null,"certificate_uploaded_at": string | null,"city": string | null,"country_code": string | null,"created_at": string,"department": string | null,"education_level": string | null,"id": string,"institution_name": string | null,"major": string | null,"profile_id": string,"region_code": string | null,"updated_at": string,"verification_status": string,"year_end": number | null,"year_start": number | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "certificate_path"?: string | null,"certificate_uploaded_at"?: string | null,"city"?: string | null,"country_code"?: string | null,"created_at"?: string,"department"?: string | null,"education_level"?: string | null,"id"?: string,"institution_name"?: string | null,"major"?: string | null,"profile_id": string,"region_code"?: string | null,"updated_at"?: string,"verification_status"?: string,"year_end"?: number | null,"year_start"?: number | null
                   }
@@ -6421,6 +6717,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"experiences": NonNullable<Json>,"id": string,"profile_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"experiences"?: NonNullable<Json>,"id"?: string,"profile_id": string,"updated_at"?: string
                   }
@@ -6440,6 +6737,7 @@ isOneToOne: false
                   Row: {
                     "assigned_at": string,"assigned_by": string | null,"assignment_source": string,"created_at": string,"domain_key": string,"ended_at": string | null,"id": string,"is_active": boolean,"metadata": NonNullable<Json>,"notes": string | null,"profile_id": string,"role_key": string,"source_unit_id": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "assigned_at"?: string,"assigned_by"?: string | null,"assignment_source"?: string,"created_at"?: string,"domain_key": string,"ended_at"?: string | null,"id"?: string,"is_active"?: boolean,"metadata"?: NonNullable<Json>,"notes"?: string | null,"profile_id": string,"role_key": string,"source_unit_id"?: string | null,"updated_at"?: string
                   }
@@ -6477,6 +6775,7 @@ isOneToOne: false
                   Row: {
                     "comment": string | null,"contribution_event_id": string,"created_at": string,"id": string,"rater_profile_id": string,"score": number,"subject_profile_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "comment"?: string | null,"contribution_event_id": string,"created_at"?: string,"id"?: string,"rater_profile_id": string,"score": number,"subject_profile_id": string,"updated_at"?: string
                   }
@@ -6508,6 +6807,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"evidence_url": string | null,"notes": string | null,"profession_id": string,"profile_id": string,"status": Database["public"]['Enums']["profession_verification_status"],"updated_at": string,"verified_at": string | null,"verified_by": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"evidence_url"?: string | null,"notes"?: string | null,"profession_id": string,"profile_id": string,"status"?: Database["public"]['Enums']["profession_verification_status"],"updated_at"?: string,"verified_at"?: string | null,"verified_by"?: string | null
                   }
@@ -6539,6 +6839,7 @@ isOneToOne: false
                   Row: {
                     "cause": string,"created_at": string,"evidence_root": string | null,"id": string,"model_version": string,"new_confidence": string | null,"new_contributions": number | null,"new_overall": number | null,"previous_confidence": string | null,"previous_contributions": number | null,"previous_overall": number | null,"profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "cause": string,"created_at"?: string,"evidence_root"?: string | null,"id"?: string,"model_version": string,"new_confidence"?: string | null,"new_contributions"?: number | null,"new_overall"?: number | null,"previous_confidence"?: string | null,"previous_contributions"?: number | null,"previous_overall"?: number | null,"profile_id": string
                   }
@@ -6558,6 +6859,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"hard_skill_names": (string)[],"id": string,"profile_id": string,"skill_names": (string)[],"soft_skill_names": (string)[],"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"hard_skill_names"?: (string)[],"id"?: string,"profile_id": string,"skill_names"?: (string)[],"soft_skill_names"?: (string)[],"updated_at"?: string
                   }
@@ -6577,6 +6879,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"profile_id": string,"training_names": (string)[],"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id"?: string,"profile_id": string,"training_names"?: (string)[],"updated_at"?: string
                   }
@@ -6596,6 +6899,7 @@ isOneToOne: false
                   Row: {
                     "active_citizen_since": string | null,"avatar_url": string | null,"bio": string | null,"citizen_signing_key_algorithm": string | null,"citizen_signing_key_registered_at": string | null,"citizen_signing_public_key": string | null,"citizenship_acceptance_mode": string | null,"citizenship_accepted_at": string | null,"citizenship_review_cleared_at": string | null,"citizenship_status": Database["public"]['Enums']["citizenship_status"],"city": string | null,"country": string | null,"country_code": string | null,"created_at": string,"custom_permissions": (Database["public"]['Enums']["app_permission"])[],"date_of_birth": string | null,"deleted_at": string | null,"deletion_reason": string | null,"denied_permissions": (Database["public"]['Enums']["app_permission"])[],"experience_level": string,"full_name": string | null,"full_name_change_count": number,"full_name_last_changed_at": string | null,"governance_eligible_at": string | null,"granted_permissions": (Database["public"]['Enums']["app_permission"])[],"id": string,"is_active_citizen": boolean,"is_admin": boolean | null,"is_governance_eligible": boolean,"is_system_agent": boolean,"is_verified": boolean | null,"language_code": string,"last_active_at": string | null,"messaging_backup_note": string | null,"messaging_backup_provider": string | null,"messaging_server_retention_days": number | null,"messaging_server_retention_max_kb": number | null,"messaging_x25519_public_key": string | null,"official_id": string,"phone_country_code": string | null,"phone_e164": string | null,"phone_number": string | null,"place_of_birth": string | null,"region_code": string | null,"role": Database["public"]['Enums']["app_role"],"sex": string | null,"social_security_number": string,"terms_acceptance_method": string | null,"terms_accepted_at": string | null,"terms_version": string | null,"updated_at": string,"user_id": string | null,"username": string | null,"username_last_changed_at": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "active_citizen_since"?: string | null,"avatar_url"?: string | null,"bio"?: string | null,"citizen_signing_key_algorithm"?: string | null,"citizen_signing_key_registered_at"?: string | null,"citizen_signing_public_key"?: string | null,"citizenship_acceptance_mode"?: string | null,"citizenship_accepted_at"?: string | null,"citizenship_review_cleared_at"?: string | null,"citizenship_status"?: Database["public"]['Enums']["citizenship_status"],"city"?: string | null,"country"?: string | null,"country_code"?: string | null,"created_at"?: string,"custom_permissions"?: (Database["public"]['Enums']["app_permission"])[],"date_of_birth"?: string | null,"deleted_at"?: string | null,"deletion_reason"?: string | null,"denied_permissions"?: (Database["public"]['Enums']["app_permission"])[],"experience_level"?: string,"full_name"?: string | null,"full_name_change_count"?: number,"full_name_last_changed_at"?: string | null,"governance_eligible_at"?: string | null,"granted_permissions"?: (Database["public"]['Enums']["app_permission"])[],"id"?: string,"is_active_citizen"?: boolean,"is_admin"?: boolean | null,"is_governance_eligible"?: boolean,"is_system_agent"?: boolean,"is_verified"?: boolean | null,"language_code"?: string,"last_active_at"?: string | null,"messaging_backup_note"?: string | null,"messaging_backup_provider"?: string | null,"messaging_server_retention_days"?: number | null,"messaging_server_retention_max_kb"?: number | null,"messaging_x25519_public_key"?: string | null,"official_id": string,"phone_country_code"?: string | null,"phone_e164"?: string | null,"phone_number"?: string | null,"place_of_birth"?: string | null,"region_code"?: string | null,"role"?: Database["public"]['Enums']["app_role"],"sex"?: string | null,"social_security_number": string,"terms_acceptance_method"?: string | null,"terms_accepted_at"?: string | null,"terms_version"?: string | null,"updated_at"?: string,"user_id"?: string | null,"username"?: string | null,"username_last_changed_at"?: string | null
                   }
@@ -6609,6 +6913,7 @@ isOneToOne: false
                   Row: {
                     "approval_reason": string | null,"approved_at": string | null,"approved_by": string | null,"created_at": string,"created_by": string | null,"currency": string,"id": string,"internal_notes": string | null,"is_demonstration": boolean,"lifecycle_status": string,"name": string,"period_end": string | null,"period_start": string | null,"publication_note": string | null,"published_at": string | null,"published_by": string | null,"purpose": string | null,"submitted_at": string | null,"submitted_by": string | null,"supersedes_budget_id": string | null,"updated_at": string,"updated_by": string | null,"version": number
                   }
+                  ComputedFields: never
                   Insert: {
                     "approval_reason"?: string | null,"approved_at"?: string | null,"approved_by"?: string | null,"created_at"?: string,"created_by"?: string | null,"currency"?: string,"id"?: string,"internal_notes"?: string | null,"is_demonstration"?: boolean,"lifecycle_status"?: string,"name": string,"period_end"?: string | null,"period_start"?: string | null,"publication_note"?: string | null,"published_at"?: string | null,"published_by"?: string | null,"purpose"?: string | null,"submitted_at"?: string | null,"submitted_by"?: string | null,"supersedes_budget_id"?: string | null,"updated_at"?: string,"updated_by"?: string | null,"version"?: number
                   }
@@ -6628,6 +6933,7 @@ isOneToOne: false
                   Row: {
                     "admin_notes": string | null,"created_at": string,"endorsement_id": string | null,"id": string,"reason": string,"report_context": Json | null,"reported_user_id": string | null,"reporter_id": string,"resolved_at": string | null,"status": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "admin_notes"?: string | null,"created_at"?: string,"endorsement_id"?: string | null,"id"?: string,"reason": string,"report_context"?: Json | null,"reported_user_id"?: string | null,"reporter_id": string,"resolved_at"?: string | null,"status"?: string | null
                   }
@@ -6659,6 +6965,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"permission": Database["public"]['Enums']["app_permission"],"role": Database["public"]['Enums']["app_role"]
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"permission": Database["public"]['Enums']["app_permission"],"role": Database["public"]['Enums']["app_role"]
                   }
@@ -6672,6 +6979,7 @@ isOneToOne: false
                   Row: {
                     "access_token": string | null,"connected_by_profile_id": string | null,"created_at": string,"expires_at": string | null,"external_account_id": string | null,"external_account_name": string | null,"id": string,"last_error": string | null,"org_profile_id": string,"provider": string,"refresh_token": string | null,"status": string,"token_scopes": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "access_token"?: string | null,"connected_by_profile_id"?: string | null,"created_at"?: string,"expires_at"?: string | null,"external_account_id"?: string | null,"external_account_name"?: string | null,"id"?: string,"last_error"?: string | null,"org_profile_id": string,"provider": string,"refresh_token"?: string | null,"status"?: string,"token_scopes"?: string | null,"updated_at"?: string
                   }
@@ -6697,6 +7005,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"error_message": string | null,"external_post_id": string | null,"id": string,"org_profile_id": string,"post_id": string,"provider": string,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"error_message"?: string | null,"external_post_id"?: string | null,"id"?: string,"org_profile_id": string,"post_id": string,"provider": string,"status"?: string,"updated_at"?: string
                   }
@@ -6722,6 +7031,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"expires_at": string,"id": string,"profile_id": string,"provider": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"expires_at"?: string,"id"?: string,"profile_id": string,"provider": string
                   }
@@ -6741,6 +7051,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"keywords": (string)[],"name": string,"related_profession_ids": (string)[],"responsibilities": string,"sort_order": number,"tier": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id": string,"keywords"?: (string)[],"name": string,"related_profession_ids"?: (string)[],"responsibilities": string,"sort_order"?: number,"tier": string
                   }
@@ -6754,6 +7065,7 @@ isOneToOne: false
                   Row: {
                     "author_id": string,"body": string,"created_at": string,"id": string,"problem_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "author_id": string,"body": string,"created_at"?: string,"id"?: string,"problem_id": string
                   }
@@ -6779,6 +7091,7 @@ isOneToOne: false
                   Row: {
                     "agreed_proposal_id": string | null,"assignee_profile_id": string | null,"author_id": string,"authority_id": string | null,"body": string,"category_confidence": number | null,"category_keywords": (string)[],"created_at": string,"current_round": number,"id": string,"max_rounds": number,"mode": string,"routing_note": string | null,"status": string,"title": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "agreed_proposal_id"?: string | null,"assignee_profile_id"?: string | null,"author_id": string,"authority_id"?: string | null,"body": string,"category_confidence"?: number | null,"category_keywords"?: (string)[],"created_at"?: string,"current_round"?: number,"id"?: string,"max_rounds"?: number,"mode"?: string,"routing_note"?: string | null,"status"?: string,"title": string,"updated_at"?: string
                   }
@@ -6816,6 +7129,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"profile_id": string,"proposal_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"profile_id": string,"proposal_id": string
                   }
@@ -6841,6 +7155,7 @@ isOneToOne: false
                   Row: {
                     "body": string,"created_at": string,"id": string,"problem_id": string,"source": string,"supporting_speakers": (string)[],"title": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "body": string,"created_at"?: string,"id"?: string,"problem_id": string,"source": string,"supporting_speakers"?: (string)[],"title": string
                   }
@@ -6860,6 +7175,7 @@ isOneToOne: false
                   Row: {
                     "challenge_id": string,"contributors": string | null,"created_at": string,"evidence": string | null,"id": string,"implementation_summary": string,"implemented_solution": string,"knowledge_resource_id": string | null,"knowledge_space_id": string | null,"lessons_learned": string | null,"outcome": string,"problem_context": string,"program_id": string,"project_id": string | null,"publisher_profile_id": string,"reuse_notes": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "challenge_id": string,"contributors"?: string | null,"created_at"?: string,"evidence"?: string | null,"id"?: string,"implementation_summary": string,"implemented_solution": string,"knowledge_resource_id"?: string | null,"knowledge_space_id"?: string | null,"lessons_learned"?: string | null,"outcome": string,"problem_context": string,"program_id": string,"project_id"?: string | null,"publisher_profile_id": string,"reuse_notes"?: string | null,"updated_at"?: string
                   }
@@ -6909,6 +7225,7 @@ isOneToOne: false
                   Row: {
                     "actor_profile_id": string | null,"created_at": string,"from_status": string | null,"id": string,"note": string | null,"problem_id": string,"to_status": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "actor_profile_id"?: string | null,"created_at"?: string,"from_status"?: string | null,"id"?: string,"note"?: string | null,"problem_id": string,"to_status": string
                   }
@@ -6934,6 +7251,7 @@ isOneToOne: false
                   Row: {
                     "content": string,"created_at": string,"id": string,"problem_id": string,"round": number,"speaker": string,"speaker_profile_id": string | null,"stance": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "content": string,"created_at"?: string,"id"?: string,"problem_id": string,"round"?: number,"speaker": string,"speaker_profile_id"?: string | null,"stance"?: NonNullable<Json>
                   }
@@ -6959,6 +7277,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"id": string,"profile_id": string,"title": string,"turns_json": NonNullable<Json>,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"id": string,"profile_id": string,"title"?: string,"turns_json"?: NonNullable<Json>,"updated_at"?: string
                   }
@@ -6978,6 +7297,7 @@ isOneToOne: false
                   Row: {
                     "confidence": number,"created_at": string,"final_suggestion": string,"id": string,"lead_specialist_id": string,"matched_keywords": (string)[],"matched_specialist_ids": (string)[],"mode": string,"opinion_summaries": NonNullable<Json>,"profile_id": string,"request_text": string,"risk_level": string,"session_id": string,"turn_created_at": string,"turn_payload": NonNullable<Json>,"urgency": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "confidence": number,"created_at"?: string,"final_suggestion": string,"id": string,"lead_specialist_id": string,"matched_keywords"?: (string)[],"matched_specialist_ids"?: (string)[],"mode": string,"opinion_summaries"?: NonNullable<Json>,"profile_id": string,"request_text": string,"risk_level": string,"session_id": string,"turn_created_at": string,"turn_payload"?: NonNullable<Json>,"urgency": string
                   }
@@ -7003,6 +7323,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"document_key": string,"id": string,"notes": string | null,"profile_id": string,"title": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"document_key": string,"id"?: string,"notes"?: string | null,"profile_id": string,"title": string
                   }
@@ -7022,6 +7343,7 @@ isOneToOne: false
                   Row: {
                     "certification_key": string,"created_at": string,"earned_at": string | null,"id": string,"metadata": NonNullable<Json>,"profile_id": string,"status": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "certification_key": string,"created_at"?: string,"earned_at"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"profile_id": string,"status"?: string,"updated_at"?: string
                   }
@@ -7041,6 +7363,7 @@ isOneToOne: false
                   Row: {
                     "completed_at": string | null,"created_at": string,"document_key": string,"id": string,"last_read_at": string,"profile_id": string,"progress_percent": number,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "completed_at"?: string | null,"created_at"?: string,"document_key": string,"id"?: string,"last_read_at"?: string,"profile_id": string,"progress_percent"?: number,"updated_at"?: string
                   }
@@ -7060,6 +7383,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"domain": string,"evidence_periods": number,"factor_category": string | null,"id": string,"pattern_model_version": string,"privacy_policy_version": string,"scope_id": string,"status": string,"summary": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"domain": string,"evidence_periods"?: number,"factor_category"?: string | null,"id"?: string,"pattern_model_version"?: string,"privacy_policy_version": string,"scope_id": string,"status"?: string,"summary": string,"updated_at"?: string
                   }
@@ -7079,6 +7403,7 @@ isOneToOne: false
                   Row: {
                     "candidate_id": string,"created_at": string,"id": string,"snapshot_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "candidate_id": string,"created_at"?: string,"id"?: string,"snapshot_id": string
                   }
@@ -7104,6 +7429,7 @@ isOneToOne: false
                   Row: {
                     "acceptance_status": string,"accepted_at": string | null,"actor_agent_id": string | null,"actor_kind": string,"actor_profile_id": string | null,"actor_unit_label": string | null,"assigned_at": string,"assigned_by_kind": string,"assigned_by_profile_id": string,"decline_reason": string | null,"declined_at": string | null,"id": string,"role": string,"suggestion_reason": string | null,"task_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "acceptance_status"?: string,"accepted_at"?: string | null,"actor_agent_id"?: string | null,"actor_kind": string,"actor_profile_id"?: string | null,"actor_unit_label"?: string | null,"assigned_at"?: string,"assigned_by_kind": string,"assigned_by_profile_id": string,"decline_reason"?: string | null,"declined_at"?: string | null,"id"?: string,"role": string,"suggestion_reason"?: string | null,"task_id": string
                   }
@@ -7141,6 +7467,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"depends_on_task_id": string,"id": string,"kind": string,"task_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"depends_on_task_id": string,"id"?: string,"kind"?: string,"task_id": string
                   }
@@ -7166,6 +7493,7 @@ isOneToOne: false
                   Row: {
                     "body": string | null,"created_at": string,"entity_id": string | null,"entity_type": string | null,"id": string,"metadata": NonNullable<Json>,"notification_type": string,"read_at": string | null,"recipient_profile_id": string,"title": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "body"?: string | null,"created_at"?: string,"entity_id"?: string | null,"entity_type"?: string | null,"id"?: string,"metadata"?: NonNullable<Json>,"notification_type": string,"read_at"?: string | null,"recipient_profile_id": string,"title": string
                   }
@@ -7185,6 +7513,7 @@ isOneToOne: false
                   Row: {
                     "aggregation_model_version": string,"created_at": string,"fingerprint": string,"id": string,"privacy_policy_version": string,"requester_profile_id": string,"scope_id": string | null,"suppression": string | null,"time_bucket": string | null,"topic": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "aggregation_model_version": string,"created_at"?: string,"fingerprint": string,"id"?: string,"privacy_policy_version": string,"requester_profile_id": string,"scope_id"?: string | null,"suppression"?: string | null,"time_bucket"?: string | null,"topic"?: string | null
                   }
@@ -7210,6 +7539,7 @@ isOneToOne: false
                   Row: {
                     "classification": string,"compatible_with": (string)[],"id": string,"min_cohort_override": number | null,"notes": string | null,"sensitivity": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "classification": string,"compatible_with"?: (string)[],"id": string,"min_cohort_override"?: number | null,"notes"?: string | null,"sensitivity": string
                   }
@@ -7223,6 +7553,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"disabled_at": string | null,"enabled": boolean,"enabled_at": string | null,"policy_version": string,"profile_id": string,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"disabled_at"?: string | null,"enabled"?: boolean,"enabled_at"?: string | null,"policy_version"?: string,"profile_id": string,"updated_at"?: string
                   }
@@ -7242,6 +7573,7 @@ isOneToOne: true
                   Row: {
                     "config": NonNullable<Json>,"created_at": string,"version": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "config": NonNullable<Json>,"created_at"?: string,"version": string
                   }
@@ -7255,6 +7587,7 @@ isOneToOne: true
                   Row: {
                     "created_at": string,"profile_id": string,"scope_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"profile_id": string,"scope_id": string
                   }
@@ -7280,6 +7613,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"enabled": boolean,"entity_ref": string,"id": string,"kind": string,"label": string | null,"updated_at": string,"viewer_profile_ids": (string)[]
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"enabled"?: boolean,"entity_ref": string,"id"?: string,"kind": string,"label"?: string | null,"updated_at"?: string,"viewer_profile_ids"?: (string)[]
                   }
@@ -7293,6 +7627,7 @@ isOneToOne: false
                   Row: {
                     "aggregation_model_version": string,"created_at": string,"fingerprint": string,"id": string,"period_start": string,"privacy_policy_version": string,"result": NonNullable<Json>,"scope_id": string,"suppression": string | null,"time_bucket": string,"topic": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "aggregation_model_version": string,"created_at"?: string,"fingerprint": string,"id"?: string,"period_start": string,"privacy_policy_version": string,"result": NonNullable<Json>,"scope_id": string,"suppression"?: string | null,"time_bucket": string,"topic": string
                   }
@@ -7312,6 +7647,7 @@ isOneToOne: false
                   Row: {
                     "action_type": string,"candidate_id": string | null,"created_at": string,"created_by": string,"id": string,"related_entity_id": string | null,"related_entity_type": string | null,"scope_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_type": string,"candidate_id"?: string | null,"created_at"?: string,"created_by": string,"id"?: string,"related_entity_id"?: string | null,"related_entity_type"?: string | null,"scope_id": string
                   }
@@ -7343,6 +7679,7 @@ isOneToOne: false
                   Row: {
                     "candidate_id": string,"created_at": string,"created_by": string,"entity_id": string,"entity_type": string,"id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "candidate_id": string,"created_at"?: string,"created_by": string,"entity_id": string,"entity_type": string,"id"?: string
                   }
@@ -7368,6 +7705,7 @@ isOneToOne: false
                   Row: {
                     "candidate_id": string | null,"created_at": string,"id": string,"note": string | null,"reviewer_profile_id": string,"scope_id": string,"status": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "candidate_id"?: string | null,"created_at"?: string,"id"?: string,"note"?: string | null,"reviewer_profile_id": string,"scope_id": string,"status": string
                   }
@@ -7399,6 +7737,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"dimensions": NonNullable<Json>,"id": string,"model_version": string,"profile_id": string,"work_context_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"dimensions"?: NonNullable<Json>,"id"?: string,"model_version"?: string,"profile_id": string,"work_context_id"?: string | null
                   }
@@ -7424,6 +7763,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"description": string | null,"hours_pattern": string | null,"id": string,"is_primary": boolean,"location_mode": string | null,"organization_or_context": string | null,"profile_id": string,"role_title": string,"start_date": string | null,"status": string,"updated_at": string,"work_type": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"description"?: string | null,"hours_pattern"?: string | null,"id"?: string,"is_primary"?: boolean,"location_mode"?: string | null,"organization_or_context"?: string | null,"profile_id": string,"role_title": string,"start_date"?: string | null,"status"?: string,"updated_at"?: string,"work_type": string
                   }
@@ -7443,6 +7783,7 @@ isOneToOne: false
                   Row: {
                     "alignment": string,"created_at": string,"id": string,"occupation_note": string | null,"profile_id": string,"template_id": string | null,"things_to_explore": NonNullable<Json>,"title": string,"why_may_fit": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "alignment": string,"created_at"?: string,"id"?: string,"occupation_note"?: string | null,"profile_id": string,"template_id"?: string | null,"things_to_explore"?: NonNullable<Json>,"title": string,"why_may_fit"?: NonNullable<Json>
                   }
@@ -7462,6 +7803,7 @@ isOneToOne: false
                   Row: {
                     "autonomy": NonNullable<Json>,"created_at": string,"current_role_note": string | null,"enjoyment": NonNullable<Json>,"environment_preferences": NonNullable<Json>,"lifestyle_fit": NonNullable<Json>,"profile_id": string,"purpose_fit": NonNullable<Json>,"updated_at": string,"values": NonNullable<Json>
                   }
+                  ComputedFields: never
                   Insert: {
                     "autonomy"?: NonNullable<Json>,"created_at"?: string,"current_role_note"?: string | null,"enjoyment"?: NonNullable<Json>,"environment_preferences"?: NonNullable<Json>,"lifestyle_fit"?: NonNullable<Json>,"profile_id": string,"purpose_fit"?: NonNullable<Json>,"updated_at"?: string,"values"?: NonNullable<Json>
                   }
@@ -7481,6 +7823,7 @@ isOneToOne: true
                   Row: {
                     "action_id": string | null,"area": string | null,"created_at": string,"desired_change": string | null,"id": string,"ladder_step": string,"profile_id": string,"status": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_id"?: string | null,"area"?: string | null,"created_at"?: string,"desired_change"?: string | null,"id"?: string,"ladder_step": string,"profile_id": string,"status"?: string
                   }
@@ -7506,6 +7849,7 @@ isOneToOne: false
                   Row: {
                     "activity": string | null,"activity_tags": NonNullable<Json>,"context_note": string | null,"created_at": string,"feeling": string,"id": string,"model_version": string,"note": string | null,"profile_id": string,"project": string | null,"task_tag": string | null,"work_context_id": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "activity"?: string | null,"activity_tags"?: NonNullable<Json>,"context_note"?: string | null,"created_at"?: string,"feeling": string,"id"?: string,"model_version"?: string,"note"?: string | null,"profile_id": string,"project"?: string | null,"task_tag"?: string | null,"work_context_id"?: string | null
                   }
@@ -7531,6 +7875,7 @@ isOneToOne: false
                   Row: {
                     "created_at": string,"feedback": string,"id": string,"profile_id": string,"recommendation_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "created_at"?: string,"feedback": string,"id"?: string,"profile_id": string,"recommendation_id": string
                   }
@@ -7550,6 +7895,7 @@ isOneToOne: false
                   Row: {
                     "activities_sought": NonNullable<Json>,"approved": boolean,"environment": NonNullable<Json>,"location_mode": string | null,"profile_id": string,"role_types_sought": NonNullable<Json>,"schedule_note": string | null,"updated_at": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "activities_sought"?: NonNullable<Json>,"approved"?: boolean,"environment"?: NonNullable<Json>,"location_mode"?: string | null,"profile_id": string,"role_types_sought"?: NonNullable<Json>,"schedule_note"?: string | null,"updated_at"?: string
                   }
@@ -7569,6 +7915,7 @@ isOneToOne: true
                   Row: {
                     "action_id": string | null,"change_kind": string,"created_at": string,"helped": string | null,"id": string,"note": string | null,"profile_id": string,"transition_path_id": string | null,"work_joy_feeling": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "action_id"?: string | null,"change_kind": string,"created_at"?: string,"helped"?: string | null,"id"?: string,"note"?: string | null,"profile_id": string,"transition_path_id"?: string | null,"work_joy_feeling"?: string | null
                   }
@@ -7600,6 +7947,7 @@ isOneToOne: false
                   Row: {
                     "already_have": string | null,"created_at": string,"id": string,"need": string | null,"next_step": string | null,"opportunity_path": string | null,"profile_id": string,"status": string,"study_path": string | null,"target": string,"test_path": string | null,"updated_at": string,"why": string | null
                   }
+                  ComputedFields: never
                   Insert: {
                     "already_have"?: string | null,"created_at"?: string,"id"?: string,"need"?: string | null,"next_step"?: string | null,"opportunity_path"?: string | null,"profile_id": string,"status"?: string,"study_path"?: string | null,"target": string,"test_path"?: string | null,"updated_at"?: string,"why"?: string | null
                   }
@@ -7619,6 +7967,7 @@ isOneToOne: false
                   Row: {
                     "contribute_path": string,"created_at": string,"exploration_id": string | null,"id": string,"joy_entry_id": string | null,"opportunity_id": string | null,"profile_id": string
                   }
+                  ComputedFields: never
                   Insert: {
                     "contribute_path": string,"created_at"?: string,"exploration_id"?: string | null,"id"?: string,"joy_entry_id"?: string | null,"opportunity_id"?: string | null,"profile_id": string
                   }
@@ -7653,6 +8002,7 @@ isOneToOne: false
                   Row: {
                     "commitment_count": number | null,"lane": string | null,"status": string | null,"total_amount_usd": number | null
                   }
+                  ComputedFields: never
                   Relationships: [
                     
                   ]
@@ -7875,10 +8225,13 @@ isOneToOne: false
 { Args: { "max_snapshot_age"?: string,"snapshot_notes"?: string,"snapshot_source"?: string }; Returns: number
                            },
 "cast_consultation_ballot":
-{ Args: { "p_election_id": string,"p_option_key": string }; Returns: string
+{ Args: { "p_election_id": string,"p_option_key": string }; Returns: Json
                            },
 "civi_caller_can_review_interactions":
 { Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"civic_append_election_event":
+{ Args: { "p_election_id": string,"p_event_type": string,"p_payload": Json }; Returns: string
                            },
 "civic_can_draft_voting_proposal_for_matter":
 { Args: { "p_matter_id": string,"p_profile_id": string }; Returns: boolean
@@ -7886,10 +8239,19 @@ isOneToOne: false
 "civic_can_manage_voting_proposals":
 { Args: { "p_profile_id": string }; Returns: boolean
                            },
+"civic_close_due_elections":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
 "civic_election_country_stats":
 { Args: { "p_election_id": string }; Returns: {
               "country_code": string,"participant_count": number
             }[]
+                           },
+"civic_election_observer_metrics":
+{ Args: { "p_election_id": string }; Returns: Json
+                           },
+"civic_election_outcome":
+{ Args: { "p_election_id": string }; Returns: Json
                            },
 "civic_election_public_directory":
 { Args: { "p_election_id": string }; Returns: {
@@ -7900,6 +8262,37 @@ isOneToOne: false
 { Args: { "p_election_id": string }; Returns: {
               "candidate_id": string,"display_name": string,"option_key": string,"vote_count": number
             }[]
+                           },
+"civic_election_receipt_included":
+{ Args: { "p_election_id": string,"p_receipt": string }; Returns: boolean
+                           },
+"civic_election_receipts":
+{ Args: { "p_election_id": string }; Returns: {
+              "receipt": string
+            }[]
+                           },
+"civic_election_secret_ensure":
+{ Args: { "p_election_id": string }; Returns: string
+                           },
+"civic_election_secret_lookup":
+{ Args: { "p_election_id": string }; Returns: string
+                           },
+"civic_election_verification_split":
+{ Args: { "p_election_id": string }; Returns: {
+              "unverified_count": number,"verified_count": number
+            }[]
+                           },
+"civic_normalize_options":
+{ Args: { "p_options": Json }; Returns: Json
+                           },
+"civic_notify_profiles":
+{ Args: { "p_body": string,"p_entity_id": string,"p_entity_type": string,"p_metadata"?: Json,"p_recipients": (string)[],"p_title": string,"p_type": string }; Returns: number
+                           },
+"civic_seal_choice":
+{ Args: { "p_election_id": string,"p_option": string }; Returns: string
+                           },
+"civic_unseal_choice":
+{ Args: { "p_election_id": string,"p_payload": string }; Returns: string
                            },
 "civizen_base32_hash_prefix":
 { Args: { "output_length"?: number,"source": string }; Returns: string
@@ -7965,6 +8358,9 @@ isOneToOne: false
                            },
 "complete_matter_collaborative_work":
 { Args: { "p_allow_outstanding"?: boolean,"p_matter_id": string,"p_reason"?: string }; Returns: undefined
+                           },
+"consultation_eligibility_reason":
+{ Args: { "p_election_id": string,"p_profile_id": string }; Returns: string
                            },
 "convert_funding_interest_to_commitment":
 { Args: { "p_amount_original"?: number,"p_amount_usd"?: number,"p_currency"?: string,"p_inquiry_id": string,"p_restriction_code"?: string,"p_restrictions"?: string,"p_status"?: string }; Returns: Json
@@ -8124,6 +8520,9 @@ isOneToOne: false
                            },
 "delete_content_item_from_source":
 { Args: { "target_source_id": string,"target_source_table": string }; Returns: undefined
+                           },
+"delete_my_account":
+{ Args: { "p_confirm": string }; Returns: boolean
                            },
 "edit_published_post":
 { Args: { "p_content": string,"p_post_id": string }; Returns: {
@@ -8970,7 +9369,7 @@ isOneToOne: false
 { Args: { "p_actor_kind": string,"p_actor_profile_id": string,"p_matter_id": string,"p_unit_label"?: string }; Returns: undefined
                            },
 "matter_execute_escalation_step":
-{ Args: { "p_action": Database["public"]['Tables']["matter_action_requirements"]['Row'],"p_step": Database["public"]['Tables']["matter_escalation_steps"]['Row'] }; Returns: undefined
+{ Args: { "p_action": Omit<Database["public"]['Tables']["matter_action_requirements"]['Row'], Database["public"]['Tables']["matter_action_requirements"]['ComputedFields']>,"p_step": Omit<Database["public"]['Tables']["matter_escalation_steps"]['Row'], Database["public"]['Tables']["matter_escalation_steps"]['ComputedFields']> }; Returns: undefined
                            },
 "matter_find_stalled":
 { Args: Record<PropertyKey, never>; Returns: {
@@ -9060,8 +9459,14 @@ isOneToOne: false
 "mint_luma_to_profile":
 { Args: { "p_amount_lumens": number,"p_idempotency_key": string,"p_memo"?: string,"p_target_profile_id": string }; Returns: string
                            },
+"my_consultation_ballot":
+{ Args: { "p_election_id": string }; Returns: Json
+                           },
 "my_consultation_ballot_option":
 { Args: { "p_election_id": string }; Returns: string
+                           },
+"my_consultation_eligibility":
+{ Args: { "p_election_id": string }; Returns: Json
                            },
 "my_consultation_public_presence":
 { Args: { "p_election_id": string }; Returns: boolean
@@ -9086,6 +9491,9 @@ isOneToOne: false
                            },
 "open_governance_public_audit_verifier_mirror_federation_alert":
 { Args: { "alert_key": string,"alert_message": string,"alert_scope": string,"metadata"?: Json,"severity": string }; Returns: string
+                           },
+"open_voting_proposal_for_support":
+{ Args: { "p_proposal_id": string,"p_threshold"?: number }; Returns: Json
                            },
 "opportunity_assessment_score_value":
 { Args: { "p_enabled": (string)[],"p_key": string,"p_scores": Json }; Returns: number
@@ -9532,6 +9940,9 @@ isOneToOne: false
 "terminate_agreement":
 { Args: { "p_agreement_id": string,"p_reason": string }; Returns: undefined
                            },
+"toggle_voting_proposal_support":
+{ Args: { "p_proposal_id": string }; Returns: Json
+                           },
 "touch_civi_learned_memory":
 { Args: { "p_question_key": string }; Returns: undefined
                            },
@@ -9563,6 +9974,9 @@ isOneToOne: false
                            },
 "update_knowledge_space":
 { Args: { "p_space_id": string,"payload": Json }; Returns: undefined
+                           },
+"update_voting_proposal_settings":
+{ Args: { "p_options"?: Json,"p_pass_threshold"?: number,"p_proposal_id": string,"p_quorum"?: number,"p_scope_country_code"?: string,"p_scope_kind"?: string,"p_voting_closes_at"?: string,"p_voting_opens_at"?: string }; Returns: Json
                            },
 "upsert_content_item_from_source":
 { Args: { "target_author_id": string,"target_body_preview"?: string,"target_content_type": string,"target_metadata"?: Json,"target_professional_domain"?: string,"target_review_status"?: Database["public"]['Enums']["content_review_status"],"target_source_id": string,"target_source_table": string,"target_title"?: string }; Returns: undefined
@@ -9600,6 +10014,12 @@ isOneToOne: false
                            },
 "verify_governance_public_audit_verifier_federation_exchange_rcp":
 { Args: { "receipt_verification_notes"?: string,"receipt_verified": boolean,"target_attestation_id": string }; Returns: string
+                           },
+"voting_proposal_support_summary":
+{ Args: { "p_proposal_id": string }; Returns: Json
+                           },
+"voting_proposal_support_threshold":
+{ Args: { "p_proposal_id": string }; Returns: number
                            },
 "wellbeing_aggregate_can_view_scope":
 { Args: { "p_scope_id": string }; Returns: boolean

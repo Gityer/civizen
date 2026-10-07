@@ -2,7 +2,6 @@
  * Civizen Score Contributions: collect domain activity, estimate factors, score.
  * Heuristics are deterministic (v1). AI classification and off-platform declaration come later.
  */
-
 export {
   contributionEvidenceRoots,
   scoreContributionsFromEvents,
@@ -10,7 +9,8 @@ export {
   demonstratedProjectsFromContributionEvents,
 } from '@/lib/civizen-contribution-score';
 import { supabase } from '@/integrations/supabase/client';
-import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
+import type { SupabaseDbClient } from '@/integrations/supabase/client-type';
+import type { Json } from '@/integrations/supabase/types';
 import {
   groupDevelopmentStoriesToContributions,
   storyFromDevelopmentRow,
@@ -209,7 +209,7 @@ function asNumber(value: unknown): number | null {
   return null;
 }
 
-type DbClient = UntypedSupabaseClient;
+type DbClient = SupabaseDbClient;
 
 /**
  * Fan-out collect + estimate from live domain tables for one profile.
@@ -648,7 +648,7 @@ function eventToRow(event: ContributionEvent) {
     beneficiary_estimate: event.beneficiaryEstimate,
     verified: event.verified,
     occurred_at: event.occurredAt,
-    raw_meta: event.rawMeta,
+    raw_meta: event.rawMeta as NonNullable<Json>,
     updated_at: new Date().toISOString(),
   };
 }

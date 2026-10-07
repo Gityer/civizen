@@ -2,7 +2,7 @@
  * Client-side idempotent seed for Civizen Pre-Major-Build Validation Program v0.3.
  * Does not overwrite v0.1/v0.2. Creates no commitments/receipts/allocations.
  */
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import {
   VALIDATION_BUDGET_GROUPS_V03,
   VALIDATION_BUDGET_LINES_V03,
@@ -20,7 +20,7 @@ export type SeedValidationBudgetV03Result = {
 };
 
 export async function seedValidationBudgetV03(): Promise<Result<SeedValidationBudgetV03Result>> {
-  const existing = await supabaseUntyped
+  const existing = await supabase
     .from('project_budgets')
     .select('id')
     .eq('name', VALIDATION_BUDGET_V03.name)
@@ -42,7 +42,7 @@ export async function seedValidationBudgetV03(): Promise<Result<SeedValidationBu
     };
   }
 
-  const prior = await supabaseUntyped
+  const prior = await supabase
     .from('project_budgets')
     .select('id')
     .eq('name', VALIDATION_BUDGET_V03.supersedesName)
@@ -50,10 +50,10 @@ export async function seedValidationBudgetV03(): Promise<Result<SeedValidationBu
     .maybeSingle();
 
   const supersedesId = prior.data ? (prior.data as { id: string }).id : null;
-  const { data: userData } = await supabaseUntyped.auth.getUser();
+  const { data: userData } = await supabase.auth.getUser();
   const actor = userData.user?.id ?? null;
 
-  const inserted = await supabaseUntyped
+  const inserted = await supabase
     .from('project_budgets')
     .insert({
       name: VALIDATION_BUDGET_V03.name,
@@ -79,7 +79,7 @@ export async function seedValidationBudgetV03(): Promise<Result<SeedValidationBu
   const groupIdByKey = new Map<string, string>();
 
   for (const group of VALIDATION_BUDGET_GROUPS_V03) {
-    const g = await supabaseUntyped
+    const g = await supabase
       .from('budget_expense_groups')
       .insert({
         budget_id: budgetId,
@@ -96,7 +96,7 @@ export async function seedValidationBudgetV03(): Promise<Result<SeedValidationBu
   for (const line of VALIDATION_BUDGET_LINES_V03) {
     const groupId = groupIdByKey.get(line.groupKey);
     if (!groupId) return { ok: false, message: `Missing group ${line.groupKey}` };
-    const li = await supabaseUntyped.from('budget_line_items').insert({
+    const li = await supabase.from('budget_line_items').insert({
       group_id: groupId,
       title: line.title,
       description: line.description,
@@ -115,7 +115,7 @@ export async function seedValidationBudgetV03(): Promise<Result<SeedValidationBu
     if (li.error) return { ok: false, message: li.error.message };
   }
 
-  await supabaseUntyped.from('budget_revisions').insert({
+  await supabase.from('budget_revisions').insert({
     budget_id: budgetId,
     change_summary: 'Seeded Validation Budget v0.3 (exact $634,400,000.00 Recommended Base)',
     changed_fields: ['seed', 'validation-budget-v0.3', 'base-634.4', 'recommended-from-doc-33'],
@@ -125,7 +125,7 @@ export async function seedValidationBudgetV03(): Promise<Result<SeedValidationBu
   });
 
   if (supersedesId) {
-    await supabaseUntyped
+    await supabase
       .from('project_budgets')
       .update({ lifecycle_status: 'superseded' })
       .eq('id', supersedesId)

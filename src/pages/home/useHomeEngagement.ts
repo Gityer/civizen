@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { type SocialProvider } from '@/lib/civizen-org-account';
 import { providerDisplayName, publishPostToSocial } from '@/lib/social-accounts';

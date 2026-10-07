@@ -1,4 +1,4 @@
-﻿import { supabaseUntyped } from '@/integrations/supabase/untyped';
+﻿import { supabase } from '@/integrations/supabase/client';
 
 export const ACCOUNT_DELETION_CONFIRM_WORD = 'DELETE';
 
@@ -21,6 +21,6 @@ export function isAccountDeletionConfirmed(input: string): boolean {
 
 /** Closes the signed-in member's own account. Throws an Error whose message is the DB reason. */
 export async function deleteMyAccount(confirmation: string): Promise<void> {
-  const { error } = await supabaseUntyped.rpc('delete_my_account', { p_confirm: confirmation });
+  const { error } = await supabase.rpc('delete_my_account', { p_confirm: confirmation });
   if (error) throw new Error(error.message);
 }

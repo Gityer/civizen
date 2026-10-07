@@ -1,6 +1,6 @@
 import { getCountryDialCode } from '@/lib/countries';
 import { formatEnglishOrList, type MarketJobMode } from '@/lib/market-job-types';
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 
 export type PublicMarketJobListing = {
   id: string;
@@ -127,7 +127,7 @@ function normalizeListing(row: Record<string, unknown>): PublicMarketJobListing 
 }
 
 export async function listPublicMarketJobListings(mode: MarketJobMode): Promise<PublicMarketJobListing[]> {
-  const { data, error } = await supabaseUntyped.rpc('list_public_market_job_listings', {
+  const { data, error } = await supabase.rpc('list_public_market_job_listings', {
     p_mode: mode,
     p_limit: 40,
   });
@@ -141,7 +141,7 @@ export async function listPublicMarketJobListings(mode: MarketJobMode): Promise<
 }
 
 export async function unlockMarketJobContact(id: string): Promise<UnlockedMarketJobContact> {
-  const { data, error } = await supabaseUntyped.rpc('unlock_market_job_contact', {
+  const { data, error } = await supabase.rpc('unlock_market_job_contact', {
     p_id: id,
   });
   if (error) {

@@ -1,4 +1,4 @@
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 
 export type PostViewStats = {
   uniqueVisitors: number;
@@ -43,7 +43,7 @@ export async function fetchPostViewStats(postIds: string[]): Promise<Record<stri
   const ids = postIds.filter(isRecordablePostId);
   if (ids.length === 0) return {};
 
-  const { data, error } = await supabaseUntyped
+  const { data, error } = await supabase
     .from('post_views')
     .select('post_id, viewer_id, view_count')
     .in('post_id', ids);
@@ -58,7 +58,7 @@ export async function fetchPostViewStats(postIds: string[]): Promise<Record<stri
 export async function recordPostView(postId: string): Promise<PostViewStats | null> {
   if (!isRecordablePostId(postId)) return null;
 
-  const { data, error } = await supabaseUntyped.rpc('record_post_view', {
+  const { data, error } = await supabase.rpc('record_post_view', {
     p_post_id: postId,
   });
 

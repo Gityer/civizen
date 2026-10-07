@@ -24,7 +24,7 @@ import {
 } from '@/lib/profile-skills';
 import { getSkillDescription } from '@/lib/profile-skill-descriptions';
 import { cn } from '@/lib/utils';
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DemonstratedSkillEvidence } from '@/components/profile/DemonstratedSkillEvidence';
 import { AUTOSAVE_MS, canHoverOpen, selectedOptionClass, type AutosaveStatus } from '@/components/profile/details-dialog-helpers';
@@ -237,7 +237,7 @@ export function SkillsDetailsDialog({
     const load = async () => {
       hydratedRef.current = false;
       setLoading(true);
-      const { data, error } = await supabaseUntyped
+      const { data, error } = await supabase
         .from('profile_skills_entries')
         .select('id, hard_skill_names, soft_skill_names, skill_names')
         .eq('profile_id', profileId)
@@ -291,13 +291,13 @@ export function SkillsDetailsDialog({
     };
     const currentId = entryIdRef.current;
     const { data, error } = currentId
-      ? await supabaseUntyped
+      ? await supabase
           .from('profile_skills_entries')
           .update(payload)
           .eq('id', currentId)
           .select('id')
           .maybeSingle()
-      : await supabaseUntyped
+      : await supabase
           .from('profile_skills_entries')
           .upsert(payload, { onConflict: 'profile_id' })
           .select('id')

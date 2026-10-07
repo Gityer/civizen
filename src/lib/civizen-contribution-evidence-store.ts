@@ -1,7 +1,8 @@
 /** Persist live contribution evidence, evaluation history, and score history. */
 
 import { supabase } from '@/integrations/supabase/client';
-import type { UntypedSupabaseClient } from '@/integrations/supabase/untyped';
+import type { SupabaseDbClient } from '@/integrations/supabase/client-type';
+import type { Json } from '@/integrations/supabase/types';
 import type { ContributionEvent } from '@/lib/civizen-contributions';
 import { scoreContributionsFromEvents } from '@/lib/civizen-contribution-score';
 import { evaluateContributionLifecycle } from '@/lib/civizen-contribution-lifecycle';
@@ -16,7 +17,7 @@ import {
 import { SCORE_CALCULATION_VERSION } from '@/lib/civizen-score-model';
 import type { RatingConflict } from '@/lib/civizen-evaluator-reputation';
 
-type DbClient = Pick<UntypedSupabaseClient, 'from'>;
+type DbClient = Pick<SupabaseDbClient, 'from'>;
 
 export type NewContributionEvidence = {
   contributionSourceTable: string;
@@ -113,7 +114,7 @@ export async function recordContributionEvidence(
     affected: input.affected === true,
     conflict_type: input.conflictType ?? null,
     conflict_disclosed: input.conflictDisclosed === true,
-    payload: input.payload ?? {},
+    payload: (input.payload ?? {}) as NonNullable<Json>,
     validation_status: input.validationStatus ?? (input.kind === 'independent_validation' ? 'accepted' : null),
     reweight_reason: input.reweightReason ?? null,
     occurred_at: occurredAt,

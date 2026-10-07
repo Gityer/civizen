@@ -21,7 +21,7 @@ import {
   PROFILE_TRAINING_SEEDS,
 } from '@/lib/profile-trainings';
 import { cn } from '@/lib/utils';
-import { supabaseUntyped } from '@/integrations/supabase/untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { AUTOSAVE_MS, canHoverOpen, selectedOptionClass, type AutosaveStatus } from '@/components/profile/details-dialog-helpers';
 import { CyclingOptionsLabel } from '@/components/profile/CyclingOptionsLabel';
@@ -190,7 +190,7 @@ export function TrainingDetailsDialog({
     const load = async () => {
       hydratedRef.current = false;
       setLoading(true);
-      const { data, error } = await supabaseUntyped
+      const { data, error } = await supabase
         .from('profile_training_entries')
         .select('id, training_names')
         .eq('profile_id', profileId)
@@ -234,13 +234,13 @@ export function TrainingDetailsDialog({
 
     const existingId = entryIdRef.current;
     const { data, error } = existingId
-      ? await supabaseUntyped
+      ? await supabase
           .from('profile_training_entries')
           .update(payload)
           .eq('id', existingId)
           .select('id')
           .maybeSingle()
-      : await supabaseUntyped
+      : await supabase
           .from('profile_training_entries')
           .upsert(payload, { onConflict: 'profile_id' })
           .select('id')

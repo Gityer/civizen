@@ -52,7 +52,7 @@ The only part that needs the server is producing the dump: a job on the host (a 
 2. Copy the file to the dev machine and run `scripts/local-supabase/import-dump.sh <file>` (add `CIVIZEN_IMPORT_FORCE=1` to wipe existing local data first). It only ever targets the local container, and gives every account the local password `civizen-local`.
 
 Both scripts were rehearsed end to end on the local database with seeded rows (excluded rows absent from the dump, no hash or token in it, import refuses a non-empty database without the force flag). They have not been run against the hosted database. Avatars and other uploaded files are not included, so profile pictures and attachments will be missing locally.
-- `src/integrations/supabase/types.ts` is still the older hand-maintained file; regenerating it from this database (`supabase gen types typescript --local`) is a separate, larger change because the existing code relies on the narrower types.
+- `src/integrations/supabase/types.ts` is generated from this database (`supabase gen types typescript --local`, see below) and is committed; regenerate it after every migration so the client stays typed. There is no untyped client any more: libraries that take an injected client use `SupabaseDbClient` from `src/integrations/supabase/client-type.ts`.
 
 ## Verifying the schema against the repo types
 
