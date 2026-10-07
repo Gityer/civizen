@@ -13,7 +13,7 @@ Software architecture, decentralization mechanisms, civic-participation integrat
 | [`civic-participation/`](./civic-participation/) | Governance integration guide |
 | [`happiness-and-fulfillment/`](./happiness-and-fulfillment/) | Happiness & Human Fulfillment product spec (implemented through Human Outcome Reviews; no Phase 6) |
 | [`scoring-and-reputation/`](./scoring-and-reputation/) | Score page reorganization + tier implementation |
-| [`product-design/`](./product-design/) | Information architecture and content standards; Funding workspace IA; admin usability audit |
+| [`product-design/`](./product-design/) | Information architecture and content standards; **product inventory and implementation plan (2026-10-07)**; voting system audit; Funding workspace IA; admin usability audit |
 
 ## Recommended reading order
 
