@@ -117,6 +117,19 @@ Before committing, confirm APK files are not staged:
 git status --short
 ```
 
+## Building from a clean worktree
+
+When other sessions have uncommitted work in the main checkout, build the release from a clean `git worktree` of the commit you are shipping so none of their files reach the bundle. The Android project keeps several files out of git (`android/gradlew`, `gradle/wrapper/`, `gradle.properties`, `settings.gradle`, `variables.gradle`, `capacitor.settings.gradle`, `local.properties` and `app/src/main/res/`), so copy them in first without overwriting tracked files:
+
+```bash
+git worktree add -b release/vX.Y.Z ../civizen-release main
+ln -s "$PWD/node_modules" ../civizen-release/node_modules
+cp .env .env.local ../civizen-release/
+rsync -a --ignore-existing --exclude build/ --exclude .gradle/ --exclude app/src/main/assets/public/ android/ ../civizen-release/android/
+```
+
+Run the bump, build and deploy steps inside `../civizen-release`, commit the release there, then fast-forward `main` to it and remove the worktree.
+
 ## Quick Commands
 
 ```bash
