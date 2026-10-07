@@ -105,6 +105,18 @@ const CIVIZEN_TERMS = [
   'tools tab',
   'votes tab',
   'proposals tab',
+  'ballots',
+  'rank',
+  'ranked',
+  'ranking',
+  'approval',
+  'options',
+  'option',
+  'preference',
+  'run-off',
+  'runoff',
+  'tally',
+  'tallies',
 ];
 
 export function isGreetingOnly(content: string): boolean {

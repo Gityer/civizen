@@ -45,6 +45,9 @@ const ENGLISH_CASES: Array<[string, string, RegExp]> = [
   ['When can I publish my proposal?', 'how_do_i_submit_a_proposal', /threshold is reached/],
   ['How does member support for a proposal work?', 'how_does_proposal_support_work', /Support this proposal/],
   ['Can a proposal have custom options?', 'can_a_proposal_have_custom_options', /2 to 12 options/],
+  ['Can I rank the options?', 'can_a_proposal_have_custom_options', /instant run-off/],
+  ['What is ranked voting?', 'can_a_proposal_have_custom_options', /order of preference/],
+  ['Is there approval voting?', 'can_a_proposal_have_custom_options', /approval voting/],
   ['Where are my notifications?', 'where_are_my_notifications', /bell/],
   ['What is the bell icon?', 'where_are_my_notifications', /Settings > Notifications/],
   ['How do I get notified when a vote result is published?', 'where_are_my_notifications', /result/],
@@ -59,6 +62,7 @@ const ENGLISH_CASES: Array<[string, string, RegExp]> = [
 ];
 
 const ARMENIAN_CASES: Array<[string, string, RegExp]> = [
+  ['Կարո՞ղ եմ տարբերակները դասակարգել', 'can_a_proposal_have_custom_options', /փուլային հաշվարկով/],
   ['Ինչպե՞ս քվեարկել։', 'how_do_i_vote', /Քաղաքացիական քվեարկություն/],
   ['Ինչպե՞ս իմանալ, որ իմ ձայնը հաշվվել է։', 'how_do_i_know_my_vote_was_counted', /Ստուգել, որ իմ անդորրագիրը հաշվված է/],
   ['Ի՞նչ է անդորրագիրը։', 'what_is_a_voting_receipt', /պատահական կոդ/],
@@ -74,6 +78,7 @@ const ARMENIAN_CASES: Array<[string, string, RegExp]> = [
 ];
 
 const RUSSIAN_CASES: Array<[string, string, RegExp]> = [
+  ['Можно ли ранжировать варианты?', 'can_a_proposal_have_custom_options', /мгновенным вторым туром/],
   ['Как проголосовать?', 'how_do_i_vote', /Гражданское голосование/],
   ['Как узнать, что мой голос учтён?', 'how_do_i_know_my_vote_was_counted', /Проверить, что моя квитанция учтена/],
   ['Что такое квитанция?', 'what_is_a_voting_receipt', /случайный код/],
