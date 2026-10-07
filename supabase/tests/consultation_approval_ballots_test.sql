@@ -104,8 +104,8 @@ BEGIN
   SELECT vote_count INTO clinic FROM public.civic_election_public_tallies(current_setting('test.election_id')::uuid) WHERE option_key = 'clinic';
   IF park <> 1 OR lib <> 2 OR clinic <> 0 THEN RAISE EXCEPTION 'approval tallies wrong: park % library % clinic %', park, lib, clinic; END IF;
   mine := public.my_consultation_ballot(current_setting('test.election_id')::uuid);
-  IF mine->'option_keys' <> '["library","park"]'::jsonb THEN RAISE EXCEPTION 'own picks not readable (sorted, trimmed, lower-cased): %', mine; END IF;
-  IF mine->>'option_key' <> 'library' THEN RAISE EXCEPTION 'first pick should fill option_key: %', mine; END IF;
+  IF mine->'option_keys' <> '["park","library"]'::jsonb THEN RAISE EXCEPTION 'own picks not readable (voter order, trimmed, lower-cased): %', mine; END IF;
+  IF mine->>'option_key' <> 'park' THEN RAISE EXCEPTION 'first pick should fill option_key: %', mine; END IF;
   SELECT encrypted_payload INTO stored FROM public.civic_ballots
     WHERE election_id = current_setting('test.election_id')::uuid AND profile_id = current_setting('test.voter_pid')::uuid;
   IF stored IS NULL OR stored ILIKE '%park%' THEN RAISE EXCEPTION 'approval choices stored in clear'; END IF;

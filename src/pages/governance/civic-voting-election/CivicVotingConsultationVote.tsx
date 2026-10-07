@@ -5,6 +5,7 @@ import { Switch } from '@/components/ui/switch';
 import { consultationOptionLabel, describeConsultationOutcome, readConsultationOutcome } from '@/lib/civic-voting/outcome';
 import { readBallotMethod, readMaxSelections } from '@/lib/civic-voting/voting-proposals';
 import { ConsultationApprovalPicker } from '@/pages/governance/civic-voting-election/ConsultationApprovalPicker';
+import { ConsultationRankedPicker } from '@/pages/governance/civic-voting-election/ConsultationRankedPicker';
 import { formatReceipt } from '@/pages/governance/civic-voting-election/consultation-receipt';
 import type { useCivicVotingElection } from '@/pages/governance/civic-voting-election/useCivicVotingElection';
 
@@ -44,9 +45,11 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
         .map((candidate) => ({ key: String(candidate.optionKey), label: consultationOptionLabel(t, candidate.optionKey, candidate.displayName) }))
     : DEFAULT_OPTION_KEYS.map((key) => ({ key, label: consultationOptionLabel(t, key) }));
   const optionLabel = (key: string) => options.find((option) => option.key === key)?.label ?? consultationOptionLabel(t, key);
-  const approval = readBallotMethod(detail?.election.metadata) === 'approval';
+  const ballotMethod = readBallotMethod(detail?.election.metadata);
+  const approval = ballotMethod === 'approval';
+  const ranked = ballotMethod === 'ranked';
   const maxSelections = readMaxSelections(detail?.election.metadata, options.length);
-  const picks: string[] = approval ? (myOptions ?? []) : myOption ? [myOption] : [];
+  const picks: string[] = approval || ranked ? (myOptions ?? []) : myOption ? [myOption] : [];
   const outcome = readConsultationOutcome(detail?.election.metadata);
   const outcomeLine = outcome ? describeConsultationOutcome(outcome, optionLabel) : null;
   const outcomeBlock = outcomeLine ? (
@@ -148,8 +151,10 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
       {myOption ? (
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-xs text-muted-foreground">
-            {t(approval ? 'civicBallot.yourChoices' : 'civicVoting.proposals.yourChoice')}:{' '}
-            <span className="font-medium text-foreground">{picks.map(optionLabel).join(', ')}</span>
+            {t(ranked ? 'civicBallot.yourRanking' : approval ? 'civicBallot.yourChoices' : 'civicVoting.proposals.yourChoice')}:{' '}
+            <span className="font-medium text-foreground">
+              {ranked ? picks.map((key, index) => `${index + 1}. ${optionLabel(key)}`).join(', ') : picks.map(optionLabel).join(', ')}
+            </span>
           </p>
           <Button
             type="button"
@@ -163,7 +168,16 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
           </Button>
         </div>
       ) : null}
-      {approval ? (
+      {ranked ? (
+        <ConsultationRankedPicker
+          options={options}
+          selected={picks}
+          disabled={withdrawing || blocked}
+          casting={casting}
+          onCast={(keys) => void castConsultation(keys)}
+          t={t}
+        />
+      ) : approval ? (
         <ConsultationApprovalPicker
           options={options}
           selected={picks}

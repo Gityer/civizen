@@ -191,3 +191,38 @@ describe('CivicVotingConsultationVote approval ballots', () => {
     expect(castConsultation).toHaveBeenCalledWith(['park']);
   });
 });
+
+describe('CivicVotingConsultationVote ranked ballots', () => {
+  const rankedDetail = {
+    election: { status: 'open', metadata: { ballot_method: 'ranked' } },
+    contests: [{
+      candidates: [
+        { optionKey: 'hall', displayName: 'Hall' },
+        { optionKey: 'park', displayName: 'Park' },
+        { optionKey: 'school', displayName: 'School' },
+      ],
+    }],
+  };
+
+  it('keeps the tap order as the ranking and casts it', () => {
+    const castConsultation = vi.fn();
+    renderAt(makeModel({ user: { id: 'u1' }, myOptions: [], castConsultation, detail: rankedDetail }));
+    expect(screen.getByTestId('consultation-ranked')).toBeTruthy();
+    fireEvent.click(screen.getByText('Park'));
+    fireEvent.click(screen.getByText('Hall'));
+    fireEvent.click(screen.getByTestId('consultation-cast-ranked'));
+    expect(castConsultation).toHaveBeenCalledWith(['park', 'hall']);
+  });
+
+  it('shows the stored ranking in order and treats a reorder as a change', () => {
+    const castConsultation = vi.fn();
+    renderAt(makeModel({ user: { id: 'u1' }, myOption: 'park', myOptions: ['park', 'hall'], myReceipt: 'abc', castConsultation, detail: rankedDetail }));
+    expect(screen.getByText('1. Park, 2. Hall')).toBeTruthy();
+    expect((screen.getByTestId('consultation-cast-ranked') as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByText('Park'));
+    fireEvent.click(screen.getByText('Park'));
+    expect((screen.getByTestId('consultation-cast-ranked') as HTMLButtonElement).disabled).toBe(false);
+    fireEvent.click(screen.getByTestId('consultation-cast-ranked'));
+    expect(castConsultation).toHaveBeenCalledWith(['hall', 'park']);
+  });
+});

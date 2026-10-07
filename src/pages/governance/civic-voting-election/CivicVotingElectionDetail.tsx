@@ -162,6 +162,9 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
           {isConsultation && readBallotMethod(detail.election.metadata) === 'approval' ? (
             <p className="text-xs text-muted-foreground">{t('civicBallot.approvalsNote')}</p>
           ) : null}
+          {isConsultation && readBallotMethod(detail.election.metadata) === 'ranked' ? (
+            <p className="text-xs text-muted-foreground">{t('civicBallot.rankedNote')}</p>
+          ) : null}
           <p className="text-xs text-muted-foreground">{t('civicVoting.tallies.validOnly')}</p>
         </div>
 

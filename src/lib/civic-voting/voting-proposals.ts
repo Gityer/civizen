@@ -37,16 +37,19 @@ export type VotingProposal = {
 
 export type ProposalOption = { key: string; label: string };
 
-/** How a member fills the ballot: one option, or several (approval voting). */
-export type BallotMethod = 'single' | 'approval';
+/** How a member fills the ballot: one option, several (approval), or an order of preference (ranked). */
+export type BallotMethod = 'single' | 'approval' | 'ranked';
 
 export function readBallotMethod(metadata: Record<string, unknown> | null | undefined): BallotMethod {
-  return metadata?.ballot_method === 'approval' ? 'approval' : 'single';
+  const raw = metadata?.ballot_method;
+  return raw === 'approval' || raw === 'ranked' ? raw : 'single';
 }
 
-/** Picks allowed on one ballot: `max_selections` when set, otherwise every option. */
+/** Picks allowed on one ballot: `max_selections` when set, otherwise every option (ranked ballots rank any number). */
 export function readMaxSelections(metadata: Record<string, unknown> | null | undefined, optionCount: number): number {
-  if (readBallotMethod(metadata) !== 'approval') return 1;
+  const method = readBallotMethod(metadata);
+  if (method === 'single') return 1;
+  if (method === 'ranked') return Math.max(optionCount, 2);
   const raw = Number(metadata?.max_selections);
   return Number.isFinite(raw) && raw >= 2 ? Math.min(raw, Math.max(optionCount, 2)) : Math.max(optionCount, 2);
 }

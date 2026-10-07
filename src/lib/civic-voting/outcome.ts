@@ -8,9 +8,11 @@ export type ConsultationOutcome = {
   /** null when the ballot has no Support/Oppose pair (custom options). */
   passed: boolean | null;
   leadingOptionKey: string | null;
-  ballotMethod: 'single' | 'approval';
+  ballotMethod: 'single' | 'approval' | 'ranked';
   /** Approval ballots: every pick counted; null on single-choice ballots. */
   approvalsTotal: number | null;
+  /** Ranked ballots: instant run-off rounds as stored by the server; null otherwise. */
+  rankedRounds: number | null;
 };
 
 const num = (value: unknown): number | null => {
@@ -31,8 +33,9 @@ export function readConsultationOutcome(metadata: Record<string, unknown> | null
     supportSharePercent: num(row.support_share_percent),
     passed: typeof row.passed === 'boolean' ? row.passed : null,
     leadingOptionKey: row.leading_option_key ? String(row.leading_option_key) : null,
-    ballotMethod: row.ballot_method === 'approval' ? 'approval' : 'single',
+    ballotMethod: row.ballot_method === 'approval' || row.ballot_method === 'ranked' ? row.ballot_method : 'single',
     approvalsTotal: num(row.approvals_total),
+    rankedRounds: Array.isArray(row.ranked_rounds) ? row.ranked_rounds.length : null,
   };
 }
 
@@ -67,6 +70,11 @@ export function describeConsultationOutcome(
       key: 'civicBallot.outcomeQuorumNotMet',
       params: { count: String(outcome.totalCountable), quorum: String(outcome.quorum ?? 0) },
     };
+  }
+  if (outcome.ballotMethod === 'ranked') {
+    return outcome.leadingOptionKey
+      ? { key: 'civicBallot.outcomeRankedWinner', params: { option: optionLabel(outcome.leadingOptionKey), rounds: String(outcome.rankedRounds ?? 1) } }
+      : { key: 'civicBallot.outcomeRankedNoWinner' };
   }
   if (outcome.passed === null || outcome.supportSharePercent === null) {
     return {

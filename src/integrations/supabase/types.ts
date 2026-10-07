@@ -8268,6 +8268,9 @@ isOneToOne: false
               "candidate_id": string,"display_name": string,"option_key": string,"vote_count": number
             }[]
                            },
+"civic_election_ranked_result":
+{ Args: { "p_election_id": string }; Returns: Json
+                           },
 "civic_election_receipt_included":
 { Args: { "p_election_id": string,"p_receipt": string }; Returns: boolean
                            },
@@ -8295,6 +8298,9 @@ isOneToOne: false
                            },
 "civic_seal_choice":
 { Args: { "p_election_id": string,"p_option": string }; Returns: string
+                           },
+"civic_tally_keys":
+{ Args: { "p_method": string,"p_payload": string }; Returns: string[]
                            },
 "civic_unseal_choice":
 { Args: { "p_election_id": string,"p_payload": string }; Returns: string

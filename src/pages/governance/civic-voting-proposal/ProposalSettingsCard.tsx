@@ -51,7 +51,7 @@ export function ProposalSettingsCard({
   const optionCount = optionsText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).length;
   const optionsValid = optionCount >= 2 && optionCount <= 12;
   const customOptions = parseOptionLines(optionsText).length > 0;
-  const approvalValid = ballotMethod !== 'approval' || customOptions;
+  const approvalValid = ballotMethod === 'single' || customOptions;
   if (proposal.status !== 'draft') return null;
 
   return (
@@ -118,6 +118,9 @@ export function ProposalSettingsCard({
           <Button type="button" size="sm" variant={ballotMethod === 'approval' ? 'default' : 'outline'} onClick={() => setBallotMethod('approval')} data-testid="ballot-method-approval">
             {t('proposalSupport.ballotMethodApproval')}
           </Button>
+          <Button type="button" size="sm" variant={ballotMethod === 'ranked' ? 'default' : 'outline'} onClick={() => setBallotMethod('ranked')} data-testid="ballot-method-ranked">
+            {t('proposalSupport.ballotMethodRanked')}
+          </Button>
           {ballotMethod === 'approval' ? (
             <Input
               type="number"
@@ -133,7 +136,9 @@ export function ProposalSettingsCard({
           ) : null}
         </div>
         <p className="text-xs text-muted-foreground">
-          {ballotMethod === 'approval' && !customOptions ? t('proposalSupport.approvalNeedsOptions') : t('proposalSupport.ballotMethodHint')}
+          {ballotMethod !== 'single' && !customOptions
+            ? t('proposalSupport.approvalNeedsOptions')
+            : t(ballotMethod === 'ranked' ? 'proposalSupport.ballotMethodRankedHint' : 'proposalSupport.ballotMethodHint')}
         </p>
       </fieldset>
 
