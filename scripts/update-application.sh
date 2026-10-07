@@ -12,7 +12,7 @@ RELEASE_METADATA_FILE="$ROOT_DIR/src/lib/app-release.ts"
 APP_VERSION="$(sed -n "s/^export const APP_VERSION = '\\(.*\\)';$/\\1/p" "$RELEASE_METADATA_FILE")"
 ANDROID_VERSION_CODE="$(sed -n "s/^export const ANDROID_VERSION_CODE = \\([0-9][0-9]*\\);$/\\1/p" "$RELEASE_METADATA_FILE")"
 RELEASE_ID="$(sed -n "s/^export const APP_RELEASE_ID = '\\(.*\\)';$/\\1/p" "$RELEASE_METADATA_FILE")"
-CHANNEL="${CIVIZEN_UPDATE_CHANNEL:-testing}"
+CHANNEL="${CIVIZEN_UPDATE_CHANNEL:-both}"
 
 resolve_channel_suffix() {
   case "$1" in

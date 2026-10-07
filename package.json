@@ -72,6 +72,7 @@
     "verify:post-dev": "npm run verify:agent-context && npm run verify:dev-load && npm run verify:arc-carousel-layout && npm run verify:arc-carousel-visible && npm run verify:home-post-composer && npm run verify:home-post-format && npm run verify:post-likes-rls && npm run verify:post-reposts && npm run verify:post-edit && npm run verify:home-happiness-shortcut && npm run verify:profile-score-dial && npm run verify:happiness-foundation && npm run verify:work-fulfillment && npm run verify:fulfillment-plans && npm run verify:wellbeing-aggregate-privacy && npm run verify:wellbeing-insights && npm run verify:human-outcome-loop && npm run verify:matters-foundation && npm run verify:matters-auth && npm run verify:matters-detail && npm run verify:matters-work-detail && npm run verify:matters-resolution-detail && npm run verify:matter-agent-auth && npm run verify:matters-ai-detail && npm run verify:matters-coding-detail",
     "release:guard": "node scripts/verify-release-lifecycle.mjs",
     "release:testing": "CIVIZEN_UPDATE_CHANNEL=testing npm run update:application",
+    "release:mark-tested": "npm run promote:android-testing-to-release && npm run build",
     "release:production:promote": "npm run promote:android-testing-to-release && npm run build"
   },
   "dependencies": {

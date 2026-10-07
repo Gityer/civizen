@@ -14,31 +14,25 @@ Public documentation covers release policy and local build steps only. Productio
   - `VITE_DISTRIBUTION_CHANNEL=play-store` for Google Play builds
   - `VITE_DISTRIBUTION_CHANNEL=app-store` for iOS App Store builds
 
-## Android update policy (testing first, then production)
+## Android update policy (production by default, testing when something must be tried first)
 
-1. **Ship new work to testing first**  
-   After bumping `src/lib/app-release.ts`, publish **only the testing channel** (or use the default `both` only when you intentionally want production to jump in the same step):
+The website is deployed straight to production on every release. The Android sideload build follows the same rule: `npm run update:application` publishes **both** tracks (Testing and Production) from one build, so members on either track get the new version at once.
 
-   ```bash
-   CIVIZEN_UPDATE_CHANNEL=testing npm run update:application
-   ```
+Use the Testing track only when a change should be tried on a device before everyone gets it (native Android code, Capacitor plugins, update-prompt changes, or anything the agent wants Armen to try first):
 
-   Publish the testing manifests and matching testing APK so sideload testers pick it up.
+```bash
+npm run release:testing          # CIVIZEN_UPDATE_CHANNEL=testing: Testing track only
+```
 
-2. **Soak and verify**  
-   Keep the build on the **Testing** track until you are satisfied there are **no bug reports** (or other release blockers) on that testing version.
+Once it is tested, mark it tested, which copies the same bytes to the Production track and rebuilds the site:
 
-3. **Promote the same tested build to production**  
-   When the testing build is approved, copy it to the **release** channel (same bytes, production URLs):
+```bash
+npm run release:mark-tested      # = promote:android-testing-to-release + build
+```
 
-   ```bash
-   npm run promote:android-testing-to-release
-   ```
+Then deploy `dist/`. Do not leave a build on the Testing track without a plan to mark it tested; in 2026 three versions (0.1.197 to 0.1.199) reached testers only because the promotion step was never run.
 
-   Then publish the updated release manifests and release APK alongside the testing artifacts.
-
-4. **App behavior**  
-   On native Android sideload builds, the app loads **only the manifest for the track** the user chose in **Settings** (Production vs Testing). Switching tracks triggers an immediate check against the server for that track’s latest version.
+On native Android sideload builds, the app loads **only the manifest for the track** the user chose in **Settings** (Production vs Testing). Switching tracks triggers an immediate check against the server for that track's latest version.
 
 ## Release Flow
 
@@ -54,13 +48,13 @@ You can also use `minor`, `major`, or an explicit version such as:
 npm run release:bump -- 0.1.5
 ```
 
-2. Build and publish the testing application artifacts locally.
+2. Build and publish the application artifacts locally.
 
 ```bash
 npm run update:application
 ```
 
-By default this publishes the **Testing** channel only. Production is intentionally unchanged until an authorized promotion happens. You can override with:
+By default this publishes **both** channels from one build. You can narrow it with:
 
 ```bash
 CIVIZEN_UPDATE_CHANNEL=testing npm run update:application
@@ -68,7 +62,7 @@ CIVIZEN_UPDATE_CHANNEL=release npm run update:application
 CIVIZEN_UPDATE_CHANNEL=both npm run update:application
 ```
 
-Use `CIVIZEN_UPDATE_CHANNEL=both` only for an emergency release when maintainers have explicitly approved skipping the normal testing soak.
+Use `CIVIZEN_UPDATE_CHANNEL=testing` when the build must be tried on a device first; `npm run release:mark-tested` then promotes it.
 
 For direct website APK distribution, run with:
 
