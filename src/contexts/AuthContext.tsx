@@ -82,6 +82,31 @@ type SignInOptions = {
   preserveCurrentSession?: boolean;
 };
 
+export interface SignUpCredentials {
+  email?: string;
+  phoneNumber?: string;
+  phoneCountryCode?: string;
+}
+
+export interface SignUpMetadata {
+  full_name?: string;
+  date_of_birth?: string;
+  country?: string;
+  country_code?: string;
+  language_code?: LanguageCode;
+  phone_country_code?: string;
+  phone_number?: string;
+  phone_e164?: string;
+  terms_accepted_at?: string;
+  terms_version?: string;
+  terms_acceptance_method?: string;
+}
+
+/** Path appended to the origin for the confirmation link (falls back to the site URL if not allow-listed). */
+export interface SignUpOptions {
+  redirectPath?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -90,26 +115,10 @@ interface AuthContextType {
   /** Session exists but the latest profile refresh returned no usable row. */
   profileLoadFailed: boolean;
   signUp: (
-    credentials: {
-      email?: string;
-      phoneNumber?: string;
-      phoneCountryCode?: string;
-    },
+    credentials: SignUpCredentials,
     password: string,
-    metadata?: {
-      full_name?: string;
-      date_of_birth?: string;
-      country?: string;
-      country_code?: string;
-      language_code?: LanguageCode;
-      phone_country_code?: string;
-      phone_number?: string;
-      phone_e164?: string;
-      terms_accepted_at?: string;
-      terms_version?: string;
-      terms_acceptance_method?: string;
-    },
-    options?: { redirectPath?: string },
+    metadata?: SignUpMetadata,
+    options?: SignUpOptions,
   ) => Promise<{ error: Error | null }>;
   signIn: (identifier: string, password: string, options?: SignInOptions) => Promise<{ error: Error | null }>;
   signInWithBiometrics: (options?: { reason?: string }) => Promise<{ error: Error | null }>;
@@ -583,26 +592,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [accountSessionMap, buildStoredSession, profile, session, storeSessionSnapshot]);
 
   const signUp = async (
-    credentials: {
-      email?: string;
-      phoneNumber?: string;
-      phoneCountryCode?: string;
-    },
+    credentials: SignUpCredentials,
     password: string,
-    metadata?: {
-      full_name?: string;
-      date_of_birth?: string;
-      country?: string;
-      country_code?: string;
-      language_code?: LanguageCode;
-      phone_country_code?: string;
-      phone_number?: string;
-      phone_e164?: string;
-      terms_accepted_at?: string;
-      terms_version?: string;
-      terms_acceptance_method?: string;
-    },
-    options?: { redirectPath?: string },
+    metadata?: SignUpMetadata,
+    options?: SignUpOptions,
   ) => {
     const normalizedEmail = credentials.email?.trim().toLowerCase();
     const normalizedPhoneDigits = credentials.phoneNumber?.replace(/\D/g, '') || '';
