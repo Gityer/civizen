@@ -6,9 +6,9 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.199",
     "appReleaseId": "20261006-v0.1.199",
     "androidVersionCode": 201,
-    "gitSha": "96133eafd34bf1cc52c7c10469f8a541fde92b95",
-    "generatedAt": "2026-10-07T02:53:53.508Z",
-    "sourceFingerprint": "82c34785f3dfa92d5987d1a24fc55a2908b8b908b69d7ffa0335041518d5d962",
+    "gitSha": "d4bcb4ae955bf3a3a9f954a71636a82a179761a4",
+    "generatedAt": "2026-10-07T03:27:22.243Z",
+    "sourceFingerprint": "5f04a44c030682b406430d6fdc34019f10de13484ac846f94c7890bd12872a29",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 394
@@ -1790,7 +1790,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "question": "How do I vote?",
       "answer": "Open Home > Governance > Civic voting (or the Open votes card on Study, or the Votes tab on your Governance page) and open the consultation. Sign in if you have not, choose an option — Support, Oppose, or Abstain, or the options that consultation lists — and confirm. The page then shows Your receipt: keep that code.\n\nOrdinary consultations need only a free account. Until voting closes you can withdraw your ballot and vote again. Your choice is sealed; only totals are public.",
       "localizedAnswers": {
-        "hy": "Բացեք Գլխավոր > Կառավարում > Քաղաքացիական քվեարկություն (կամ «Բաց քվեարկություններ» քարտը Ուսում բաժնում, կամ ձեր Կառավարում էջի «Քվեարկություններ» ներդիրը) և բացեք խորհրդակցությունը։ Մուտք գործեք, եթե դեռ չեք արել, ընտրեք տարբերակ՝ Կողմ, Դեմ կամ Ձեռնպահ, կամ այն տարբերակները, որ նշված են տվյալ խորհրդակցությանը, և հաստատեք։ Այնուհետև էջում կհայտնվի «Ձեր անդորրագիրը»՝ պահեք այդ կոդը։\n\nՍովորական խորհրդակցությունների համար բավական է անվճար հաշիվ։ Մինչև քվեարկության փակվելը կարող եք հետ վերցնել ձեր քվեաթերթիկը և քվեարկել նորից։ Ձեր ընտրությունը կնքված է. հրապարակային են միայն ընդհանուր թվերը։",
+        "hy": "Բացեք Գլխավոր > Կառավարում > Քաղաքացիական քվեարկություն (կամ «Բաց քվեարկություններ» քարտը Ուսում բաժնում, կամ ձեր Կառավարում էջի «Քվեարկություններ» ներդիրը) և բացեք խորհրդակցությունը։ Մուտք գործեք, եթե դեռ չեք արել, ընտրեք տարբերակ՝ Կողմ, Դեմ կամ Ձեռնպահ, կամ այն տարբերակները, որ նշված են տվյալ խորհրդակցությանը, և հաստատեք։ Այնուհետև էջում կհայտնվի «Ձեր անդորրագիրը»՝ պահեք այդ կոդը։\n\nՍովորական խորհրդակցությունների համար բավական է անվճար հաշիվ։ Մինչև քվեարկության փակվելը կարող եք հետ վերցնել ձեր քվեաթերթիկը և քվեարկել նորից։ Ձեր ընտրությունը կնքված է․ հրապարակային են միայն ընդհանուր թվերը։",
         "ru": "Откройте Главная > Управление > Гражданское голосование (или карточку «Открытые голосования» в разделе Обучение, или вкладку «Голосования» на вашей странице Управление) и откройте консультацию. Войдите, если ещё не вошли, выберите вариант — За, Против или Воздержаться, либо варианты, перечисленные в этой консультации, — и подтвердите. После этого на странице появится «Ваша квитанция»: сохраните этот код.\n\nДля обычных консультаций достаточно бесплатного аккаунта. Пока голосование открыто, вы можете отозвать бюллетень и проголосовать снова. Ваш выбор запечатан; публичны только итоговые числа."
       },
       "aliases": [
@@ -2031,7 +2031,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "question": "What is quorum?",
       "answer": "Quorum is the minimum number of countable ballots a consultation needs for a result; below it the outcome reads Quorum not met. The pass threshold is the share of Support among Support and Oppose ballots (Abstain does not count) needed for Passed — 50% unless the proposal sets another value.\n\nThe author sets both when drafting the proposal, under Scope and timing on the proposal page. The outcome is computed automatically when voting closes and shown on the ballot page.",
       "localizedAnswers": {
-        "hy": "Քվորումը հաշվվող քվեաթերթիկների նվազագույն թիվն է, որն անհրաժեշտ է, որ խորհրդակցությունն արդյունք ունենա․ դրանից պակասի դեպքում արդյունքը նշվում է «Քվորումը չի ապահովվել»։ Ընդունման շեմը «Կողմ» և «Դեմ» քվեաթերթիկների մեջ «Կողմ»-ի այն բաժինն է («Ձեռնպահ»-ը չի հաշվվում), որն անհրաժեշտ է «Ընդունվել է» արդյունքի համար՝ 50 %, եթե առաջարկում այլ արժեք սահմանված չէ։\n\nԵրկուսն էլ սահմանում է հեղինակը առաջարկը նախապատրաստելիս՝ առաջարկի էջի «Շրջանակ և ժամկետներ» բաժնում։ Արդյունքը հաշվարկվում է ինքնաբերաբար քվեարկության փակվելուն պես և ցուցադրվում քվեաթերթիկի էջում։",
+        "hy": "Քվորումը հաշվվող քվեաթերթիկների նվազագույն թիվն է, որն անհրաժեշտ է, որ խորհրդակցությունն արդյունք ունենա․ դրանից պակասի դեպքում արդյունքը նշվում է «Քվորումը չի ապահովվել»։ Ընդունման շեմը «Կողմ» և «Դեմ» քվեաթերթիկների մեջ «Կողմ»-ի այն բաժինն է («Ձեռնպահ»-ը չի հաշվվում), որն անհրաժեշտ է «Ընդունվել է» արդյունքի համար՝ 50 %, եթե առաջարկում այլ արժեք սահմանված չէ։\n\nԵրկուսն էլ սահմանում է հեղինակը առաջարկը նախապատրաստելիս՝ առաջարկի էջի «Ընդգրկում և ժամկետներ» բաժնում։ Արդյունքը հաշվարկվում է ինքնաբերաբար քվեարկության փակվելուն պես և ցուցադրվում քվեաթերթիկի էջում։",
         "ru": "Кворум — это минимальное число учтённых бюллетеней, необходимое для результата консультации; если их меньше, итог читается как «Кворум не набран». Порог принятия — это доля «За» среди бюллетеней «За» и «Против» («Воздержаться» не учитывается), необходимая для итога «Принято», — 50 %, если в предложении не задано другое значение.\n\nОба параметра автор задаёт при подготовке предложения в разделе «Охват и сроки» на странице предложения. Итог вычисляется автоматически при закрытии голосования и показывается на странице бюллетеня."
       },
       "aliases": [
@@ -2125,10 +2125,10 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     {
       "id": "can_a_proposal_have_custom_options",
       "question": "Can a proposal have custom options?",
-      "answer": "Yes. When drafting a proposal, the author can keep the default Support / Oppose / Abstain or list 2 to 12 options of their own under Ballot options. Publishing creates one choice per option. When Support and Oppose are among the options the pass rule applies; otherwise the result shows the most chosen option.\n\nA draft with its own options can also use approval voting (How members vote > Approval: choose several): each voter picks several options up to the maximum the author sets, and the result names the most approved option without a Passed / Not passed verdict.",
+      "answer": "Yes. When drafting a proposal, the author can keep the default Support / Oppose / Abstain or list 2 to 12 options of their own under Ballot options. Publishing creates one choice per option. When Support and Oppose are among the options the pass rule applies; otherwise the result shows the most chosen option.\n\nA draft with its own options can also use approval voting (How members vote > Approval: choose several): each voter picks several options up to the maximum the author sets, and the result names the most approved option without a Passed / Not passed verdict. It can also use ranked voting (How members vote > Ranked: order of preference): each voter taps the options in order of preference, the public counts show first preferences, and the winner is found by instant run-off, where the option with the fewest first preferences is dropped round by round until one has a majority.",
       "localizedAnswers": {
-        "hy": "Այո։ Առաջարկը նախապատրաստելիս հեղինակը կարող է պահել լռելյայն Կողմ / Դեմ / Ձեռնպահ տարբերակները կամ «Քվեաթերթիկի տարբերակներ» բաժնում նշել իր 2-ից 12 տարբերակները։ Հրապարակելիս յուրաքանչյուր տարբերակի համար ստեղծվում է մեկ ընտրություն։ Եթե տարբերակների մեջ կան «Կողմ»-ն ու «Դեմ»-ը, գործում է ընդունման կանոնը․ հակառակ դեպքում արդյունքում ցուցադրվում է ամենաշատ ընտրված տարբերակը։\n\nՍեփական տարբերակներով նախագիծը կարող է օգտագործել նաև հավանության քվեարկություն («Ինչպես են քվեարկում անդամները» > «Հավանության քվեարկություն՝ մի քանի տարբերակ»)․ յուրաքանչյուր քվեարկող ընտրում է մի քանի տարբերակ՝ հեղինակի սահմանած առավելագույն թվի սահմաններում, իսկ արդյունքում նշվում է ամենաշատ հավանություն ստացած տարբերակը՝ առանց «Ընդունվել է / Չի ընդունվել» որակման։",
-        "ru": "Да. При подготовке предложения автор может оставить варианты по умолчанию За / Против / Воздержаться или перечислить от 2 до 12 своих вариантов в разделе «Варианты бюллетеня». При публикации для каждого варианта создаётся свой пункт выбора. Если среди вариантов есть «За» и «Против», действует правило принятия; иначе в результате показывается вариант, выбранный чаще всего.\n\nЧерновик со своими вариантами может также использовать голосование одобрением («Как голосуют участники» > «Одобрение: несколько вариантов»): каждый голосующий выбирает несколько вариантов в пределах максимума, заданного автором, а в результате называется вариант с наибольшим числом одобрений — без вердикта «Принято / Не принято»."
+        "hy": "Այո։ Առաջարկը նախապատրաստելիս հեղինակը կարող է պահել լռելյայն Կողմ / Դեմ / Ձեռնպահ տարբերակները կամ «Քվեաթերթիկի տարբերակներ» բաժնում նշել իր 2-ից 12 տարբերակները։ Հրապարակելիս յուրաքանչյուր տարբերակի համար ստեղծվում է մեկ ընտրություն։ Եթե տարբերակների մեջ կան «Կողմ»-ն ու «Դեմ»-ը, գործում է ընդունման կանոնը․ հակառակ դեպքում արդյունքում ցուցադրվում է ամենաշատ ընտրված տարբերակը։\n\nՍեփական տարբերակներով նախագիծը կարող է օգտագործել նաև հավանության քվեարկություն («Ինչպես են քվեարկում անդամները» > «Հավանության քվեարկություն՝ մի քանի տարբերակ»)․ յուրաքանչյուր քվեարկող ընտրում է մի քանի տարբերակ՝ հեղինակի սահմանած առավելագույն թվի սահմաններում, իսկ արդյունքում նշվում է ամենաշատ հավանություն ստացած տարբերակը՝ առանց «Ընդունվել է / Չի ընդունվել» որակման։ Հնարավոր է նաև դասակարգված քվեարկություն («Ինչպես են քվեարկում անդամները» > «Դասակարգված՝ նախապատվության հերթականությամբ»)․ յուրաքանչյուր քվեարկող տարբերակները սեղմում է նախապատվության հերթականությամբ, հրապարակային թվերը ցույց են տալիս առաջին նախապատվությունները, իսկ հաղթողը որոշվում է փուլային հաշվարկով․ ամենաքիչ առաջին նախապատվություն ստացած տարբերակը փուլ առ փուլ դուրս է մնում, մինչև մեկը մեծամասնություն ստանա։",
+        "ru": "Да. При подготовке предложения автор может оставить варианты по умолчанию За / Против / Воздержаться или перечислить от 2 до 12 своих вариантов в разделе «Варианты бюллетеня». При публикации для каждого варианта создаётся свой пункт выбора. Если среди вариантов есть «За» и «Против», действует правило принятия; иначе в результате показывается вариант, выбранный чаще всего.\n\nЧерновик со своими вариантами может также использовать голосование одобрением («Как голосуют участники» > «Одобрение: несколько вариантов»): каждый голосующий выбирает несколько вариантов в пределах максимума, заданного автором, а в результате называется вариант с наибольшим числом одобрений — без вердикта «Принято / Не принято». Возможно и ранжированное голосование («Как голосуют участники» > «Ранжирование: порядок предпочтения»): каждый голосующий нажимает варианты в порядке предпочтения, публичные числа показывают первые предпочтения, а победитель определяется мгновенным вторым туром: вариант с наименьшим числом первых предпочтений выбывает раунд за раундом, пока один не получит большинство."
       },
       "aliases": [
         "custom ballot options",
@@ -2137,7 +2137,12 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
         "ballot options",
         "approval voting",
         "can I pick several options",
-        "choose several options"
+        "choose several options",
+        "ranked voting",
+        "ranked choice",
+        "instant run-off",
+        "order of preference",
+        "can I rank the options"
       ],
       "capabilityIds": [
         "governance",
@@ -3210,7 +3215,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "faq:can_a_proposal_have_custom_options",
       "title": "Can a proposal have custom options?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: Can a proposal have custom options? A: Yes. When drafting a proposal, the author can keep the default Support / Oppose / Abstain or list 2 to 12 options of their own under Ballot options. Publishing creates one choice per option. When Support and Oppose are among the options the pass rule applies; otherwise the result shows the most chosen option.\n\nA draft with its own options can also use approval voting (How members vote > Approval: choose several): each voter picks several options up to the maximum the author sets, and the result names the most approved option without a Passed / Not passed verdict.",
+      "text": "Q: Can a proposal have custom options? A: Yes. When drafting a proposal, the author can keep the default Support / Oppose / Abstain or list 2 to 12 options of their own under Ballot options. Publishing creates one choice per option. When Support and Oppose are among the options the pass rule applies; otherwise the result shows the most chosen option.\n\nA draft with its own options can also use approval voting (How members vote > Approval: choose several): each voter picks several options up to the maximum the author sets, and the result names the most approved option without a Passed / Not passed verdict. It can also use ranked voting (How members vote > Ranked: order of preference): each voter taps the options in order of preference, the public counts show first preferences, and the winner is found by instant run-off, where the option with the fewest first preferences is dropped round by round until one has a majority.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
