@@ -1,5 +1,5 @@
 import { PERSONAL_HARDSHIP_FAQ_ID, PERSONAL_HARDSHIP_REPLY } from '../hardship';
-import { CANONICAL_CIVIZEN_IDENTITY } from '../identity';
+import { CANONICAL_CIVIZEN_IDENTITY, CANONICAL_CIVIZEN_IDENTITY_LOCALIZED } from '../identity';
 import { PEACE_COOPERATION_FAQ_ID, PEACE_COOPERATION_REPLY } from '../peace';
 import type { AssistantFaqItem } from '../types';
 
@@ -8,7 +8,9 @@ export const ASSISTANT_FAQ_PART_1: AssistantFaqItem[] = [
     id: 'what_is_civizen',
     question: 'What is Civizen?',
     answer: CANONICAL_CIVIZEN_IDENTITY,
+    localizedAnswers: CANONICAL_CIVIZEN_IDENTITY_LOCALIZED,
     aliases: [
+      'what is civizen',
       "what's civizen",
       "what's civizen in one sentence",
       'civizen in one sentence',

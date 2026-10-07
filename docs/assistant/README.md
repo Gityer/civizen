@@ -2,7 +2,7 @@
 title: Civizen Assistant Knowledge
 status: current
 canonical: true
-last_reviewed: 2026-08-16
+last_reviewed: 2026-10-06
 ---
 
 # Civizen Assistant Knowledge
@@ -15,7 +15,9 @@ Civi answers from **this Civizen build**, not from general model memory. Visitor
 | --- | --- |
 | [`civizen-identity.md`](./civizen-identity.md) | Canonical identity, purpose, and one-sentence definition |
 | [`civizen-assistant-cheatsheet.md`](./civizen-assistant-cheatsheet.md) | Compact canonical facts for frequent questions |
-| `src/lib/assistant/catalog.ts` | Machine-readable capabilities, FAQ, and terminology aliases |
+| `src/lib/assistant/catalog.ts` | Machine-readable capabilities, FAQ, and terminology aliases (data in `catalog-data/`; voting, proposals, notifications, help in `faq-voting.ts` with Armenian and Russian answers in `faq-voting.hy.ts` / `faq-voting.ru.ts`) |
+| `src/lib/assistant/language.ts` | Language detection and the Armenian / Russian → English concept lexicon used for scope, retrieval, and topic classification |
+| `src/lib/assistant/civi-governance-voting.test.ts` | Regression question set (EN / HY / RU) for the voting, proposal, notification, and help features |
 | `src/lib/assistant/learned-memory.ts` | Checked Gemini-answer memory (does not override identity or capabilities) |
 | `src/pages/settings/AiAgentSettings.tsx` | Founder development review of Civi questions and replies |
 | `src/lib/assistant/generated/knowledge-pack.ts` | Generated searchable index (do not edit by hand) |
@@ -34,6 +36,16 @@ Knowledge regen also indexes live bottom nav, Contribute lanes, and the pages Ci
 When Civi gives directions, it should match the question: **Can I** starts with Yes or No, then the path; **How** starts with `Open Market > Agreements`. Chat turns those page names into links. Type names in the main answer (General, Partnership / Collaboration, and the rest) also link to New agreement for that type.
 
 CI and `verify:agent-context` fail if the generated pack is stale relative to its sources.
+
+## Languages
+
+English is the canonical knowledge language. For Armenian and Russian, `language.ts` detects the script, maps word stems and whole question forms to the English wording the FAQ uses, and retrieval searches only that English wording (non-Latin tokens never match the pack and would drag overlap ratios down). A FAQ item may carry `localizedAnswers.hy` / `.ru`; when the question's language has one, Civi returns it directly and skips the model. Otherwise the English grounded answer stays the evidence and the system prompt tells the model to reply in the member's language. Greetings and the out-of-scope reply are localized in `LOCALIZED_REPLIES`.
+
+When adding a feature members will ask about, add the FAQ card with hand-written Armenian and Russian answers in the same change, add the natural question forms to `ARMENIAN_QUESTIONS` / `RUSSIAN_QUESTIONS`, and extend `civi-governance-voting.test.ts` with the question in all three languages.
+
+## Audit process
+
+Run realistic questions through `prepareNelaTurn` (the same path the edge function and the public widget use) and check `diagnostics.matchedFaqId`, `inScope`, `skipLlm`, and the grounded answer. The regression suite in `civi-governance-voting.test.ts` is that question set; an answer that falls back to the generic capability blurb, to “I couldn't verify…”, or to the English scope refusal for an Armenian or Russian question counts as a gap to fix at the source (catalog card, FAQ, `NELA_PAGE_LINKS`, scope terms, lexicon), then `npm run assistant:knowledge`.
 
 ## Internal-first routing
 

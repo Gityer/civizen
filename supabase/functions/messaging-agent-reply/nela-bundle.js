@@ -56,6 +56,184 @@ function isFoundationIdentityPath(path) {
   return path.startsWith("docs/00-foundation/") || path === "docs/02-policies/governance/civizen-community-governance-charter.md";
 }
 
+// src/lib/assistant/language.ts
+var ASSISTANT_LANGUAGE_NAMES = {
+  en: "English",
+  hy: "Armenian",
+  ru: "Russian"
+};
+var ARMENIAN_RE = /[԰-֏]/g;
+var CYRILLIC_RE = /[Ѐ-ӿ]/g;
+function detectAssistantLanguage(text) {
+  const armenian = (text.match(ARMENIAN_RE) ?? []).length;
+  const cyrillic = (text.match(CYRILLIC_RE) ?? []).length;
+  if (armenian < 2 && cyrillic < 2) return "en";
+  return armenian >= cyrillic ? "hy" : "ru";
+}
+var ARMENIAN_LEXICON = [
+  { match: /քվեարկ/i, terms: "vote voting" },
+  { match: /ձայն/i, terms: "vote" },
+  { match: /քվեաթերթիկ/i, terms: "ballot" },
+  { match: /անդորրագ/i, terms: "receipt" },
+  { match: /հաշվվ|հաշվել|հաշված|հաշվարկ/i, terms: "counted count" },
+  { match: /առաջարկ/i, terms: "proposal" },
+  { match: /ներկայաց/i, terms: "submit create" },
+  { match: /ծանուց/i, terms: "notifications" },
+  { match: /զանգ/i, terms: "bell" },
+  { match: /օգնութ/i, terms: "help and support" },
+  { match: /աջակց/i, terms: "support" },
+  { match: /կառավար/i, terms: "governance" },
+  { match: /խորհրդակց/i, terms: "consultation" },
+  { match: /արդյունք/i, terms: "result outcome" },
+  { match: /փակվ|փակել/i, terms: "closes closed" },
+  { match: /փոխել|փոխ/i, terms: "change" },
+  { match: /հետ վերցն/i, terms: "withdraw" },
+  { match: /տեսն/i, terms: "see" },
+  { match: /գաղտն/i, terms: "secret" },
+  { match: /\bո՞?վ\b/i, terms: "who" },
+  { match: /ինչու/i, terms: "why" },
+  { match: /չեմ կարող/i, terms: "can't" },
+  { match: /կարո՞?ղ եմ/i, terms: "can i" },
+  { match: /ինչպե՞?ս/i, terms: "how" },
+  { match: /որտե՞?ղ/i, terms: "where" },
+  { match: /ի՞?նչ է/i, terms: "what is" },
+  { match: /քվորում/i, terms: "quorum" },
+  { match: /շեմ/i, terms: "threshold" },
+  { match: /հաստատ/i, terms: "verified verification" },
+  { match: /հաշիվ/i, terms: "account" },
+  { match: /մուտք/i, terms: "sign in" },
+  { match: /գրանց/i, terms: "sign up register" },
+  { match: /աշխատանք/i, terms: "job jobs work" },
+  { match: /համաձայնագ/i, terms: "agreement" },
+  { match: /ներդրում/i, terms: "contribute contribution" },
+  { match: /ուսում|սովոր/i, terms: "study learn" },
+  { match: /էջ/i, terms: "page" },
+  { match: /պարտադիր/i, terms: "binding" },
+  { match: /շուկա/i, terms: "market" },
+  { match: /նամակ|հաղորդագր/i, terms: "messaging message" },
+  { match: /պրոֆիլ/i, terms: "profile" },
+  { match: /կարգավորում/i, terms: "settings" },
+  { match: /դիտորդ/i, terms: "observer" },
+  { match: /ընտրութ/i, terms: "election" },
+  { match: /անդամ/i, terms: "member" },
+  { match: /սիվիզեն/i, terms: "civizen" }
+];
+var RUSSIAN_LEXICON = [
+  { match: /голос/i, terms: "vote voting" },
+  { match: /бюллетен/i, terms: "ballot" },
+  { match: /квитанц/i, terms: "receipt" },
+  { match: /учт[её]н|учтен|учитыва|посчит|подсч[её]т/i, terms: "counted count" },
+  { match: /предложен/i, terms: "proposal" },
+  { match: /подать|создать|внести|выдвин/i, terms: "submit create" },
+  { match: /уведомлен/i, terms: "notifications" },
+  { match: /колокол/i, terms: "bell" },
+  { match: /помощ/i, terms: "help and support" },
+  { match: /поддержк/i, terms: "support" },
+  { match: /управлен/i, terms: "governance" },
+  { match: /консультац/i, terms: "consultation" },
+  { match: /результат|итог/i, terms: "result outcome" },
+  { match: /закрыва|закрыт|закро/i, terms: "closes closed" },
+  { match: /измени|поменя/i, terms: "change" },
+  { match: /отозв|отзыв/i, terms: "withdraw" },
+  { match: /видит|видеть|увид/i, terms: "see" },
+  { match: /тайн|секрет|аноним/i, terms: "secret" },
+  { match: /\bкто\b/i, terms: "who" },
+  { match: /почему/i, terms: "why" },
+  { match: /не могу/i, terms: "can't" },
+  { match: /могу ли/i, terms: "can i" },
+  { match: /\bкак\b/i, terms: "how" },
+  { match: /\bгде\b/i, terms: "where" },
+  { match: /что такое/i, terms: "what is" },
+  { match: /кворум/i, terms: "quorum" },
+  { match: /порог/i, terms: "threshold" },
+  { match: /верифиц|подтвержд/i, terms: "verified verification" },
+  { match: /аккаунт|уч[её]тн/i, terms: "account" },
+  { match: /войти|вход/i, terms: "sign in" },
+  { match: /регистр/i, terms: "sign up register" },
+  { match: /работ|ваканс/i, terms: "job jobs work" },
+  { match: /соглашен|договор/i, terms: "agreement" },
+  { match: /вклад|участв/i, terms: "contribute contribution" },
+  { match: /учеб|учить|изуч|обучен/i, terms: "study learn" },
+  { match: /страниц/i, terms: "page" },
+  { match: /обязательн/i, terms: "binding" },
+  { match: /рынок|маркет/i, terms: "market" },
+  { match: /сообщен/i, terms: "messaging message" },
+  { match: /профил/i, terms: "profile" },
+  { match: /настройк/i, terms: "settings" },
+  { match: /наблюдат/i, terms: "observer" },
+  { match: /выбор/i, terms: "election" },
+  { match: /участник|член/i, terms: "member" },
+  { match: /сивизен/i, terms: "civizen" }
+];
+var ARMENIAN_QUESTIONS = [
+  { match: /ինչպե՞?ս (եմ |կարող եմ )?քվեարկ/i, terms: "how do I vote" },
+  { match: /ինչպե՞?ս իմանալ.*հաշվ/i, terms: "how do I know my vote was counted" },
+  { match: /ի՞?նչ է անդորրագ/i, terms: "what is a receipt" },
+  { match: /ինչու՞? չեմ կարող քվեարկ/i, terms: "why can't I vote" },
+  { match: /կարո՞?ղ եմ փոխել.*ձայն/i, terms: "can I change my vote" },
+  { match: /ո՞?վ կարող է տեսնել.*քվեարկ/i, terms: "who can see how I voted" },
+  { match: /որտե՞?ղ են իմ ծանուցում/i, terms: "where are my notifications" },
+  { match: /ի՞?նչ է civizen/i, terms: "what is civizen" },
+  { match: /ինչպե՞?ս .*առաջարկ ներկայաց/i, terms: "how do I submit a proposal" },
+  { match: /ի՞?նչ է լինում.*փակվ/i, terms: "what happens when a vote closes" },
+  { match: /որտե՞?ղ (է )?օգնութ/i, terms: "where is help and support" },
+  { match: /ո՞?վ (է )?կարող է քվեարկ/i, terms: "who can vote" },
+  { match: /որտե՞?ղ է կառավար/i, terms: "where is the governance page" },
+  { match: /պարտադի՞?ր/i, terms: "is voting binding" }
+];
+var RUSSIAN_QUESTIONS = [
+  { match: /как (мне )?(про)?голосовать/i, terms: "how do I vote" },
+  { match: /как узнать,? что мой голос учт/i, terms: "how do I know my vote was counted" },
+  { match: /что такое квитанц/i, terms: "what is a receipt" },
+  { match: /почему я не могу (про)?голосовать/i, terms: "why can't I vote" },
+  { match: /могу ли я изменить (свой )?голос/i, terms: "can I change my vote" },
+  { match: /кто (может )?(видит|увидит|видеть),? как я (про)?голосовал/i, terms: "who can see how I voted" },
+  { match: /где мои уведомлен/i, terms: "where are my notifications" },
+  { match: /что такое civizen/i, terms: "what is civizen" },
+  { match: /как подать предложен/i, terms: "how do I submit a proposal" },
+  { match: /что происходит,? когда голосование закрыва/i, terms: "what happens when a vote closes" },
+  { match: /где (страница )?помощ/i, terms: "where is help and support" },
+  { match: /кто может (про)?голосовать/i, terms: "who can vote" },
+  { match: /где страница управлен/i, terms: "where is the governance page" },
+  { match: /обязательн|обязывающ|юридическ(ую|ой) сил/i, terms: "is voting binding" }
+];
+var LOCALIZED_REPLIES = {
+  hy: {
+    scopeRefusal: "\u0535\u057D \u056F\u0561\u0580\u0578\u0572 \u0565\u0574 \u0585\u0563\u0576\u0565\u056C Civizen-\u056B \u0570\u0561\u0580\u0581\u0565\u0580\u0578\u0582\u0574\u055D \u056B\u0576\u0579 \u0567 \u0561\u0575\u0576, \u056B\u0576\u0579\u0578\u0582 \u0567 \u0563\u0578\u0575\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0578\u0582\u0576\u0565\u0576\u0578\u0582\u0574, \u056B\u0576\u0579\u057A\u0565\u057D \u0565\u0576 \u0574\u0561\u0580\u0564\u056B\u056F \u0574\u0561\u057D\u0576\u0561\u056F\u0581\u0578\u0582\u0574 \u0587 \u056B\u0576\u0579\u057A\u0565\u057D \u0585\u0563\u057F\u057E\u0565\u056C \u0561\u0575\u057D \u0570\u0561\u057E\u0565\u056C\u057E\u0561\u056E\u056B\u0581\u0589 \u053D\u0576\u0564\u0580\u0578\u0582\u0574 \u0565\u0574, \u0570\u0561\u0580\u0581 \u057F\u057E\u0565\u0584 Civizen-\u056B \u0574\u0561\u057D\u056B\u0576\u0589",
+    greeting: "\u0532\u0561\u0580\u0587\u0589 \u0535\u057D \u056F\u0561\u0580\u0578\u0572 \u0565\u0574 \u0585\u0563\u0576\u0565\u056C \u0570\u0561\u057D\u056F\u0561\u0576\u0561\u056C, \u0569\u0565 \u056B\u0576\u0579 \u0567 Civizen-\u0568 \u0587 \u056B\u0576\u0579\u0578\u0582 \u0567 \u0561\u0575\u0576 \u0563\u0578\u0575\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0578\u0582\u0576\u0565\u0576\u0578\u0582\u0574, \u056B\u0576\u0579\u057A\u0565\u057D \u0576\u0561\u0587 \u0546\u0565\u0580\u0564\u0580\u0578\u0582\u0574, \u0540\u0561\u0574\u0561\u0571\u0561\u0575\u0576\u0561\u0563\u0580\u0565\u0580, \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574, \u0548\u0582\u057D\u0578\u0582\u0574, \u0547\u0578\u0582\u056F\u0561 \u0587 \u0570\u0561\u0577\u057E\u056B \u056F\u0561\u0580\u0563\u0561\u057E\u0578\u0580\u0578\u0582\u0574\u0576\u0565\u0580\u056B \u0570\u0561\u0580\u0581\u0565\u0580\u0578\u0582\u0574\u0589 \u053B\u0576\u0579 \u056F\u0578\u0582\u0566\u0565\u0576\u0561\u0575\u056B\u0584 \u0561\u0576\u0565\u056C\u0589",
+    greetingGuest: "\u0532\u0561\u0580\u0587\u0589 \u0535\u057D Civi-\u0576 \u0565\u0574\u055D \u0571\u0565\u0580 AI \u0585\u0563\u0576\u0561\u056F\u0561\u0576\u0568\u0589 \u053F\u0561\u0580\u0578\u0572 \u0565\u0574 \u057A\u0561\u057F\u0561\u057D\u056D\u0561\u0576\u0565\u056C Civizen-\u056B \u0574\u0561\u057D\u056B\u0576 \u0570\u0561\u0580\u0581\u0565\u0580\u056B\u0576\u055D \u056B\u0576\u0579 \u0567 \u0561\u0575\u0576, \u056B\u0576\u0579\u0578\u0582 \u0567 \u0563\u0578\u0575\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0578\u0582\u0576\u0565\u0576\u0578\u0582\u0574, \u056B\u0576\u0579\u057A\u0565\u057D \u0565\u0576 \u0574\u0561\u0580\u0564\u056B\u056F \u0574\u0561\u057D\u0576\u0561\u056F\u0581\u0578\u0582\u0574 \u0587 \u056B\u0576\u0579\u057A\u0565\u057D \u057D\u056F\u057D\u0565\u056C\u0589",
+    unverified: "Civizen-\u056B \u0568\u0576\u0569\u0561\u0581\u056B\u056F \u0576\u0561\u056D\u0561\u0563\u056E\u0561\u0575\u056B\u0576 \u057F\u0565\u0572\u0565\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u0578\u0582\u0574 \u0564\u0561 \u0570\u0561\u057D\u057F\u0561\u057F\u0565\u056C \u0579\u056F\u0561\u0580\u0578\u0572\u0561\u0581\u0561\u0589"
+  },
+  ru: {
+    scopeRefusal: "\u042F \u043C\u043E\u0433\u0443 \u043F\u043E\u043C\u043E\u0447\u044C \u0441 \u0432\u043E\u043F\u0440\u043E\u0441\u0430\u043C\u0438 \u043E Civizen: \u0447\u0442\u043E \u044D\u0442\u043E, \u0437\u0430\u0447\u0435\u043C \u043E\u043D \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442, \u043A\u0430\u043A \u043B\u044E\u0434\u0438 \u0443\u0447\u0430\u0441\u0442\u0432\u0443\u044E\u0442 \u0438 \u043A\u0430\u043A \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C\u0441\u044F \u044D\u0442\u0438\u043C \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435\u043C. \u041F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430, \u0437\u0430\u0434\u0430\u0439\u0442\u0435 \u0432\u043E\u043F\u0440\u043E\u0441 \u043E Civizen.",
+    greeting: "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435! \u042F \u043C\u043E\u0433\u0443 \u043F\u043E\u043C\u043E\u0447\u044C \u0440\u0430\u0437\u043E\u0431\u0440\u0430\u0442\u044C\u0441\u044F, \u0447\u0442\u043E \u0442\u0430\u043A\u043E\u0435 Civizen \u0438 \u0437\u0430\u0447\u0435\u043C \u043E\u043D \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442, \u0430 \u0442\u0430\u043A\u0436\u0435 \u0441 \u0440\u0430\u0437\u0434\u0435\u043B\u0430\u043C\u0438 \u0412\u043A\u043B\u0430\u0434, \u0421\u043E\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044F, \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435, \u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435, \u0420\u044B\u043D\u043E\u043A \u0438 \u043D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0430\u043C\u0438 \u0430\u043A\u043A\u0430\u0443\u043D\u0442\u0430. \u0427\u0442\u043E \u0432\u044B \u0445\u043E\u0442\u0438\u0442\u0435 \u0441\u0434\u0435\u043B\u0430\u0442\u044C?",
+    greetingGuest: "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435. \u042F Civi, \u0432\u0430\u0448 AI-\u043F\u043E\u043C\u043E\u0449\u043D\u0438\u043A. \u042F \u043E\u0442\u0432\u0435\u0447\u0430\u044E \u043D\u0430 \u0432\u043E\u043F\u0440\u043E\u0441\u044B \u043E Civizen: \u0447\u0442\u043E \u044D\u0442\u043E, \u0437\u0430\u0447\u0435\u043C \u043E\u043D \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442, \u043A\u0430\u043A \u043B\u044E\u0434\u0438 \u0443\u0447\u0430\u0441\u0442\u0432\u0443\u044E\u0442 \u0438 \u0441 \u0447\u0435\u0433\u043E \u043D\u0430\u0447\u0430\u0442\u044C.",
+    unverified: "\u042F \u043D\u0435 \u0441\u043C\u043E\u0433 \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044C \u044D\u0442\u043E \u043F\u043E \u0442\u0435\u043A\u0443\u0449\u0435\u0439 \u0438\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u0438 \u043E \u043F\u0440\u043E\u0435\u043A\u0442\u0435 Civizen."
+  }
+};
+function lexiconFor(language) {
+  if (language === "hy") return [...ARMENIAN_QUESTIONS, ...ARMENIAN_LEXICON];
+  if (language === "ru") return [...RUSSIAN_QUESTIONS, ...RUSSIAN_LEXICON];
+  return [];
+}
+function englishConceptTerms(text, language = detectAssistantLanguage(text)) {
+  const terms = [];
+  for (const entry of lexiconFor(language)) {
+    if (entry.match.test(text) && !terms.includes(entry.terms)) terms.push(entry.terms);
+  }
+  return terms;
+}
+function retrievalQueryFor(text, language = detectAssistantLanguage(text)) {
+  if (language === "en") return text;
+  const terms = englishConceptTerms(text, language);
+  return terms.length ? terms.join(" ") : text;
+}
+function expandAssistantQuery(text, language = detectAssistantLanguage(text)) {
+  if (language === "en") return text;
+  const terms = englishConceptTerms(text, language);
+  return terms.length ? `${text} ${terms.join(" ")}` : text;
+}
+
 // src/lib/assistant/peace.ts
 var PEACE_RE = /\b(stop(ping)? (the )?wars?|end(ing)? (the )?wars?|prevent(ing)? wars?|world peace|(achieve|create|build|make|keep|protect) (world |lasting |global )?peace|live in peace|peaceful coexistence|unite humanity|end (the )?fighting|stop (the )?fighting|how (can|do|should) (we|humanity|people) .{0,48}(peace|war|wars|unite))\b/i;
 var PEACE_COOPERATION_FAQ_ID = "how_can_we_stop_wars";
@@ -118,7 +296,7 @@ var PRIORITY_WEIGHT = {
   8: 0.42
 };
 function tokenize(text) {
-  return text.toLowerCase().replace(/[^a-z0-9+/.-]+/g, " ").split(/\s+/).filter((t) => t.length > 1 && !STOP.has(t));
+  return text.toLowerCase().replace(/[^a-z0-9+/.\-\u0400-\u04FF\u0530-\u058F]+/g, " ").split(/\s+/).filter((t) => t.length > 1 && !STOP.has(t));
 }
 function termFreq(tokens) {
   const map = /* @__PURE__ */ new Map();
@@ -164,7 +342,8 @@ function searchFaq(query, faq, limit = 3) {
   return faq.map((item) => {
     const hay = faqHaystack(item).toLowerCase();
     let score = bm25Score(qTokens, tokenize(hay), avg);
-    if (item.question.toLowerCase() === q || q.includes(item.question.toLowerCase())) score += 8;
+    const question = item.question.toLowerCase().replace(/[?.!]+$/, "");
+    if (question === q || q.includes(question)) score += 8;
     for (const alias of [item.question, ...item.aliases]) {
       if (alias && q.includes(alias.toLowerCase()) && alias.length > 8) score += 6;
     }
@@ -408,6 +587,8 @@ function formatRetrievedContext(retrieval, runtimeSummary) {
 }
 function buildNelaSystemPrompt(args) {
   const { pack, resolvedQuery, retrievedContext, groundedAnswer, resourcePlan, isVerification, audience } = args;
+  const language = args.language ?? "en";
+  const languageLine = language === "en" ? "" : `The member wrote in ${ASSISTANT_LANGUAGE_NAMES[language]}. Reply in natural, grammatically correct ${ASSISTANT_LANGUAGE_NAMES[language]}. Translate the evidence faithfully and do not add facts. Keep Civizen, Civi, and addresses such as /governance/workspace unchanged, and name screens the way the app shows them in that language.`;
   const meta = pack.meta;
   const escalation = resourcePlan.allowExternalResources ? `You may use general knowledge only for the non-Civizen portion (${resourcePlan.externalResourceKind}). Civizen facts still come only from the evidence below.` : "Do not use general/pretrained knowledge as a source of Civizen facts. Do not search or invent external Civizen claims.";
   const verify = isVerification ? "This is a verification follow-up. Re-check the previous claim against higher-authority Civizen evidence. Correct yourself if needed and briefly say what you verified." : "";
@@ -415,6 +596,7 @@ function buildNelaSystemPrompt(args) {
   return [
     CORE_INSTRUCTIONS,
     guest,
+    languageLine,
     `Knowledge build: app ${meta.appVersion} (${meta.appReleaseId}).`,
     `Resolved question: ${resolvedQuery}`,
     `Internal resolution: ${resourcePlan.internalResolution}. ${escalation}`,
@@ -425,13 +607,14 @@ function buildNelaSystemPrompt(args) {
     retrievedContext || "(no additional passages)"
   ].filter(Boolean).join("\n\n");
 }
-function shouldSkipLlm(prep) {
+function shouldSkipLlm(prep, options) {
   if (prep.diagnostics.usedLearnedMemoryKey) return true;
   if (prep.diagnostics.matchedFaqId === "if_i_need_housing_or_emergency_help" || prep.diagnostics.matchedFaqId === "how_can_we_stop_wars") {
     return true;
   }
   if (!prep.inScope) return true;
   if (prep.isGreeting) return true;
+  if (options?.answerIsLocalized === false) return false;
   if (prep.resourcePlan.internalResolution === "requires_runtime_data" && !prep.resourcePlan.allowLlmReasoning) {
     return true;
   }
@@ -549,7 +732,23 @@ function resolveConversationalQuery(messages, aliases = []) {
 }
 
 // src/lib/assistant/scope.ts
-var GREETINGS = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"];
+var GREETINGS = [
+  "hi",
+  "hello",
+  "hey",
+  "good morning",
+  "good afternoon",
+  "good evening",
+  "\u0562\u0561\u0580\u0587",
+  "\u0562\u0561\u0580\u0565\u0582",
+  "\u0562\u0561\u0580\u0587 \u0571\u0565\u0566",
+  "\u0562\u0561\u0580\u056B \u0585\u0580",
+  "\u043F\u0440\u0438\u0432\u0435\u0442",
+  "\u0437\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435",
+  "\u0434\u043E\u0431\u0440\u044B\u0439 \u0434\u0435\u043D\u044C",
+  "\u0434\u043E\u0431\u0440\u044B\u0439 \u0432\u0435\u0447\u0435\u0440",
+  "\u0434\u043E\u0431\u0440\u043E\u0435 \u0443\u0442\u0440\u043E"
+];
 var CIVIZEN_TERMS = [
   "civizen",
   "nela",
@@ -613,7 +812,28 @@ var CIVIZEN_TERMS = [
   "citizenship",
   "cooperate",
   "cooperation",
-  "coexistence"
+  "coexistence",
+  "ballot",
+  "receipt",
+  "consultation",
+  "quorum",
+  "threshold",
+  "notification",
+  "notifications",
+  "bell",
+  "help and support",
+  "help page",
+  "support page",
+  "observer",
+  "job",
+  "jobs",
+  "verified",
+  "verification",
+  "sign up",
+  "sign in",
+  "tools tab",
+  "votes tab",
+  "proposals tab"
 ];
 function isGreetingOnly(content) {
   const c = content.trim().toLowerCase();
@@ -624,7 +844,8 @@ function textLooksCivizenRelated(content) {
   const c = content.trim().toLowerCase();
   if (!c) return false;
   if (isGreetingOnly(c)) return true;
-  return CIVIZEN_TERMS.some((t) => c.includes(t));
+  const expanded = expandAssistantQuery(c);
+  return CIVIZEN_TERMS.some((t) => expanded.includes(t));
 }
 function isRelevantToCivizen(resolvedQuery, messages) {
   if (textLooksCivizenRelated(resolvedQuery)) return true;
@@ -808,12 +1029,12 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.198",
     "appReleaseId": "20261005-v0.1.198",
     "androidVersionCode": 200,
-    "gitSha": "05d487d34dde717af1b7d82faaefb0b8a3440d56",
-    "generatedAt": "2026-10-06T05:56:44.377Z",
-    "sourceFingerprint": "d63fd70ff44652577f6329658258aee698332039b350015eaf1c676a0e45388b",
+    "gitSha": "33aa0ae5f164506e8fb88ccaf3b49fef9a72b3b3",
+    "generatedAt": "2026-10-07T02:51:28.630Z",
+    "sourceFingerprint": "9df684a9fbebe1371236abb014805230cba4fb599c83c65184f7d58892a9602e",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 370
+    "chunkCount": 394
   },
   "capabilities": [
     {
@@ -1528,7 +1749,8 @@ var KNOWLEDGE_PACK = {
       "id": "civic_voting",
       "name": "Civic voting",
       "status": "implemented",
-      "description": "Elections catalog and election detail/observe at /governance/voting. Public browsing is available. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.",
+      "description": "Elections catalog, ballot pages, and an Observer console at /governance/voting. Public browsing is available; casting needs a free account. Ballot choices are sealed on the server and never shown individually; every voter gets a receipt (a code in groups of four) and can check it against the public list of counted receipts. Eligibility (sign-in, voting window, sanctions, and any verified-identity, minimum-age, or country rule the consultation declares) is checked on the server and the reason is shown when a member cannot vote. A ballot can be withdrawn and cast again until closing. Consultations close automatically at their closing time with a published tally and outcome (quorum, pass threshold, most chosen option, or the most approved option for approval ballots where voters pick several options). The Observer console shows countable and withdrawn ballots and audit events only. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.",
+      "howTo": "Open Home > Governance > Civic voting, open a consultation, choose an option, and keep the receipt shown afterwards. Use Check that my receipt is counted on the same page, Withdraw ballot to change your vote while voting is open, and Observe next to the title for process metrics.",
       "routes": [
         "/governance/voting"
       ],
@@ -1537,15 +1759,74 @@ var KNOWLEDGE_PACK = {
         "member"
       ],
       "relatedCapabilities": [
-        "governance"
+        "governance",
+        "notifications"
       ],
       "aliases": [
         "elections",
-        "vote"
+        "vote",
+        "ballot",
+        "receipt",
+        "consultation",
+        "observer console"
       ],
       "sourceRefs": [
         "src/pages/governance/CivicVotingHub.tsx",
         "docs/02-policies/governance/civizen-community-governance-charter.md"
+      ]
+    },
+    {
+      "id": "notifications",
+      "name": "Notifications",
+      "status": "implemented",
+      "description": "Notification center for members: the bell at the top of the app shows the unread count and opens the Notifications page, which lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Each item opens the related page.",
+      "howTo": "Tap the bell at the top of the app, or open Settings > Notifications.",
+      "routes": [
+        "/notifications"
+      ],
+      "roles": [
+        "member"
+      ],
+      "relatedCapabilities": [
+        "governance",
+        "matters",
+        "agreements"
+      ],
+      "aliases": [
+        "notification center",
+        "bell",
+        "bell icon",
+        "alerts"
+      ],
+      "sourceRefs": [
+        "src/pages/Notifications.tsx",
+        "src/components/layout/NotificationBell.tsx",
+        "src/lib/notifications.ts"
+      ]
+    },
+    {
+      "id": "help_support",
+      "name": "Help and support",
+      "status": "implemented",
+      "description": "Settings page that gathers where to get help: Ask Civi in Messaging, the public Documents, Why Civizen Exists, the legal status notice, and the Terms.",
+      "howTo": "Open Settings > Help and support.",
+      "routes": [
+        "/settings/help"
+      ],
+      "roles": [
+        "member"
+      ],
+      "relatedCapabilities": [
+        "nela"
+      ],
+      "aliases": [
+        "help page",
+        "support page",
+        "get help"
+      ],
+      "sourceRefs": [
+        "src/pages/settings/HelpSupport.tsx",
+        "src/pages/settings/help-support-links.ts"
       ]
     },
     {
@@ -1808,7 +2089,12 @@ var KNOWLEDGE_PACK = {
       "id": "what_is_civizen",
       "question": "What is Civizen?",
       "answer": "Civizen is an open participatory system for organizing how humanity learns, contributes, collaborates, governs, shares resources, solves common challenges, and continuously improves the systems we live and work within.",
+      "localizedAnswers": {
+        "hy": "Civizen-\u0568 \u0562\u0561\u0581 \u0574\u0561\u057D\u0576\u0561\u056F\u0581\u0561\u0575\u056B\u0576 \u0570\u0561\u0574\u0561\u056F\u0561\u0580\u0563 \u0567, \u0578\u0580\u0568 \u056F\u0561\u0566\u0574\u0561\u056F\u0565\u0580\u057A\u0578\u0582\u0574 \u0567, \u0569\u0565 \u056B\u0576\u0579\u057A\u0565\u057D \u0567 \u0574\u0561\u0580\u0564\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u057D\u0578\u057E\u0578\u0580\u0578\u0582\u0574, \u0576\u0565\u0580\u0564\u0580\u0578\u0582\u0574 \u056F\u0561\u057F\u0561\u0580\u0578\u0582\u0574, \u0570\u0561\u0574\u0561\u0563\u0578\u0580\u056E\u0561\u056F\u0581\u0578\u0582\u0574, \u056F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574, \u056F\u056B\u057D\u057E\u0578\u0582\u0574 \u057C\u0565\u057D\u0578\u0582\u0580\u057D\u0576\u0565\u0580\u0578\u057E, \u056C\u0578\u0582\u056E\u0578\u0582\u0574 \u0568\u0576\u0564\u0570\u0561\u0576\u0578\u0582\u0580 \u0574\u0561\u0580\u057F\u0561\u0570\u0580\u0561\u057E\u0565\u0580\u0576\u0565\u0580\u0568 \u0587 \u0577\u0561\u0580\u0578\u0582\u0576\u0561\u056F\u0561\u0562\u0561\u0580 \u0562\u0561\u0580\u0565\u056C\u0561\u057E\u0578\u0582\u0574 \u0561\u0575\u0576 \u0570\u0561\u0574\u0561\u056F\u0561\u0580\u0563\u0565\u0580\u0568, \u0578\u0580\u0578\u0576\u0581\u0578\u0582\u0574 \u0561\u057A\u0580\u0578\u0582\u0574 \u0587 \u0561\u0577\u056D\u0561\u057F\u0578\u0582\u0574 \u0565\u0576\u0584\u0589",
+        "ru": "Civizen \u2014 \u044D\u0442\u043E \u043E\u0442\u043A\u0440\u044B\u0442\u0430\u044F \u0441\u0438\u0441\u0442\u0435\u043C\u0430 \u0443\u0447\u0430\u0441\u0442\u0438\u044F, \u043A\u043E\u0442\u043E\u0440\u0430\u044F \u043E\u0440\u0433\u0430\u043D\u0438\u0437\u0443\u0435\u0442 \u0442\u043E, \u043A\u0430\u043A \u0447\u0435\u043B\u043E\u0432\u0435\u0447\u0435\u0441\u0442\u0432\u043E \u0443\u0447\u0438\u0442\u0441\u044F, \u0432\u043D\u043E\u0441\u0438\u0442 \u0432\u043A\u043B\u0430\u0434, \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u0447\u0430\u0435\u0442, \u0443\u043F\u0440\u0430\u0432\u043B\u044F\u0435\u0442, \u0434\u0435\u043B\u0438\u0442\u0441\u044F \u0440\u0435\u0441\u0443\u0440\u0441\u0430\u043C\u0438, \u0440\u0435\u0448\u0430\u0435\u0442 \u043E\u0431\u0449\u0438\u0435 \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u044B \u0438 \u043F\u043E\u0441\u0442\u043E\u044F\u043D\u043D\u043E \u0443\u043B\u0443\u0447\u0448\u0430\u0435\u0442 \u0441\u0438\u0441\u0442\u0435\u043C\u044B, \u0432 \u043A\u043E\u0442\u043E\u0440\u044B\u0445 \u043C\u044B \u0436\u0438\u0432\u0451\u043C \u0438 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u043C."
+      },
       "aliases": [
+        "what is civizen",
         "what's civizen",
         "what's civizen in one sentence",
         "civizen in one sentence",
@@ -2161,9 +2447,10 @@ var KNOWLEDGE_PACK = {
     {
       "id": "how_does_governance_work",
       "question": "How does governance work?",
-      "answer": "Civizen currently has a public Governance landing, civic voting/elections, a member proposal workspace, and Governance Solutions. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.",
+      "answer": "Civizen has a public Governance landing, Civic voting with sealed ballots and voter receipts, one member Governance page with Votes, Proposals, and Tools tabs, member-supported proposals that open a consultation once enough members back them, a notification center, and Governance Solutions. Consultations close automatically at their closing time and publish the tally and outcome. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.",
       "aliases": [
-        "civizen governance"
+        "civizen governance",
+        "how does voting work in civizen"
       ],
       "capabilityIds": [
         "governance",
@@ -2177,9 +2464,10 @@ var KNOWLEDGE_PACK = {
     {
       "id": "who_can_create_proposals",
       "question": "Who can create proposals?",
-      "answer": "Eligible signed-in participants can submit proposals in Home > Governance workspace under the Community Governance Charter. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge\u2019s coordinator.",
+      "answer": "Any signed-in member can start one: open a Matter under Contribute > Questions, Issues & Ideas and choose Create voting proposal, then open the draft for member support from the Proposals tab of your Governance page. Once the support threshold is reached the author can publish the ballot; founders and admins can publish at any time. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge\u2019s coordinator.",
       "aliases": [
-        "who can propose"
+        "who can propose",
+        "who can start a consultation"
       ],
       "capabilityIds": [
         "governance",
@@ -2193,10 +2481,16 @@ var KNOWLEDGE_PACK = {
     {
       "id": "who_can_vote",
       "question": "Who can vote?",
-      "answer": "Civic elections are at Home > Governance > Civic voting. Community votes follow published eligibility in the Charter and platform rules. Token ownership, financial support, or wealth alone does not create voting authority.",
+      "answer": "Any signed-in member with a free account can vote in an ordinary consultation at Home > Governance > Civic voting. A consultation may additionally require a verified identity, a minimum age, or residence in one country, and an active governance sanction blocks voting. The server checks these rules, and the ballot page shows the reason when you cannot vote. Token ownership, financial support, or wealth alone never creates voting authority.",
+      "localizedAnswers": {
+        "hy": "\u054D\u0578\u057E\u0578\u0580\u0561\u056F\u0561\u0576 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576\u0568 \u056F\u0561\u0580\u0578\u0572 \u0567 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C \u0574\u0578\u0582\u057F\u0584 \u0563\u0578\u0580\u056E\u0561\u056E \u0581\u0561\u0576\u056F\u0561\u0581\u0561\u056E \u0561\u0576\u0564\u0561\u0574, \u0578\u057E \u0561\u0576\u057E\u0573\u0561\u0580 \u0570\u0561\u0577\u056B\u057E \u0578\u0582\u0576\u056B\u055D \u0533\u056C\u056D\u0561\u057E\u0578\u0580 > \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 > \u0554\u0561\u0572\u0561\u0584\u0561\u0581\u056B\u0561\u056F\u0561\u0576 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0562\u0561\u056A\u0576\u0578\u0582\u0574\u0589 \u053D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u056F\u0561\u0580\u0578\u0572 \u0567 \u056C\u0580\u0561\u0581\u0578\u0582\u0581\u056B\u0579 \u057A\u0561\u0570\u0561\u0576\u057B\u0565\u056C \u0570\u0561\u057D\u057F\u0561\u057F\u057E\u0561\u056E \u056B\u0576\u0584\u0576\u0578\u0582\u0569\u0575\u0578\u0582\u0576, \u0576\u057E\u0561\u0566\u0561\u0563\u0578\u0582\u0575\u0576 \u057F\u0561\u0580\u056B\u0584 \u056F\u0561\u0574 \u0562\u0576\u0561\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0578\u0580\u0578\u0577\u0561\u056F\u056B \u0565\u0580\u056F\u0580\u0578\u0582\u0574, \u056B\u057D\u056F \u056F\u0561\u057C\u0561\u057E\u0561\u0580\u0574\u0561\u0576 \u0563\u0578\u0580\u056E\u0578\u0572 \u057A\u0561\u057F\u056A\u0561\u0574\u056B\u057B\u0578\u0581\u0576 \u0561\u0580\u0563\u0565\u056C\u0578\u0582\u0574 \u0567 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568\u0589 \u054D\u0565\u0580\u057E\u0565\u0580\u0568 \u057D\u057F\u0578\u0582\u0563\u0578\u0582\u0574 \u0567 \u0561\u0575\u057D \u056F\u0561\u0576\u0578\u0576\u0576\u0565\u0580\u0568, \u0587 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u0567\u057B\u0578\u0582\u0574 \u0576\u0577\u057E\u0578\u0582\u0574 \u0567 \u057A\u0561\u057F\u0573\u0561\u057C\u0568, \u0565\u0580\u0562 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C \u0579\u0565\u0584 \u056F\u0561\u0580\u0578\u0572\u0589 \u0539\u0578\u0584\u0565\u0576\u0576\u0565\u0580\u056B \u057D\u0565\u0583\u0561\u056F\u0561\u0576\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568, \u0586\u056B\u0576\u0561\u0576\u057D\u0561\u056F\u0561\u0576 \u0561\u057B\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u056F\u0561\u0574 \u0570\u0561\u0580\u057D\u057F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576 \u056B\u0576\u0584\u0576\u056B\u0576 \u0565\u0580\u0562\u0565\u0584 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C\u0578\u0582 \u056B\u0580\u0561\u057E\u0578\u0582\u0576\u0584 \u0579\u0565\u0576 \u057F\u0561\u056C\u056B\u057D\u0589",
+        "ru": "\u0412 \u043E\u0431\u044B\u0447\u043D\u043E\u0439 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438 \u043C\u043E\u0436\u0435\u0442 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u0442\u044C \u043B\u044E\u0431\u043E\u0439 \u0432\u043E\u0448\u0435\u0434\u0448\u0438\u0439 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A \u0441 \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u043C \u0430\u043A\u043A\u0430\u0443\u043D\u0442\u043E\u043C \u2014 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 \u0413\u043B\u0430\u0432\u043D\u0430\u044F > \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 > \u0413\u0440\u0430\u0436\u0434\u0430\u043D\u0441\u043A\u043E\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435. \u041A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044F \u043C\u043E\u0436\u0435\u0442 \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u0442\u0440\u0435\u0431\u043E\u0432\u0430\u0442\u044C \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043D\u043D\u043E\u0439 \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u0438, \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0433\u043E \u0432\u043E\u0437\u0440\u0430\u0441\u0442\u0430 \u0438\u043B\u0438 \u043F\u0440\u043E\u0436\u0438\u0432\u0430\u043D\u0438\u044F \u0432 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0451\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0435, \u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u044E\u0449\u0430\u044F \u0441\u0430\u043D\u043A\u0446\u0438\u044F \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F \u0431\u043B\u043E\u043A\u0438\u0440\u0443\u0435\u0442 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435. \u0421\u0435\u0440\u0432\u0435\u0440 \u043F\u0440\u043E\u0432\u0435\u0440\u044F\u0435\u0442 \u044D\u0442\u0438 \u043F\u0440\u0430\u0432\u0438\u043B\u0430, \u0438 \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u043F\u0440\u0438\u0447\u0438\u043D\u0430, \u0435\u0441\u043B\u0438 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u0442\u044C \u043D\u0435\u043B\u044C\u0437\u044F. \u0412\u043B\u0430\u0434\u0435\u043D\u0438\u0435 \u0442\u043E\u043A\u0435\u043D\u0430\u043C\u0438, \u0444\u0438\u043D\u0430\u043D\u0441\u043E\u0432\u0430\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430 \u0438\u043B\u0438 \u0431\u043E\u0433\u0430\u0442\u0441\u0442\u0432\u043E \u0441\u0430\u043C\u0438 \u043F\u043E \u0441\u0435\u0431\u0435 \u043D\u0438\u043A\u043E\u0433\u0434\u0430 \u043D\u0435 \u0434\u0430\u044E\u0442 \u043F\u0440\u0430\u0432\u0430 \u0433\u043E\u043B\u043E\u0441\u0430."
+      },
       "aliases": [
         "voting rights",
-        "who votes"
+        "who votes",
+        "who is eligible to vote",
+        "voting eligibility"
       ],
       "capabilityIds": [
         "civic_voting"
@@ -2513,6 +2807,488 @@ var KNOWLEDGE_PACK = {
         "src/pages/happiness/HappinessPrivacy.tsx",
         "src/pages/wellbeing/WellbeingInsights.tsx"
       ]
+    },
+    {
+      "id": "how_do_i_vote",
+      "question": "How do I vote?",
+      "answer": "Open Home > Governance > Civic voting (or the Open votes card on Study, or the Votes tab on your Governance page) and open the consultation. Sign in if you have not, choose an option \u2014 Support, Oppose, or Abstain, or the options that consultation lists \u2014 and confirm. The page then shows Your receipt: keep that code.\n\nOrdinary consultations need only a free account. Until voting closes you can withdraw your ballot and vote again. Your choice is sealed; only totals are public.",
+      "localizedAnswers": {
+        "hy": "\u0532\u0561\u0581\u0565\u0584 \u0533\u056C\u056D\u0561\u057E\u0578\u0580 > \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 > \u0554\u0561\u0572\u0561\u0584\u0561\u0581\u056B\u0561\u056F\u0561\u0576 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576 (\u056F\u0561\u0574 \xAB\u0532\u0561\u0581 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\xBB \u0584\u0561\u0580\u057F\u0568 \u0548\u0582\u057D\u0578\u0582\u0574 \u0562\u0561\u056A\u0576\u0578\u0582\u0574, \u056F\u0561\u0574 \u0571\u0565\u0580 \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 \u0567\u057B\u056B \xAB\u0554\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\xBB \u0576\u0565\u0580\u0564\u056B\u0580\u0568) \u0587 \u0562\u0561\u0581\u0565\u0584 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568\u0589 \u0544\u0578\u0582\u057F\u0584 \u0563\u0578\u0580\u056E\u0565\u0584, \u0565\u0569\u0565 \u0564\u0565\u057C \u0579\u0565\u0584 \u0561\u0580\u0565\u056C, \u0568\u0576\u057F\u0580\u0565\u0584 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u055D \u053F\u0578\u0572\u0574, \u0534\u0565\u0574 \u056F\u0561\u0574 \u0541\u0565\u057C\u0576\u057A\u0561\u0570, \u056F\u0561\u0574 \u0561\u0575\u0576 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\u0568, \u0578\u0580 \u0576\u0577\u057E\u0561\u056E \u0565\u0576 \u057F\u057E\u0575\u0561\u056C \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576\u0568, \u0587 \u0570\u0561\u057D\u057F\u0561\u057F\u0565\u0584\u0589 \u0531\u0575\u0576\u0578\u0582\u0570\u0565\u057F\u0587 \u0567\u057B\u0578\u0582\u0574 \u056F\u0570\u0561\u0575\u057F\u0576\u057E\u056B \xAB\u0541\u0565\u0580 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568\xBB\u055D \u057A\u0561\u0570\u0565\u0584 \u0561\u0575\u0564 \u056F\u0578\u0564\u0568\u0589\n\n\u054D\u0578\u057E\u0578\u0580\u0561\u056F\u0561\u0576 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u056B \u0570\u0561\u0574\u0561\u0580 \u0562\u0561\u057E\u0561\u056F\u0561\u0576 \u0567 \u0561\u0576\u057E\u0573\u0561\u0580 \u0570\u0561\u0577\u056B\u057E\u0589 \u0544\u056B\u0576\u0579\u0587 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u0583\u0561\u056F\u057E\u0565\u056C\u0568 \u056F\u0561\u0580\u0578\u0572 \u0565\u0584 \u0570\u0565\u057F \u057E\u0565\u0580\u0581\u0576\u0565\u056C \u0571\u0565\u0580 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568 \u0587 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C \u0576\u0578\u0580\u056B\u0581\u0589 \u0541\u0565\u0580 \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u056F\u0576\u0584\u057E\u0561\u056E \u0567. \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0565\u0576 \u0574\u056B\u0561\u0575\u0576 \u0568\u0576\u0564\u0570\u0561\u0576\u0578\u0582\u0580 \u0569\u057E\u0565\u0580\u0568\u0589",
+        "ru": "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0413\u043B\u0430\u0432\u043D\u0430\u044F > \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 > \u0413\u0440\u0430\u0436\u0434\u0430\u043D\u0441\u043A\u043E\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 (\u0438\u043B\u0438 \u043A\u0430\u0440\u0442\u043E\u0447\u043A\u0443 \xAB\u041E\u0442\u043A\u0440\u044B\u0442\u044B\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F\xBB \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 \u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435, \u0438\u043B\u0438 \u0432\u043A\u043B\u0430\u0434\u043A\u0443 \xAB\u0413\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F\xBB \u043D\u0430 \u0432\u0430\u0448\u0435\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435) \u0438 \u043E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044E. \u0412\u043E\u0439\u0434\u0438\u0442\u0435, \u0435\u0441\u043B\u0438 \u0435\u0449\u0451 \u043D\u0435 \u0432\u043E\u0448\u043B\u0438, \u0432\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0430\u0440\u0438\u0430\u043D\u0442 \u2014 \u0417\u0430, \u041F\u0440\u043E\u0442\u0438\u0432 \u0438\u043B\u0438 \u0412\u043E\u0437\u0434\u0435\u0440\u0436\u0430\u0442\u044C\u0441\u044F, \u043B\u0438\u0431\u043E \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u044B, \u043F\u0435\u0440\u0435\u0447\u0438\u0441\u043B\u0435\u043D\u043D\u044B\u0435 \u0432 \u044D\u0442\u043E\u0439 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438, \u2014 \u0438 \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435. \u041F\u043E\u0441\u043B\u0435 \u044D\u0442\u043E\u0433\u043E \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u043F\u043E\u044F\u0432\u0438\u0442\u0441\u044F \xAB\u0412\u0430\u0448\u0430 \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F\xBB: \u0441\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u0435 \u044D\u0442\u043E\u0442 \u043A\u043E\u0434.\n\n\u0414\u043B\u044F \u043E\u0431\u044B\u0447\u043D\u044B\u0445 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0439 \u0434\u043E\u0441\u0442\u0430\u0442\u043E\u0447\u043D\u043E \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E\u0433\u043E \u0430\u043A\u043A\u0430\u0443\u043D\u0442\u0430. \u041F\u043E\u043A\u0430 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u043E\u0442\u043A\u0440\u044B\u0442\u043E, \u0432\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u043E\u0442\u043E\u0437\u0432\u0430\u0442\u044C \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C \u0438 \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u0442\u044C \u0441\u043D\u043E\u0432\u0430. \u0412\u0430\u0448 \u0432\u044B\u0431\u043E\u0440 \u0437\u0430\u043F\u0435\u0447\u0430\u0442\u0430\u043D; \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u044B \u0442\u043E\u043B\u044C\u043A\u043E \u0438\u0442\u043E\u0433\u043E\u0432\u044B\u0435 \u0447\u0438\u0441\u043B\u0430."
+      },
+      "aliases": [
+        "how to vote",
+        "how do I cast a ballot",
+        "how do I vote on a consultation",
+        "where do I vote",
+        "cast my vote"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "how_do_i_know_my_vote_was_counted",
+      "question": "How do I know my vote was counted?",
+      "answer": "After you vote, the ballot page shows Your receipt \u2014 a code in groups of four characters. Tap Check that my receipt is counted: Civizen compares it with the public list of counted receipts for that consultation and tells you whether it is on the list.\n\nThe receipt proves your ballot is counted without revealing your choice, and anyone with the code can run the same check. If you withdraw your ballot, the receipt leaves the list; voting again gives you a new one.",
+      "localizedAnswers": {
+        "hy": "\u0554\u057E\u0565\u0561\u0580\u056F\u0565\u056C\u0578\u0582\u0581 \u0570\u0565\u057F\u0578 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u0567\u057B\u0578\u0582\u0574 \u0570\u0561\u0575\u057F\u0576\u057E\u0578\u0582\u0574 \u0567 \xAB\u0541\u0565\u0580 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568\xBB\u055D \u056F\u0578\u0564, \u0578\u0580\u0568 \u0562\u0561\u056A\u0561\u0576\u057E\u0561\u056E \u0567 \u0579\u0578\u0580\u057D \u0576\u056B\u0577\u0561\u0576\u0578\u0581 \u056D\u0574\u0562\u0565\u0580\u056B\u0589 \u054D\u0565\u0572\u0574\u0565\u0584 \xAB\u054D\u057F\u0578\u0582\u0563\u0565\u056C, \u0578\u0580 \u056B\u0574 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568 \u0570\u0561\u0577\u057E\u057E\u0561\u056E \u0567\xBB\u2024 Civizen-\u0568 \u0561\u0575\u0576 \u0570\u0561\u0574\u0565\u0574\u0561\u057F\u0578\u0582\u0574 \u0567 \u057F\u057E\u0575\u0561\u056C \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0570\u0561\u0577\u057E\u057E\u0561\u056E \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u0580\u0565\u0580\u056B \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0581\u0578\u0582\u0581\u0561\u056F\u056B \u0570\u0565\u057F \u0587 \u0561\u057D\u0578\u0582\u0574, \u0569\u0565 \u0561\u0575\u0576 \u0581\u0578\u0582\u0581\u0561\u056F\u0578\u0582\u0574 \u0567, \u0569\u0565 \u0578\u0579\u0589\n\n\u0531\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0576 \u0561\u057A\u0561\u0581\u0578\u0582\u0581\u0578\u0582\u0574 \u0567, \u0578\u0580 \u0571\u0565\u0580 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568 \u0570\u0561\u0577\u057E\u057E\u0561\u056E \u0567\u055D \u0561\u057C\u0561\u0576\u0581 \u0562\u0561\u0581\u0561\u0570\u0561\u0575\u057F\u0565\u056C\u0578\u0582 \u0571\u0565\u0580 \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568, \u0587 \u0581\u0561\u0576\u056F\u0561\u0581\u0561\u056E \u0574\u0561\u0580\u0564, \u0578\u057E \u0578\u0582\u0576\u056B \u056F\u0578\u0564\u0568, \u056F\u0561\u0580\u0578\u0572 \u0567 \u056F\u0561\u057F\u0561\u0580\u0565\u056C \u0576\u0578\u0582\u0575\u0576 \u057D\u057F\u0578\u0582\u0563\u0578\u0582\u0574\u0568\u0589 \u0535\u0569\u0565 \u0570\u0565\u057F \u057E\u0565\u0580\u0581\u0576\u0565\u0584 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568, \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568 \u0570\u0561\u0576\u057E\u0578\u0582\u0574 \u0567 \u0581\u0578\u0582\u0581\u0561\u056F\u056B\u0581\u2024 \u0576\u0578\u0580\u056B\u0581 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C\u056B\u057D \u0576\u0578\u0580 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580 \u0565\u0584 \u057D\u057F\u0561\u0576\u0578\u0582\u0574\u0589",
+        "ru": "\u041F\u043E\u0441\u043B\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \xAB\u0412\u0430\u0448\u0430 \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F\xBB \u2014 \u043A\u043E\u0434, \u0440\u0430\u0437\u0431\u0438\u0442\u044B\u0439 \u043D\u0430 \u0433\u0440\u0443\u043F\u043F\u044B \u043F\u043E \u0447\u0435\u0442\u044B\u0440\u0435 \u0441\u0438\u043C\u0432\u043E\u043B\u0430. \u041D\u0430\u0436\u043C\u0438\u0442\u0435 \xAB\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C, \u0447\u0442\u043E \u043C\u043E\u044F \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F \u0443\u0447\u0442\u0435\u043D\u0430\xBB: Civizen \u0441\u0432\u0435\u0440\u0438\u0442 \u0435\u0451 \u0441 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u043C \u0441\u043F\u0438\u0441\u043A\u043E\u043C \u0443\u0447\u0442\u0451\u043D\u043D\u044B\u0445 \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u0439 \u044D\u0442\u043E\u0439 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438 \u0438 \u0441\u043E\u043E\u0431\u0449\u0438\u0442, \u0435\u0441\u0442\u044C \u043B\u0438 \u043E\u043D\u0430 \u0432 \u0441\u043F\u0438\u0441\u043A\u0435.\n\n\u041A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442, \u0447\u0442\u043E \u0432\u0430\u0448 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C \u0443\u0447\u0442\u0451\u043D, \u043D\u0435 \u0440\u0430\u0441\u043A\u0440\u044B\u0432\u0430\u044F \u0432\u0430\u0448\u0435\u0433\u043E \u0432\u044B\u0431\u043E\u0440\u0430, \u0438 \u043B\u044E\u0431\u043E\u0439, \u0443 \u043A\u043E\u0433\u043E \u0435\u0441\u0442\u044C \u043A\u043E\u0434, \u043C\u043E\u0436\u0435\u0442 \u0432\u044B\u043F\u043E\u043B\u043D\u0438\u0442\u044C \u0442\u0443 \u0436\u0435 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0443. \u0415\u0441\u043B\u0438 \u0432\u044B \u043E\u0442\u0437\u043E\u0432\u0451\u0442\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C, \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F \u0438\u0441\u0447\u0435\u0437\u043D\u0435\u0442 \u0438\u0437 \u0441\u043F\u0438\u0441\u043A\u0430; \u043F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0438 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043D\u043E\u0432\u0443\u044E."
+      },
+      "aliases": [
+        "was my vote counted",
+        "is my vote counted",
+        "was my ballot counted",
+        "verify my vote",
+        "check my receipt",
+        "where do I check my receipt",
+        "receipt check"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "what_is_a_voting_receipt",
+      "question": "What is a receipt?",
+      "answer": "A receipt is the random code Civizen gives you when you cast a ballot in a consultation, shown as Your receipt on the ballot page in groups of four characters. It proves your ballot is counted without revealing how you voted.\n\nKeep the code. Tap Check that my receipt is counted on the ballot page to compare it with the public list of counted receipts. Withdrawing your ballot removes the receipt from that list.",
+      "localizedAnswers": {
+        "hy": "\u0531\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568 \u057A\u0561\u057F\u0561\u0570\u0561\u056F\u0561\u0576 \u056F\u0578\u0564 \u0567, \u0578\u0580\u0568 Civizen-\u0568 \u057F\u0561\u056C\u056B\u057D \u0567, \u0565\u0580\u0562 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576\u0568 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F \u0565\u0584 \u0576\u0565\u0580\u056F\u0561\u0575\u0561\u0581\u0576\u0578\u0582\u0574\u0589 \u0531\u0575\u0576 \u0581\u0578\u0582\u0581\u0561\u0564\u0580\u057E\u0578\u0582\u0574 \u0567 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u0567\u057B\u0578\u0582\u0574\u055D \xAB\u0541\u0565\u0580 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568\xBB \u057E\u0565\u0580\u0576\u0561\u0563\u0580\u0578\u057E, \u0579\u0578\u0580\u057D \u0576\u056B\u0577\u0561\u0576\u0578\u0581 \u056D\u0574\u0562\u0565\u0580\u0578\u057E\u0589 \u0531\u0575\u0576 \u0561\u057A\u0561\u0581\u0578\u0582\u0581\u0578\u0582\u0574 \u0567, \u0578\u0580 \u0571\u0565\u0580 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568 \u0570\u0561\u0577\u057E\u057E\u0561\u056E \u0567\u055D \u0561\u057C\u0561\u0576\u0581 \u0562\u0561\u0581\u0561\u0570\u0561\u0575\u057F\u0565\u056C\u0578\u0582, \u0569\u0565 \u056B\u0576\u0579\u057A\u0565\u057D \u0565\u0584 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C\u0589\n\n\u054A\u0561\u0570\u0565\u0584 \u056F\u0578\u0564\u0568\u0589 \u0554\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u0567\u057B\u0578\u0582\u0574 \u057D\u0565\u0572\u0574\u0565\u0584 \xAB\u054D\u057F\u0578\u0582\u0563\u0565\u056C, \u0578\u0580 \u056B\u0574 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568 \u0570\u0561\u0577\u057E\u057E\u0561\u056E \u0567\xBB, \u0578\u0580\u057A\u0565\u057D\u0566\u056B \u0570\u0561\u0574\u0565\u0574\u0561\u057F\u0565\u0584 \u0561\u0575\u0576 \u0570\u0561\u0577\u057E\u057E\u0561\u056E \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u0580\u0565\u0580\u056B \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0581\u0578\u0582\u0581\u0561\u056F\u056B \u0570\u0565\u057F\u0589 \u0554\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568 \u0570\u0565\u057F \u057E\u0565\u0580\u0581\u0576\u0565\u056C\u056B\u057D \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568 \u0570\u0561\u0576\u057E\u0578\u0582\u0574 \u0567 \u0561\u0575\u0564 \u0581\u0578\u0582\u0581\u0561\u056F\u056B\u0581\u0589",
+        "ru": "\u041A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F \u2014 \u044D\u0442\u043E \u0441\u043B\u0443\u0447\u0430\u0439\u043D\u044B\u0439 \u043A\u043E\u0434, \u043A\u043E\u0442\u043E\u0440\u044B\u0439 Civizen \u0432\u044B\u0434\u0430\u0451\u0442, \u043A\u043E\u0433\u0434\u0430 \u0432\u044B \u043F\u043E\u0434\u0430\u0451\u0442\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C \u0432 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438. \u041E\u043D\u0430 \u043F\u043E\u043A\u0430\u0437\u0430\u043D\u0430 \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F \u043F\u043E\u0434 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u043E\u043C \xAB\u0412\u0430\u0448\u0430 \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F\xBB \u0433\u0440\u0443\u043F\u043F\u0430\u043C\u0438 \u043F\u043E \u0447\u0435\u0442\u044B\u0440\u0435 \u0441\u0438\u043C\u0432\u043E\u043B\u0430. \u041E\u043D\u0430 \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442, \u0447\u0442\u043E \u0432\u0430\u0448 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C \u0443\u0447\u0442\u0451\u043D, \u043D\u0435 \u0440\u0430\u0441\u043A\u0440\u044B\u0432\u0430\u044F, \u043A\u0430\u043A \u0432\u044B \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u0438.\n\n\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u0435 \u043A\u043E\u0434. \u041D\u0430\u0436\u043C\u0438\u0442\u0435 \xAB\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C, \u0447\u0442\u043E \u043C\u043E\u044F \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F \u0443\u0447\u0442\u0435\u043D\u0430\xBB \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F, \u0447\u0442\u043E\u0431\u044B \u0441\u0432\u0435\u0440\u0438\u0442\u044C \u0435\u0433\u043E \u0441 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u043C \u0441\u043F\u0438\u0441\u043A\u043E\u043C \u0443\u0447\u0442\u0451\u043D\u043D\u044B\u0445 \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u0439. \u041F\u0440\u0438 \u043E\u0442\u0437\u044B\u0432\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F \u0443\u0434\u0430\u043B\u044F\u0435\u0442\u0441\u044F \u0438\u0437 \u044D\u0442\u043E\u0433\u043E \u0441\u043F\u0438\u0441\u043A\u0430."
+      },
+      "aliases": [
+        "voting receipt",
+        "ballot receipt",
+        "receipt code",
+        "what is the receipt for",
+        "vote receipt"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "why_cant_i_vote",
+      "question": "Why can't I vote?",
+      "answer": "Open the consultation page: when you cannot vote, the reason is shown under the voting buttons. The usual reasons are: you are not signed in; voting has not opened yet or has already closed; a governance sanction blocks voting; the vote needs a verified identity (Settings > Edit Profile > Identity verification); the vote has a minimum age and your profile has no date of birth, or you are under that age; the vote is limited to residents of one country and your profile shows another; it is a sample election; or it is a high-security election that takes ballots only in the native app.\n\nThese checks run on the server, so the same rule applies to everyone. Ordinary consultations need only a free account.",
+      "localizedAnswers": {
+        "hy": "\u0532\u0561\u0581\u0565\u0584 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0567\u057B\u0568\u2024 \u0565\u0580\u0562 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C \u0579\u0565\u0584 \u056F\u0561\u0580\u0578\u0572, \u057A\u0561\u057F\u0573\u0561\u057C\u0568 \u0576\u0577\u057E\u0561\u056E \u0567 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u056F\u0578\u0573\u0561\u056F\u0576\u0565\u0580\u056B \u0576\u0565\u0580\u0584\u0587\u0578\u0582\u0574\u0589 \u054D\u0578\u057E\u0578\u0580\u0561\u056F\u0561\u0576 \u057A\u0561\u057F\u0573\u0561\u057C\u0576\u0565\u0580\u0576 \u0565\u0576\u055D \u0574\u0578\u0582\u057F\u0584 \u0579\u0565\u0584 \u0563\u0578\u0580\u056E\u0565\u056C\u2024 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u0564\u0565\u057C \u0579\u056B \u0562\u0561\u0581\u057E\u0565\u056C \u056F\u0561\u0574 \u0561\u0580\u0564\u0565\u0576 \u0583\u0561\u056F\u057E\u0565\u056C \u0567\u2024 \u056F\u0561\u057C\u0561\u057E\u0561\u0580\u0574\u0561\u0576 \u057A\u0561\u057F\u056A\u0561\u0574\u056B\u057B\u0578\u0581\u0576 \u0561\u0580\u0563\u0565\u056C\u0578\u0582\u0574 \u0567 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568\u2024 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u057A\u0561\u0570\u0561\u0576\u057B\u0578\u0582\u0574 \u0567 \u0570\u0561\u057D\u057F\u0561\u057F\u057E\u0561\u056E \u056B\u0576\u0584\u0576\u0578\u0582\u0569\u0575\u0578\u0582\u0576 (\u053F\u0561\u0580\u0563\u0561\u057E\u0578\u0580\u0578\u0582\u0574\u0576\u0565\u0580 > \u053D\u0574\u0562\u0561\u0563\u0580\u0565\u056C \u057A\u0580\u0578\u0586\u056B\u056C\u0568 > \u053B\u0576\u0584\u0576\u0578\u0582\u0569\u0575\u0561\u0576 \u0570\u0561\u057D\u057F\u0561\u057F\u0578\u0582\u0574)\u2024 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576 \u0578\u0582\u0576\u056B \u057F\u0561\u0580\u056B\u0584\u0561\u0575\u056B\u0576 \u0577\u0565\u0574, \u056B\u057D\u056F \u0571\u0565\u0580 \u057A\u0580\u0578\u0586\u056B\u056C\u0578\u0582\u0574 \u056E\u0576\u0576\u0564\u0575\u0561\u0576 \u0561\u0574\u057D\u0561\u0569\u056B\u057E \u0576\u0577\u057E\u0561\u056E \u0579\u0567, \u056F\u0561\u0574 \u0564\u0578\u0582\u0584 \u0561\u0575\u0564 \u057F\u0561\u0580\u056B\u0584\u056B\u0581 \u0583\u0578\u0584\u0580 \u0565\u0584\u2024 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u0576\u0561\u056D\u0561\u057F\u0565\u057D\u057E\u0561\u056E \u0567 \u0574\u056B\u0561\u0575\u0576 \u0574\u0565\u056F \u0565\u0580\u056F\u0580\u056B \u0562\u0576\u0561\u056F\u056B\u0579\u0576\u0565\u0580\u056B \u0570\u0561\u0574\u0561\u0580, \u056B\u057D\u056F \u0571\u0565\u0580 \u057A\u0580\u0578\u0586\u056B\u056C\u0578\u0582\u0574 \u0576\u0577\u057E\u0561\u056E \u0567 \u0561\u0575\u056C \u0565\u0580\u056F\u056B\u0580\u2024 \u0564\u0561 \u0583\u0578\u0580\u0571\u0576\u0561\u056F\u0561\u0576 \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0567\u2024 \u056F\u0561\u0574 \u0564\u0561 \u0562\u0561\u0580\u0571\u0580 \u0561\u0576\u057E\u057F\u0561\u0576\u0563\u0578\u0582\u0569\u0575\u0561\u0576 \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0567, \u0578\u0580\u0568 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580 \u0568\u0576\u0564\u0578\u0582\u0576\u0578\u0582\u0574 \u0567 \u0574\u056B\u0561\u0575\u0576 \u0562\u0576\u056B\u056F \u0570\u0561\u057E\u0565\u056C\u057E\u0561\u056E\u0578\u0582\u0574\u0589\n\n\u0531\u0575\u057D \u057D\u057F\u0578\u0582\u0563\u0578\u0582\u0574\u0576\u0565\u0580\u0568 \u056F\u0561\u057F\u0561\u0580\u057E\u0578\u0582\u0574 \u0565\u0576 \u057D\u0565\u0580\u057E\u0565\u0580\u0578\u0582\u0574, \u0561\u0575\u0576\u057A\u0565\u057D \u0578\u0580 \u056F\u0561\u0576\u0578\u0576\u0568 \u0562\u0578\u056C\u0578\u0580\u056B \u0570\u0561\u0574\u0561\u0580 \u0576\u0578\u0582\u0575\u0576\u0576 \u0567\u0589 \u054D\u0578\u057E\u0578\u0580\u0561\u056F\u0561\u0576 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u056B \u0570\u0561\u0574\u0561\u0580 \u0562\u0561\u057E\u0561\u056F\u0561\u0576 \u0567 \u0561\u0576\u057E\u0573\u0561\u0580 \u0570\u0561\u0577\u056B\u057E\u0589",
+        "ru": "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0443 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438: \u0435\u0441\u043B\u0438 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u0442\u044C \u043D\u0435\u043B\u044C\u0437\u044F, \u043F\u0440\u0438\u0447\u0438\u043D\u0430 \u043F\u043E\u043A\u0430\u0437\u0430\u043D\u0430 \u043F\u043E\u0434 \u043A\u043D\u043E\u043F\u043A\u0430\u043C\u0438 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F. \u041E\u0431\u044B\u0447\u043D\u044B\u0435 \u043F\u0440\u0438\u0447\u0438\u043D\u044B: \u0432\u044B \u043D\u0435 \u0432\u043E\u0448\u043B\u0438 \u0432 \u0430\u043A\u043A\u0430\u0443\u043D\u0442; \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u0435\u0449\u0451 \u043D\u0435 \u043E\u0442\u043A\u0440\u044B\u043B\u043E\u0441\u044C \u0438\u043B\u0438 \u0443\u0436\u0435 \u0437\u0430\u043A\u0440\u044B\u043B\u043E\u0441\u044C; \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u0431\u043B\u043E\u043A\u0438\u0440\u0443\u0435\u0442 \u0441\u0430\u043D\u043A\u0446\u0438\u044F \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F; \u0434\u043B\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u043D\u0443\u0436\u043D\u0430 \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043D\u043D\u0430\u044F \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u044C (\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 > \u0420\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043F\u0440\u043E\u0444\u0438\u043B\u044C > \u041F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043D\u0438\u0435 \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u0438); \u0443 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u0435\u0441\u0442\u044C \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u044B\u0439 \u0432\u043E\u0437\u0440\u0430\u0441\u0442, \u0430 \u0432 \u043F\u0440\u043E\u0444\u0438\u043B\u0435 \u043D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u0430 \u0434\u0430\u0442\u0430 \u0440\u043E\u0436\u0434\u0435\u043D\u0438\u044F, \u043B\u0438\u0431\u043E \u0432\u044B \u043C\u043B\u0430\u0434\u0448\u0435 \u044D\u0442\u043E\u0433\u043E \u0432\u043E\u0437\u0440\u0430\u0441\u0442\u0430; \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u043E\u0442\u043A\u0440\u044B\u0442\u043E \u0442\u043E\u043B\u044C\u043A\u043E \u0434\u043B\u044F \u0436\u0438\u0442\u0435\u043B\u0435\u0439 \u043E\u0434\u043D\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u044B, \u0430 \u0432 \u043F\u0440\u043E\u0444\u0438\u043B\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u0430 \u0434\u0440\u0443\u0433\u0430\u044F; \u044D\u0442\u043E \u043F\u0440\u043E\u0431\u043D\u044B\u0435 \u0432\u044B\u0431\u043E\u0440\u044B; \u043B\u0438\u0431\u043E \u044D\u0442\u043E \u0432\u044B\u0431\u043E\u0440\u044B \u043F\u043E\u0432\u044B\u0448\u0435\u043D\u043D\u043E\u0439 \u0431\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u043E\u0441\u0442\u0438, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u043F\u0440\u0438\u043D\u0438\u043C\u0430\u044E\u0442 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0438 \u0442\u043E\u043B\u044C\u043A\u043E \u0432 \u043D\u0430\u0442\u0438\u0432\u043D\u043E\u043C \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0438.\n\n\u042D\u0442\u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u044F\u044E\u0442\u0441\u044F \u043D\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0435, \u043F\u043E\u044D\u0442\u043E\u043C\u0443 \u043F\u0440\u0430\u0432\u0438\u043B\u043E \u043E\u0434\u043D\u043E \u0434\u043B\u044F \u0432\u0441\u0435\u0445. \u0414\u043B\u044F \u043E\u0431\u044B\u0447\u043D\u044B\u0445 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0439 \u0434\u043E\u0441\u0442\u0430\u0442\u043E\u0447\u043D\u043E \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E\u0433\u043E \u0430\u043A\u043A\u0430\u0443\u043D\u0442\u0430."
+      },
+      "aliases": [
+        "why cannot I vote",
+        "I cannot vote",
+        "voting buttons are disabled",
+        "not eligible to vote",
+        "why am I not eligible",
+        "eligibility reason"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "profile"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "do_i_need_verification_to_vote",
+      "question": "Do I need to be verified to vote?",
+      "answer": "No \u2014 not for ordinary consultations: a free Civizen account is enough. Only when a consultation declares that it requires a verified identity, a minimum age, or residence in one country does the server check that, and the ballot page shows the reason if you do not meet it. Identity verification is at Settings > Edit Profile.",
+      "localizedAnswers": {
+        "hy": "\u0548\u0579\u2024 \u057D\u0578\u057E\u0578\u0580\u0561\u056F\u0561\u0576 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u056B \u0570\u0561\u0574\u0561\u0580 \u0562\u0561\u057E\u0561\u056F\u0561\u0576 \u0567 \u0561\u0576\u057E\u0573\u0561\u0580 Civizen \u0570\u0561\u0577\u056B\u057E\u0589 \u0544\u056B\u0561\u0575\u0576 \u0561\u0575\u0576 \u0564\u0565\u057A\u0584\u0578\u0582\u0574, \u0565\u0580\u0562 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u057A\u0561\u0570\u0561\u0576\u057B\u0578\u0582\u0574 \u0567 \u0570\u0561\u057D\u057F\u0561\u057F\u057E\u0561\u056E \u056B\u0576\u0584\u0576\u0578\u0582\u0569\u0575\u0578\u0582\u0576, \u0576\u057E\u0561\u0566\u0561\u0563\u0578\u0582\u0575\u0576 \u057F\u0561\u0580\u056B\u0584 \u056F\u0561\u0574 \u0562\u0576\u0561\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0578\u0580\u0578\u0577\u0561\u056F\u056B \u0565\u0580\u056F\u0580\u0578\u0582\u0574, \u057D\u0565\u0580\u057E\u0565\u0580\u0568 \u057D\u057F\u0578\u0582\u0563\u0578\u0582\u0574 \u0567 \u0564\u0561, \u0587 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u0567\u057B\u0578\u0582\u0574 \u0576\u0577\u057E\u0578\u0582\u0574 \u0567 \u057A\u0561\u057F\u0573\u0561\u057C\u0568, \u0565\u0569\u0565 \u057A\u0561\u0575\u0574\u0561\u0576\u0568 \u0579\u0565\u0584 \u0562\u0561\u057E\u0561\u0580\u0561\u0580\u0578\u0582\u0574\u0589 \u053B\u0576\u0584\u0576\u0578\u0582\u0569\u0575\u0561\u0576 \u0570\u0561\u057D\u057F\u0561\u057F\u0578\u0582\u0574\u0568 \u0563\u057F\u0576\u057E\u0578\u0582\u0574 \u0567 \u053F\u0561\u0580\u0563\u0561\u057E\u0578\u0580\u0578\u0582\u0574\u0576\u0565\u0580 > \u053D\u0574\u0562\u0561\u0563\u0580\u0565\u056C \u057A\u0580\u0578\u0586\u056B\u056C\u0568 \u0562\u0561\u056A\u0576\u0578\u0582\u0574\u0589",
+        "ru": "\u041D\u0435\u0442 \u2014 \u0434\u043B\u044F \u043E\u0431\u044B\u0447\u043D\u044B\u0445 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0439 \u0434\u043E\u0441\u0442\u0430\u0442\u043E\u0447\u043D\u043E \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E\u0433\u043E \u0430\u043A\u043A\u0430\u0443\u043D\u0442\u0430 Civizen. \u0422\u043E\u043B\u044C\u043A\u043E \u0435\u0441\u043B\u0438 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044F \u0442\u0440\u0435\u0431\u0443\u0435\u0442 \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043D\u043D\u043E\u0439 \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u0438, \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0433\u043E \u0432\u043E\u0437\u0440\u0430\u0441\u0442\u0430 \u0438\u043B\u0438 \u043F\u0440\u043E\u0436\u0438\u0432\u0430\u043D\u0438\u044F \u0432 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0451\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0435, \u0441\u0435\u0440\u0432\u0435\u0440 \u043F\u0440\u043E\u0432\u0435\u0440\u044F\u0435\u0442 \u044D\u0442\u043E, \u0438 \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u043F\u0440\u0438\u0447\u0438\u043D\u0430, \u0435\u0441\u043B\u0438 \u0432\u044B \u043D\u0435 \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0443\u0435\u0442\u0435 \u0443\u0441\u043B\u043E\u0432\u0438\u044E. \u041F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043D\u0438\u0435 \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u0438 \u043D\u0430\u0445\u043E\u0434\u0438\u0442\u0441\u044F \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 \u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 > \u0420\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043F\u0440\u043E\u0444\u0438\u043B\u044C."
+      },
+      "aliases": [
+        "verified to vote",
+        "identity verification for voting",
+        "do I need verification to vote"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "profile"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "can_i_vote_without_account",
+      "question": "Can I vote without an account?",
+      "answer": "No. Anyone can browse consultations and results at Home > Governance > Civic voting without signing in, but casting a ballot needs a Civizen account. Create one from Sign up, then open the consultation and vote.",
+      "localizedAnswers": {
+        "hy": "\u0548\u0579\u0589 \u053D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u0568 \u0587 \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0576\u0565\u0580\u0568 \u056F\u0561\u0580\u0578\u0572 \u0567 \u0564\u056B\u057F\u0565\u056C \u0581\u0561\u0576\u056F\u0561\u0581\u0561\u056E \u0574\u0561\u0580\u0564\u055D \u0533\u056C\u056D\u0561\u057E\u0578\u0580 > \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 > \u0554\u0561\u0572\u0561\u0584\u0561\u0581\u056B\u0561\u056F\u0561\u0576 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0562\u0561\u056A\u0576\u0578\u0582\u0574, \u0561\u057C\u0561\u0576\u0581 \u0574\u0578\u0582\u057F\u0584 \u0563\u0578\u0580\u056E\u0565\u056C\u0578\u0582, \u057D\u0561\u056F\u0561\u0575\u0576 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F \u0576\u0565\u0580\u056F\u0561\u0575\u0561\u0581\u0576\u0565\u056C\u0578\u0582 \u0570\u0561\u0574\u0561\u0580 \u0561\u0576\u0570\u0580\u0561\u056A\u0565\u0577\u057F \u0567 Civizen \u0570\u0561\u0577\u056B\u057E\u0589 \u054D\u057F\u0565\u0572\u056E\u0565\u0584 \u0570\u0561\u0577\u056B\u057E \xAB\u0533\u0580\u0561\u0576\u0581\u057E\u0565\u056C\xBB \u056F\u0578\u0573\u0561\u056F\u0578\u057E, \u0561\u057A\u0561 \u0562\u0561\u0581\u0565\u0584 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u0587 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u0584\u0589",
+        "ru": "\u041D\u0435\u0442. \u041F\u0440\u043E\u0441\u043C\u0430\u0442\u0440\u0438\u0432\u0430\u0442\u044C \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438 \u0438 \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 \u0413\u043B\u0430\u0432\u043D\u0430\u044F > \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 > \u0413\u0440\u0430\u0436\u0434\u0430\u043D\u0441\u043A\u043E\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u043C\u043E\u0436\u0435\u0442 \u043B\u044E\u0431\u043E\u0439 \u0431\u0435\u0437 \u0432\u0445\u043E\u0434\u0430, \u043D\u043E \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0434\u0430\u0442\u044C \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C, \u043D\u0443\u0436\u0435\u043D \u0430\u043A\u043A\u0430\u0443\u043D\u0442 Civizen. \u0421\u043E\u0437\u0434\u0430\u0439\u0442\u0435 \u0435\u0433\u043E \u0447\u0435\u0440\u0435\u0437 \xAB\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044F\xBB, \u0437\u0430\u0442\u0435\u043C \u043E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044E \u0438 \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u0443\u0439\u0442\u0435."
+      },
+      "aliases": [
+        "vote without signing up",
+        "vote as a guest",
+        "vote without registering"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "can_i_change_my_vote",
+      "question": "Can I change my vote?",
+      "answer": "Yes, while voting is open. Open the consultation page and tap Withdraw ballot, then vote again. Withdrawing removes your ballot from the counts, the country statistics, and the participant directory, and your receipt leaves the list of counted receipts; a new ballot gives you a new receipt.\n\nAfter the consultation closes nothing can be changed.",
+      "localizedAnswers": {
+        "hy": "\u0531\u0575\u0578, \u0584\u0561\u0576\u056B \u0564\u0565\u057C \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u0562\u0561\u0581 \u0567\u0589 \u0532\u0561\u0581\u0565\u0584 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0567\u057B\u0568, \u057D\u0565\u0572\u0574\u0565\u0584 \xAB\u0540\u0565\u057F \u057E\u0565\u0580\u0581\u0576\u0565\u056C \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568\xBB, \u0561\u057A\u0561 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u0584 \u0576\u0578\u0580\u056B\u0581\u0589 \u0540\u0565\u057F \u057E\u0565\u0580\u0581\u0576\u0565\u056C\u056B\u057D \u0571\u0565\u0580 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568 \u0570\u0561\u0576\u057E\u0578\u0582\u0574 \u0567 \u0570\u0561\u0577\u057E\u0561\u0580\u056F\u056B\u0581, \u0565\u0580\u056F\u0580\u0576\u0565\u0580\u056B \u057E\u056B\u0573\u0561\u056F\u0561\u0563\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u056B\u0581 \u0587 \u0574\u0561\u057D\u0576\u0561\u056F\u056B\u0581\u0576\u0565\u0580\u056B \u0581\u0578\u0582\u0581\u0561\u056F\u056B\u0581, \u056B\u057D\u056F \u0571\u0565\u0580 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568 \u0570\u0561\u0576\u057E\u0578\u0582\u0574 \u0567 \u0570\u0561\u0577\u057E\u057E\u0561\u056E \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u0580\u0565\u0580\u056B \u0581\u0578\u0582\u0581\u0561\u056F\u056B\u0581\u2024 \u0576\u0578\u0580 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0578\u057E \u0576\u0578\u0580 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580 \u0565\u0584 \u057D\u057F\u0561\u0576\u0578\u0582\u0574\u0589\n\n\u053D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0583\u0561\u056F\u057E\u0565\u056C\u0578\u0582\u0581 \u0570\u0565\u057F\u0578 \u0561\u0575\u056C\u0587\u057D \u0578\u0579\u056B\u0576\u0579 \u0583\u0578\u056D\u0565\u056C \u0570\u0576\u0561\u0580\u0561\u057E\u0578\u0580 \u0579\u0567\u0589",
+        "ru": "\u0414\u0430, \u043F\u043E\u043A\u0430 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u043E\u0442\u043A\u0440\u044B\u0442\u043E. \u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0443 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438, \u043D\u0430\u0436\u043C\u0438\u0442\u0435 \xAB\u041E\u0442\u043E\u0437\u0432\u0430\u0442\u044C \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C\xBB, \u0437\u0430\u0442\u0435\u043C \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u0443\u0439\u0442\u0435 \u0441\u043D\u043E\u0432\u0430. \u041F\u0440\u0438 \u043E\u0442\u0437\u044B\u0432\u0435 \u0432\u0430\u0448 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C \u0438\u0441\u043A\u043B\u044E\u0447\u0430\u0435\u0442\u0441\u044F \u0438\u0437 \u043F\u043E\u0434\u0441\u0447\u0451\u0442\u0430, \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u043E \u0441\u0442\u0440\u0430\u043D\u0430\u043C \u0438 \u0441\u043F\u0438\u0441\u043A\u0430 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432, \u0430 \u0432\u0430\u0448\u0430 \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F \u0443\u0434\u0430\u043B\u044F\u0435\u0442\u0441\u044F \u0438\u0437 \u0441\u043F\u0438\u0441\u043A\u0430 \u0443\u0447\u0442\u0451\u043D\u043D\u044B\u0445 \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u0439; \u0441 \u043D\u043E\u0432\u044B\u043C \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0435\u043C \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u043D\u043E\u0432\u0443\u044E \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044E.\n\n\u041F\u043E\u0441\u043B\u0435 \u0437\u0430\u043A\u0440\u044B\u0442\u0438\u044F \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438 \u0438\u0437\u043C\u0435\u043D\u0438\u0442\u044C \u0443\u0436\u0435 \u043D\u0438\u0447\u0435\u0433\u043E \u043D\u0435\u043B\u044C\u0437\u044F."
+      },
+      "aliases": [
+        "change my vote",
+        "can I withdraw my ballot",
+        "withdraw my vote",
+        "undo my vote",
+        "vote again",
+        "revote"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "who_can_see_how_i_voted",
+      "question": "Who can see how I voted?",
+      "answer": "No one. Your choice is sealed on the server with a key that no app role can read, so founders, admins, and staff see only totals. Public pages show the count per option, country statistics only when enough people took part (at least 25 overall and 5 per country), and an optional participant directory with display name and country that you join only by choice \u2014 never your choice. Your receipt is a random code that is not linked to an option, and the audit log stores no voter identities.",
+      "localizedAnswers": {
+        "hy": "\u0548\u0579 \u0578\u0584\u0589 \u0541\u0565\u0580 \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u057D\u0565\u0580\u057E\u0565\u0580\u0578\u0582\u0574 \u056F\u0576\u0584\u057E\u0561\u056E \u0567 \u0561\u0575\u0576\u057A\u056B\u057D\u056B \u0562\u0561\u0576\u0561\u056C\u056B\u0578\u057E, \u0578\u0580\u0568 \u0570\u0561\u057E\u0565\u056C\u057E\u0561\u056E\u056B \u0578\u0579 \u0574\u056B \u0564\u0565\u0580 \u0579\u056B \u056F\u0561\u0580\u0578\u0572 \u056F\u0561\u0580\u0564\u0561\u056C, \u0561\u0575\u0576\u057A\u0565\u057D \u0578\u0580 \u0570\u056B\u0574\u0576\u0561\u0564\u056B\u0580\u0576\u0565\u0580\u0568, \u0561\u0564\u0574\u056B\u0576\u056B\u057D\u057F\u0580\u0561\u057F\u0578\u0580\u0576\u0565\u0580\u0568 \u0587 \u0561\u0577\u056D\u0561\u057F\u0561\u056F\u056B\u0581\u0576\u0565\u0580\u0568 \u057F\u0565\u057D\u0576\u0578\u0582\u0574 \u0565\u0576 \u0574\u056B\u0561\u0575\u0576 \u0568\u0576\u0564\u0570\u0561\u0576\u0578\u0582\u0580 \u0569\u057E\u0565\u0580\u0568\u0589 \u0540\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0567\u057B\u0565\u0580\u0578\u0582\u0574 \u0581\u0578\u0582\u0581\u0561\u0564\u0580\u057E\u0578\u0582\u0574 \u0565\u0576 \u0575\u0578\u0582\u0580\u0561\u0584\u0561\u0576\u0579\u0575\u0578\u0582\u0580 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u056B \u0571\u0561\u0575\u0576\u0565\u0580\u056B \u0569\u056B\u057E\u0568, \u0565\u0580\u056F\u0580\u0576\u0565\u0580\u056B \u057E\u056B\u0573\u0561\u056F\u0561\u0563\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568\u055D \u0574\u056B\u0561\u0575\u0576 \u0565\u0580\u0562 \u0574\u0561\u057D\u0576\u0561\u056F\u056B\u0581\u0576\u0565\u0580\u0568 \u0562\u0561\u057E\u0561\u056F\u0561\u0576 \u0577\u0561\u057F \u0565\u0576 (\u0561\u057C\u0576\u057E\u0561\u0566\u0576 25 \u0568\u0576\u0564\u0570\u0561\u0576\u0578\u0582\u0580 \u0587 5 \u0575\u0578\u0582\u0580\u0561\u0584\u0561\u0576\u0579\u0575\u0578\u0582\u0580 \u0565\u0580\u056F\u0580\u056B\u0581), \u0587 \u0574\u0561\u057D\u0576\u0561\u056F\u056B\u0581\u0576\u0565\u0580\u056B \u0568\u0576\u057F\u0580\u0578\u057E\u056B \u0581\u0578\u0582\u0581\u0561\u056F\u0568\u055D \u0561\u0576\u0578\u0582\u0576\u0578\u057E \u0578\u0582 \u0565\u0580\u056F\u0580\u0578\u057E, \u0578\u0580\u056B\u0576 \u0574\u056B\u0561\u0576\u0578\u0582\u0574 \u0565\u0584 \u0574\u056B\u0561\u0575\u0576 \u0571\u0565\u0580 \u0581\u0561\u0576\u056F\u0578\u0582\u0569\u0575\u0561\u0574\u0562, \u0587 \u0578\u0580\u0568 \u0565\u0580\u0562\u0565\u0584 \u0579\u056B \u0581\u0578\u0582\u0575\u0581 \u057F\u0561\u056C\u056B\u057D \u0571\u0565\u0580 \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568\u0589 \u0541\u0565\u0580 \u0561\u0576\u0564\u0578\u0580\u0580\u0561\u0563\u056B\u0580\u0568 \u057A\u0561\u057F\u0561\u0570\u0561\u056F\u0561\u0576 \u056F\u0578\u0564 \u0567, \u0578\u0580\u0568 \u056F\u0561\u057A\u057E\u0561\u056E \u0579\u0567 \u0578\u0580\u0587\u0567 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u056B \u0570\u0565\u057F, \u056B\u057D\u056F \u0561\u0578\u0582\u0564\u056B\u057F\u056B \u0574\u0561\u057F\u0575\u0561\u0576\u0578\u0582\u0574 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0572\u0576\u0565\u0580\u056B \u056B\u0576\u0584\u0576\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u0579\u056B \u057A\u0561\u0570\u057E\u0578\u0582\u0574\u0589",
+        "ru": "\u041D\u0438\u043A\u0442\u043E. \u0412\u0430\u0448 \u0432\u044B\u0431\u043E\u0440 \u0437\u0430\u043F\u0435\u0447\u0430\u0442\u0430\u043D \u043D\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0435 \u043A\u043B\u044E\u0447\u043E\u043C, \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u043D\u0435 \u043C\u043E\u0436\u0435\u0442 \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u0442\u044C \u043D\u0438 \u043E\u0434\u043D\u0430 \u0440\u043E\u043B\u044C \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u044F, \u043F\u043E\u044D\u0442\u043E\u043C\u0443 \u043E\u0441\u043D\u043E\u0432\u0430\u0442\u0435\u043B\u0438, \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u044B \u0438 \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u043A\u0438 \u0432\u0438\u0434\u044F\u0442 \u0442\u043E\u043B\u044C\u043A\u043E \u0438\u0442\u043E\u0433\u043E\u0432\u044B\u0435 \u0447\u0438\u0441\u043B\u0430. \u041D\u0430 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u0445 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0430\u0445 \u043F\u043E\u043A\u0430\u0437\u0430\u043D\u044B \u0447\u0438\u0441\u043B\u043E \u0433\u043E\u043B\u043E\u0441\u043E\u0432 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0432\u0430\u0440\u0438\u0430\u043D\u0442, \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0430 \u043F\u043E \u0441\u0442\u0440\u0430\u043D\u0430\u043C \u2014 \u0442\u043E\u043B\u044C\u043A\u043E \u043A\u043E\u0433\u0434\u0430 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432 \u0434\u043E\u0441\u0442\u0430\u0442\u043E\u0447\u043D\u043E (\u043D\u0435 \u043C\u0435\u043D\u0435\u0435 25 \u0432\u0441\u0435\u0433\u043E \u0438 5 \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0443), \u0438 \u043D\u0435\u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0441\u043F\u0438\u0441\u043E\u043A \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432 \u0441 \u043E\u0442\u043E\u0431\u0440\u0430\u0436\u0430\u0435\u043C\u044B\u043C \u0438\u043C\u0435\u043D\u0435\u043C \u0438 \u0441\u0442\u0440\u0430\u043D\u043E\u0439, \u0432 \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u0432\u044B \u0432\u0445\u043E\u0434\u0438\u0442\u0435 \u0442\u043E\u043B\u044C\u043A\u043E \u043F\u043E \u0441\u0432\u043E\u0435\u043C\u0443 \u0436\u0435\u043B\u0430\u043D\u0438\u044E \u0438 \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u043D\u0438\u043A\u043E\u0433\u0434\u0430 \u043D\u0435 \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442 \u0432\u0430\u0448 \u0432\u044B\u0431\u043E\u0440. \u0412\u0430\u0448\u0430 \u043A\u0432\u0438\u0442\u0430\u043D\u0446\u0438\u044F \u2014 \u0441\u043B\u0443\u0447\u0430\u0439\u043D\u044B\u0439 \u043A\u043E\u0434, \u043D\u0435 \u0441\u0432\u044F\u0437\u0430\u043D\u043D\u044B\u0439 \u043D\u0438 \u0441 \u043E\u0434\u043D\u0438\u043C \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u043E\u043C, \u0430 \u0432 \u0436\u0443\u0440\u043D\u0430\u043B\u0435 \u0430\u0443\u0434\u0438\u0442\u0430 \u043D\u0435 \u0445\u0440\u0430\u043D\u044F\u0442\u0441\u044F \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u0438 \u0433\u043E\u043B\u043E\u0441\u0443\u044E\u0449\u0438\u0445."
+      },
+      "aliases": [
+        "is my vote secret",
+        "is my ballot anonymous",
+        "can admins see my vote",
+        "who sees my vote",
+        "is voting anonymous",
+        "sealed ballot"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "what_happens_when_a_vote_closes",
+      "question": "What happens when a vote closes?",
+      "answer": "At its closing time the consultation closes by itself: Civizen marks it closed, stores the final tally, and publishes the result on the ballot page and under Results on the Votes tab of your Governance page. The proposal behind it is closed too, and everyone who voted or supported it gets a notification.\n\nThe outcome follows the rules set on the proposal: no countable ballots; quorum not met (fewer ballots than required); otherwise the share of Support among Support and Oppose ballots is compared with the pass threshold (50% unless set otherwise) and shown as Passed or Not passed. Consultations with their own options show the most chosen option.",
+      "localizedAnswers": {
+        "hy": "\u0553\u0561\u056F\u0574\u0561\u0576 \u056A\u0561\u0574\u056B\u0576 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u0583\u0561\u056F\u057E\u0578\u0582\u0574 \u0567 \u056B\u0576\u0584\u0576\u0561\u0562\u0565\u0580\u0561\u0562\u0561\u0580\u2024 Civizen-\u0568 \u0576\u0577\u0578\u0582\u0574 \u0567 \u0561\u0575\u0576 \u0583\u0561\u056F\u057E\u0561\u056E, \u057A\u0561\u0570\u0578\u0582\u0574 \u057E\u0565\u0580\u057B\u0576\u0561\u056F\u0561\u0576 \u0570\u0561\u0577\u057E\u0561\u0580\u056F\u0568 \u0587 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0578\u0582\u0574 \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0568 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u0567\u057B\u0578\u0582\u0574 \u0587 \u0571\u0565\u0580 \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 \u0567\u057B\u056B \xAB\u0554\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\xBB \u0576\u0565\u0580\u0564\u056B\u0580\u056B \xAB\u0531\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0576\u0565\u0580\xBB \u0562\u0561\u056A\u0576\u0578\u0582\u0574\u0589 \u0553\u0561\u056F\u057E\u0578\u0582\u0574 \u0567 \u0576\u0561\u0587 \u0564\u0580\u0561 \u0570\u056B\u0574\u0584\u0578\u0582\u0574 \u0568\u0576\u056F\u0561\u056E \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u0568, \u056B\u057D\u056F \u0562\u0578\u056C\u0578\u0580\u0568, \u0578\u057E\u0584\u0565\u0580 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C \u0565\u0576 \u056F\u0561\u0574 \u0561\u057B\u0561\u056F\u0581\u0565\u056C \u0565\u0576 \u0564\u0580\u0561\u0576, \u057D\u057F\u0561\u0576\u0578\u0582\u0574 \u0565\u0576 \u056E\u0561\u0576\u0578\u0582\u0581\u0578\u0582\u0574\u0589\n\n\u0531\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0568 \u0578\u0580\u0578\u0577\u057E\u0578\u0582\u0574 \u0567 \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u0578\u0582\u0574 \u057D\u0561\u0570\u0574\u0561\u0576\u057E\u0561\u056E \u056F\u0561\u0576\u0578\u0576\u0576\u0565\u0580\u0578\u057E\u2024 \u0570\u0561\u0577\u057E\u057E\u0578\u0572 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580 \u0579\u056F\u0561\u0576\u2024 \u0584\u057E\u0578\u0580\u0578\u0582\u0574\u0568 \u0579\u056B \u0561\u057A\u0561\u0570\u0578\u057E\u057E\u0565\u056C (\u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580\u0568 \u057A\u0561\u0570\u0561\u0576\u057B\u057E\u0561\u056E\u056B\u0581 \u0584\u056B\u0579 \u0565\u0576)\u2024 \u0570\u0561\u056F\u0561\u057C\u0561\u056F \u0564\u0565\u057A\u0584\u0578\u0582\u0574 \xAB\u053F\u0578\u0572\u0574\xBB \u0587 \xAB\u0534\u0565\u0574\xBB \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580\u056B \u0574\u0565\u057B \xAB\u053F\u0578\u0572\u0574\xBB-\u056B \u0562\u0561\u056A\u056B\u0576\u0568 \u0570\u0561\u0574\u0565\u0574\u0561\u057F\u057E\u0578\u0582\u0574 \u0567 \u0568\u0576\u0564\u0578\u0582\u0576\u0574\u0561\u0576 \u0577\u0565\u0574\u056B \u0570\u0565\u057F (50 %, \u0565\u0569\u0565 \u0561\u0575\u056C \u0562\u0561\u0576 \u057D\u0561\u0570\u0574\u0561\u0576\u057E\u0561\u056E \u0579\u0567) \u0587 \u0581\u0578\u0582\u0581\u0561\u0564\u0580\u057E\u0578\u0582\u0574 \u0567 \xAB\u0538\u0576\u0564\u0578\u0582\u0576\u057E\u0565\u056C \u0567\xBB \u056F\u0561\u0574 \xAB\u0549\u056B \u0568\u0576\u0564\u0578\u0582\u0576\u057E\u0565\u056C\xBB\u0589 \u054D\u0565\u0583\u0561\u056F\u0561\u0576 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\u0578\u057E \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u056B \u0564\u0565\u057A\u0584\u0578\u0582\u0574 \u0581\u0578\u0582\u0581\u0561\u0564\u0580\u057E\u0578\u0582\u0574 \u0567 \u0561\u0574\u0565\u0576\u0561\u0577\u0561\u057F \u0568\u0576\u057F\u0580\u057E\u0561\u056E \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0568\u0589",
+        "ru": "\u0412 \u043D\u0430\u0437\u043D\u0430\u0447\u0435\u043D\u043D\u043E\u0435 \u0432\u0440\u0435\u043C\u044F \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044F \u0437\u0430\u043A\u0440\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u0441\u0430\u043C\u0430: Civizen \u043E\u0442\u043C\u0435\u0447\u0430\u0435\u0442 \u0435\u0451 \u0437\u0430\u043A\u0440\u044B\u0442\u043E\u0439, \u0441\u043E\u0445\u0440\u0430\u043D\u044F\u0435\u0442 \u0438\u0442\u043E\u0433\u043E\u0432\u044B\u0439 \u043F\u043E\u0434\u0441\u0447\u0451\u0442 \u0438 \u043F\u0443\u0431\u043B\u0438\u043A\u0443\u0435\u0442 \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F \u0438 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 \xAB\u0420\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B\xBB \u043D\u0430 \u0432\u043A\u043B\u0430\u0434\u043A\u0435 \xAB\u0413\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F\xBB \u0432\u0430\u0448\u0435\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u044B \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435. \u041B\u0435\u0436\u0430\u0449\u0435\u0435 \u0432 \u0435\u0451 \u043E\u0441\u043D\u043E\u0432\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u0442\u043E\u0436\u0435 \u0437\u0430\u043A\u0440\u044B\u0432\u0430\u0435\u0442\u0441\u044F, \u0430 \u0432\u0441\u0435, \u043A\u0442\u043E \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B \u0438\u043B\u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0430\u043B \u0435\u0433\u043E, \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0435.\n\n\u0418\u0442\u043E\u0433 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u044F\u0435\u0442\u0441\u044F \u043F\u043E \u043F\u0440\u0430\u0432\u0438\u043B\u0430\u043C, \u0437\u0430\u0434\u0430\u043D\u043D\u044B\u043C \u0432 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0438: \u043D\u0435\u0442 \u0443\u0447\u0442\u0451\u043D\u043D\u044B\u0445 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0435\u0439; \u043A\u0432\u043E\u0440\u0443\u043C \u043D\u0435 \u043D\u0430\u0431\u0440\u0430\u043D (\u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0435\u0439 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044F); \u0438\u043D\u0430\u0447\u0435 \u0434\u043E\u043B\u044F \xAB\u0417\u0430\xBB \u0441\u0440\u0435\u0434\u0438 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0435\u0439 \xAB\u0417\u0430\xBB \u0438 \xAB\u041F\u0440\u043E\u0442\u0438\u0432\xBB \u0441\u0440\u0430\u0432\u043D\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0441 \u043F\u043E\u0440\u043E\u0433\u043E\u043C \u043F\u0440\u0438\u043D\u044F\u0442\u0438\u044F (50 %, \u0435\u0441\u043B\u0438 \u043D\u0435 \u0437\u0430\u0434\u0430\u043D\u043E \u0438\u043D\u043E\u0435) \u0438 \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u043A\u0430\u043A \xAB\u041F\u0440\u0438\u043D\u044F\u0442\u043E\xBB \u0438\u043B\u0438 \xAB\u041D\u0435 \u043F\u0440\u0438\u043D\u044F\u0442\u043E\xBB. \u0412 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044F\u0445 \u0441\u043E \u0441\u0432\u043E\u0438\u043C\u0438 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u0430\u043C\u0438 \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u0432\u0430\u0440\u0438\u0430\u043D\u0442, \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u044B\u0439 \u0447\u0430\u0449\u0435 \u0432\u0441\u0435\u0433\u043E."
+      },
+      "aliases": [
+        "when voting closes",
+        "how is the result decided",
+        "how is the result of a consultation decided",
+        "who counts the ballots",
+        "does civizen count ballots automatically",
+        "when is the result published",
+        "final tally"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "what_are_quorum_and_pass_threshold",
+      "question": "What is quorum?",
+      "answer": "Quorum is the minimum number of countable ballots a consultation needs for a result; below it the outcome reads Quorum not met. The pass threshold is the share of Support among Support and Oppose ballots (Abstain does not count) needed for Passed \u2014 50% unless the proposal sets another value.\n\nThe author sets both when drafting the proposal, under Scope and timing on the proposal page. The outcome is computed automatically when voting closes and shown on the ballot page.",
+      "localizedAnswers": {
+        "hy": "\u0554\u057E\u0578\u0580\u0578\u0582\u0574\u0568 \u0570\u0561\u0577\u057E\u057E\u0578\u0572 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580\u056B \u0576\u057E\u0561\u0566\u0561\u0563\u0578\u0582\u0575\u0576 \u0569\u056B\u057E\u0576 \u0567, \u0578\u0580\u0576 \u0561\u0576\u0570\u0580\u0561\u056A\u0565\u0577\u057F \u0567, \u0578\u0580 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576 \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584 \u0578\u0582\u0576\u0565\u0576\u0561\u2024 \u0564\u0580\u0561\u0576\u056B\u0581 \u057A\u0561\u056F\u0561\u057D\u056B \u0564\u0565\u057A\u0584\u0578\u0582\u0574 \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0568 \u0576\u0577\u057E\u0578\u0582\u0574 \u0567 \xAB\u0554\u057E\u0578\u0580\u0578\u0582\u0574\u0568 \u0579\u056B \u0561\u057A\u0561\u0570\u0578\u057E\u057E\u0565\u056C\xBB\u0589 \u0538\u0576\u0564\u0578\u0582\u0576\u0574\u0561\u0576 \u0577\u0565\u0574\u0568 \xAB\u053F\u0578\u0572\u0574\xBB \u0587 \xAB\u0534\u0565\u0574\xBB \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580\u056B \u0574\u0565\u057B \xAB\u053F\u0578\u0572\u0574\xBB-\u056B \u0561\u0575\u0576 \u0562\u0561\u056A\u056B\u0576\u0576 \u0567 (\xAB\u0541\u0565\u057C\u0576\u057A\u0561\u0570\xBB-\u0568 \u0579\u056B \u0570\u0561\u0577\u057E\u057E\u0578\u0582\u0574), \u0578\u0580\u0576 \u0561\u0576\u0570\u0580\u0561\u056A\u0565\u0577\u057F \u0567 \xAB\u0538\u0576\u0564\u0578\u0582\u0576\u057E\u0565\u056C \u0567\xBB \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u056B \u0570\u0561\u0574\u0561\u0580\u055D 50 %, \u0565\u0569\u0565 \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u0578\u0582\u0574 \u0561\u0575\u056C \u0561\u0580\u056A\u0565\u0584 \u057D\u0561\u0570\u0574\u0561\u0576\u057E\u0561\u056E \u0579\u0567\u0589\n\n\u0535\u0580\u056F\u0578\u0582\u057D\u0576 \u0567\u056C \u057D\u0561\u0570\u0574\u0561\u0576\u0578\u0582\u0574 \u0567 \u0570\u0565\u0572\u056B\u0576\u0561\u056F\u0568 \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u0568 \u0576\u0561\u056D\u0561\u057A\u0561\u057F\u0580\u0561\u057D\u057F\u0565\u056C\u056B\u057D\u055D \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u056B \u0567\u057B\u056B \xAB\u0547\u0580\u057B\u0561\u0576\u0561\u056F \u0587 \u056A\u0561\u0574\u056F\u0565\u057F\u0576\u0565\u0580\xBB \u0562\u0561\u056A\u0576\u0578\u0582\u0574\u0589 \u0531\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0568 \u0570\u0561\u0577\u057E\u0561\u0580\u056F\u057E\u0578\u0582\u0574 \u0567 \u056B\u0576\u0584\u0576\u0561\u0562\u0565\u0580\u0561\u0562\u0561\u0580 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u0583\u0561\u056F\u057E\u0565\u056C\u0578\u0582\u0576 \u057A\u0565\u057D \u0587 \u0581\u0578\u0582\u0581\u0561\u0564\u0580\u057E\u0578\u0582\u0574 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u0567\u057B\u0578\u0582\u0574\u0589",
+        "ru": "\u041A\u0432\u043E\u0440\u0443\u043C \u2014 \u044D\u0442\u043E \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0435 \u0447\u0438\u0441\u043B\u043E \u0443\u0447\u0442\u0451\u043D\u043D\u044B\u0445 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0435\u0439, \u043D\u0435\u043E\u0431\u0445\u043E\u0434\u0438\u043C\u043E\u0435 \u0434\u043B\u044F \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u0430 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438; \u0435\u0441\u043B\u0438 \u0438\u0445 \u043C\u0435\u043D\u044C\u0448\u0435, \u0438\u0442\u043E\u0433 \u0447\u0438\u0442\u0430\u0435\u0442\u0441\u044F \u043A\u0430\u043A \xAB\u041A\u0432\u043E\u0440\u0443\u043C \u043D\u0435 \u043D\u0430\u0431\u0440\u0430\u043D\xBB. \u041F\u043E\u0440\u043E\u0433 \u043F\u0440\u0438\u043D\u044F\u0442\u0438\u044F \u2014 \u044D\u0442\u043E \u0434\u043E\u043B\u044F \xAB\u0417\u0430\xBB \u0441\u0440\u0435\u0434\u0438 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0435\u0439 \xAB\u0417\u0430\xBB \u0438 \xAB\u041F\u0440\u043E\u0442\u0438\u0432\xBB (\xAB\u0412\u043E\u0437\u0434\u0435\u0440\u0436\u0430\u0442\u044C\u0441\u044F\xBB \u043D\u0435 \u0443\u0447\u0438\u0442\u044B\u0432\u0430\u0435\u0442\u0441\u044F), \u043D\u0435\u043E\u0431\u0445\u043E\u0434\u0438\u043C\u0430\u044F \u0434\u043B\u044F \u0438\u0442\u043E\u0433\u0430 \xAB\u041F\u0440\u0438\u043D\u044F\u0442\u043E\xBB, \u2014 50 %, \u0435\u0441\u043B\u0438 \u0432 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u043D\u0435 \u0437\u0430\u0434\u0430\u043D\u043E \u0434\u0440\u0443\u0433\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435.\n\n\u041E\u0431\u0430 \u043F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u0430 \u0430\u0432\u0442\u043E\u0440 \u0437\u0430\u0434\u0430\u0451\u0442 \u043F\u0440\u0438 \u043F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u043A\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 \xAB\u041E\u0445\u0432\u0430\u0442 \u0438 \u0441\u0440\u043E\u043A\u0438\xBB \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F. \u0418\u0442\u043E\u0433 \u0432\u044B\u0447\u0438\u0441\u043B\u044F\u0435\u0442\u0441\u044F \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438 \u043F\u0440\u0438 \u0437\u0430\u043A\u0440\u044B\u0442\u0438\u0438 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u0438 \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F."
+      },
+      "aliases": [
+        "what is the pass threshold",
+        "quorum and threshold",
+        "what is a quorum",
+        "how many votes are needed to pass"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "is_voting_binding",
+      "question": "Is voting binding?",
+      "answer": "Current civic consultations are nonbinding: they record what members think and publish the result, but they do not create legal citizenship, replace public-law elections, or bind anyone. Under the Community Governance Charter a vote can be binding only within a scope that has been delegated to it.",
+      "localizedAnswers": {
+        "hy": "\u0546\u0565\u0580\u056F\u0561\u0575\u056B\u057D \u0584\u0561\u0572\u0561\u0584\u0561\u0581\u056B\u0561\u056F\u0561\u0576 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u0568 \u057A\u0561\u0580\u057F\u0561\u0564\u056B\u0580 \u0578\u0582\u056A \u0579\u0578\u0582\u0576\u0565\u0576\u2024 \u0564\u0580\u0561\u0576\u0584 \u0561\u0580\u0571\u0561\u0576\u0561\u0563\u0580\u0578\u0582\u0574 \u0565\u0576 \u0561\u0576\u0564\u0561\u0574\u0576\u0565\u0580\u056B \u056F\u0561\u0580\u056E\u056B\u0584\u0568 \u0587 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0578\u0582\u0574 \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0568, \u0562\u0561\u0575\u0581 \u0579\u0565\u0576 \u057D\u057F\u0565\u0572\u056E\u0578\u0582\u0574 \u056B\u0580\u0561\u057E\u0561\u056F\u0561\u0576 \u0584\u0561\u0572\u0561\u0584\u0561\u0581\u056B\u0578\u0582\u0569\u0575\u0578\u0582\u0576, \u0579\u0565\u0576 \u0583\u0578\u056D\u0561\u0580\u056B\u0576\u0578\u0582\u0574 \u057A\u0565\u057F\u0561\u056F\u0561\u0576 \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u056B\u0576 \u0587 \u0578\u0580\u0587\u0567 \u0574\u0565\u056F\u056B\u0576 \u0579\u0565\u0576 \u057A\u0561\u0580\u057F\u0561\u057E\u0578\u0580\u0565\u0581\u0576\u0578\u0582\u0574\u0589 \u0540\u0561\u0574\u0561\u0575\u0576\u0584\u0561\u0575\u056B\u0576 \u056F\u0561\u057C\u0561\u057E\u0561\u0580\u0574\u0561\u0576 \u056F\u0561\u0576\u0578\u0576\u0561\u0564\u0580\u0578\u0582\u0569\u0575\u0561\u0576 \u0570\u0561\u0574\u0561\u0571\u0561\u0575\u0576, \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u056F\u0561\u0580\u0578\u0572 \u0567 \u057A\u0561\u0580\u057F\u0561\u0564\u056B\u0580 \u056C\u056B\u0576\u0565\u056C \u0574\u056B\u0561\u0575\u0576 \u0561\u0575\u0576 \u0577\u0580\u057B\u0561\u0576\u0561\u056F\u0578\u0582\u0574, \u0578\u0580\u0568 \u0576\u0580\u0561\u0576 \u057A\u0561\u057F\u057E\u056B\u0580\u0561\u056F\u057E\u0561\u056E \u0567\u0589",
+        "ru": "\u041D\u044B\u043D\u0435\u0448\u043D\u0438\u0435 \u0433\u0440\u0430\u0436\u0434\u0430\u043D\u0441\u043A\u0438\u0435 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438 \u043D\u0435 \u0438\u043C\u0435\u044E\u0442 \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0439 \u0441\u0438\u043B\u044B: \u043E\u043D\u0438 \u0444\u0438\u043A\u0441\u0438\u0440\u0443\u044E\u0442 \u043C\u043D\u0435\u043D\u0438\u0435 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432 \u0438 \u043F\u0443\u0431\u043B\u0438\u043A\u0443\u044E\u0442 \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442, \u043D\u043E \u043D\u0435 \u0441\u043E\u0437\u0434\u0430\u044E\u0442 \u044E\u0440\u0438\u0434\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0433\u0440\u0430\u0436\u0434\u0430\u043D\u0441\u0442\u0432\u0430, \u043D\u0435 \u0437\u0430\u043C\u0435\u043D\u044F\u044E\u0442 \u0433\u043E\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0435 \u0432\u044B\u0431\u043E\u0440\u044B \u0438 \u043D\u0438\u043A\u043E\u0433\u043E \u043D\u0435 \u043E\u0431\u044F\u0437\u044B\u0432\u0430\u044E\u0442. \u0421\u043E\u0433\u043B\u0430\u0441\u043D\u043E \u0425\u0430\u0440\u0442\u0438\u0438 \u043E\u0431\u0449\u0435\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0433\u043E \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u043C\u043E\u0436\u0435\u0442 \u0431\u044B\u0442\u044C \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u043C \u0442\u043E\u043B\u044C\u043A\u043E \u0432 \u0442\u0435\u0445 \u043F\u0440\u0435\u0434\u0435\u043B\u0430\u0445, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0435\u043C\u0443 \u0434\u0435\u043B\u0435\u0433\u0438\u0440\u043E\u0432\u0430\u043D\u044B."
+      },
+      "aliases": [
+        "are votes binding",
+        "is the consultation binding",
+        "nonbinding consultation"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "governance_charter"
+      ],
+      "sourceRefs": [
+        "docs/02-policies/governance/civizen-community-governance-charter.md",
+        "docs/assistant/civizen-assistant-cheatsheet.md"
+      ]
+    },
+    {
+      "id": "how_do_i_submit_a_proposal",
+      "question": "How do I submit a proposal?",
+      "answer": "A consultation starts as a Matter. Open Contribute > Questions, Issues & Ideas, open or create your Matter, and choose Create voting proposal. On the proposal page set the scope (global or one country), when voting opens and closes, the ballot options (Support / Oppose / Abstain, or 2 to 12 of your own), and optionally a quorum and pass threshold. Then tap Open for support and set how many supporters are needed.\n\nMembers add their support on the proposal page. Once the threshold is reached you can publish the ballot yourself; founders and admins can publish at any time. Your drafts, open proposals, and published ones are listed on the Proposals tab of your Governance page.",
+      "localizedAnswers": {
+        "hy": "\u053D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u057D\u056F\u057D\u057E\u0578\u0582\u0574 \u0567 \u0540\u0561\u0580\u0581\u056B\u0581\u0589 \u0532\u0561\u0581\u0565\u0584 \u0546\u0565\u0580\u0564\u0580\u0578\u0582\u0574 > \u0540\u0561\u0580\u0581\u0565\u0580, \u056D\u0576\u0564\u056B\u0580\u0576\u0565\u0580 \u0587 \u0563\u0561\u0572\u0561\u0583\u0561\u0580\u0576\u0565\u0580, \u0562\u0561\u0581\u0565\u0584 \u056F\u0561\u0574 \u057D\u057F\u0565\u0572\u056E\u0565\u0584 \u0571\u0565\u0580 \u0540\u0561\u0580\u0581\u0568 \u0587 \u0568\u0576\u057F\u0580\u0565\u0584 \xAB\u054D\u057F\u0565\u0572\u056E\u0565\u056C \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u0561\u057C\u0561\u057B\u0561\u0580\u056F\xBB\u0589 \u0531\u057C\u0561\u057B\u0561\u0580\u056F\u056B \u0567\u057B\u0578\u0582\u0574 \u057D\u0561\u0570\u0574\u0561\u0576\u0565\u0584 \u0577\u0580\u057B\u0561\u0576\u0561\u056F\u0568 (\u0570\u0561\u0574\u0561\u0577\u056D\u0561\u0580\u0570\u0561\u0575\u056B\u0576 \u056F\u0561\u0574 \u0574\u0565\u056F \u0565\u0580\u056F\u056B\u0580), \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u0562\u0561\u0581\u057E\u0565\u056C\u0578\u0582 \u0587 \u0583\u0561\u056F\u057E\u0565\u056C\u0578\u0582 \u056A\u0561\u0574\u0561\u0576\u0561\u056F\u0568, \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\u0568 (\u053F\u0578\u0572\u0574 / \u0534\u0565\u0574 / \u0541\u0565\u057C\u0576\u057A\u0561\u0570 \u056F\u0561\u0574 \u0571\u0565\u0580 2-\u056B\u0581 12 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\u0568) \u0587, \u0581\u0561\u0576\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u0564\u0565\u057A\u0584\u0578\u0582\u0574, \u0584\u057E\u0578\u0580\u0578\u0582\u0574 \u0578\u0582 \u0568\u0576\u0564\u0578\u0582\u0576\u0574\u0561\u0576 \u0577\u0565\u0574\u0589 \u0531\u0575\u0576\u0578\u0582\u0570\u0565\u057F\u0587 \u057D\u0565\u0572\u0574\u0565\u0584 \xAB\u0532\u0561\u0581\u0565\u056C \u0561\u057B\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0570\u0561\u0574\u0561\u0580\xBB \u0587 \u0576\u0577\u0565\u0584, \u0569\u0565 \u0584\u0561\u0576\u056B \u0561\u057B\u0561\u056F\u056B\u0581 \u0567 \u0561\u0576\u0570\u0580\u0561\u056A\u0565\u0577\u057F\u0589\n\n\u0531\u0576\u0564\u0561\u0574\u0576\u0565\u0580\u0576 \u056B\u0580\u0565\u0576\u0581 \u0561\u057B\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576 \u0561\u057E\u0565\u056C\u0561\u0581\u0576\u0578\u0582\u0574 \u0565\u0576 \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u056B \u0567\u057B\u0578\u0582\u0574\u0589 \u0547\u0565\u0574\u056B\u0576 \u0570\u0561\u057D\u0576\u0565\u056C\u0578\u0582\u0576 \u057A\u0565\u057D \u056F\u0561\u0580\u0578\u0572 \u0565\u0584 \u056B\u0576\u0584\u0576\u0565\u0580\u0564 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0565\u056C \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568\u2024 \u0570\u056B\u0574\u0576\u0561\u0564\u056B\u0580\u0576\u0565\u0580\u0568 \u0587 \u0561\u0564\u0574\u056B\u0576\u056B\u057D\u057F\u0580\u0561\u057F\u0578\u0580\u0576\u0565\u0580\u0568 \u056F\u0561\u0580\u0578\u0572 \u0565\u0576 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0565\u056C \u0581\u0561\u0576\u056F\u0561\u0581\u0561\u056E \u057A\u0561\u0570\u056B\u0589 \u0541\u0565\u0580 \u0576\u0561\u056D\u0561\u0563\u056E\u0565\u0580\u0568, \u0562\u0561\u0581 \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u0576\u0565\u0580\u0568 \u0587 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u057E\u0561\u056E\u0576\u0565\u0580\u0568 \u0569\u057E\u0561\u0580\u056F\u057E\u0561\u056E \u0565\u0576 \u0571\u0565\u0580 \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 \u0567\u057B\u056B \xAB\u0531\u057C\u0561\u057B\u0561\u0580\u056F\u0576\u0565\u0580\xBB \u0576\u0565\u0580\u0564\u056B\u0580\u0578\u0582\u0574\u0589",
+        "ru": "\u041A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044F \u043D\u0430\u0447\u0438\u043D\u0430\u0435\u0442\u0441\u044F \u0441 \u0412\u043E\u043F\u0440\u043E\u0441\u0430. \u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0412\u043A\u043B\u0430\u0434 > \u0412\u043E\u043F\u0440\u043E\u0441\u044B, \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u044B \u0438 \u0438\u0434\u0435\u0438, \u043E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0438\u043B\u0438 \u0441\u043E\u0437\u0434\u0430\u0439\u0442\u0435 \u0441\u0432\u043E\u0439 \u0412\u043E\u043F\u0440\u043E\u0441 \u0438 \u0432\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \xAB\u0421\u043E\u0437\u0434\u0430\u0442\u044C \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u0434\u043B\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F\xBB. \u041D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0437\u0430\u0434\u0430\u0439\u0442\u0435 \u043E\u0445\u0432\u0430\u0442 (\u0432\u0435\u0441\u044C \u043C\u0438\u0440 \u0438\u043B\u0438 \u043E\u0434\u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0430), \u0432\u0440\u0435\u043C\u044F \u043E\u0442\u043A\u0440\u044B\u0442\u0438\u044F \u0438 \u0437\u0430\u043A\u0440\u044B\u0442\u0438\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F, \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u044B \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F (\u0417\u0430 / \u041F\u0440\u043E\u0442\u0438\u0432 / \u0412\u043E\u0437\u0434\u0435\u0440\u0436\u0430\u0442\u044C\u0441\u044F \u0438\u043B\u0438 \u043E\u0442 2 \u0434\u043E 12 \u0441\u0432\u043E\u0438\u0445) \u0438 \u043F\u0440\u0438 \u0436\u0435\u043B\u0430\u043D\u0438\u0438 \u043A\u0432\u043E\u0440\u0443\u043C \u0438 \u043F\u043E\u0440\u043E\u0433 \u043F\u0440\u0438\u043D\u044F\u0442\u0438\u044F. \u0417\u0430\u0442\u0435\u043C \u043D\u0430\u0436\u043C\u0438\u0442\u0435 \xAB\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u0434\u043B\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438\xBB \u0438 \u0443\u043A\u0430\u0436\u0438\u0442\u0435, \u0441\u043A\u043E\u043B\u044C\u043A\u043E \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0430\u0432\u0448\u0438\u0445 \u043D\u0443\u0436\u043D\u043E.\n\n\u0423\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u044E\u0442 \u0441\u0432\u043E\u044E \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0443 \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F. \u041A\u0430\u043A \u0442\u043E\u043B\u044C\u043A\u043E \u043F\u043E\u0440\u043E\u0433 \u0434\u043E\u0441\u0442\u0438\u0433\u043D\u0443\u0442, \u0432\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u0442\u044C \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C \u0441\u0430\u043C\u0438; \u043E\u0441\u043D\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0438 \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u044B \u043C\u043E\u0433\u0443\u0442 \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u0442\u044C \u0435\u0433\u043E \u0432 \u043B\u044E\u0431\u043E\u0439 \u043C\u043E\u043C\u0435\u043D\u0442. \u0412\u0430\u0448\u0438 \u0447\u0435\u0440\u043D\u043E\u0432\u0438\u043A\u0438, \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0435 \u0438 \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u043F\u0435\u0440\u0435\u0447\u0438\u0441\u043B\u0435\u043D\u044B \u043D\u0430 \u0432\u043A\u043B\u0430\u0434\u043A\u0435 \xAB\u041F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F\xBB \u0432\u0430\u0448\u0435\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u044B \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435."
+      },
+      "aliases": [
+        "how do I create a proposal",
+        "how do I create a consultation",
+        "how do I start a vote",
+        "propose a vote",
+        "start a consultation",
+        "create voting proposal",
+        "when can I publish my proposal"
+      ],
+      "capabilityIds": [
+        "governance",
+        "matters"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "supabase/migrations/20261006070000_voting_proposals_member_support.sql"
+      ]
+    },
+    {
+      "id": "how_does_proposal_support_work",
+      "question": "How does member support for a proposal work?",
+      "answer": "The author opens a draft for member support and sets the number of supporters needed. Any signed-in member can then tap Support this proposal on the proposal page, or Withdraw my support later. The page shows the progress, for example 3 of 10 supporters, and Threshold reached when the goal is met. From that moment the author can publish the ballot; founders and admins can publish at any time.\n\nDrafts open for support are listed on the Proposals tab of your Governance page.",
+      "localizedAnswers": {
+        "hy": "\u0540\u0565\u0572\u056B\u0576\u0561\u056F\u0568 \u0576\u0561\u056D\u0561\u0563\u056B\u056E\u0568 \u0562\u0561\u0581\u0578\u0582\u0574 \u0567 \u0561\u0576\u0564\u0561\u0574\u0576\u0565\u0580\u056B \u0561\u057B\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0570\u0561\u0574\u0561\u0580 \u0587 \u0576\u0577\u0578\u0582\u0574, \u0569\u0565 \u0584\u0561\u0576\u056B \u0561\u057B\u0561\u056F\u056B\u0581 \u0567 \u0561\u0576\u0570\u0580\u0561\u056A\u0565\u0577\u057F\u0589 \u0531\u0575\u0576\u0578\u0582\u0570\u0565\u057F\u0587 \u0574\u0578\u0582\u057F\u0584 \u0563\u0578\u0580\u056E\u0561\u056E \u0581\u0561\u0576\u056F\u0561\u0581\u0561\u056E \u0561\u0576\u0564\u0561\u0574 \u056F\u0561\u0580\u0578\u0572 \u0567 \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u056B \u0567\u057B\u0578\u0582\u0574 \u057D\u0565\u0572\u0574\u0565\u056C \xAB\u0531\u057B\u0561\u056F\u0581\u0565\u056C \u0561\u0575\u057D \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u056B\u0576\xBB \u056F\u0561\u0574 \u0570\u0565\u057F\u0561\u0563\u0561\u0575\u0578\u0582\u0574\u055D \xAB\u0540\u0565\u057F \u057E\u0565\u0580\u0581\u0576\u0565\u056C \u056B\u0574 \u0561\u057B\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568\xBB\u0589 \u0537\u057B\u0578\u0582\u0574 \u0581\u0578\u0582\u0581\u0561\u0564\u0580\u057E\u0578\u0582\u0574 \u0567 \u0561\u057C\u0561\u057B\u0568\u0576\u0569\u0561\u0581\u0568, \u0585\u0580\u056B\u0576\u0561\u056F\u055D \xAB3 \u0561\u057B\u0561\u056F\u056B\u0581 10-\u056B\u0581\xBB, \u056B\u057D\u056F \u0576\u057A\u0561\u057F\u0561\u056F\u056B\u0576 \u0570\u0561\u057D\u0576\u0565\u056C\u0578\u0582 \u0564\u0565\u057A\u0584\u0578\u0582\u0574\u055D \xAB\u0547\u0565\u0574\u0568 \u056C\u0580\u0561\u0581\u0565\u056C \u0567\xBB\u0589 \u0531\u0575\u0564 \u057A\u0561\u0570\u056B\u0581 \u0570\u0565\u0572\u056B\u0576\u0561\u056F\u0568 \u056F\u0561\u0580\u0578\u0572 \u0567 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0565\u056C \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0568\u2024 \u0570\u056B\u0574\u0576\u0561\u0564\u056B\u0580\u0576\u0565\u0580\u0568 \u0587 \u0561\u0564\u0574\u056B\u0576\u056B\u057D\u057F\u0580\u0561\u057F\u0578\u0580\u0576\u0565\u0580\u0568 \u056F\u0561\u0580\u0578\u0572 \u0565\u0576 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0565\u056C \u0581\u0561\u0576\u056F\u0561\u0581\u0561\u056E \u057A\u0561\u0570\u056B\u0589\n\n\u0531\u057B\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0570\u0561\u0574\u0561\u0580 \u0562\u0561\u0581 \u0576\u0561\u056D\u0561\u0563\u056E\u0565\u0580\u0568 \u0569\u057E\u0561\u0580\u056F\u057E\u0561\u056E \u0565\u0576 \u0571\u0565\u0580 \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 \u0567\u057B\u056B \xAB\u0531\u057C\u0561\u057B\u0561\u0580\u056F\u0576\u0565\u0580\xBB \u0576\u0565\u0580\u0564\u056B\u0580\u0578\u0582\u0574\u0589",
+        "ru": "\u0410\u0432\u0442\u043E\u0440 \u043E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u0442 \u0447\u0435\u0440\u043D\u043E\u0432\u0438\u043A \u0434\u043B\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432 \u0438 \u0443\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442, \u0441\u043A\u043E\u043B\u044C\u043A\u043E \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0430\u0432\u0448\u0438\u0445 \u043D\u0443\u0436\u043D\u043E. \u041F\u043E\u0441\u043B\u0435 \u044D\u0442\u043E\u0433\u043E \u043B\u044E\u0431\u043E\u0439 \u0432\u043E\u0448\u0435\u0434\u0448\u0438\u0439 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A \u043C\u043E\u0436\u0435\u0442 \u043D\u0430\u0436\u0430\u0442\u044C \xAB\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u0430\u0442\u044C \u044D\u0442\u043E \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435\xBB \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0438\u043B\u0438 \u043F\u043E\u0437\u0436\u0435 \xAB\u041E\u0442\u043E\u0437\u0432\u0430\u0442\u044C \u043C\u043E\u044E \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0443\xBB. \u041D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u043F\u043E\u043A\u0430\u0437\u0430\u043D \u043F\u0440\u043E\u0433\u0440\u0435\u0441\u0441, \u043D\u0430\u043F\u0440\u0438\u043C\u0435\u0440 \xAB3 \u0438\u0437 10 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0430\u0432\u0448\u0438\u0445\xBB, \u0430 \u043F\u0440\u0438 \u0434\u043E\u0441\u0442\u0438\u0436\u0435\u043D\u0438\u0438 \u0446\u0435\u043B\u0438 \u2014 \xAB\u041F\u043E\u0440\u043E\u0433 \u0434\u043E\u0441\u0442\u0438\u0433\u043D\u0443\u0442\xBB. \u0421 \u044D\u0442\u043E\u0433\u043E \u043C\u043E\u043C\u0435\u043D\u0442\u0430 \u0430\u0432\u0442\u043E\u0440 \u043C\u043E\u0436\u0435\u0442 \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u0442\u044C \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044C; \u043E\u0441\u043D\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0438 \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u044B \u043C\u043E\u0433\u0443\u0442 \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u0442\u044C \u0435\u0433\u043E \u0432 \u043B\u044E\u0431\u043E\u0439 \u043C\u043E\u043C\u0435\u043D\u0442.\n\n\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A\u0438, \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0435 \u0434\u043B\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438, \u043F\u0435\u0440\u0435\u0447\u0438\u0441\u043B\u0435\u043D\u044B \u043D\u0430 \u0432\u043A\u043B\u0430\u0434\u043A\u0435 \xAB\u041F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F\xBB \u0432\u0430\u0448\u0435\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u044B \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435."
+      },
+      "aliases": [
+        "support a proposal",
+        "support threshold",
+        "how do I support a proposal",
+        "open for support",
+        "supporters needed"
+      ],
+      "capabilityIds": [
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/pages/governance/civic-voting-proposal/ProposalSupportCard.tsx",
+        "supabase/migrations/20261006070000_voting_proposals_member_support.sql"
+      ]
+    },
+    {
+      "id": "can_a_proposal_have_custom_options",
+      "question": "Can a proposal have custom options?",
+      "answer": "Yes. When drafting a proposal, the author can keep the default Support / Oppose / Abstain or list 2 to 12 options of their own under Ballot options. Publishing creates one choice per option. When Support and Oppose are among the options the pass rule applies; otherwise the result shows the most chosen option.\n\nA draft with its own options can also use approval voting (How members vote > Approval: choose several): each voter picks several options up to the maximum the author sets, and the result names the most approved option without a Passed / Not passed verdict.",
+      "localizedAnswers": {
+        "hy": "\u0531\u0575\u0578\u0589 \u0531\u057C\u0561\u057B\u0561\u0580\u056F\u0568 \u0576\u0561\u056D\u0561\u057A\u0561\u057F\u0580\u0561\u057D\u057F\u0565\u056C\u056B\u057D \u0570\u0565\u0572\u056B\u0576\u0561\u056F\u0568 \u056F\u0561\u0580\u0578\u0572 \u0567 \u057A\u0561\u0570\u0565\u056C \u056C\u057C\u0565\u056C\u0575\u0561\u0575\u0576 \u053F\u0578\u0572\u0574 / \u0534\u0565\u0574 / \u0541\u0565\u057C\u0576\u057A\u0561\u0570 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\u0568 \u056F\u0561\u0574 \xAB\u0554\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\xBB \u0562\u0561\u056A\u0576\u0578\u0582\u0574 \u0576\u0577\u0565\u056C \u056B\u0580 2-\u056B\u0581 12 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\u0568\u0589 \u0540\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0565\u056C\u056B\u057D \u0575\u0578\u0582\u0580\u0561\u0584\u0561\u0576\u0579\u0575\u0578\u0582\u0580 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u056B \u0570\u0561\u0574\u0561\u0580 \u057D\u057F\u0565\u0572\u056E\u057E\u0578\u0582\u0574 \u0567 \u0574\u0565\u056F \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0589 \u0535\u0569\u0565 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\u056B \u0574\u0565\u057B \u056F\u0561\u0576 \xAB\u053F\u0578\u0572\u0574\xBB-\u0576 \u0578\u0582 \xAB\u0534\u0565\u0574\xBB-\u0568, \u0563\u0578\u0580\u056E\u0578\u0582\u0574 \u0567 \u0568\u0576\u0564\u0578\u0582\u0576\u0574\u0561\u0576 \u056F\u0561\u0576\u0578\u0576\u0568\u2024 \u0570\u0561\u056F\u0561\u057C\u0561\u056F \u0564\u0565\u057A\u0584\u0578\u0582\u0574 \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0578\u0582\u0574 \u0581\u0578\u0582\u0581\u0561\u0564\u0580\u057E\u0578\u0582\u0574 \u0567 \u0561\u0574\u0565\u0576\u0561\u0577\u0561\u057F \u0568\u0576\u057F\u0580\u057E\u0561\u056E \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0568\u0589\n\n\u054D\u0565\u0583\u0561\u056F\u0561\u0576 \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0576\u0565\u0580\u0578\u057E \u0576\u0561\u056D\u0561\u0563\u056B\u056E\u0568 \u056F\u0561\u0580\u0578\u0572 \u0567 \u0585\u0563\u057F\u0561\u0563\u0578\u0580\u056E\u0565\u056C \u0576\u0561\u0587 \u0570\u0561\u057E\u0561\u0576\u0578\u0582\u0569\u0575\u0561\u0576 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576 (\xAB\u053B\u0576\u0579\u057A\u0565\u057D \u0565\u0576 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0574 \u0561\u0576\u0564\u0561\u0574\u0576\u0565\u0580\u0568\xBB > \xAB\u0540\u0561\u057E\u0561\u0576\u0578\u0582\u0569\u0575\u0561\u0576 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u055D \u0574\u056B \u0584\u0561\u0576\u056B \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\xBB)\u2024 \u0575\u0578\u0582\u0580\u0561\u0584\u0561\u0576\u0579\u0575\u0578\u0582\u0580 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0572 \u0568\u0576\u057F\u0580\u0578\u0582\u0574 \u0567 \u0574\u056B \u0584\u0561\u0576\u056B \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u055D \u0570\u0565\u0572\u056B\u0576\u0561\u056F\u056B \u057D\u0561\u0570\u0574\u0561\u0576\u0561\u056E \u0561\u057C\u0561\u057E\u0565\u056C\u0561\u0563\u0578\u0582\u0575\u0576 \u0569\u057E\u056B \u057D\u0561\u0570\u0574\u0561\u0576\u0576\u0565\u0580\u0578\u0582\u0574, \u056B\u057D\u056F \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0578\u0582\u0574 \u0576\u0577\u057E\u0578\u0582\u0574 \u0567 \u0561\u0574\u0565\u0576\u0561\u0577\u0561\u057F \u0570\u0561\u057E\u0561\u0576\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u057D\u057F\u0561\u0581\u0561\u056E \u057F\u0561\u0580\u0562\u0565\u0580\u0561\u056F\u0568\u055D \u0561\u057C\u0561\u0576\u0581 \xAB\u0538\u0576\u0564\u0578\u0582\u0576\u057E\u0565\u056C \u0567 / \u0549\u056B \u0568\u0576\u0564\u0578\u0582\u0576\u057E\u0565\u056C\xBB \u0578\u0580\u0561\u056F\u0574\u0561\u0576\u0589",
+        "ru": "\u0414\u0430. \u041F\u0440\u0438 \u043F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u043A\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u0440 \u043C\u043E\u0436\u0435\u0442 \u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u044B \u043F\u043E \u0443\u043C\u043E\u043B\u0447\u0430\u043D\u0438\u044E \u0417\u0430 / \u041F\u0440\u043E\u0442\u0438\u0432 / \u0412\u043E\u0437\u0434\u0435\u0440\u0436\u0430\u0442\u044C\u0441\u044F \u0438\u043B\u0438 \u043F\u0435\u0440\u0435\u0447\u0438\u0441\u043B\u0438\u0442\u044C \u043E\u0442 2 \u0434\u043E 12 \u0441\u0432\u043E\u0438\u0445 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u043E\u0432 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 \xAB\u0412\u0430\u0440\u0438\u0430\u043D\u0442\u044B \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F\xBB. \u041F\u0440\u0438 \u043F\u0443\u0431\u043B\u0438\u043A\u0430\u0446\u0438\u0438 \u0434\u043B\u044F \u043A\u0430\u0436\u0434\u043E\u0433\u043E \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u0430 \u0441\u043E\u0437\u0434\u0430\u0451\u0442\u0441\u044F \u0441\u0432\u043E\u0439 \u043F\u0443\u043D\u043A\u0442 \u0432\u044B\u0431\u043E\u0440\u0430. \u0415\u0441\u043B\u0438 \u0441\u0440\u0435\u0434\u0438 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u043E\u0432 \u0435\u0441\u0442\u044C \xAB\u0417\u0430\xBB \u0438 \xAB\u041F\u0440\u043E\u0442\u0438\u0432\xBB, \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u0442 \u043F\u0440\u0430\u0432\u0438\u043B\u043E \u043F\u0440\u0438\u043D\u044F\u0442\u0438\u044F; \u0438\u043D\u0430\u0447\u0435 \u0432 \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u0435 \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u0432\u0430\u0440\u0438\u0430\u043D\u0442, \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u044B\u0439 \u0447\u0430\u0449\u0435 \u0432\u0441\u0435\u0433\u043E.\n\n\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A \u0441\u043E \u0441\u0432\u043E\u0438\u043C\u0438 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u0430\u043C\u0438 \u043C\u043E\u0436\u0435\u0442 \u0442\u0430\u043A\u0436\u0435 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u043E\u0434\u043E\u0431\u0440\u0435\u043D\u0438\u0435\u043C (\xAB\u041A\u0430\u043A \u0433\u043E\u043B\u043E\u0441\u0443\u044E\u0442 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0438\xBB > \xAB\u041E\u0434\u043E\u0431\u0440\u0435\u043D\u0438\u0435: \u043D\u0435\u0441\u043A\u043E\u043B\u044C\u043A\u043E \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u043E\u0432\xBB): \u043A\u0430\u0436\u0434\u044B\u0439 \u0433\u043E\u043B\u043E\u0441\u0443\u044E\u0449\u0438\u0439 \u0432\u044B\u0431\u0438\u0440\u0430\u0435\u0442 \u043D\u0435\u0441\u043A\u043E\u043B\u044C\u043A\u043E \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u043E\u0432 \u0432 \u043F\u0440\u0435\u0434\u0435\u043B\u0430\u0445 \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C\u0430, \u0437\u0430\u0434\u0430\u043D\u043D\u043E\u0433\u043E \u0430\u0432\u0442\u043E\u0440\u043E\u043C, \u0430 \u0432 \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u0435 \u043D\u0430\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u0432\u0430\u0440\u0438\u0430\u043D\u0442 \u0441 \u043D\u0430\u0438\u0431\u043E\u043B\u044C\u0448\u0438\u043C \u0447\u0438\u0441\u043B\u043E\u043C \u043E\u0434\u043E\u0431\u0440\u0435\u043D\u0438\u0439 \u2014 \u0431\u0435\u0437 \u0432\u0435\u0440\u0434\u0438\u043A\u0442\u0430 \xAB\u041F\u0440\u0438\u043D\u044F\u0442\u043E / \u041D\u0435 \u043F\u0440\u0438\u043D\u044F\u0442\u043E\xBB."
+      },
+      "aliases": [
+        "custom ballot options",
+        "more than three options",
+        "multiple choice vote",
+        "ballot options",
+        "approval voting",
+        "can I pick several options",
+        "choose several options"
+      ],
+      "capabilityIds": [
+        "governance",
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/pages/governance/civic-voting-proposal/proposal-options.ts",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "where_are_my_notifications",
+      "question": "Where are my notifications?",
+      "answer": "Tap the bell at the top of the app, or open Settings > Notifications. The bell shows how many are unread, and the Notifications page lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Tapping an item opens the related page.\n\nYou are notified when a proposal you supported or started is published and when the result of a consultation you voted in is published.",
+      "localizedAnswers": {
+        "hy": "\u054D\u0565\u0572\u0574\u0565\u0584 \u0570\u0561\u057E\u0565\u056C\u057E\u0561\u056E\u056B \u057E\u0565\u0580\u0587\u056B \u0566\u0561\u0576\u0563\u0561\u056F\u0568 \u056F\u0561\u0574 \u0562\u0561\u0581\u0565\u0584 \u053F\u0561\u0580\u0563\u0561\u057E\u0578\u0580\u0578\u0582\u0574\u0576\u0565\u0580 > \u053E\u0561\u0576\u0578\u0582\u0581\u0578\u0582\u0574\u0576\u0565\u0580\u0589 \u0536\u0561\u0576\u0563\u0561\u056F\u0568 \u0581\u0578\u0582\u0575\u0581 \u0567 \u057F\u0561\u056C\u056B\u057D \u0579\u056F\u0561\u0580\u0564\u0561\u0581\u057E\u0561\u056E\u0576\u0565\u0580\u056B \u0569\u056B\u057E\u0568, \u056B\u057D\u056F \u053E\u0561\u0576\u0578\u0582\u0581\u0578\u0582\u0574\u0576\u0565\u0580 \u0567\u057B\u0578\u0582\u0574 \u0569\u057E\u0561\u0580\u056F\u057E\u0561\u056E \u0565\u0576 \u0571\u0565\u0566 \u057E\u0565\u0580\u0561\u0562\u0565\u0580\u0578\u0572 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u0568 (\u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u057E\u0565\u056C \u0567, \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0568 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u057E\u0565\u056C \u0567), \u0540\u0561\u0580\u0581\u0565\u0580\u0568, \u0570\u0561\u0574\u0561\u0571\u0561\u0575\u0576\u0561\u0563\u0580\u0565\u0580\u0568 \u0587 \u0563\u0580\u0561\u057C\u0578\u0582\u0574\u0576\u0565\u0580\u0568\u0589 \u054F\u0561\u0580\u0580\u056B\u0576 \u057D\u0565\u0572\u0574\u0565\u056C\u0578\u057E \u0562\u0561\u0581\u057E\u0578\u0582\u0574 \u0567 \u0570\u0561\u0574\u0561\u057A\u0561\u057F\u0561\u057D\u056D\u0561\u0576 \u0567\u057B\u0568\u0589\n\n\u053E\u0561\u0576\u0578\u0582\u0581\u0578\u0582\u0574 \u0565\u0584 \u057D\u057F\u0561\u0576\u0578\u0582\u0574, \u0565\u0580\u0562 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u057E\u0578\u0582\u0574 \u0567 \u0561\u057C\u0561\u057B\u0561\u0580\u056F, \u0578\u0580\u056B\u0576 \u0561\u057B\u0561\u056F\u0581\u0565\u056C \u0565\u0584 \u056F\u0561\u0574 \u0578\u0580\u0568 \u057D\u056F\u057D\u0565\u056C \u0565\u0584, \u0587 \u0565\u0580\u0562 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u057E\u0578\u0582\u0574 \u0567 \u0561\u0575\u0576 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0568, \u0578\u0580\u056B\u0576 \u0584\u057E\u0565\u0561\u0580\u056F\u0565\u056C \u0565\u0584\u0589",
+        "ru": "\u041D\u0430\u0436\u043C\u0438\u0442\u0435 \u043D\u0430 \u043A\u043E\u043B\u043E\u043A\u043E\u043B\u044C\u0447\u0438\u043A \u0432\u0432\u0435\u0440\u0445\u0443 \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0438\u043B\u0438 \u043E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 > \u0423\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F. \u041A\u043E\u043B\u043E\u043A\u043E\u043B\u044C\u0447\u0438\u043A \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442 \u0447\u0438\u0441\u043B\u043E \u043D\u0435\u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0445, \u0430 \u043D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0423\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u043F\u0435\u0440\u0435\u0447\u0438\u0441\u043B\u0435\u043D\u044B \u043A\u0430\u0441\u0430\u044E\u0449\u0438\u0435\u0441\u044F \u0432\u0430\u0441 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438 (\u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u0430, \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442), \u0412\u043E\u043F\u0440\u043E\u0441\u044B, \u0441\u043E\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044F \u0438 \u0437\u0430\u043F\u0438\u0441\u0438. \u041D\u0430\u0436\u0430\u0442\u0438\u0435 \u043D\u0430 \u044D\u043B\u0435\u043C\u0435\u043D\u0442 \u043E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u0442 \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0443\u044E\u0449\u0443\u044E \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0443.\n\n\u0412\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0435, \u043A\u043E\u0433\u0434\u0430 \u043F\u0443\u0431\u043B\u0438\u043A\u0443\u0435\u0442\u0441\u044F \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435, \u043A\u043E\u0442\u043E\u0440\u043E\u0435 \u0432\u044B \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0430\u043B\u0438 \u0438\u043B\u0438 \u043D\u0430\u0447\u0430\u043B\u0438, \u0438 \u043A\u043E\u0433\u0434\u0430 \u043F\u0443\u0431\u043B\u0438\u043A\u0443\u0435\u0442\u0441\u044F \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438, \u0432 \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \u0432\u044B \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u0438."
+      },
+      "aliases": [
+        "notifications",
+        "what is the bell icon",
+        "bell icon",
+        "notification center",
+        "how do I get notified when a vote result is published",
+        "unread notifications"
+      ],
+      "capabilityIds": [
+        "notifications",
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/pages/Notifications.tsx",
+        "src/components/layout/NotificationBell.tsx",
+        "src/lib/notifications.ts"
+      ]
+    },
+    {
+      "id": "where_is_help_and_support",
+      "question": "Where is help and support?",
+      "answer": "Open Settings > Help and support. It links to Ask Civi (Messaging), the public Documents, Why Civizen Exists, the legal status notice, and the Terms.",
+      "localizedAnswers": {
+        "hy": "\u0532\u0561\u0581\u0565\u0584 \u053F\u0561\u0580\u0563\u0561\u057E\u0578\u0580\u0578\u0582\u0574\u0576\u0565\u0580 > \u0555\u0563\u0576\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0587 \u0561\u057B\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0589 \u0531\u0575\u0576\u057F\u0565\u0572\u056B\u0581 \u056F\u0561\u0580\u0578\u0572 \u0565\u0584 \u0570\u0561\u0580\u0581\u0576\u0565\u056C Civi-\u056B\u0576 (\u0546\u0561\u0574\u0561\u056F\u0576\u0565\u0580), \u056F\u0561\u0580\u0564\u0561\u056C \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0583\u0561\u057D\u057F\u0561\u0569\u0572\u0569\u0565\u0580\u0568 \u0587 \xAB\u053B\u0576\u0579\u0578\u0582 \u0567 Civizen-\u0568 \u0563\u0578\u0575\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0578\u0582\u0576\u0565\u0576\u0578\u0582\u0574\xBB \u0567\u057B\u0568, \u056E\u0561\u0576\u0578\u0569\u0561\u0576\u0561\u056C \u056B\u0580\u0561\u057E\u0561\u056F\u0561\u0576 \u056F\u0561\u0580\u0563\u0561\u057E\u056B\u0573\u0561\u056F\u056B \u056E\u0561\u0576\u0578\u0582\u0581\u0574\u0561\u0576\u0568 \u0587 \u0555\u0563\u057F\u0561\u0563\u0578\u0580\u056E\u0574\u0561\u0576 \u057A\u0561\u0575\u0574\u0561\u0576\u0576\u0565\u0580\u056B\u0576\u0589",
+        "ru": "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 > \u041F\u043E\u043C\u043E\u0449\u044C \u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430. \u041E\u0442\u0442\u0443\u0434\u0430 \u043C\u043E\u0436\u043D\u043E \u0441\u043F\u0440\u043E\u0441\u0438\u0442\u044C Civi (\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F), \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u0442\u044C \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u0435 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u0438 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0443 \xAB\u041F\u043E\u0447\u0435\u043C\u0443 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442 Civizen\xBB, \u043E\u0437\u043D\u0430\u043A\u043E\u043C\u0438\u0442\u044C\u0441\u044F \u0441 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0435\u043C \u043E \u043F\u0440\u0430\u0432\u043E\u0432\u043E\u043C \u0441\u0442\u0430\u0442\u0443\u0441\u0435 \u0438 \u0441 \u0423\u0441\u043B\u043E\u0432\u0438\u044F\u043C\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u044F."
+      },
+      "aliases": [
+        "help page",
+        "help and support",
+        "where do I get help",
+        "support page",
+        "where is the help page"
+      ],
+      "capabilityIds": [
+        "help_support",
+        "nela"
+      ],
+      "sourceRefs": [
+        "src/pages/settings/HelpSupport.tsx",
+        "src/pages/settings/help-support-links.ts"
+      ]
+    },
+    {
+      "id": "where_is_the_governance_page",
+      "question": "Where is the Governance page?",
+      "answer": "Open Settings > Governance > Member workspace, the Governance card on Home, or Open member workspace on the public Governance landing; the address is /governance/workspace. The page has three tabs: Votes (open consultations with your ballot status, scheduled ones, and results), Proposals (drafts open for support, your drafts, published and closed proposals), and Tools (steward console and workspace tools). Tools appears only for office holders, founders, admins, and members who can assign roles.",
+      "localizedAnswers": {
+        "hy": "\u0532\u0561\u0581\u0565\u0584 \u053F\u0561\u0580\u0563\u0561\u057E\u0578\u0580\u0578\u0582\u0574\u0576\u0565\u0580 > \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 > \u0531\u0576\u0564\u0561\u0574\u056B \u0561\u0577\u056D\u0561\u057F\u0561\u057F\u0561\u0580\u0561\u056E\u0584, \u0533\u056C\u056D\u0561\u057E\u0578\u0580 \u0567\u057B\u056B \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 \u0584\u0561\u0580\u057F\u0568 \u056F\u0561\u0574 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 \u0567\u057B\u056B \xAB\u0532\u0561\u0581\u0565\u056C \u0561\u0576\u0564\u0561\u0574\u056B \u0561\u0577\u056D\u0561\u057F\u0561\u057F\u0561\u0580\u0561\u056E\u0584\u0568\xBB \u0570\u0572\u0578\u0582\u0574\u0568\u2024 \u0570\u0561\u057D\u0581\u0565\u0576 \u0567 /governance/workspace\u0589 \u0537\u057B\u0576 \u0578\u0582\u0576\u056B \u0565\u0580\u0565\u0584 \u0576\u0565\u0580\u0564\u056B\u0580\u055D \xAB\u0554\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\xBB (\u0562\u0561\u0581 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u0568\u055D \u0571\u0565\u0580 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u057E\u056B\u0573\u0561\u056F\u0578\u057E, \u0576\u0561\u056D\u0561\u057F\u0565\u057D\u057E\u0561\u056E\u0576\u0565\u0580\u0568 \u0587 \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0576\u0565\u0580\u0568), \xAB\u0531\u057C\u0561\u057B\u0561\u0580\u056F\u0576\u0565\u0580\xBB (\u0561\u057B\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u0570\u0561\u0574\u0561\u0580 \u0562\u0561\u0581 \u0576\u0561\u056D\u0561\u0563\u056E\u0565\u0580\u0568, \u0571\u0565\u0580 \u0576\u0561\u056D\u0561\u0563\u056E\u0565\u0580\u0568, \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u057E\u0561\u056E \u0587 \u0583\u0561\u056F\u057E\u0561\u056E \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u0576\u0565\u0580\u0568) \u0587 \xAB\u0533\u0578\u0580\u056E\u056B\u0584\u0576\u0565\u0580\xBB (\u057A\u0561\u057F\u0561\u057D\u056D\u0561\u0576\u0561\u057F\u0578\u0582\u056B \u057E\u0561\u0570\u0561\u0576\u0561\u056F \u0587 \u0561\u0577\u056D\u0561\u057F\u0561\u057F\u0561\u0580\u0561\u056E\u0584\u056B \u0563\u0578\u0580\u056E\u056B\u0584\u0576\u0565\u0580)\u0589 \xAB\u0533\u0578\u0580\u056E\u056B\u0584\u0576\u0565\u0580\xBB \u0576\u0565\u0580\u0564\u056B\u0580\u0568 \u057F\u0565\u057D\u0576\u0578\u0582\u0574 \u0565\u0576 \u0574\u056B\u0561\u0575\u0576 \u057A\u0561\u0577\u057F\u0578\u0576 \u056F\u0580\u0578\u0572\u0576\u0565\u0580\u0568, \u0570\u056B\u0574\u0576\u0561\u0564\u056B\u0580\u0576\u0565\u0580\u0568, \u0561\u0564\u0574\u056B\u0576\u056B\u057D\u057F\u0580\u0561\u057F\u0578\u0580\u0576\u0565\u0580\u0568 \u0587 \u0564\u0565\u0580\u0565\u0580 \u0576\u0577\u0561\u0576\u0561\u056F\u0565\u056C\u0578\u0582 \u056B\u0580\u0561\u057E\u0578\u0582\u0576\u0584 \u0578\u0582\u0576\u0565\u0581\u0578\u0572 \u0561\u0576\u0564\u0561\u0574\u0576\u0565\u0580\u0568\u0589",
+        "ru": "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 > \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 > \u0420\u0430\u0431\u043E\u0447\u0435\u0435 \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u043E \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0430, \u043A\u0430\u0440\u0442\u043E\u0447\u043A\u0443 \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u043D\u0430 \u0413\u043B\u0430\u0432\u043D\u043E\u0439 \u0438\u043B\u0438 \u0441\u0441\u044B\u043B\u043A\u0443 \xAB\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u0440\u0430\u0431\u043E\u0447\u0435\u0435 \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u043E \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0430\xBB \u043D\u0430 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435; \u0430\u0434\u0440\u0435\u0441 \u2014 /governance/workspace. \u041D\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 \u0442\u0440\u0438 \u0432\u043A\u043B\u0430\u0434\u043A\u0438: \xAB\u0413\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F\xBB (\u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0435 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438 \u0441 \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435\u043C \u0432\u0430\u0448\u0435\u0433\u043E \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F, \u0437\u0430\u043F\u043B\u0430\u043D\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u0438 \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B), \xAB\u041F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F\xBB (\u0447\u0435\u0440\u043D\u043E\u0432\u0438\u043A\u0438, \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0435 \u0434\u043B\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438, \u0432\u0430\u0448\u0438 \u0447\u0435\u0440\u043D\u043E\u0432\u0438\u043A\u0438, \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u0438 \u0437\u0430\u043A\u0440\u044B\u0442\u044B\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F) \u0438 \xAB\u0418\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u044B\xBB (\u043A\u043E\u043D\u0441\u043E\u043B\u044C \u0440\u0430\u0441\u043F\u043E\u0440\u044F\u0434\u0438\u0442\u0435\u043B\u044F \u0438 \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u044B \u0440\u0430\u0431\u043E\u0447\u0435\u0433\u043E \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u0430). \u0412\u043A\u043B\u0430\u0434\u043A\u0443 \xAB\u0418\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u044B\xBB \u0432\u0438\u0434\u044F\u0442 \u0442\u043E\u043B\u044C\u043A\u043E \u0434\u0435\u0440\u0436\u0430\u0442\u0435\u043B\u0438 \u0434\u043E\u043B\u0436\u043D\u043E\u0441\u0442\u0435\u0439, \u043E\u0441\u043D\u043E\u0432\u0430\u0442\u0435\u043B\u0438, \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u044B \u0438 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0438 \u0441 \u043F\u0440\u0430\u0432\u043E\u043C \u043D\u0430\u0437\u043D\u0430\u0447\u0430\u0442\u044C \u0440\u043E\u043B\u0438."
+      },
+      "aliases": [
+        "governance page",
+        "member governance page",
+        "governance workspace",
+        "votes proposals and tools tabs",
+        "what are the votes proposals and tools tabs",
+        "who can see the tools tab",
+        "tools tab"
+      ],
+      "capabilityIds": [
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/pages/governance/GovernanceMember.tsx",
+        "src/components/governance/member/governance-member-model.ts"
+      ]
+    },
+    {
+      "id": "what_is_the_observer_console",
+      "question": "What is the Observer console?",
+      "answer": "Open a consultation at Home > Governance > Civic voting and tap Observe next to its title, or add /observe to its address. The Observer console shows live process metrics for that election: countable ballots, withdrawn ballots, and the number of audit events in the hash-chained log \u2014 no voter identities and no ballot choices. When a consultation has no eligibility roster it says so instead of showing turnout, and sample elections are marked as not counted anywhere.",
+      "localizedAnswers": {
+        "hy": "\u0532\u0561\u0581\u0565\u0584 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u0533\u056C\u056D\u0561\u057E\u0578\u0580 > \u053F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574 > \u0554\u0561\u0572\u0561\u0584\u0561\u0581\u056B\u0561\u056F\u0561\u0576 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0562\u0561\u056A\u0576\u0578\u0582\u0574 \u0587 \u057D\u0565\u0572\u0574\u0565\u0584 \xAB\u0534\u056B\u057F\u0561\u0580\u056F\u0565\u056C\xBB \u057E\u0565\u0580\u0576\u0561\u0563\u0580\u056B \u056F\u0578\u0572\u0584\u056B\u0576, \u056F\u0561\u0574 \u0570\u0561\u057D\u0581\u0565\u056B\u0576 \u0561\u057E\u0565\u056C\u0561\u0581\u0580\u0565\u0584 /observe\u0589 \u0534\u056B\u057F\u0578\u0580\u0564\u056B \u057E\u0561\u0570\u0561\u0576\u0561\u056F\u0568 \u0581\u0578\u0582\u0575\u0581 \u0567 \u057F\u0561\u056C\u056B\u057D \u057F\u057E\u0575\u0561\u056C \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0561\u0576 \u0568\u0576\u0569\u0561\u0581\u0584\u056B \u056B\u0580\u0561\u056F\u0561\u0576 \u0581\u0578\u0582\u0581\u0561\u0576\u056B\u0577\u0576\u0565\u0580\u0568\u055D \u0570\u0561\u0577\u057E\u057E\u0578\u0572 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580\u0568, \u0570\u0565\u057F \u057E\u0565\u0580\u0581\u057E\u0561\u056E \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580\u0568 \u0587 \u0561\u0578\u0582\u0564\u056B\u057F\u056B \u0577\u0572\u0569\u0561\u0575\u0561\u056F\u0561\u057A \u0574\u0561\u057F\u0575\u0561\u0576\u056B \u056B\u0580\u0561\u0564\u0561\u0580\u0571\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u056B \u0569\u056B\u057E\u0568, \u0561\u057C\u0561\u0576\u0581 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0572\u0576\u0565\u0580\u056B \u056B\u0576\u0584\u0576\u0578\u0582\u0569\u0575\u0561\u0576 \u0587 \u0561\u057C\u0561\u0576\u0581 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u0576\u0565\u0580\u056B \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u056B\u0589 \u0535\u0569\u0565 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576 \u0568\u0576\u057F\u0580\u0578\u0572\u0576\u0565\u0580\u056B \u0581\u0578\u0582\u0581\u0561\u056F \u0579\u0578\u0582\u0576\u056B, \u057E\u0561\u0570\u0561\u0576\u0561\u056F\u0568 \u0564\u0561 \u0561\u057D\u0578\u0582\u0574 \u0567 \u0578\u0582\u0572\u056B\u0572\u055D \u0574\u0561\u057D\u0576\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0561\u0576 \u057F\u0578\u056F\u0578\u057D \u0581\u0578\u0582\u0575\u0581 \u057F\u0561\u056C\u0578\u0582 \u0583\u0578\u056D\u0561\u0580\u0565\u0576, \u056B\u057D\u056F \u0583\u0578\u0580\u0571\u0576\u0561\u056F\u0561\u0576 \u0568\u0576\u057F\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u0568 \u0576\u0577\u057E\u0578\u0582\u0574 \u0565\u0576 \u0578\u0580\u057A\u0565\u057D \u0578\u0579 \u0574\u056B \u057F\u0565\u0572 \u0579\u0570\u0561\u0577\u057E\u057E\u0578\u0572\u0589",
+        "ru": "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044E \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 \u0413\u043B\u0430\u0432\u043D\u0430\u044F > \u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 > \u0413\u0440\u0430\u0436\u0434\u0430\u043D\u0441\u043A\u043E\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u0438 \u043D\u0430\u0436\u043C\u0438\u0442\u0435 \xAB\u041D\u0430\u0431\u043B\u044E\u0434\u0430\u0442\u044C\xBB \u0440\u044F\u0434\u043E\u043C \u0441 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u043E\u043C, \u043B\u0438\u0431\u043E \u0434\u043E\u0431\u0430\u0432\u044C\u0442\u0435 /observe \u043A \u0430\u0434\u0440\u0435\u0441\u0443. \u041A\u043E\u043D\u0441\u043E\u043B\u044C \u043D\u0430\u0431\u043B\u044E\u0434\u0430\u0442\u0435\u043B\u044F \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442 \u0440\u0435\u0430\u043B\u044C\u043D\u044B\u0435 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u0438 \u0445\u043E\u0434\u0430 \u044D\u0442\u0438\u0445 \u0432\u044B\u0431\u043E\u0440\u043E\u0432: \u0443\u0447\u0442\u0451\u043D\u043D\u044B\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0438, \u043E\u0442\u043E\u0437\u0432\u0430\u043D\u043D\u044B\u0435 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u0438 \u0438 \u0447\u0438\u0441\u043B\u043E \u0441\u043E\u0431\u044B\u0442\u0438\u0439 \u0432 \u0436\u0443\u0440\u043D\u0430\u043B\u0435 \u0430\u0443\u0434\u0438\u0442\u0430 \u0441 \u0446\u0435\u043F\u043E\u0447\u043A\u043E\u0439 \u0445\u0435\u0448\u0435\u0439 \u2014 \u0431\u0435\u0437 \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u0435\u0439 \u0433\u043E\u043B\u043E\u0441\u0443\u044E\u0449\u0438\u0445 \u0438 \u0431\u0435\u0437 \u0432\u044B\u0431\u043E\u0440\u0430 \u0432 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F\u0445. \u0415\u0441\u043B\u0438 \u0443 \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438 \u043D\u0435\u0442 \u0441\u043F\u0438\u0441\u043A\u0430 \u0438\u0437\u0431\u0438\u0440\u0430\u0442\u0435\u043B\u0435\u0439, \u043A\u043E\u043D\u0441\u043E\u043B\u044C \u043F\u0440\u044F\u043C\u043E \u0433\u043E\u0432\u043E\u0440\u0438\u0442 \u043E\u0431 \u044D\u0442\u043E\u043C \u0432\u043C\u0435\u0441\u0442\u043E \u043F\u043E\u043A\u0430\u0437\u0430 \u044F\u0432\u043A\u0438, \u0430 \u043F\u0440\u043E\u0431\u043D\u044B\u0435 \u0432\u044B\u0431\u043E\u0440\u044B \u043E\u0442\u043C\u0435\u0447\u0435\u043D\u044B \u043A\u0430\u043A \u043D\u0435 \u0443\u0447\u0438\u0442\u044B\u0432\u0430\u0435\u043C\u044B\u0435 \u043D\u0438\u0433\u0434\u0435."
+      },
+      "aliases": [
+        "observer console",
+        "observe an election",
+        "election observer",
+        "observer metrics"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/pages/governance/CivicVotingObserver.tsx",
+        "supabase/migrations/20261006050000_civic_election_observer_metrics.sql"
+      ]
+    },
+    {
+      "id": "where_are_open_votes_in_study",
+      "question": "Where can I see open votes in Study?",
+      "answer": "Open Study: the Open votes card lists the consultations that are open right now with their closing dates. Tap one to open its ballot page. When nothing is open the card says so.",
+      "localizedAnswers": {
+        "hy": "\u0532\u0561\u0581\u0565\u0584 \u0548\u0582\u057D\u0578\u0582\u0574 \u0562\u0561\u056A\u056B\u0576\u0568\u2024 \xAB\u0532\u0561\u0581 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\xBB \u0584\u0561\u0580\u057F\u0578\u0582\u0574 \u0569\u057E\u0561\u0580\u056F\u057E\u0561\u056E \u0565\u0576 \u0561\u0575\u057D \u057A\u0561\u0570\u056B\u0576 \u0562\u0561\u0581 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u0568\u055D \u0583\u0561\u056F\u0574\u0561\u0576 \u0561\u0574\u057D\u0561\u0569\u057E\u0565\u0580\u0578\u057E\u0589 \u054D\u0565\u0572\u0574\u0565\u0584 \u0578\u0580\u0587\u0567 \u0574\u0565\u056F\u056B \u057E\u0580\u0561, \u0578\u0580\u057A\u0565\u057D\u0566\u056B \u0562\u0561\u0581\u057E\u056B \u0564\u0580\u0561 \u0584\u057E\u0565\u0561\u0569\u0565\u0580\u0569\u056B\u056F\u056B \u0567\u057B\u0568\u0589 \u0535\u0580\u0562 \u0562\u0561\u0581 \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0579\u056F\u0561, \u0584\u0561\u0580\u057F\u0568 \u0564\u0561 \u0576\u0577\u0578\u0582\u0574 \u0567\u0589",
+        "ru": "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0440\u0430\u0437\u0434\u0435\u043B \u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435: \u0432 \u043A\u0430\u0440\u0442\u043E\u0447\u043A\u0435 \xAB\u041E\u0442\u043A\u0440\u044B\u0442\u044B\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F\xBB \u043F\u0435\u0440\u0435\u0447\u0438\u0441\u043B\u0435\u043D\u044B \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u0438, \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0435 \u0441\u0435\u0439\u0447\u0430\u0441, \u0441 \u0434\u0430\u0442\u0430\u043C\u0438 \u0437\u0430\u043A\u0440\u044B\u0442\u0438\u044F. \u041D\u0430\u0436\u043C\u0438\u0442\u0435 \u043D\u0430 \u043E\u0434\u043D\u0443 \u0438\u0437 \u043D\u0438\u0445, \u0447\u0442\u043E\u0431\u044B \u043E\u0442\u043A\u0440\u044B\u0442\u044C \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0443 \u0431\u044E\u043B\u043B\u0435\u0442\u0435\u043D\u044F. \u041A\u043E\u0433\u0434\u0430 \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0445 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0439 \u043D\u0435\u0442, \u043A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0442\u0430\u043A \u0438 \u0441\u043E\u043E\u0431\u0449\u0430\u0435\u0442."
+      },
+      "aliases": [
+        "open votes card",
+        "open votes in study",
+        "pending votes in study",
+        "which votes are open"
+      ],
+      "capabilityIds": [
+        "study",
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/components/study/StudyOpenVotesCard.tsx"
+      ]
     }
   ],
   "aliases": [
@@ -2599,6 +3375,37 @@ var KNOWLEDGE_PACK = {
       "current": "Civizen",
       "aliases": [
         "levela"
+      ]
+    },
+    {
+      "current": "Governance page",
+      "aliases": [
+        "member workspace",
+        "governance workspace",
+        "member governance page"
+      ]
+    },
+    {
+      "current": "receipt",
+      "aliases": [
+        "voting receipt",
+        "ballot receipt",
+        "receipt code"
+      ]
+    },
+    {
+      "current": "Notifications",
+      "aliases": [
+        "notification center",
+        "bell icon",
+        "the bell"
+      ]
+    },
+    {
+      "current": "Help and support",
+      "aliases": [
+        "help page",
+        "support page"
       ]
     }
   ],
@@ -2823,7 +3630,25 @@ var KNOWLEDGE_PACK = {
       "id": "capability:civic_voting",
       "title": "Civic voting",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Civic voting status=implemented. Elections catalog and election detail/observe at /governance/voting. Public browsing is available. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.  Routes: /governance/voting.",
+      "text": "Civic voting status=implemented. Elections catalog, ballot pages, and an Observer console at /governance/voting. Public browsing is available; casting needs a free account. Ballot choices are sealed on the server and never shown individually; every voter gets a receipt (a code in groups of four) and can check it against the public list of counted receipts. Eligibility (sign-in, voting window, sanctions, and any verified-identity, minimum-age, or country rule the consultation declares) is checked on the server and the reason is shown when a member cannot vote. A ballot can be withdrawn and cast again until closing. Consultations close automatically at their closing time with a published tally and outcome (quorum, pass threshold, most chosen option, or the most approved option for approval ballots where voters pick several options). The Observer console shows countable and withdrawn ballots and audit events only. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power. Open Home > Governance > Civic voting, open a consultation, choose an option, and keep the receipt shown afterwards. Use Check that my receipt is counted on the same page, Withdraw ballot to change your vote while voting is open, and Observe next to the title for process metrics. Routes: /governance/voting.",
+      "status": "implemented",
+      "priority": 3,
+      "kind": "capability"
+    },
+    {
+      "id": "capability:notifications",
+      "title": "Notifications",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Notifications status=implemented. Notification center for members: the bell at the top of the app shows the unread count and opens the Notifications page, which lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Each item opens the related page. Tap the bell at the top of the app, or open Settings > Notifications. Routes: /notifications.",
+      "status": "implemented",
+      "priority": 3,
+      "kind": "capability"
+    },
+    {
+      "id": "capability:help_support",
+      "title": "Help and support",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Help and support status=implemented. Settings page that gathers where to get help: Ask Civi in Messaging, the public Documents, Why Civizen Exists, the legal status notice, and the Terms. Open Settings > Help and support. Routes: /settings/help.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"
@@ -3111,7 +3936,7 @@ var KNOWLEDGE_PACK = {
       "id": "faq:how_does_governance_work",
       "title": "How does governance work?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: How does governance work? A: Civizen currently has a public Governance landing, civic voting/elections, a member proposal workspace, and Governance Solutions. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.",
+      "text": "Q: How does governance work? A: Civizen has a public Governance landing, Civic voting with sealed ballots and voter receipts, one member Governance page with Votes, Proposals, and Tools tabs, member-supported proposals that open a consultation once enough members back them, a notification center, and Governance Solutions. Consultations close automatically at their closing time and publish the tally and outcome. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
@@ -3120,7 +3945,7 @@ var KNOWLEDGE_PACK = {
       "id": "faq:who_can_create_proposals",
       "title": "Who can create proposals?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: Who can create proposals? A: Eligible signed-in participants can submit proposals in Home > Governance workspace under the Community Governance Charter. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge\u2019s coordinator.",
+      "text": "Q: Who can create proposals? A: Any signed-in member can start one: open a Matter under Contribute > Questions, Issues & Ideas and choose Create voting proposal, then open the draft for member support from the Proposals tab of your Governance page. Once the support threshold is reached the author can publish the ballot; founders and admins can publish at any time. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge\u2019s coordinator.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
@@ -3129,7 +3954,7 @@ var KNOWLEDGE_PACK = {
       "id": "faq:who_can_vote",
       "title": "Who can vote?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: Who can vote? A: Civic elections are at Home > Governance > Civic voting. Community votes follow published eligibility in the Charter and platform rules. Token ownership, financial support, or wealth alone does not create voting authority.",
+      "text": "Q: Who can vote? A: Any signed-in member with a free account can vote in an ordinary consultation at Home > Governance > Civic voting. A consultation may additionally require a verified identity, a minimum age, or residence in one country, and an active governance sanction blocks voting. The server checks these rules, and the ballot page shows the reason when you cannot vote. Token ownership, financial support, or wealth alone never creates voting authority.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
@@ -3288,6 +4113,177 @@ var KNOWLEDGE_PACK = {
       "kind": "faq"
     },
     {
+      "id": "faq:how_do_i_vote",
+      "title": "How do I vote?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How do I vote? A: Open Home > Governance > Civic voting (or the Open votes card on Study, or the Votes tab on your Governance page) and open the consultation. Sign in if you have not, choose an option \u2014 Support, Oppose, or Abstain, or the options that consultation lists \u2014 and confirm. The page then shows Your receipt: keep that code.\n\nOrdinary consultations need only a free account. Until voting closes you can withdraw your ballot and vote again. Your choice is sealed; only totals are public.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:how_do_i_know_my_vote_was_counted",
+      "title": "How do I know my vote was counted?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How do I know my vote was counted? A: After you vote, the ballot page shows Your receipt \u2014 a code in groups of four characters. Tap Check that my receipt is counted: Civizen compares it with the public list of counted receipts for that consultation and tells you whether it is on the list.\n\nThe receipt proves your ballot is counted without revealing your choice, and anyone with the code can run the same check. If you withdraw your ballot, the receipt leaves the list; voting again gives you a new one.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:what_is_a_voting_receipt",
+      "title": "What is a receipt?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: What is a receipt? A: A receipt is the random code Civizen gives you when you cast a ballot in a consultation, shown as Your receipt on the ballot page in groups of four characters. It proves your ballot is counted without revealing how you voted.\n\nKeep the code. Tap Check that my receipt is counted on the ballot page to compare it with the public list of counted receipts. Withdrawing your ballot removes the receipt from that list.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:why_cant_i_vote",
+      "title": "Why can't I vote?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Why can't I vote? A: Open the consultation page: when you cannot vote, the reason is shown under the voting buttons. The usual reasons are: you are not signed in; voting has not opened yet or has already closed; a governance sanction blocks voting; the vote needs a verified identity (Settings > Edit Profile > Identity verification); the vote has a minimum age and your profile has no date of birth, or you are under that age; the vote is limited to residents of one country and your profile shows another; it is a sample election; or it is a high-security election that takes ballots only in the native app.\n\nThese checks run on the server, so the same rule applies to everyone. Ordinary consultations need only a free account.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:do_i_need_verification_to_vote",
+      "title": "Do I need to be verified to vote?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Do I need to be verified to vote? A: No \u2014 not for ordinary consultations: a free Civizen account is enough. Only when a consultation declares that it requires a verified identity, a minimum age, or residence in one country does the server check that, and the ballot page shows the reason if you do not meet it. Identity verification is at Settings > Edit Profile.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:can_i_vote_without_account",
+      "title": "Can I vote without an account?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Can I vote without an account? A: No. Anyone can browse consultations and results at Home > Governance > Civic voting without signing in, but casting a ballot needs a Civizen account. Create one from Sign up, then open the consultation and vote.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:can_i_change_my_vote",
+      "title": "Can I change my vote?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Can I change my vote? A: Yes, while voting is open. Open the consultation page and tap Withdraw ballot, then vote again. Withdrawing removes your ballot from the counts, the country statistics, and the participant directory, and your receipt leaves the list of counted receipts; a new ballot gives you a new receipt.\n\nAfter the consultation closes nothing can be changed.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:who_can_see_how_i_voted",
+      "title": "Who can see how I voted?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Who can see how I voted? A: No one. Your choice is sealed on the server with a key that no app role can read, so founders, admins, and staff see only totals. Public pages show the count per option, country statistics only when enough people took part (at least 25 overall and 5 per country), and an optional participant directory with display name and country that you join only by choice \u2014 never your choice. Your receipt is a random code that is not linked to an option, and the audit log stores no voter identities.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:what_happens_when_a_vote_closes",
+      "title": "What happens when a vote closes?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: What happens when a vote closes? A: At its closing time the consultation closes by itself: Civizen marks it closed, stores the final tally, and publishes the result on the ballot page and under Results on the Votes tab of your Governance page. The proposal behind it is closed too, and everyone who voted or supported it gets a notification.\n\nThe outcome follows the rules set on the proposal: no countable ballots; quorum not met (fewer ballots than required); otherwise the share of Support among Support and Oppose ballots is compared with the pass threshold (50% unless set otherwise) and shown as Passed or Not passed. Consultations with their own options show the most chosen option.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:what_are_quorum_and_pass_threshold",
+      "title": "What is quorum?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: What is quorum? A: Quorum is the minimum number of countable ballots a consultation needs for a result; below it the outcome reads Quorum not met. The pass threshold is the share of Support among Support and Oppose ballots (Abstain does not count) needed for Passed \u2014 50% unless the proposal sets another value.\n\nThe author sets both when drafting the proposal, under Scope and timing on the proposal page. The outcome is computed automatically when voting closes and shown on the ballot page.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:is_voting_binding",
+      "title": "Is voting binding?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Is voting binding? A: Current civic consultations are nonbinding: they record what members think and publish the result, but they do not create legal citizenship, replace public-law elections, or bind anyone. Under the Community Governance Charter a vote can be binding only within a scope that has been delegated to it.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:how_do_i_submit_a_proposal",
+      "title": "How do I submit a proposal?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How do I submit a proposal? A: A consultation starts as a Matter. Open Contribute > Questions, Issues & Ideas, open or create your Matter, and choose Create voting proposal. On the proposal page set the scope (global or one country), when voting opens and closes, the ballot options (Support / Oppose / Abstain, or 2 to 12 of your own), and optionally a quorum and pass threshold. Then tap Open for support and set how many supporters are needed.\n\nMembers add their support on the proposal page. Once the threshold is reached you can publish the ballot yourself; founders and admins can publish at any time. Your drafts, open proposals, and published ones are listed on the Proposals tab of your Governance page.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:how_does_proposal_support_work",
+      "title": "How does member support for a proposal work?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How does member support for a proposal work? A: The author opens a draft for member support and sets the number of supporters needed. Any signed-in member can then tap Support this proposal on the proposal page, or Withdraw my support later. The page shows the progress, for example 3 of 10 supporters, and Threshold reached when the goal is met. From that moment the author can publish the ballot; founders and admins can publish at any time.\n\nDrafts open for support are listed on the Proposals tab of your Governance page.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:can_a_proposal_have_custom_options",
+      "title": "Can a proposal have custom options?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Can a proposal have custom options? A: Yes. When drafting a proposal, the author can keep the default Support / Oppose / Abstain or list 2 to 12 options of their own under Ballot options. Publishing creates one choice per option. When Support and Oppose are among the options the pass rule applies; otherwise the result shows the most chosen option.\n\nA draft with its own options can also use approval voting (How members vote > Approval: choose several): each voter picks several options up to the maximum the author sets, and the result names the most approved option without a Passed / Not passed verdict.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_are_my_notifications",
+      "title": "Where are my notifications?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where are my notifications? A: Tap the bell at the top of the app, or open Settings > Notifications. The bell shows how many are unread, and the Notifications page lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Tapping an item opens the related page.\n\nYou are notified when a proposal you supported or started is published and when the result of a consultation you voted in is published.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_is_help_and_support",
+      "title": "Where is help and support?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where is help and support? A: Open Settings > Help and support. It links to Ask Civi (Messaging), the public Documents, Why Civizen Exists, the legal status notice, and the Terms.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_is_the_governance_page",
+      "title": "Where is the Governance page?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where is the Governance page? A: Open Settings > Governance > Member workspace, the Governance card on Home, or Open member workspace on the public Governance landing; the address is /governance/workspace. The page has three tabs: Votes (open consultations with your ballot status, scheduled ones, and results), Proposals (drafts open for support, your drafts, published and closed proposals), and Tools (steward console and workspace tools). Tools appears only for office holders, founders, admins, and members who can assign roles.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:what_is_the_observer_console",
+      "title": "What is the Observer console?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: What is the Observer console? A: Open a consultation at Home > Governance > Civic voting and tap Observe next to its title, or add /observe to its address. The Observer console shows live process metrics for that election: countable ballots, withdrawn ballots, and the number of audit events in the hash-chained log \u2014 no voter identities and no ballot choices. When a consultation has no eligibility roster it says so instead of showing turnout, and sample elections are marked as not counted anywhere.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_are_open_votes_in_study",
+      "title": "Where can I see open votes in Study?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where can I see open votes in Study? A: Open Study: the Open votes card lists the consultations that are open right now with their closing dates. Tap one to open its ballot page. When nothing is open the card says so.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
       "id": "registry:nav",
       "title": "Primary navigation",
       "path": "src/lib/main-nav.ts",
@@ -3300,7 +4296,7 @@ var KNOWLEDGE_PACK = {
       "id": "registry:civi-pages",
       "title": "Pages Civi can open",
       "path": "src/lib/nela-nav-paths.ts",
-      "text": "Civi can link these live pages in answers: Why Civizen Exists (/why-this-exists); Community Governance Charter (/governance/charter); Organization Partnership (/partners); Governance Solutions (/governance/solutions); Community Challenges (/contribute/challenges); make a contribution (/contribute); Questions, Issues & Ideas (/contribute/matters); Suggest Improvements (/contribute/improvements); Learning Commons (/contribute/knowledge); My Contributions (/contribute/impact); Financial Support (/fund); Prototype credits (/settings/prototype-credits); Governance workspace (/governance/workspace); Civic voting (/governance/voting); Opportunities (/contribute/professional); Agreements (/agreements); Contribute (/contribute); Messaging (/messaging); Governance (/governance); Documents (/documents); Partners (/partners); Settings (/settings); Profile (/profile); Jobs (/jobs); Market (/market); Study (/study); signing up (/signup); Sign up (/signup); Areas (/areas); Home (/).",
+      "text": "Civi can link these live pages in answers: Why Civizen Exists (/why-this-exists); Community Governance Charter (/governance/charter); Organization Partnership (/partners); Governance Solutions (/governance/solutions); Community Challenges (/contribute/challenges); make a contribution (/contribute); Questions, Issues & Ideas (/contribute/matters); Suggest Improvements (/contribute/improvements); Learning Commons (/contribute/knowledge); My Contributions (/contribute/impact); Financial Support (/fund); Prototype credits (/settings/prototype-credits); Governance workspace (/governance/workspace); Member workspace (/governance/workspace); Help and support (/settings/help); Governance page (/governance/workspace); Notifications (/notifications); Edit Profile (/settings/profile); Civic voting (/governance/voting); Opportunities (/contribute/professional); Agreements (/agreements); Contribute (/contribute); Messaging (/messaging); Governance (/governance); Documents (/documents); Partners (/partners); Settings (/settings); Profile (/profile); Jobs (/jobs); Market (/market); Study (/study); signing up (/signup); Sign up (/signup); Areas (/areas); Home (/).",
       "status": "implemented",
       "priority": 2,
       "kind": "registry"
@@ -3543,7 +4539,7 @@ var KNOWLEDGE_PACK = {
       "id": "docs/assistant/README.md#1",
       "title": "Layout",
       "path": "docs/assistant/README.md",
-      "text": "## Layout | Path | Role | | --- | --- | | [`civizen-identity.md`](./civizen-identity.md) | Canonical identity, purpose, and one-sentence definition | | [`civizen-assistant-cheatsheet.md`](./civizen-assistant-cheatsheet.md) | Compact canonical facts for frequent questions | | `src/lib/assistant/catalog.ts` | Machine-readable capabilities, FAQ, and terminology aliases | | `src/lib/assistant/learned-memory.ts` | Checked Gemini-answer memory (does not override identity or capabilities) | | `src/pages/settings/AiAgentSettings.tsx` | Founder development review of Civi questions and replies | | `src/lib/assistant/generated/knowledge-pack.ts` | Generated searchable index (do not edit by hand) | | `supabase/functions/messaging-agent-reply/nela-bundle.js` | Bundled retrieval runtime for the Civi edge function |",
+      "text": "| Path | Role | | --- | --- | | [`civizen-identity.md`](./civizen-identity.md) | Canonical identity, purpose, and one-sentence definition | | [`civizen-assistant-cheatsheet.md`](./civizen-assistant-cheatsheet.md) | Compact canonical facts for frequent questions | | `src/lib/assistant/catalog.ts` | Machine-readable capabilities, FAQ, and terminology aliases (data in `catalog-data/`; voting, proposals, notifications, help in `faq-voting.ts` with Armenian and Russian answers in `faq-voting.hy.ts` / `faq-voting.ru.ts`) | | `src/lib/assistant/language.ts` | Language detection and the Armenian / Russian \u2192 English concept lexicon used for scope, retrieval, and topic classification | | `src/lib/assistant/civi-governance-voting.test.ts` | Regression question set (EN / HY / RU) for the voting, proposal, notification, and help features | | `src/lib/assistant/learned-memory.ts` | Checked Gemini-answer memory (does not override identity or capabilities) | | `src/pages/settings/AiAgentSettings.tsx` | Founder development review of Civi questions and replies | | `src/lib/assistant/generated/knowledge-pack.ts` | Generated searchable index (do not edit by hand) | | `supabase/functions/messaging-agen",
       "status": "implemented",
       "priority": 5,
       "kind": "doc"
@@ -3559,6 +4555,33 @@ var KNOWLEDGE_PACK = {
     },
     {
       "id": "docs/assistant/README.md#3",
+      "title": "Languages",
+      "path": "docs/assistant/README.md",
+      "text": "## Languages English is the canonical knowledge language. For Armenian and Russian, `language.ts` detects the script, maps word stems and whole question forms to the English wording the FAQ uses, and retrieval searches only that English wording (non-Latin tokens never match the pack and would drag overlap ratios down). A FAQ item may carry `localizedAnswers.hy` / `.ru`; when the question's language has one, Civi returns it directly and skips the model. Otherwise the English grounded answer stays the evidence and the system prompt tells the model to reply in the member's language. Greetings and the out-of-scope reply are localized in `LOCALIZED_REPLIES`.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "doc"
+    },
+    {
+      "id": "docs/assistant/README.md#4",
+      "title": "Languages",
+      "path": "docs/assistant/README.md",
+      "text": "When adding a feature members will ask about, add the FAQ card with hand-written Armenian and Russian answers in the same change, add the natural question forms to `ARMENIAN_QUESTIONS` / `RUSSIAN_QUESTIONS`, and extend `civi-governance-voting.test.ts` with the question in all three languages.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "doc"
+    },
+    {
+      "id": "docs/assistant/README.md#5",
+      "title": "Audit process",
+      "path": "docs/assistant/README.md",
+      "text": "## Audit process Run realistic questions through `prepareNelaTurn` (the same path the edge function and the public widget use) and check `diagnostics.matchedFaqId`, `inScope`, `skipLlm`, and the grounded answer. The regression suite in `civi-governance-voting.test.ts` is that question set; an answer that falls back to the generic capability blurb, to \u201CI couldn't verify\u2026\u201D, or to the English scope refusal for an Armenian or Russian question counts as a gap to fix at the source (catalog card, FAQ, `NELA_PAGE_LINKS`, scope terms, lexicon), then `npm run assistant:knowledge`.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "doc"
+    },
+    {
+      "id": "docs/assistant/README.md#6",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "## Internal-first routing Civi uses the closest authoritative resource first: 1. Conversation context 2. Canonical identity (`civizen-identity.md`) for what Civizen is, its purpose, mission, scope, or one-sentence description 3. FAQ / this cheat sheet 4. Capability registry for what is implemented **now** 5. Project knowledge index 6. Authorized runtime / member data 7. Civi memory of **checked** previous model answers (similar questions only; never overrides 2\u20135) 8. AI reasoning over collected evidence 9. Broader API-agent resources only when the request needs the outside world Identity questions must not be answered by reconstructing Civizen from feature docs. Capability questions must not be answered with the identity sentence alone.",
@@ -3567,7 +4590,7 @@ var KNOWLEDGE_PACK = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#4",
+      "id": "docs/assistant/README.md#7",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "Someone asking for housing, food, or a safe place tonight is not a Contribute question. Civi acknowledges the situation, says Civizen is not emergency housing, points to local emergency services / 211, and may mention Jobs \u2014 not Volunteer lanes. Peace, war, and \u201Chow do we unite humanity\u201D questions are in scope. Answer from founding documents, including the need to unite around shared human responsibility. Unity does not require uniformity. Invite signing up and making a contribution; name Study, Community Challenges, Opportunities, and Governance in ordinary sentences. Do not write \u201Clearn in Study\u201D. Do not recap manifesto prose. How-questions do not start with Yes. Do not claim Civizen currently stops wars or is a government.",
@@ -3576,7 +4599,7 @@ var KNOWLEDGE_PACK = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#5",
+      "id": "docs/assistant/README.md#8",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "Civizen product facts stay internal even after escalation. Missing internal evidence does not authorize a generic web/model guess about Civizen. Gemini (or another model) may fill a gap for a general or mixed question; Civi then **checks** that reply before storing it. Invented Civizen capabilities, personal records, and one-off drafts are not remembered.",
@@ -3585,7 +4608,7 @@ var KNOWLEDGE_PACK = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#6",
+      "id": "docs/assistant/README.md#9",
       "title": "Status vocabulary",
       "path": "docs/assistant/README.md",
       "text": "## Status vocabulary Capabilities use: `implemented` \xB7 `experimental` \xB7 `in_development` \xB7 `proposed` \xB7 `deprecated` \xB7 `historical`. \u201CCivizen supports X\u201D means X is **implemented** in this build.",
@@ -5997,30 +7020,37 @@ function distinctiveEnough(query, text) {
   if (hits >= 2) return true;
   return hits >= 1 && hits / qTerms.length >= 0.28;
 }
-function composeFromRetrieval(retrieval, query, topic) {
+function faqAnswerFor(item, language) {
+  const localized = language === "en" ? void 0 : item.localizedAnswers?.[language];
+  return (localized ?? item.answer).trim();
+}
+function composeFromRetrieval(retrieval, query, topic, language = "en") {
   const faq = retrieval.faq[0];
   const cap = retrieval.capabilities[0];
   if (topic === "identity") {
     const identityFaq = retrieval.faq.find((hit) => IDENTITY_FAQ_IDS.has(hit.item.id)) ?? faq;
-    if (identityFaq) return identityFaq.item.answer.trim();
+    if (identityFaq) return faqAnswerFor(identityFaq.item, language);
   }
   if (topic === "current_capability") {
     const nowFaq = retrieval.faq.find((hit) => hit.item.id === "what_can_i_do_in_civizen_now") ?? faq;
-    if (nowFaq) return nowFaq.item.answer.trim();
+    if (nowFaq) return faqAnswerFor(nowFaq.item, language);
   }
   const faqRelated = faq ? distinctiveEnough(query, `${faq.item.question} ${faq.item.aliases.join(" ")} ${faq.item.answer}`) : false;
+  if (faq && faqRelated && language !== "en" && faq.item.localizedAnswers?.[language]) {
+    return faqAnswerFor(faq.item, language);
+  }
   const capRelated = cap ? distinctiveEnough(query, `${cap.item.name} ${cap.item.description}`) : false;
   if (topic !== "current_capability" && faq && faqRelated && (!cap || !capRelated || retrieval.faq[0].score >= (cap.score ?? 0) * 0.7)) {
     const related = cap && faq.item.capabilityIds.includes(cap.item.id) ? cap.item : null;
     const prefix = related && capRelated ? statusPrefix(related.status) : "";
-    return `${prefix}${faq.item.answer}`.trim();
+    return `${prefix}${faqAnswerFor(faq.item, language)}`.trim();
   }
   if (cap && capRelated) {
     const prefix = statusPrefix(cap.item.status);
     const how = cap.item.howTo ? ` ${cap.item.howTo}` : "";
     return `${prefix}${cap.item.description}${how}`.trim();
   }
-  if (faq && faqRelated) return faq.item.answer.trim();
+  if (faq && faqRelated) return faqAnswerFor(faq.item, language);
   const docs = preferCurrentEvidence(retrieval.documents).filter(
     (d) => distinctiveEnough(query, `${d.chunk.title} ${d.chunk.text}`)
   );
@@ -6057,14 +7087,19 @@ function prepareNelaTurn(messages, options = {}) {
   const pack = options.pack ?? KNOWLEDGE_PACK;
   const latest = [...messages].reverse().find((m) => m.role === "user");
   const latestText = latest?.content.trim() ?? "";
+  const language = detectAssistantLanguage(latestText);
   const rewritten = resolveConversationalQuery(messages, pack.aliases);
-  const resolvedQuery = rewritten.resolvedQuery;
-  const searchQuery = rewritten.isVerification && rewritten.previousUserQuestion ? rewritten.previousUserQuestion : resolvedQuery;
+  const resolvedQuery = expandAssistantQuery(rewritten.resolvedQuery);
+  const searchQuery = retrievalQueryFor(
+    rewritten.isVerification && rewritten.previousUserQuestion ? rewritten.previousUserQuestion : rewritten.resolvedQuery,
+    language
+  );
+  const canned = language === "en" ? null : LOCALIZED_REPLIES[language];
   const greeting = isGreetingOnly(latestText);
   const hardship = isPersonalHardshipAsk(latestText);
   const peace = !hardship && isPeaceCooperationAsk(latestText);
-  const canned = hardship || peace;
-  const inScope = greeting || canned || isRelevantToCivizen(resolvedQuery, messages);
+  const cannedTopic = hardship || peace;
+  const inScope = greeting || cannedTopic || isRelevantToCivizen(resolvedQuery, messages);
   const topic = classifyAssistantTopic(searchQuery);
   const rawRetrieval = inScope ? retrieveKnowledge(searchQuery, pack, { broaden: rewritten.isVerification, topic }) : { faq: [], capabilities: [], documents: [] };
   const retrieval = {
@@ -6092,13 +7127,13 @@ function prepareNelaTurn(messages, options = {}) {
     }
   }
   let usedLearnedMemoryKey = null;
-  const learnedHit = !greeting && !canned && !rewritten.isVerification ? pickLearnedMemory(searchQuery, options.learnedMemories, {
+  const learnedHit = !greeting && !cannedTopic && !rewritten.isVerification ? pickLearnedMemory(searchQuery, options.learnedMemories, {
     catalogFaqScore: retrieval.faq[0]?.score,
     topic
   }) : null;
   const externalResourcesInvoked = [];
   const invokeKind = shouldInvokeExternalSearch(resourcePlan, latestText);
-  if (invokeKind && !canned && !learnedHit && options.externalAdapter?.search) {
+  if (invokeKind && !cannedTopic && !learnedHit && options.externalAdapter?.search) {
     void options.externalAdapter.search(resolvedQuery);
     externalResourcesInvoked.push(invokeKind);
   }
@@ -6108,16 +7143,16 @@ function prepareNelaTurn(messages, options = {}) {
   } else if (peace) {
     groundedAnswer = PEACE_COOPERATION_REPLY;
   } else if (!inScope) {
-    groundedAnswer = SCOPE_REFUSAL;
+    groundedAnswer = canned?.scopeRefusal ?? SCOPE_REFUSAL;
   } else if (greeting) {
-    groundedAnswer = options.audience === "guest" ? GREETING_GUEST : GREETING;
+    groundedAnswer = options.audience === "guest" ? canned?.greetingGuest ?? GREETING_GUEST : canned?.greeting ?? GREETING;
   } else if (resourcePlan.internalResolution === "requires_runtime_data" && !options.runtimeData) {
     const need = resourcePlan.runtimeDataNeed;
     groundedAnswer = options.audience === "guest" ? "That needs a Civizen account. You can create one from Sign up, then open the relevant page." : `I don't have your personal Civizen records in project knowledge. ${need?.hint ?? "Open the relevant page while signed in."}`;
   } else if (resourcePlan.internalResolution === "insufficient" && kinds.includes("civizen_product") && !kinds.includes("external_world")) {
-    groundedAnswer = retrieval.faq.length || retrieval.capabilities.length || retrieval.documents.length ? composeFromRetrieval(retrieval, searchQuery, topic) : `${UNVERIFIED} I can help with related current features if you name one.`;
+    groundedAnswer = retrieval.faq.length || retrieval.capabilities.length || retrieval.documents.length ? composeFromRetrieval(retrieval, searchQuery, topic, language) : canned?.unverified ?? `${UNVERIFIED} I can help with related current features if you name one.`;
   } else {
-    groundedAnswer = composeFromRetrieval(retrieval, searchQuery, topic);
+    groundedAnswer = composeFromRetrieval(retrieval, searchQuery, topic, language);
     if (groundedAnswer === UNVERIFIED && kinds.includes("external_world")) {
       groundedAnswer = "I do not have a Civizen-specific fact for that. I can explain the general topic, separate from current Civizen features.";
     }
@@ -6126,14 +7161,14 @@ function prepareNelaTurn(messages, options = {}) {
     groundedAnswer = learnedHit.answer;
     usedLearnedMemoryKey = learnedHit.questionKey;
   }
-  if (inScope && !greeting) {
+  if (inScope && !greeting && language === "en") {
     const shapeQuery = rewritten.isVerification ? rewritten.previousUserQuestion ?? latestText : latestText;
     groundedAnswer = shapeAnswerToQuestion(shapeQuery, groundedAnswer);
   }
-  if (rewritten.isVerification && inScope && !greeting && !canned) {
+  if (rewritten.isVerification && inScope && !greeting && !cannedTopic) {
     groundedAnswer = composeVerification(rewritten.previousAssistantClaim, groundedAnswer);
   }
-  if (options.runtimeData?.summary && !canned && resourcePlan.internalResolution !== "insufficient") {
+  if (options.runtimeData?.summary && !cannedTopic && resourcePlan.internalResolution !== "insufficient") {
     groundedAnswer = `${groundedAnswer}
 
 For your account: ${options.runtimeData.summary}`.trim();
@@ -6146,7 +7181,8 @@ For your account: ${options.runtimeData.summary}`.trim();
     groundedAnswer,
     resourcePlan,
     isVerification: rewritten.isVerification,
-    audience: options.audience
+    audience: options.audience,
+    language
   });
   const prep = {
     resolvedQuery,
@@ -6160,6 +7196,7 @@ For your account: ${options.runtimeData.summary}`.trim();
     resourcePlan,
     diagnostics: {
       resolvedQuery,
+      language,
       isVerification: rewritten.isVerification,
       previousUserQuestion: rewritten.previousUserQuestion,
       matchedFaqId: hardship ? PERSONAL_HARDSHIP_FAQ_ID : peace ? PEACE_COOPERATION_FAQ_ID : usedLearnedMemoryKey ? `learned:${usedLearnedMemoryKey}` : retrieval.faq[0]?.item.id ?? null,
@@ -6184,9 +7221,18 @@ For your account: ${options.runtimeData.summary}`.trim();
       }
     }
   };
-  prep.skipLlm = canned || shouldSkipLlm(prep);
+  prep.skipLlm = cannedTopic || shouldSkipLlm(prep, { answerIsLocalized: answerIsLocalized(prep, language) });
   return prep;
 }
+function answerIsLocalized(prep, language) {
+  if (language === "en") return true;
+  if (!prep.inScope || prep.isGreeting) return true;
+  const faqId = prep.diagnostics.matchedFaqId;
+  const item = faqId ? ASSISTANT_FAQ_BY_ID.get(faqId) : void 0;
+  const localized = item?.localizedAnswers?.[language];
+  return Boolean(localized && prep.groundedAnswer.includes(localized.trim()));
+}
+var ASSISTANT_FAQ_BY_ID = new Map(KNOWLEDGE_PACK.faq.map((item) => [item.id, item]));
 
 // src/lib/assistant/interaction-log.ts
 function classifyCiviInteractionSource(args) {

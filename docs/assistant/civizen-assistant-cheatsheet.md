@@ -3,7 +3,7 @@ title: Civizen Assistant Cheat Sheet
 status: current
 canonical: true
 version: 1
-last_reviewed: 2026-08-16
+last_reviewed: 2026-10-06
 audience: civi
 ---
 
@@ -75,7 +75,10 @@ Public discovery includes `/areas`, `/partners`, `/fund`, `/documents`, `/govern
 | Governance landing | Home > Governance | implemented |
 | Civic voting | Home > Governance > Civic voting | implemented |
 | Governance (member page: Votes · Proposals · Tools) | Settings > Member workspace, or /governance/workspace | implemented (Tools tab only for office holders / founders / admins) |
-| Notifications | Bell in the top chrome, or Settings > Notifications | implemented (consultation published / result, Matters, agreements) |
+| Notifications | Bell in the top chrome, or Settings > Notifications | implemented (unread count on the bell; consultation published / result published, Matters, agreements, posts; each item opens its page) |
+| Help and support | Settings > Help and support | implemented (Ask Civi, Documents, Why Civizen Exists, legal status notice, Terms) |
+| Observer console | Civic voting > a consultation > Observe, or /governance/voting/:electionId/observe | implemented (countable and withdrawn ballots, audit events; no voter identities or choices; says plainly when there is no roster) |
+| Open votes on Study | Study > Open votes card | implemented (real open consultations with closing dates) |
 | Governance Solutions | Home > Governance > Governance Solutions | implemented |
 | Community Governance Charter | Home > Governance > Community Governance Charter | implemented (interim public policy) |
 | Partners | Contribute > Organization Partnership | implemented (public notice; not a CRM) |
@@ -191,13 +194,31 @@ Working institutional design (not adopted public policy, not fully implemented a
 
 ## Voting
 
-Civic elections and contests at `/governance/voting`. A Matter can draft a **voting proposal** (does not cast ballots). Geographic scope on a Matter (`Global` by default; optional country) is separate from subject **Area** (optional domain taxonomy). Voting proposals inherit the Matter’s geographic scope; founders/admins publish to an ordinary nonbinding consultation ballot (Support / Oppose / Abstain) at `/governance/voting/:electionId`. Public surfaces show aggregate option counts, suppressed country-of-residence participant stats (≥25 with country overall; ≥5 per country), and an optional consented participant directory (display name + country only). Casting does not require public listing. Until closing, participants may withdraw their effective consultation ballot (it leaves valid counts, country stats, and the directory) and cast again if eligible. Individual ballot choices, emails, and account IDs are not shown publicly. Demo/sample elections stay in History, not the live list. Global contests remain visible under local country filters. Community proposals/votes also exist in the governance workspace under Charter rules. Token ownership or wealth alone does not create voting authority. Voting may be advisory or binding only within a delegated scope.
+Civic elections and contests at `/governance/voting`. Public browsing needs no account; casting a ballot needs a free Civizen account.
+
+**Casting and receipts.** Open the consultation, choose Support / Oppose / Abstain (or the options that consultation lists; approval ballots let a voter pick several up to a maximum), confirm. The page shows **Your receipt** — a random code in groups of four characters. **Check that my receipt is counted** compares it with the public list of counted receipts. The receipt proves the ballot is counted without revealing the choice; anyone with the code can run the check.
+
+**Sealed choices.** The choice is encrypted on the server under a per-election key no app role can read. Founders, admins, and staff see totals only. Public pages show per-option counts, country statistics only above thresholds (≥25 overall, ≥5 per country), and an optional participant directory (display name + country, opt-in). The hash-chained audit log stores no voter identities.
+
+**Eligibility (server side).** Ordinary consultations need only a free account. The server also enforces: signed in; voting window open; no active governance sanction; and, when the consultation declares them, verified identity, minimum age (date of birth on the profile), and residence in the scoped country. Sample elections are not votable; high-security elections take ballots only in the native app. When a member cannot vote, the ballot page shows the reason under the voting buttons. Identity verification is at Settings > Edit Profile.
+
+**Changing a vote.** While voting is open: **Withdraw ballot**, then vote again. Withdrawing removes the ballot from counts, country statistics, and the directory, and the receipt leaves the list; a new ballot gives a new receipt. Nothing changes after closing.
+
+**Closing and outcome.** At its closing time the consultation closes automatically (hourly tick): status closed, final tally stored and published on the ballot page and under Results on the Votes tab of the Governance page; the proposal behind it closes; voters and supporters are notified. Outcome rules: no countable ballots → none; quorum not met (fewer ballots than required); otherwise Support share among Support and Oppose ballots versus the pass threshold (50% unless set) → Passed / Not passed; consultations with their own options show the most chosen option; approval ballots show the most approved option without a pass verdict.
+
+**Proposals.** A consultation starts as a Matter: Contribute > Questions, Issues & Ideas > the Matter > **Create voting proposal**. On the proposal page the author sets scope (global or one country), opening/closing times, ballot options (default Support / Oppose / Abstain, or 2–12 of their own, optionally approval voting with a maximum number of picks), optional quorum and pass threshold, then **Open for support** with a supporter threshold. Signed-in members tap **Support this proposal** / **Withdraw my support**; the page shows progress and **Threshold reached**. The author can publish once the threshold is reached; founders and admins can publish at any time. Drafts, open, published, and closed proposals are listed on the Proposals tab of the Governance page.
+
+**Member Governance page** (`/governance/workspace`; Settings > Governance > Member workspace, the Governance card on Home, or **Open member workspace** on the public landing): tabs **Votes** (open consultations with the member's ballot status, scheduled, Results), **Proposals**, and **Tools** (steward console, workspace tools) — Tools only for office holders, founders, admins, and members who can assign roles. A Matter can draft a **voting proposal** (does not cast ballots). Geographic scope on a Matter (`Global` by default; optional country) is separate from subject **Area** (optional domain taxonomy). Voting proposals inherit the Matter’s geographic scope; founders/admins publish to an ordinary nonbinding consultation ballot (Support / Oppose / Abstain) at `/governance/voting/:electionId`. Public surfaces show aggregate option counts, suppressed country-of-residence participant stats (≥25 with country overall; ≥5 per country), and an optional consented participant directory (display name + country only). Casting does not require public listing. Until closing, participants may withdraw their effective consultation ballot (it leaves valid counts, country stats, and the directory) and cast again if eligible. Individual ballot choices, emails, and account IDs are not shown publicly. Demo/sample elections stay in History, not the live list. Global contests remain visible under local country filters. Community proposals/votes also exist in the governance workspace under Charter rules. Token ownership or wealth alone does not create voting authority. Voting may be advisory or binding only within a delegated scope.
 
 Who can draft a voting proposal from a Matter: the Matter initiator or responsible party, or founder/admin/system. Who can publish the ballot: founder/admin/system only. Other proposals: eligible participants through `/governance/workspace` and `/governance/new`. Exact eligibility follows published platform rules and role permissions.
 
 Voluntary Civizen consultations do not create legal citizenship, replace public-law elections, or imply a predetermined world government. Public framing stays inclusive (a more united world; respect for rights, diversity, and local autonomy).
 
 The first real public consultation is **A Single World Citizenship** (`single-world-citizenship`) on `/governance/voting`. The question is: should humanity work toward establishing a single world citizenship, shared by all people regardless of nationality? Options are Support, Oppose, and Abstain, with equal treatment. It is a global, ordinary, nonbinding consultation. A Support vote does not create, grant, or enroll anyone in a world citizenship, and it does not replace existing nationality. It does not ask about shared land or resources, a common currency, cashless systems, a specific government or constitution, or common legal, economic, health, or education standards. Those would be separate future consultations. Demo and sample elections are not this consultation.
+
+## Languages
+
+Civi understands English, Armenian, and Russian. Armenian and Russian questions are matched to the English knowledge through word stems and question forms (`src/lib/assistant/language.ts`). Frequently asked voting, proposal, notification, help, and identity questions have hand-written Armenian and Russian answers (`localizedAnswers` on the FAQ item, text in `catalog-data/faq-voting.hy.ts` / `.ru.ts`), returned without a model call. Other questions keep the English evidence and the model is asked to reply in the member's language. Greetings and the out-of-scope reply are also localized. Page names in localized answers follow the app's own translations (Քվեարկություններ / Առաջարկներ / Գործիքներ, Голосования / Предложения / Инструменты, Ձեր անդորրագիրը / Ваша квитанция).
 
 ## Messaging
 

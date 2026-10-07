@@ -1,12 +1,14 @@
 import type { AssistantFaqItem } from '../types';
+import { VOTING_FAQ_HY } from './faq-voting.hy';
+import { VOTING_FAQ_RU } from './faq-voting.ru';
 
 export const ASSISTANT_FAQ_PART_2: AssistantFaqItem[] = [
   {
     id: 'how_does_governance_work',
     question: 'How does governance work?',
     answer:
-      'Civizen currently has a public Governance landing, civic voting/elections, a member proposal workspace, and Governance Solutions. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.',
-    aliases: ['civizen governance'],
+      'Civizen has a public Governance landing, Civic voting with sealed ballots and voter receipts, one member Governance page with Votes, Proposals, and Tools tabs, member-supported proposals that open a consultation once enough members back them, a notification center, and Governance Solutions. Consultations close automatically at their closing time and publish the tally and outcome. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.',
+    aliases: ['civizen governance', 'how does voting work in civizen'],
     capabilityIds: ['governance', 'governance_charter'],
     sourceRefs: [
       'docs/02-policies/governance/civizen-community-governance-charter.md',
@@ -17,8 +19,8 @@ export const ASSISTANT_FAQ_PART_2: AssistantFaqItem[] = [
     id: 'who_can_create_proposals',
     question: 'Who can create proposals?',
     answer:
-      'Eligible signed-in participants can submit proposals in Home > Governance workspace under the Community Governance Charter. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge’s coordinator.',
-    aliases: ['who can propose'],
+      'Any signed-in member can start one: open a Matter under Contribute > Questions, Issues & Ideas and choose Create voting proposal, then open the draft for member support from the Proposals tab of your Governance page. Once the support threshold is reached the author can publish the ballot; founders and admins can publish at any time. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge’s coordinator.',
+    aliases: ['who can propose', 'who can start a consultation'],
     capabilityIds: ['governance', 'community_challenges'],
     sourceRefs: [
       'docs/02-policies/governance/civizen-community-governance-charter.md',
@@ -29,8 +31,9 @@ export const ASSISTANT_FAQ_PART_2: AssistantFaqItem[] = [
     id: 'who_can_vote',
     question: 'Who can vote?',
     answer:
-      'Civic elections are at Home > Governance > Civic voting. Community votes follow published eligibility in the Charter and platform rules. Token ownership, financial support, or wealth alone does not create voting authority.',
-    aliases: ['voting rights', 'who votes'],
+      'Any signed-in member with a free account can vote in an ordinary consultation at Home > Governance > Civic voting. A consultation may additionally require a verified identity, a minimum age, or residence in one country, and an active governance sanction blocks voting. The server checks these rules, and the ballot page shows the reason when you cannot vote. Token ownership, financial support, or wealth alone never creates voting authority.',
+    localizedAnswers: { hy: VOTING_FAQ_HY.who_can_vote, ru: VOTING_FAQ_RU.who_can_vote },
+    aliases: ['voting rights', 'who votes', 'who is eligible to vote', 'voting eligibility'],
     capabilityIds: ['civic_voting'],
     sourceRefs: ['docs/02-policies/governance/civizen-community-governance-charter.md'],
   },

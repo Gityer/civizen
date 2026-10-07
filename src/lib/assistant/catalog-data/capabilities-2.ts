@@ -120,12 +120,40 @@ export const ASSISTANT_CAPABILITIES_PART_2: AssistantCapability[] = [
     name: 'Civic voting',
     status: 'implemented',
     description:
-      'Elections catalog and election detail/observe at /governance/voting. Public browsing is available. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.',
+      'Elections catalog, ballot pages, and an Observer console at /governance/voting. Public browsing is available; casting needs a free account. Ballot choices are sealed on the server and never shown individually; every voter gets a receipt (a code in groups of four) and can check it against the public list of counted receipts. Eligibility (sign-in, voting window, sanctions, and any verified-identity, minimum-age, or country rule the consultation declares) is checked on the server and the reason is shown when a member cannot vote. A ballot can be withdrawn and cast again until closing. Consultations close automatically at their closing time with a published tally and outcome (quorum, pass threshold, most chosen option, or the most approved option for approval ballots where voters pick several options). The Observer console shows countable and withdrawn ballots and audit events only. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.',
+    howTo:
+      'Open Home > Governance > Civic voting, open a consultation, choose an option, and keep the receipt shown afterwards. Use Check that my receipt is counted on the same page, Withdraw ballot to change your vote while voting is open, and Observe next to the title for process metrics.',
     routes: ['/governance/voting'],
     roles: ['guest', 'member'],
-    relatedCapabilities: ['governance'],
-    aliases: ['elections', 'vote'],
+    relatedCapabilities: ['governance', 'notifications'],
+    aliases: ['elections', 'vote', 'ballot', 'receipt', 'consultation', 'observer console'],
     sourceRefs: ['src/pages/governance/CivicVotingHub.tsx', 'docs/02-policies/governance/civizen-community-governance-charter.md'],
+  },
+  {
+    id: 'notifications',
+    name: 'Notifications',
+    status: 'implemented',
+    description:
+      'Notification center for members: the bell at the top of the app shows the unread count and opens the Notifications page, which lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Each item opens the related page.',
+    howTo: 'Tap the bell at the top of the app, or open Settings > Notifications.',
+    routes: ['/notifications'],
+    roles: ['member'],
+    relatedCapabilities: ['governance', 'matters', 'agreements'],
+    aliases: ['notification center', 'bell', 'bell icon', 'alerts'],
+    sourceRefs: ['src/pages/Notifications.tsx', 'src/components/layout/NotificationBell.tsx', 'src/lib/notifications.ts'],
+  },
+  {
+    id: 'help_support',
+    name: 'Help and support',
+    status: 'implemented',
+    description:
+      'Settings page that gathers where to get help: Ask Civi in Messaging, the public Documents, Why Civizen Exists, the legal status notice, and the Terms.',
+    howTo: 'Open Settings > Help and support.',
+    routes: ['/settings/help'],
+    roles: ['member'],
+    relatedCapabilities: ['nela'],
+    aliases: ['help page', 'support page', 'get help'],
+    sourceRefs: ['src/pages/settings/HelpSupport.tsx', 'src/pages/settings/help-support-links.ts'],
   },
   {
     id: 'governance_solutions',

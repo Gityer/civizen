@@ -2,6 +2,7 @@ import { ASSISTANT_CAPABILITIES_PART_1 } from './catalog-data/capabilities-1';
 import { ASSISTANT_CAPABILITIES_PART_2 } from './catalog-data/capabilities-2';
 import { ASSISTANT_FAQ_PART_1 } from './catalog-data/faq-1';
 import { ASSISTANT_FAQ_PART_2 } from './catalog-data/faq-2';
+import { ASSISTANT_FAQ_VOTING } from './catalog-data/faq-voting';
 import type { AssistantCapability, AssistantFaqItem, TerminologyAlias } from './types';
 
 /**
@@ -17,6 +18,7 @@ export const ASSISTANT_CAPABILITIES: AssistantCapability[] = [
 export const ASSISTANT_FAQ: AssistantFaqItem[] = [
   ...ASSISTANT_FAQ_PART_1,
   ...ASSISTANT_FAQ_PART_2,
+  ...ASSISTANT_FAQ_VOTING,
 ];
 
 export const ASSISTANT_ALIASES: TerminologyAlias[] = [
@@ -31,4 +33,8 @@ export const ASSISTANT_ALIASES: TerminologyAlias[] = [
   { current: 'Wellbeing Insights', aliases: ['group insights', 'organization happiness'] }, { current: 'Human Outcome Review', aliases: ['outcome review', 'happiness impact'] },
   { current: 'My Contributions', aliases: ['impact ledger'] },
   { current: 'Civizen', aliases: ['levela'] },
+  { current: 'Governance page', aliases: ['member workspace', 'governance workspace', 'member governance page'] },
+  { current: 'receipt', aliases: ['voting receipt', 'ballot receipt', 'receipt code'] },
+  { current: 'Notifications', aliases: ['notification center', 'bell icon', 'the bell'] },
+  { current: 'Help and support', aliases: ['help page', 'support page'] },
 ];

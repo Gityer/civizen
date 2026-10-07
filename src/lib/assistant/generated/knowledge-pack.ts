@@ -6,12 +6,12 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.198",
     "appReleaseId": "20261005-v0.1.198",
     "androidVersionCode": 200,
-    "gitSha": "05d487d34dde717af1b7d82faaefb0b8a3440d56",
-    "generatedAt": "2026-10-06T05:56:44.377Z",
-    "sourceFingerprint": "d63fd70ff44652577f6329658258aee698332039b350015eaf1c676a0e45388b",
+    "gitSha": "33aa0ae5f164506e8fb88ccaf3b49fef9a72b3b3",
+    "generatedAt": "2026-10-07T02:51:28.630Z",
+    "sourceFingerprint": "9df684a9fbebe1371236abb014805230cba4fb599c83c65184f7d58892a9602e",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 370
+    "chunkCount": 394
   },
   "capabilities": [
     {
@@ -726,7 +726,8 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "civic_voting",
       "name": "Civic voting",
       "status": "implemented",
-      "description": "Elections catalog and election detail/observe at /governance/voting. Public browsing is available. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.",
+      "description": "Elections catalog, ballot pages, and an Observer console at /governance/voting. Public browsing is available; casting needs a free account. Ballot choices are sealed on the server and never shown individually; every voter gets a receipt (a code in groups of four) and can check it against the public list of counted receipts. Eligibility (sign-in, voting window, sanctions, and any verified-identity, minimum-age, or country rule the consultation declares) is checked on the server and the reason is shown when a member cannot vote. A ballot can be withdrawn and cast again until closing. Consultations close automatically at their closing time with a published tally and outcome (quorum, pass threshold, most chosen option, or the most approved option for approval ballots where voters pick several options). The Observer console shows countable and withdrawn ballots and audit events only. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.",
+      "howTo": "Open Home > Governance > Civic voting, open a consultation, choose an option, and keep the receipt shown afterwards. Use Check that my receipt is counted on the same page, Withdraw ballot to change your vote while voting is open, and Observe next to the title for process metrics.",
       "routes": [
         "/governance/voting"
       ],
@@ -735,15 +736,74 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
         "member"
       ],
       "relatedCapabilities": [
-        "governance"
+        "governance",
+        "notifications"
       ],
       "aliases": [
         "elections",
-        "vote"
+        "vote",
+        "ballot",
+        "receipt",
+        "consultation",
+        "observer console"
       ],
       "sourceRefs": [
         "src/pages/governance/CivicVotingHub.tsx",
         "docs/02-policies/governance/civizen-community-governance-charter.md"
+      ]
+    },
+    {
+      "id": "notifications",
+      "name": "Notifications",
+      "status": "implemented",
+      "description": "Notification center for members: the bell at the top of the app shows the unread count and opens the Notifications page, which lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Each item opens the related page.",
+      "howTo": "Tap the bell at the top of the app, or open Settings > Notifications.",
+      "routes": [
+        "/notifications"
+      ],
+      "roles": [
+        "member"
+      ],
+      "relatedCapabilities": [
+        "governance",
+        "matters",
+        "agreements"
+      ],
+      "aliases": [
+        "notification center",
+        "bell",
+        "bell icon",
+        "alerts"
+      ],
+      "sourceRefs": [
+        "src/pages/Notifications.tsx",
+        "src/components/layout/NotificationBell.tsx",
+        "src/lib/notifications.ts"
+      ]
+    },
+    {
+      "id": "help_support",
+      "name": "Help and support",
+      "status": "implemented",
+      "description": "Settings page that gathers where to get help: Ask Civi in Messaging, the public Documents, Why Civizen Exists, the legal status notice, and the Terms.",
+      "howTo": "Open Settings > Help and support.",
+      "routes": [
+        "/settings/help"
+      ],
+      "roles": [
+        "member"
+      ],
+      "relatedCapabilities": [
+        "nela"
+      ],
+      "aliases": [
+        "help page",
+        "support page",
+        "get help"
+      ],
+      "sourceRefs": [
+        "src/pages/settings/HelpSupport.tsx",
+        "src/pages/settings/help-support-links.ts"
       ]
     },
     {
@@ -1006,7 +1066,12 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "what_is_civizen",
       "question": "What is Civizen?",
       "answer": "Civizen is an open participatory system for organizing how humanity learns, contributes, collaborates, governs, shares resources, solves common challenges, and continuously improves the systems we live and work within.",
+      "localizedAnswers": {
+        "hy": "Civizen-ը բաց մասնակցային համակարգ է, որը կազմակերպում է, թե ինչպես է մարդկությունը սովորում, ներդրում կատարում, համագործակցում, կառավարում, կիսվում ռեսուրսներով, լուծում ընդհանուր մարտահրավերները և շարունակաբար բարելավում այն համակարգերը, որոնցում ապրում և աշխատում ենք։",
+        "ru": "Civizen — это открытая система участия, которая организует то, как человечество учится, вносит вклад, сотрудничает, управляет, делится ресурсами, решает общие проблемы и постоянно улучшает системы, в которых мы живём и работаем."
+      },
       "aliases": [
+        "what is civizen",
         "what's civizen",
         "what's civizen in one sentence",
         "civizen in one sentence",
@@ -1359,9 +1424,10 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     {
       "id": "how_does_governance_work",
       "question": "How does governance work?",
-      "answer": "Civizen currently has a public Governance landing, civic voting/elections, a member proposal workspace, and Governance Solutions. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.",
+      "answer": "Civizen has a public Governance landing, Civic voting with sealed ballots and voter receipts, one member Governance page with Votes, Proposals, and Tools tabs, member-supported proposals that open a consultation once enough members back them, a notification center, and Governance Solutions. Consultations close automatically at their closing time and publish the tally and outcome. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.",
       "aliases": [
-        "civizen governance"
+        "civizen governance",
+        "how does voting work in civizen"
       ],
       "capabilityIds": [
         "governance",
@@ -1375,9 +1441,10 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     {
       "id": "who_can_create_proposals",
       "question": "Who can create proposals?",
-      "answer": "Eligible signed-in participants can submit proposals in Home > Governance workspace under the Community Governance Charter. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge’s coordinator.",
+      "answer": "Any signed-in member can start one: open a Matter under Contribute > Questions, Issues & Ideas and choose Create voting proposal, then open the draft for member support from the Proposals tab of your Governance page. Once the support threshold is reached the author can publish the ballot; founders and admins can publish at any time. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge’s coordinator.",
       "aliases": [
-        "who can propose"
+        "who can propose",
+        "who can start a consultation"
       ],
       "capabilityIds": [
         "governance",
@@ -1391,10 +1458,16 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     {
       "id": "who_can_vote",
       "question": "Who can vote?",
-      "answer": "Civic elections are at Home > Governance > Civic voting. Community votes follow published eligibility in the Charter and platform rules. Token ownership, financial support, or wealth alone does not create voting authority.",
+      "answer": "Any signed-in member with a free account can vote in an ordinary consultation at Home > Governance > Civic voting. A consultation may additionally require a verified identity, a minimum age, or residence in one country, and an active governance sanction blocks voting. The server checks these rules, and the ballot page shows the reason when you cannot vote. Token ownership, financial support, or wealth alone never creates voting authority.",
+      "localizedAnswers": {
+        "hy": "Սովորական խորհրդակցությանը կարող է քվեարկել մուտք գործած ցանկացած անդամ, ով անվճար հաշիվ ունի՝ Գլխավոր > Կառավարում > Քաղաքացիական քվեարկություն բաժնում։ Խորհրդակցությունը կարող է լրացուցիչ պահանջել հաստատված ինքնություն, նվազագույն տարիք կամ բնակություն որոշակի երկրում, իսկ կառավարման գործող պատժամիջոցն արգելում է քվեարկությունը։ Սերվերը ստուգում է այս կանոնները, և քվեաթերթիկի էջում նշվում է պատճառը, երբ քվեարկել չեք կարող։ Թոքենների սեփականությունը, ֆինանսական աջակցությունը կամ հարստությունն ինքնին երբեք քվեարկելու իրավունք չեն տալիս։",
+        "ru": "В обычной консультации может голосовать любой вошедший участник с бесплатным аккаунтом — в разделе Главная > Управление > Гражданское голосование. Консультация может дополнительно требовать подтверждённой личности, минимального возраста или проживания в определённой стране, а действующая санкция управления блокирует голосование. Сервер проверяет эти правила, и на странице бюллетеня показывается причина, если голосовать нельзя. Владение токенами, финансовая поддержка или богатство сами по себе никогда не дают права голоса."
+      },
       "aliases": [
         "voting rights",
-        "who votes"
+        "who votes",
+        "who is eligible to vote",
+        "voting eligibility"
       ],
       "capabilityIds": [
         "civic_voting"
@@ -1711,6 +1784,488 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
         "src/pages/happiness/HappinessPrivacy.tsx",
         "src/pages/wellbeing/WellbeingInsights.tsx"
       ]
+    },
+    {
+      "id": "how_do_i_vote",
+      "question": "How do I vote?",
+      "answer": "Open Home > Governance > Civic voting (or the Open votes card on Study, or the Votes tab on your Governance page) and open the consultation. Sign in if you have not, choose an option — Support, Oppose, or Abstain, or the options that consultation lists — and confirm. The page then shows Your receipt: keep that code.\n\nOrdinary consultations need only a free account. Until voting closes you can withdraw your ballot and vote again. Your choice is sealed; only totals are public.",
+      "localizedAnswers": {
+        "hy": "Բացեք Գլխավոր > Կառավարում > Քաղաքացիական քվեարկություն (կամ «Բաց քվեարկություններ» քարտը Ուսում բաժնում, կամ ձեր Կառավարում էջի «Քվեարկություններ» ներդիրը) և բացեք խորհրդակցությունը։ Մուտք գործեք, եթե դեռ չեք արել, ընտրեք տարբերակ՝ Կողմ, Դեմ կամ Ձեռնպահ, կամ այն տարբերակները, որ նշված են տվյալ խորհրդակցությանը, և հաստատեք։ Այնուհետև էջում կհայտնվի «Ձեր անդորրագիրը»՝ պահեք այդ կոդը։\n\nՍովորական խորհրդակցությունների համար բավական է անվճար հաշիվ։ Մինչև քվեարկության փակվելը կարող եք հետ վերցնել ձեր քվեաթերթիկը և քվեարկել նորից։ Ձեր ընտրությունը կնքված է. հրապարակային են միայն ընդհանուր թվերը։",
+        "ru": "Откройте Главная > Управление > Гражданское голосование (или карточку «Открытые голосования» в разделе Обучение, или вкладку «Голосования» на вашей странице Управление) и откройте консультацию. Войдите, если ещё не вошли, выберите вариант — За, Против или Воздержаться, либо варианты, перечисленные в этой консультации, — и подтвердите. После этого на странице появится «Ваша квитанция»: сохраните этот код.\n\nДля обычных консультаций достаточно бесплатного аккаунта. Пока голосование открыто, вы можете отозвать бюллетень и проголосовать снова. Ваш выбор запечатан; публичны только итоговые числа."
+      },
+      "aliases": [
+        "how to vote",
+        "how do I cast a ballot",
+        "how do I vote on a consultation",
+        "where do I vote",
+        "cast my vote"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "how_do_i_know_my_vote_was_counted",
+      "question": "How do I know my vote was counted?",
+      "answer": "After you vote, the ballot page shows Your receipt — a code in groups of four characters. Tap Check that my receipt is counted: Civizen compares it with the public list of counted receipts for that consultation and tells you whether it is on the list.\n\nThe receipt proves your ballot is counted without revealing your choice, and anyone with the code can run the same check. If you withdraw your ballot, the receipt leaves the list; voting again gives you a new one.",
+      "localizedAnswers": {
+        "hy": "Քվեարկելուց հետո քվեաթերթիկի էջում հայտնվում է «Ձեր անդորրագիրը»՝ կոդ, որը բաժանված է չորս նիշանոց խմբերի։ Սեղմեք «Ստուգել, որ իմ անդորրագիրը հաշվված է»․ Civizen-ը այն համեմատում է տվյալ խորհրդակցության հաշվված անդորրագրերի հրապարակային ցուցակի հետ և ասում, թե այն ցուցակում է, թե ոչ։\n\nԱնդորրագիրն ապացուցում է, որ ձեր քվեաթերթիկը հաշվված է՝ առանց բացահայտելու ձեր ընտրությունը, և ցանկացած մարդ, ով ունի կոդը, կարող է կատարել նույն ստուգումը։ Եթե հետ վերցնեք քվեաթերթիկը, անդորրագիրը հանվում է ցուցակից․ նորից քվեարկելիս նոր անդորրագիր եք ստանում։",
+        "ru": "После голосования на странице бюллетеня появляется «Ваша квитанция» — код, разбитый на группы по четыре символа. Нажмите «Проверить, что моя квитанция учтена»: Civizen сверит её с публичным списком учтённых квитанций этой консультации и сообщит, есть ли она в списке.\n\nКвитанция подтверждает, что ваш бюллетень учтён, не раскрывая вашего выбора, и любой, у кого есть код, может выполнить ту же проверку. Если вы отзовёте бюллетень, квитанция исчезнет из списка; при повторном голосовании вы получите новую."
+      },
+      "aliases": [
+        "was my vote counted",
+        "is my vote counted",
+        "was my ballot counted",
+        "verify my vote",
+        "check my receipt",
+        "where do I check my receipt",
+        "receipt check"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "what_is_a_voting_receipt",
+      "question": "What is a receipt?",
+      "answer": "A receipt is the random code Civizen gives you when you cast a ballot in a consultation, shown as Your receipt on the ballot page in groups of four characters. It proves your ballot is counted without revealing how you voted.\n\nKeep the code. Tap Check that my receipt is counted on the ballot page to compare it with the public list of counted receipts. Withdrawing your ballot removes the receipt from that list.",
+      "localizedAnswers": {
+        "hy": "Անդորրագիրը պատահական կոդ է, որը Civizen-ը տալիս է, երբ խորհրդակցությանը քվեաթերթիկ եք ներկայացնում։ Այն ցուցադրվում է քվեաթերթիկի էջում՝ «Ձեր անդորրագիրը» վերնագրով, չորս նիշանոց խմբերով։ Այն ապացուցում է, որ ձեր քվեաթերթիկը հաշվված է՝ առանց բացահայտելու, թե ինչպես եք քվեարկել։\n\nՊահեք կոդը։ Քվեաթերթիկի էջում սեղմեք «Ստուգել, որ իմ անդորրագիրը հաշվված է», որպեսզի համեմատեք այն հաշվված անդորրագրերի հրապարակային ցուցակի հետ։ Քվեաթերթիկը հետ վերցնելիս անդորրագիրը հանվում է այդ ցուցակից։",
+        "ru": "Квитанция — это случайный код, который Civizen выдаёт, когда вы подаёте бюллетень в консультации. Она показана на странице бюллетеня под заголовком «Ваша квитанция» группами по четыре символа. Она подтверждает, что ваш бюллетень учтён, не раскрывая, как вы проголосовали.\n\nСохраните код. Нажмите «Проверить, что моя квитанция учтена» на странице бюллетеня, чтобы сверить его с публичным списком учтённых квитанций. При отзыве бюллетеня квитанция удаляется из этого списка."
+      },
+      "aliases": [
+        "voting receipt",
+        "ballot receipt",
+        "receipt code",
+        "what is the receipt for",
+        "vote receipt"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "why_cant_i_vote",
+      "question": "Why can't I vote?",
+      "answer": "Open the consultation page: when you cannot vote, the reason is shown under the voting buttons. The usual reasons are: you are not signed in; voting has not opened yet or has already closed; a governance sanction blocks voting; the vote needs a verified identity (Settings > Edit Profile > Identity verification); the vote has a minimum age and your profile has no date of birth, or you are under that age; the vote is limited to residents of one country and your profile shows another; it is a sample election; or it is a high-security election that takes ballots only in the native app.\n\nThese checks run on the server, so the same rule applies to everyone. Ordinary consultations need only a free account.",
+      "localizedAnswers": {
+        "hy": "Բացեք խորհրդակցության էջը․ երբ քվեարկել չեք կարող, պատճառը նշված է քվեարկության կոճակների ներքևում։ Սովորական պատճառներն են՝ մուտք չեք գործել․ քվեարկությունը դեռ չի բացվել կամ արդեն փակվել է․ կառավարման պատժամիջոցն արգելում է քվեարկությունը․ քվեարկությունը պահանջում է հաստատված ինքնություն (Կարգավորումներ > Խմբագրել պրոֆիլը > Ինքնության հաստատում)․ քվեարկությունն ունի տարիքային շեմ, իսկ ձեր պրոֆիլում ծննդյան ամսաթիվ նշված չէ, կամ դուք այդ տարիքից փոքր եք․ քվեարկությունը նախատեսված է միայն մեկ երկրի բնակիչների համար, իսկ ձեր պրոֆիլում նշված է այլ երկիր․ դա փորձնական ընտրություն է․ կամ դա բարձր անվտանգության ընտրություն է, որը քվեաթերթիկներ ընդունում է միայն բնիկ հավելվածում։\n\nԱյս ստուգումները կատարվում են սերվերում, այնպես որ կանոնը բոլորի համար նույնն է։ Սովորական խորհրդակցությունների համար բավական է անվճար հաշիվ։",
+        "ru": "Откройте страницу консультации: если голосовать нельзя, причина показана под кнопками голосования. Обычные причины: вы не вошли в аккаунт; голосование ещё не открылось или уже закрылось; голосование блокирует санкция управления; для голосования нужна подтверждённая личность (Настройки > Редактировать профиль > Подтверждение личности); у голосования есть минимальный возраст, а в профиле не указана дата рождения, либо вы младше этого возраста; голосование открыто только для жителей одной страны, а в профиле указана другая; это пробные выборы; либо это выборы повышенной безопасности, которые принимают бюллетени только в нативном приложении.\n\nЭти проверки выполняются на сервере, поэтому правило одно для всех. Для обычных консультаций достаточно бесплатного аккаунта."
+      },
+      "aliases": [
+        "why cannot I vote",
+        "I cannot vote",
+        "voting buttons are disabled",
+        "not eligible to vote",
+        "why am I not eligible",
+        "eligibility reason"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "profile"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "do_i_need_verification_to_vote",
+      "question": "Do I need to be verified to vote?",
+      "answer": "No — not for ordinary consultations: a free Civizen account is enough. Only when a consultation declares that it requires a verified identity, a minimum age, or residence in one country does the server check that, and the ballot page shows the reason if you do not meet it. Identity verification is at Settings > Edit Profile.",
+      "localizedAnswers": {
+        "hy": "Ոչ․ սովորական խորհրդակցությունների համար բավական է անվճար Civizen հաշիվ։ Միայն այն դեպքում, երբ խորհրդակցությունը պահանջում է հաստատված ինքնություն, նվազագույն տարիք կամ բնակություն որոշակի երկրում, սերվերը ստուգում է դա, և քվեաթերթիկի էջում նշվում է պատճառը, եթե պայմանը չեք բավարարում։ Ինքնության հաստատումը գտնվում է Կարգավորումներ > Խմբագրել պրոֆիլը բաժնում։",
+        "ru": "Нет — для обычных консультаций достаточно бесплатного аккаунта Civizen. Только если консультация требует подтверждённой личности, минимального возраста или проживания в определённой стране, сервер проверяет это, и на странице бюллетеня показывается причина, если вы не соответствуете условию. Подтверждение личности находится в разделе Настройки > Редактировать профиль."
+      },
+      "aliases": [
+        "verified to vote",
+        "identity verification for voting",
+        "do I need verification to vote"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "profile"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "can_i_vote_without_account",
+      "question": "Can I vote without an account?",
+      "answer": "No. Anyone can browse consultations and results at Home > Governance > Civic voting without signing in, but casting a ballot needs a Civizen account. Create one from Sign up, then open the consultation and vote.",
+      "localizedAnswers": {
+        "hy": "Ոչ։ Խորհրդակցությունները և արդյունքները կարող է դիտել ցանկացած մարդ՝ Գլխավոր > Կառավարում > Քաղաքացիական քվեարկություն բաժնում, առանց մուտք գործելու, սակայն քվեաթերթիկ ներկայացնելու համար անհրաժեշտ է Civizen հաշիվ։ Ստեղծեք հաշիվ «Գրանցվել» կոճակով, ապա բացեք խորհրդակցությունը և քվեարկեք։",
+        "ru": "Нет. Просматривать консультации и результаты в разделе Главная > Управление > Гражданское голосование может любой без входа, но чтобы подать бюллетень, нужен аккаунт Civizen. Создайте его через «Регистрация», затем откройте консультацию и проголосуйте."
+      },
+      "aliases": [
+        "vote without signing up",
+        "vote as a guest",
+        "vote without registering"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "can_i_change_my_vote",
+      "question": "Can I change my vote?",
+      "answer": "Yes, while voting is open. Open the consultation page and tap Withdraw ballot, then vote again. Withdrawing removes your ballot from the counts, the country statistics, and the participant directory, and your receipt leaves the list of counted receipts; a new ballot gives you a new receipt.\n\nAfter the consultation closes nothing can be changed.",
+      "localizedAnswers": {
+        "hy": "Այո, քանի դեռ քվեարկությունը բաց է։ Բացեք խորհրդակցության էջը, սեղմեք «Հետ վերցնել քվեաթերթիկը», ապա քվեարկեք նորից։ Հետ վերցնելիս ձեր քվեաթերթիկը հանվում է հաշվարկից, երկրների վիճակագրությունից և մասնակիցների ցուցակից, իսկ ձեր անդորրագիրը հանվում է հաշվված անդորրագրերի ցուցակից․ նոր քվեաթերթիկով նոր անդորրագիր եք ստանում։\n\nԽորհրդակցության փակվելուց հետո այլևս ոչինչ փոխել հնարավոր չէ։",
+        "ru": "Да, пока голосование открыто. Откройте страницу консультации, нажмите «Отозвать бюллетень», затем проголосуйте снова. При отзыве ваш бюллетень исключается из подсчёта, статистики по странам и списка участников, а ваша квитанция удаляется из списка учтённых квитанций; с новым бюллетенем вы получаете новую квитанцию.\n\nПосле закрытия консультации изменить уже ничего нельзя."
+      },
+      "aliases": [
+        "change my vote",
+        "can I withdraw my ballot",
+        "withdraw my vote",
+        "undo my vote",
+        "vote again",
+        "revote"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "who_can_see_how_i_voted",
+      "question": "Who can see how I voted?",
+      "answer": "No one. Your choice is sealed on the server with a key that no app role can read, so founders, admins, and staff see only totals. Public pages show the count per option, country statistics only when enough people took part (at least 25 overall and 5 per country), and an optional participant directory with display name and country that you join only by choice — never your choice. Your receipt is a random code that is not linked to an option, and the audit log stores no voter identities.",
+      "localizedAnswers": {
+        "hy": "Ոչ ոք։ Ձեր ընտրությունը սերվերում կնքված է այնպիսի բանալիով, որը հավելվածի ոչ մի դեր չի կարող կարդալ, այնպես որ հիմնադիրները, ադմինիստրատորները և աշխատակիցները տեսնում են միայն ընդհանուր թվերը։ Հրապարակային էջերում ցուցադրվում են յուրաքանչյուր տարբերակի ձայների թիվը, երկրների վիճակագրությունը՝ միայն երբ մասնակիցները բավական շատ են (առնվազն 25 ընդհանուր և 5 յուրաքանչյուր երկրից), և մասնակիցների ընտրովի ցուցակը՝ անունով ու երկրով, որին միանում եք միայն ձեր ցանկությամբ, և որը երբեք չի ցույց տալիս ձեր ընտրությունը։ Ձեր անդորրագիրը պատահական կոդ է, որը կապված չէ որևէ տարբերակի հետ, իսկ աուդիտի մատյանում քվեարկողների ինքնությունը չի պահվում։",
+        "ru": "Никто. Ваш выбор запечатан на сервере ключом, который не может прочитать ни одна роль приложения, поэтому основатели, администраторы и сотрудники видят только итоговые числа. На публичных страницах показаны число голосов за каждый вариант, статистика по странам — только когда участников достаточно (не менее 25 всего и 5 на страну), и необязательный список участников с отображаемым именем и страной, в который вы входите только по своему желанию и который никогда не показывает ваш выбор. Ваша квитанция — случайный код, не связанный ни с одним вариантом, а в журнале аудита не хранятся личности голосующих."
+      },
+      "aliases": [
+        "is my vote secret",
+        "is my ballot anonymous",
+        "can admins see my vote",
+        "who sees my vote",
+        "is voting anonymous",
+        "sealed ballot"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "what_happens_when_a_vote_closes",
+      "question": "What happens when a vote closes?",
+      "answer": "At its closing time the consultation closes by itself: Civizen marks it closed, stores the final tally, and publishes the result on the ballot page and under Results on the Votes tab of your Governance page. The proposal behind it is closed too, and everyone who voted or supported it gets a notification.\n\nThe outcome follows the rules set on the proposal: no countable ballots; quorum not met (fewer ballots than required); otherwise the share of Support among Support and Oppose ballots is compared with the pass threshold (50% unless set otherwise) and shown as Passed or Not passed. Consultations with their own options show the most chosen option.",
+      "localizedAnswers": {
+        "hy": "Փակման ժամին խորհրդակցությունը փակվում է ինքնաբերաբար․ Civizen-ը նշում է այն փակված, պահում վերջնական հաշվարկը և հրապարակում արդյունքը քվեաթերթիկի էջում և ձեր Կառավարում էջի «Քվեարկություններ» ներդիրի «Արդյունքներ» բաժնում։ Փակվում է նաև դրա հիմքում ընկած առաջարկը, իսկ բոլորը, ովքեր քվեարկել են կամ աջակցել են դրան, ստանում են ծանուցում։\n\nԱրդյունքը որոշվում է առաջարկում սահմանված կանոններով․ հաշվվող քվեաթերթիկներ չկան․ քվորումը չի ապահովվել (քվեաթերթիկները պահանջվածից քիչ են)․ հակառակ դեպքում «Կողմ» և «Դեմ» քվեաթերթիկների մեջ «Կողմ»-ի բաժինը համեմատվում է ընդունման շեմի հետ (50 %, եթե այլ բան սահմանված չէ) և ցուցադրվում է «Ընդունվել է» կամ «Չի ընդունվել»։ Սեփական տարբերակներով խորհրդակցությունների դեպքում ցուցադրվում է ամենաշատ ընտրված տարբերակը։",
+        "ru": "В назначенное время консультация закрывается сама: Civizen отмечает её закрытой, сохраняет итоговый подсчёт и публикует результат на странице бюллетеня и в разделе «Результаты» на вкладке «Голосования» вашей страницы Управление. Лежащее в её основе предложение тоже закрывается, а все, кто голосовал или поддержал его, получают уведомление.\n\nИтог определяется по правилам, заданным в предложении: нет учтённых бюллетеней; кворум не набран (бюллетеней меньше, чем требуется); иначе доля «За» среди бюллетеней «За» и «Против» сравнивается с порогом принятия (50 %, если не задано иное) и показывается как «Принято» или «Не принято». В консультациях со своими вариантами показывается вариант, выбранный чаще всего."
+      },
+      "aliases": [
+        "when voting closes",
+        "how is the result decided",
+        "how is the result of a consultation decided",
+        "who counts the ballots",
+        "does civizen count ballots automatically",
+        "when is the result published",
+        "final tally"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "what_are_quorum_and_pass_threshold",
+      "question": "What is quorum?",
+      "answer": "Quorum is the minimum number of countable ballots a consultation needs for a result; below it the outcome reads Quorum not met. The pass threshold is the share of Support among Support and Oppose ballots (Abstain does not count) needed for Passed — 50% unless the proposal sets another value.\n\nThe author sets both when drafting the proposal, under Scope and timing on the proposal page. The outcome is computed automatically when voting closes and shown on the ballot page.",
+      "localizedAnswers": {
+        "hy": "Քվորումը հաշվվող քվեաթերթիկների նվազագույն թիվն է, որն անհրաժեշտ է, որ խորհրդակցությունն արդյունք ունենա․ դրանից պակասի դեպքում արդյունքը նշվում է «Քվորումը չի ապահովվել»։ Ընդունման շեմը «Կողմ» և «Դեմ» քվեաթերթիկների մեջ «Կողմ»-ի այն բաժինն է («Ձեռնպահ»-ը չի հաշվվում), որն անհրաժեշտ է «Ընդունվել է» արդյունքի համար՝ 50 %, եթե առաջարկում այլ արժեք սահմանված չէ։\n\nԵրկուսն էլ սահմանում է հեղինակը առաջարկը նախապատրաստելիս՝ առաջարկի էջի «Շրջանակ և ժամկետներ» բաժնում։ Արդյունքը հաշվարկվում է ինքնաբերաբար քվեարկության փակվելուն պես և ցուցադրվում քվեաթերթիկի էջում։",
+        "ru": "Кворум — это минимальное число учтённых бюллетеней, необходимое для результата консультации; если их меньше, итог читается как «Кворум не набран». Порог принятия — это доля «За» среди бюллетеней «За» и «Против» («Воздержаться» не учитывается), необходимая для итога «Принято», — 50 %, если в предложении не задано другое значение.\n\nОба параметра автор задаёт при подготовке предложения в разделе «Охват и сроки» на странице предложения. Итог вычисляется автоматически при закрытии голосования и показывается на странице бюллетеня."
+      },
+      "aliases": [
+        "what is the pass threshold",
+        "quorum and threshold",
+        "what is a quorum",
+        "how many votes are needed to pass"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "src/lib/civic-voting/outcome.ts",
+        "src/pages/governance/civic-voting-election/CivicVotingConsultationVote.tsx",
+        "supabase/migrations/20261006060000_consultation_ballot_integrity.sql",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "is_voting_binding",
+      "question": "Is voting binding?",
+      "answer": "Current civic consultations are nonbinding: they record what members think and publish the result, but they do not create legal citizenship, replace public-law elections, or bind anyone. Under the Community Governance Charter a vote can be binding only within a scope that has been delegated to it.",
+      "localizedAnswers": {
+        "hy": "Ներկայիս քաղաքացիական խորհրդակցությունները պարտադիր ուժ չունեն․ դրանք արձանագրում են անդամների կարծիքը և հրապարակում արդյունքը, բայց չեն ստեղծում իրավական քաղաքացիություն, չեն փոխարինում պետական ընտրություններին և որևէ մեկին չեն պարտավորեցնում։ Համայնքային կառավարման կանոնադրության համաձայն, քվեարկությունը կարող է պարտադիր լինել միայն այն շրջանակում, որը նրան պատվիրակված է։",
+        "ru": "Нынешние гражданские консультации не имеют обязательной силы: они фиксируют мнение участников и публикуют результат, но не создают юридического гражданства, не заменяют государственные выборы и никого не обязывают. Согласно Хартии общественного управления голосование может быть обязательным только в тех пределах, которые ему делегированы."
+      },
+      "aliases": [
+        "are votes binding",
+        "is the consultation binding",
+        "nonbinding consultation"
+      ],
+      "capabilityIds": [
+        "civic_voting",
+        "governance_charter"
+      ],
+      "sourceRefs": [
+        "docs/02-policies/governance/civizen-community-governance-charter.md",
+        "docs/assistant/civizen-assistant-cheatsheet.md"
+      ]
+    },
+    {
+      "id": "how_do_i_submit_a_proposal",
+      "question": "How do I submit a proposal?",
+      "answer": "A consultation starts as a Matter. Open Contribute > Questions, Issues & Ideas, open or create your Matter, and choose Create voting proposal. On the proposal page set the scope (global or one country), when voting opens and closes, the ballot options (Support / Oppose / Abstain, or 2 to 12 of your own), and optionally a quorum and pass threshold. Then tap Open for support and set how many supporters are needed.\n\nMembers add their support on the proposal page. Once the threshold is reached you can publish the ballot yourself; founders and admins can publish at any time. Your drafts, open proposals, and published ones are listed on the Proposals tab of your Governance page.",
+      "localizedAnswers": {
+        "hy": "Խորհրդակցությունը սկսվում է Հարցից։ Բացեք Ներդրում > Հարցեր, խնդիրներ և գաղափարներ, բացեք կամ ստեղծեք ձեր Հարցը և ընտրեք «Ստեղծել քվեարկության առաջարկ»։ Առաջարկի էջում սահմանեք շրջանակը (համաշխարհային կամ մեկ երկիր), քվեարկության բացվելու և փակվելու ժամանակը, քվեաթերթիկի տարբերակները (Կողմ / Դեմ / Ձեռնպահ կամ ձեր 2-ից 12 տարբերակները) և, ցանկության դեպքում, քվորում ու ընդունման շեմ։ Այնուհետև սեղմեք «Բացել աջակցության համար» և նշեք, թե քանի աջակից է անհրաժեշտ։\n\nԱնդամներն իրենց աջակցությունն ավելացնում են առաջարկի էջում։ Շեմին հասնելուն պես կարող եք ինքներդ հրապարակել քվեաթերթիկը․ հիմնադիրները և ադմինիստրատորները կարող են հրապարակել ցանկացած պահի։ Ձեր նախագծերը, բաց առաջարկները և հրապարակվածները թվարկված են ձեր Կառավարում էջի «Առաջարկներ» ներդիրում։",
+        "ru": "Консультация начинается с Вопроса. Откройте Вклад > Вопросы, проблемы и идеи, откройте или создайте свой Вопрос и выберите «Создать предложение для голосования». На странице предложения задайте охват (весь мир или одна страна), время открытия и закрытия голосования, варианты бюллетеня (За / Против / Воздержаться или от 2 до 12 своих) и при желании кворум и порог принятия. Затем нажмите «Открыть для поддержки» и укажите, сколько поддержавших нужно.\n\nУчастники добавляют свою поддержку на странице предложения. Как только порог достигнут, вы можете опубликовать бюллетень сами; основатели и администраторы могут опубликовать его в любой момент. Ваши черновики, открытые и опубликованные предложения перечислены на вкладке «Предложения» вашей страницы Управление."
+      },
+      "aliases": [
+        "how do I create a proposal",
+        "how do I create a consultation",
+        "how do I start a vote",
+        "propose a vote",
+        "start a consultation",
+        "create voting proposal",
+        "when can I publish my proposal"
+      ],
+      "capabilityIds": [
+        "governance",
+        "matters"
+      ],
+      "sourceRefs": [
+        "src/lib/civic-voting/voting-proposals.ts",
+        "supabase/migrations/20261006070000_voting_proposals_member_support.sql"
+      ]
+    },
+    {
+      "id": "how_does_proposal_support_work",
+      "question": "How does member support for a proposal work?",
+      "answer": "The author opens a draft for member support and sets the number of supporters needed. Any signed-in member can then tap Support this proposal on the proposal page, or Withdraw my support later. The page shows the progress, for example 3 of 10 supporters, and Threshold reached when the goal is met. From that moment the author can publish the ballot; founders and admins can publish at any time.\n\nDrafts open for support are listed on the Proposals tab of your Governance page.",
+      "localizedAnswers": {
+        "hy": "Հեղինակը նախագիծը բացում է անդամների աջակցության համար և նշում, թե քանի աջակից է անհրաժեշտ։ Այնուհետև մուտք գործած ցանկացած անդամ կարող է առաջարկի էջում սեղմել «Աջակցել այս առաջարկին» կամ հետագայում՝ «Հետ վերցնել իմ աջակցությունը»։ Էջում ցուցադրվում է առաջընթացը, օրինակ՝ «3 աջակից 10-ից», իսկ նպատակին հասնելու դեպքում՝ «Շեմը լրացել է»։ Այդ պահից հեղինակը կարող է հրապարակել քվեաթերթիկը․ հիմնադիրները և ադմինիստրատորները կարող են հրապարակել ցանկացած պահի։\n\nԱջակցության համար բաց նախագծերը թվարկված են ձեր Կառավարում էջի «Առաջարկներ» ներդիրում։",
+        "ru": "Автор открывает черновик для поддержки участников и указывает, сколько поддержавших нужно. После этого любой вошедший участник может нажать «Поддержать это предложение» на странице предложения или позже «Отозвать мою поддержку». На странице показан прогресс, например «3 из 10 поддержавших», а при достижении цели — «Порог достигнут». С этого момента автор может опубликовать бюллетень; основатели и администраторы могут опубликовать его в любой момент.\n\nЧерновики, открытые для поддержки, перечислены на вкладке «Предложения» вашей страницы Управление."
+      },
+      "aliases": [
+        "support a proposal",
+        "support threshold",
+        "how do I support a proposal",
+        "open for support",
+        "supporters needed"
+      ],
+      "capabilityIds": [
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/pages/governance/civic-voting-proposal/ProposalSupportCard.tsx",
+        "supabase/migrations/20261006070000_voting_proposals_member_support.sql"
+      ]
+    },
+    {
+      "id": "can_a_proposal_have_custom_options",
+      "question": "Can a proposal have custom options?",
+      "answer": "Yes. When drafting a proposal, the author can keep the default Support / Oppose / Abstain or list 2 to 12 options of their own under Ballot options. Publishing creates one choice per option. When Support and Oppose are among the options the pass rule applies; otherwise the result shows the most chosen option.\n\nA draft with its own options can also use approval voting (How members vote > Approval: choose several): each voter picks several options up to the maximum the author sets, and the result names the most approved option without a Passed / Not passed verdict.",
+      "localizedAnswers": {
+        "hy": "Այո։ Առաջարկը նախապատրաստելիս հեղինակը կարող է պահել լռելյայն Կողմ / Դեմ / Ձեռնպահ տարբերակները կամ «Քվեաթերթիկի տարբերակներ» բաժնում նշել իր 2-ից 12 տարբերակները։ Հրապարակելիս յուրաքանչյուր տարբերակի համար ստեղծվում է մեկ ընտրություն։ Եթե տարբերակների մեջ կան «Կողմ»-ն ու «Դեմ»-ը, գործում է ընդունման կանոնը․ հակառակ դեպքում արդյունքում ցուցադրվում է ամենաշատ ընտրված տարբերակը։\n\nՍեփական տարբերակներով նախագիծը կարող է օգտագործել նաև հավանության քվեարկություն («Ինչպես են քվեարկում անդամները» > «Հավանության քվեարկություն՝ մի քանի տարբերակ»)․ յուրաքանչյուր քվեարկող ընտրում է մի քանի տարբերակ՝ հեղինակի սահմանած առավելագույն թվի սահմաններում, իսկ արդյունքում նշվում է ամենաշատ հավանություն ստացած տարբերակը՝ առանց «Ընդունվել է / Չի ընդունվել» որակման։",
+        "ru": "Да. При подготовке предложения автор может оставить варианты по умолчанию За / Против / Воздержаться или перечислить от 2 до 12 своих вариантов в разделе «Варианты бюллетеня». При публикации для каждого варианта создаётся свой пункт выбора. Если среди вариантов есть «За» и «Против», действует правило принятия; иначе в результате показывается вариант, выбранный чаще всего.\n\nЧерновик со своими вариантами может также использовать голосование одобрением («Как голосуют участники» > «Одобрение: несколько вариантов»): каждый голосующий выбирает несколько вариантов в пределах максимума, заданного автором, а в результате называется вариант с наибольшим числом одобрений — без вердикта «Принято / Не принято»."
+      },
+      "aliases": [
+        "custom ballot options",
+        "more than three options",
+        "multiple choice vote",
+        "ballot options",
+        "approval voting",
+        "can I pick several options",
+        "choose several options"
+      ],
+      "capabilityIds": [
+        "governance",
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/pages/governance/civic-voting-proposal/proposal-options.ts",
+        "supabase/migrations/20261006080000_consultation_options_and_outcome.sql"
+      ]
+    },
+    {
+      "id": "where_are_my_notifications",
+      "question": "Where are my notifications?",
+      "answer": "Tap the bell at the top of the app, or open Settings > Notifications. The bell shows how many are unread, and the Notifications page lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Tapping an item opens the related page.\n\nYou are notified when a proposal you supported or started is published and when the result of a consultation you voted in is published.",
+      "localizedAnswers": {
+        "hy": "Սեղմեք հավելվածի վերևի զանգակը կամ բացեք Կարգավորումներ > Ծանուցումներ։ Զանգակը ցույց է տալիս չկարդացվածների թիվը, իսկ Ծանուցումներ էջում թվարկված են ձեզ վերաբերող խորհրդակցությունները (հրապարակվել է, արդյունքը հրապարակվել է), Հարցերը, համաձայնագրերը և գրառումները։ Տարրին սեղմելով բացվում է համապատասխան էջը։\n\nԾանուցում եք ստանում, երբ հրապարակվում է առաջարկ, որին աջակցել եք կամ որը սկսել եք, և երբ հրապարակվում է այն խորհրդակցության արդյունքը, որին քվեարկել եք։",
+        "ru": "Нажмите на колокольчик вверху приложения или откройте Настройки > Уведомления. Колокольчик показывает число непрочитанных, а на странице Уведомления перечислены касающиеся вас консультации (опубликована, опубликован результат), Вопросы, соглашения и записи. Нажатие на элемент открывает соответствующую страницу.\n\nВы получаете уведомление, когда публикуется предложение, которое вы поддержали или начали, и когда публикуется результат консультации, в которой вы голосовали."
+      },
+      "aliases": [
+        "notifications",
+        "what is the bell icon",
+        "bell icon",
+        "notification center",
+        "how do I get notified when a vote result is published",
+        "unread notifications"
+      ],
+      "capabilityIds": [
+        "notifications",
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/pages/Notifications.tsx",
+        "src/components/layout/NotificationBell.tsx",
+        "src/lib/notifications.ts"
+      ]
+    },
+    {
+      "id": "where_is_help_and_support",
+      "question": "Where is help and support?",
+      "answer": "Open Settings > Help and support. It links to Ask Civi (Messaging), the public Documents, Why Civizen Exists, the legal status notice, and the Terms.",
+      "localizedAnswers": {
+        "hy": "Բացեք Կարգավորումներ > Օգնություն և աջակցություն։ Այնտեղից կարող եք հարցնել Civi-ին (Նամակներ), կարդալ հրապարակային փաստաթղթերը և «Ինչու է Civizen-ը գոյություն ունենում» էջը, ծանոթանալ իրավական կարգավիճակի ծանուցմանը և Օգտագործման պայմաններին։",
+        "ru": "Откройте Настройки > Помощь и поддержка. Оттуда можно спросить Civi (Сообщения), прочитать публичные документы и страницу «Почему существует Civizen», ознакомиться с уведомлением о правовом статусе и с Условиями использования."
+      },
+      "aliases": [
+        "help page",
+        "help and support",
+        "where do I get help",
+        "support page",
+        "where is the help page"
+      ],
+      "capabilityIds": [
+        "help_support",
+        "nela"
+      ],
+      "sourceRefs": [
+        "src/pages/settings/HelpSupport.tsx",
+        "src/pages/settings/help-support-links.ts"
+      ]
+    },
+    {
+      "id": "where_is_the_governance_page",
+      "question": "Where is the Governance page?",
+      "answer": "Open Settings > Governance > Member workspace, the Governance card on Home, or Open member workspace on the public Governance landing; the address is /governance/workspace. The page has three tabs: Votes (open consultations with your ballot status, scheduled ones, and results), Proposals (drafts open for support, your drafts, published and closed proposals), and Tools (steward console and workspace tools). Tools appears only for office holders, founders, admins, and members who can assign roles.",
+      "localizedAnswers": {
+        "hy": "Բացեք Կարգավորումներ > Կառավարում > Անդամի աշխատատարածք, Գլխավոր էջի Կառավարում քարտը կամ հրապարակային Կառավարում էջի «Բացել անդամի աշխատատարածքը» հղումը․ հասցեն է /governance/workspace։ Էջն ունի երեք ներդիր՝ «Քվեարկություններ» (բաց խորհրդակցությունները՝ ձեր քվեաթերթիկի վիճակով, նախատեսվածները և արդյունքները), «Առաջարկներ» (աջակցության համար բաց նախագծերը, ձեր նախագծերը, հրապարակված և փակված առաջարկները) և «Գործիքներ» (պատասխանատուի վահանակ և աշխատատարածքի գործիքներ)։ «Գործիքներ» ներդիրը տեսնում են միայն պաշտոն կրողները, հիմնադիրները, ադմինիստրատորները և դերեր նշանակելու իրավունք ունեցող անդամները։",
+        "ru": "Откройте Настройки > Управление > Рабочее пространство участника, карточку Управление на Главной или ссылку «Открыть рабочее пространство участника» на публичной странице Управление; адрес — /governance/workspace. На странице три вкладки: «Голосования» (открытые консультации с состоянием вашего бюллетеня, запланированные и результаты), «Предложения» (черновики, открытые для поддержки, ваши черновики, опубликованные и закрытые предложения) и «Инструменты» (консоль распорядителя и инструменты рабочего пространства). Вкладку «Инструменты» видят только держатели должностей, основатели, администраторы и участники с правом назначать роли."
+      },
+      "aliases": [
+        "governance page",
+        "member governance page",
+        "governance workspace",
+        "votes proposals and tools tabs",
+        "what are the votes proposals and tools tabs",
+        "who can see the tools tab",
+        "tools tab"
+      ],
+      "capabilityIds": [
+        "governance"
+      ],
+      "sourceRefs": [
+        "src/pages/governance/GovernanceMember.tsx",
+        "src/components/governance/member/governance-member-model.ts"
+      ]
+    },
+    {
+      "id": "what_is_the_observer_console",
+      "question": "What is the Observer console?",
+      "answer": "Open a consultation at Home > Governance > Civic voting and tap Observe next to its title, or add /observe to its address. The Observer console shows live process metrics for that election: countable ballots, withdrawn ballots, and the number of audit events in the hash-chained log — no voter identities and no ballot choices. When a consultation has no eligibility roster it says so instead of showing turnout, and sample elections are marked as not counted anywhere.",
+      "localizedAnswers": {
+        "hy": "Բացեք խորհրդակցությունը Գլխավոր > Կառավարում > Քաղաքացիական քվեարկություն բաժնում և սեղմեք «Դիտարկել» վերնագրի կողքին, կամ հասցեին ավելացրեք /observe։ Դիտորդի վահանակը ցույց է տալիս տվյալ ընտրության ընթացքի իրական ցուցանիշները՝ հաշվվող քվեաթերթիկները, հետ վերցված քվեաթերթիկները և աուդիտի շղթայակապ մատյանի իրադարձությունների թիվը, առանց քվեարկողների ինքնության և առանց քվեաթերթիկների ընտրությունների։ Եթե խորհրդակցությունն ընտրողների ցուցակ չունի, վահանակը դա ասում է ուղիղ՝ մասնակցության տոկոս ցույց տալու փոխարեն, իսկ փորձնական ընտրությունները նշվում են որպես ոչ մի տեղ չհաշվվող։",
+        "ru": "Откройте консультацию в разделе Главная > Управление > Гражданское голосование и нажмите «Наблюдать» рядом с заголовком, либо добавьте /observe к адресу. Консоль наблюдателя показывает реальные показатели хода этих выборов: учтённые бюллетени, отозванные бюллетени и число событий в журнале аудита с цепочкой хешей — без личностей голосующих и без выбора в бюллетенях. Если у консультации нет списка избирателей, консоль прямо говорит об этом вместо показа явки, а пробные выборы отмечены как не учитываемые нигде."
+      },
+      "aliases": [
+        "observer console",
+        "observe an election",
+        "election observer",
+        "observer metrics"
+      ],
+      "capabilityIds": [
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/pages/governance/CivicVotingObserver.tsx",
+        "supabase/migrations/20261006050000_civic_election_observer_metrics.sql"
+      ]
+    },
+    {
+      "id": "where_are_open_votes_in_study",
+      "question": "Where can I see open votes in Study?",
+      "answer": "Open Study: the Open votes card lists the consultations that are open right now with their closing dates. Tap one to open its ballot page. When nothing is open the card says so.",
+      "localizedAnswers": {
+        "hy": "Բացեք Ուսում բաժինը․ «Բաց քվեարկություններ» քարտում թվարկված են այս պահին բաց խորհրդակցությունները՝ փակման ամսաթվերով։ Սեղմեք որևէ մեկի վրա, որպեսզի բացվի դրա քվեաթերթիկի էջը։ Երբ բաց քվեարկություն չկա, քարտը դա նշում է։",
+        "ru": "Откройте раздел Обучение: в карточке «Открытые голосования» перечислены консультации, открытые сейчас, с датами закрытия. Нажмите на одну из них, чтобы открыть страницу бюллетеня. Когда открытых голосований нет, карточка так и сообщает."
+      },
+      "aliases": [
+        "open votes card",
+        "open votes in study",
+        "pending votes in study",
+        "which votes are open"
+      ],
+      "capabilityIds": [
+        "study",
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/components/study/StudyOpenVotesCard.tsx"
+      ]
     }
   ],
   "aliases": [
@@ -1797,6 +2352,37 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "current": "Civizen",
       "aliases": [
         "levela"
+      ]
+    },
+    {
+      "current": "Governance page",
+      "aliases": [
+        "member workspace",
+        "governance workspace",
+        "member governance page"
+      ]
+    },
+    {
+      "current": "receipt",
+      "aliases": [
+        "voting receipt",
+        "ballot receipt",
+        "receipt code"
+      ]
+    },
+    {
+      "current": "Notifications",
+      "aliases": [
+        "notification center",
+        "bell icon",
+        "the bell"
+      ]
+    },
+    {
+      "current": "Help and support",
+      "aliases": [
+        "help page",
+        "support page"
       ]
     }
   ],
@@ -2021,7 +2607,25 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "capability:civic_voting",
       "title": "Civic voting",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Civic voting status=implemented. Elections catalog and election detail/observe at /governance/voting. Public browsing is available. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power.  Routes: /governance/voting.",
+      "text": "Civic voting status=implemented. Elections catalog, ballot pages, and an Observer console at /governance/voting. Public browsing is available; casting needs a free account. Ballot choices are sealed on the server and never shown individually; every voter gets a receipt (a code in groups of four) and can check it against the public list of counted receipts. Eligibility (sign-in, voting window, sanctions, and any verified-identity, minimum-age, or country rule the consultation declares) is checked on the server and the reason is shown when a member cannot vote. A ballot can be withdrawn and cast again until closing. Consultations close automatically at their closing time with a published tally and outcome (quorum, pass threshold, most chosen option, or the most approved option for approval ballots where voters pick several options). The Observer console shows countable and withdrawn ballots and audit events only. The first real public consultation is A Single World Citizenship: a global, nonbinding question on whether humanity should work toward a single world citizenship shared by all people regardless of nationality. Support, Oppose, and Abstain are equal. A Support vote does not create or grant citizenship. Token wealth does not create voting power. Open Home > Governance > Civic voting, open a consultation, choose an option, and keep the receipt shown afterwards. Use Check that my receipt is counted on the same page, Withdraw ballot to change your vote while voting is open, and Observe next to the title for process metrics. Routes: /governance/voting.",
+      "status": "implemented",
+      "priority": 3,
+      "kind": "capability"
+    },
+    {
+      "id": "capability:notifications",
+      "title": "Notifications",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Notifications status=implemented. Notification center for members: the bell at the top of the app shows the unread count and opens the Notifications page, which lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Each item opens the related page. Tap the bell at the top of the app, or open Settings > Notifications. Routes: /notifications.",
+      "status": "implemented",
+      "priority": 3,
+      "kind": "capability"
+    },
+    {
+      "id": "capability:help_support",
+      "title": "Help and support",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Help and support status=implemented. Settings page that gathers where to get help: Ask Civi in Messaging, the public Documents, Why Civizen Exists, the legal status notice, and the Terms. Open Settings > Help and support. Routes: /settings/help.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"
@@ -2309,7 +2913,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "faq:how_does_governance_work",
       "title": "How does governance work?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: How does governance work? A: Civizen currently has a public Governance landing, civic voting/elections, a member proposal workspace, and Governance Solutions. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.",
+      "text": "Q: How does governance work? A: Civizen has a public Governance landing, Civic voting with sealed ballots and voter receipts, one member Governance page with Votes, Proposals, and Tools tabs, member-supported proposals that open a consultation once enough members back them, a notification center, and Governance Solutions. Consultations close automatically at their closing time and publish the tally and outcome. Community participation is described by the Community Governance Charter. Civizen is not a government. Working institutional frameworks exist as project design, not as live public-law authority.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
@@ -2318,7 +2922,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "faq:who_can_create_proposals",
       "title": "Who can create proposals?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: Who can create proposals? A: Eligible signed-in participants can submit proposals in Home > Governance workspace under the Community Governance Charter. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge’s coordinator.",
+      "text": "Q: Who can create proposals? A: Any signed-in member can start one: open a Matter under Contribute > Questions, Issues & Ideas and choose Create voting proposal, then open the draft for member support from the Proposals tab of your Governance page. Once the support threshold is reached the author can publish the ballot; founders and admins can publish at any time. Community Challenge proposals are a different flow inside a Challenge, selected by that challenge’s coordinator.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
@@ -2327,7 +2931,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "faq:who_can_vote",
       "title": "Who can vote?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: Who can vote? A: Civic elections are at Home > Governance > Civic voting. Community votes follow published eligibility in the Charter and platform rules. Token ownership, financial support, or wealth alone does not create voting authority.",
+      "text": "Q: Who can vote? A: Any signed-in member with a free account can vote in an ordinary consultation at Home > Governance > Civic voting. A consultation may additionally require a verified identity, a minimum age, or residence in one country, and an active governance sanction blocks voting. The server checks these rules, and the ballot page shows the reason when you cannot vote. Token ownership, financial support, or wealth alone never creates voting authority.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
@@ -2486,6 +3090,177 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "kind": "faq"
     },
     {
+      "id": "faq:how_do_i_vote",
+      "title": "How do I vote?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How do I vote? A: Open Home > Governance > Civic voting (or the Open votes card on Study, or the Votes tab on your Governance page) and open the consultation. Sign in if you have not, choose an option — Support, Oppose, or Abstain, or the options that consultation lists — and confirm. The page then shows Your receipt: keep that code.\n\nOrdinary consultations need only a free account. Until voting closes you can withdraw your ballot and vote again. Your choice is sealed; only totals are public.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:how_do_i_know_my_vote_was_counted",
+      "title": "How do I know my vote was counted?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How do I know my vote was counted? A: After you vote, the ballot page shows Your receipt — a code in groups of four characters. Tap Check that my receipt is counted: Civizen compares it with the public list of counted receipts for that consultation and tells you whether it is on the list.\n\nThe receipt proves your ballot is counted without revealing your choice, and anyone with the code can run the same check. If you withdraw your ballot, the receipt leaves the list; voting again gives you a new one.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:what_is_a_voting_receipt",
+      "title": "What is a receipt?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: What is a receipt? A: A receipt is the random code Civizen gives you when you cast a ballot in a consultation, shown as Your receipt on the ballot page in groups of four characters. It proves your ballot is counted without revealing how you voted.\n\nKeep the code. Tap Check that my receipt is counted on the ballot page to compare it with the public list of counted receipts. Withdrawing your ballot removes the receipt from that list.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:why_cant_i_vote",
+      "title": "Why can't I vote?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Why can't I vote? A: Open the consultation page: when you cannot vote, the reason is shown under the voting buttons. The usual reasons are: you are not signed in; voting has not opened yet or has already closed; a governance sanction blocks voting; the vote needs a verified identity (Settings > Edit Profile > Identity verification); the vote has a minimum age and your profile has no date of birth, or you are under that age; the vote is limited to residents of one country and your profile shows another; it is a sample election; or it is a high-security election that takes ballots only in the native app.\n\nThese checks run on the server, so the same rule applies to everyone. Ordinary consultations need only a free account.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:do_i_need_verification_to_vote",
+      "title": "Do I need to be verified to vote?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Do I need to be verified to vote? A: No — not for ordinary consultations: a free Civizen account is enough. Only when a consultation declares that it requires a verified identity, a minimum age, or residence in one country does the server check that, and the ballot page shows the reason if you do not meet it. Identity verification is at Settings > Edit Profile.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:can_i_vote_without_account",
+      "title": "Can I vote without an account?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Can I vote without an account? A: No. Anyone can browse consultations and results at Home > Governance > Civic voting without signing in, but casting a ballot needs a Civizen account. Create one from Sign up, then open the consultation and vote.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:can_i_change_my_vote",
+      "title": "Can I change my vote?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Can I change my vote? A: Yes, while voting is open. Open the consultation page and tap Withdraw ballot, then vote again. Withdrawing removes your ballot from the counts, the country statistics, and the participant directory, and your receipt leaves the list of counted receipts; a new ballot gives you a new receipt.\n\nAfter the consultation closes nothing can be changed.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:who_can_see_how_i_voted",
+      "title": "Who can see how I voted?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Who can see how I voted? A: No one. Your choice is sealed on the server with a key that no app role can read, so founders, admins, and staff see only totals. Public pages show the count per option, country statistics only when enough people took part (at least 25 overall and 5 per country), and an optional participant directory with display name and country that you join only by choice — never your choice. Your receipt is a random code that is not linked to an option, and the audit log stores no voter identities.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:what_happens_when_a_vote_closes",
+      "title": "What happens when a vote closes?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: What happens when a vote closes? A: At its closing time the consultation closes by itself: Civizen marks it closed, stores the final tally, and publishes the result on the ballot page and under Results on the Votes tab of your Governance page. The proposal behind it is closed too, and everyone who voted or supported it gets a notification.\n\nThe outcome follows the rules set on the proposal: no countable ballots; quorum not met (fewer ballots than required); otherwise the share of Support among Support and Oppose ballots is compared with the pass threshold (50% unless set otherwise) and shown as Passed or Not passed. Consultations with their own options show the most chosen option.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:what_are_quorum_and_pass_threshold",
+      "title": "What is quorum?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: What is quorum? A: Quorum is the minimum number of countable ballots a consultation needs for a result; below it the outcome reads Quorum not met. The pass threshold is the share of Support among Support and Oppose ballots (Abstain does not count) needed for Passed — 50% unless the proposal sets another value.\n\nThe author sets both when drafting the proposal, under Scope and timing on the proposal page. The outcome is computed automatically when voting closes and shown on the ballot page.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:is_voting_binding",
+      "title": "Is voting binding?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Is voting binding? A: Current civic consultations are nonbinding: they record what members think and publish the result, but they do not create legal citizenship, replace public-law elections, or bind anyone. Under the Community Governance Charter a vote can be binding only within a scope that has been delegated to it.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:how_do_i_submit_a_proposal",
+      "title": "How do I submit a proposal?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How do I submit a proposal? A: A consultation starts as a Matter. Open Contribute > Questions, Issues & Ideas, open or create your Matter, and choose Create voting proposal. On the proposal page set the scope (global or one country), when voting opens and closes, the ballot options (Support / Oppose / Abstain, or 2 to 12 of your own), and optionally a quorum and pass threshold. Then tap Open for support and set how many supporters are needed.\n\nMembers add their support on the proposal page. Once the threshold is reached you can publish the ballot yourself; founders and admins can publish at any time. Your drafts, open proposals, and published ones are listed on the Proposals tab of your Governance page.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:how_does_proposal_support_work",
+      "title": "How does member support for a proposal work?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How does member support for a proposal work? A: The author opens a draft for member support and sets the number of supporters needed. Any signed-in member can then tap Support this proposal on the proposal page, or Withdraw my support later. The page shows the progress, for example 3 of 10 supporters, and Threshold reached when the goal is met. From that moment the author can publish the ballot; founders and admins can publish at any time.\n\nDrafts open for support are listed on the Proposals tab of your Governance page.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:can_a_proposal_have_custom_options",
+      "title": "Can a proposal have custom options?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Can a proposal have custom options? A: Yes. When drafting a proposal, the author can keep the default Support / Oppose / Abstain or list 2 to 12 options of their own under Ballot options. Publishing creates one choice per option. When Support and Oppose are among the options the pass rule applies; otherwise the result shows the most chosen option.\n\nA draft with its own options can also use approval voting (How members vote > Approval: choose several): each voter picks several options up to the maximum the author sets, and the result names the most approved option without a Passed / Not passed verdict.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_are_my_notifications",
+      "title": "Where are my notifications?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where are my notifications? A: Tap the bell at the top of the app, or open Settings > Notifications. The bell shows how many are unread, and the Notifications page lists consultations you follow (published, result published), Matters, agreements, and posts that concern you. Tapping an item opens the related page.\n\nYou are notified when a proposal you supported or started is published and when the result of a consultation you voted in is published.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_is_help_and_support",
+      "title": "Where is help and support?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where is help and support? A: Open Settings > Help and support. It links to Ask Civi (Messaging), the public Documents, Why Civizen Exists, the legal status notice, and the Terms.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_is_the_governance_page",
+      "title": "Where is the Governance page?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where is the Governance page? A: Open Settings > Governance > Member workspace, the Governance card on Home, or Open member workspace on the public Governance landing; the address is /governance/workspace. The page has three tabs: Votes (open consultations with your ballot status, scheduled ones, and results), Proposals (drafts open for support, your drafts, published and closed proposals), and Tools (steward console and workspace tools). Tools appears only for office holders, founders, admins, and members who can assign roles.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:what_is_the_observer_console",
+      "title": "What is the Observer console?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: What is the Observer console? A: Open a consultation at Home > Governance > Civic voting and tap Observe next to its title, or add /observe to its address. The Observer console shows live process metrics for that election: countable ballots, withdrawn ballots, and the number of audit events in the hash-chained log — no voter identities and no ballot choices. When a consultation has no eligibility roster it says so instead of showing turnout, and sample elections are marked as not counted anywhere.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_are_open_votes_in_study",
+      "title": "Where can I see open votes in Study?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where can I see open votes in Study? A: Open Study: the Open votes card lists the consultations that are open right now with their closing dates. Tap one to open its ballot page. When nothing is open the card says so.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
       "id": "registry:nav",
       "title": "Primary navigation",
       "path": "src/lib/main-nav.ts",
@@ -2498,7 +3273,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "registry:civi-pages",
       "title": "Pages Civi can open",
       "path": "src/lib/nela-nav-paths.ts",
-      "text": "Civi can link these live pages in answers: Why Civizen Exists (/why-this-exists); Community Governance Charter (/governance/charter); Organization Partnership (/partners); Governance Solutions (/governance/solutions); Community Challenges (/contribute/challenges); make a contribution (/contribute); Questions, Issues & Ideas (/contribute/matters); Suggest Improvements (/contribute/improvements); Learning Commons (/contribute/knowledge); My Contributions (/contribute/impact); Financial Support (/fund); Prototype credits (/settings/prototype-credits); Governance workspace (/governance/workspace); Civic voting (/governance/voting); Opportunities (/contribute/professional); Agreements (/agreements); Contribute (/contribute); Messaging (/messaging); Governance (/governance); Documents (/documents); Partners (/partners); Settings (/settings); Profile (/profile); Jobs (/jobs); Market (/market); Study (/study); signing up (/signup); Sign up (/signup); Areas (/areas); Home (/).",
+      "text": "Civi can link these live pages in answers: Why Civizen Exists (/why-this-exists); Community Governance Charter (/governance/charter); Organization Partnership (/partners); Governance Solutions (/governance/solutions); Community Challenges (/contribute/challenges); make a contribution (/contribute); Questions, Issues & Ideas (/contribute/matters); Suggest Improvements (/contribute/improvements); Learning Commons (/contribute/knowledge); My Contributions (/contribute/impact); Financial Support (/fund); Prototype credits (/settings/prototype-credits); Governance workspace (/governance/workspace); Member workspace (/governance/workspace); Help and support (/settings/help); Governance page (/governance/workspace); Notifications (/notifications); Edit Profile (/settings/profile); Civic voting (/governance/voting); Opportunities (/contribute/professional); Agreements (/agreements); Contribute (/contribute); Messaging (/messaging); Governance (/governance); Documents (/documents); Partners (/partners); Settings (/settings); Profile (/profile); Jobs (/jobs); Market (/market); Study (/study); signing up (/signup); Sign up (/signup); Areas (/areas); Home (/).",
       "status": "implemented",
       "priority": 2,
       "kind": "registry"
@@ -2741,7 +3516,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "docs/assistant/README.md#1",
       "title": "Layout",
       "path": "docs/assistant/README.md",
-      "text": "## Layout | Path | Role | | --- | --- | | [`civizen-identity.md`](./civizen-identity.md) | Canonical identity, purpose, and one-sentence definition | | [`civizen-assistant-cheatsheet.md`](./civizen-assistant-cheatsheet.md) | Compact canonical facts for frequent questions | | `src/lib/assistant/catalog.ts` | Machine-readable capabilities, FAQ, and terminology aliases | | `src/lib/assistant/learned-memory.ts` | Checked Gemini-answer memory (does not override identity or capabilities) | | `src/pages/settings/AiAgentSettings.tsx` | Founder development review of Civi questions and replies | | `src/lib/assistant/generated/knowledge-pack.ts` | Generated searchable index (do not edit by hand) | | `supabase/functions/messaging-agent-reply/nela-bundle.js` | Bundled retrieval runtime for the Civi edge function |",
+      "text": "| Path | Role | | --- | --- | | [`civizen-identity.md`](./civizen-identity.md) | Canonical identity, purpose, and one-sentence definition | | [`civizen-assistant-cheatsheet.md`](./civizen-assistant-cheatsheet.md) | Compact canonical facts for frequent questions | | `src/lib/assistant/catalog.ts` | Machine-readable capabilities, FAQ, and terminology aliases (data in `catalog-data/`; voting, proposals, notifications, help in `faq-voting.ts` with Armenian and Russian answers in `faq-voting.hy.ts` / `faq-voting.ru.ts`) | | `src/lib/assistant/language.ts` | Language detection and the Armenian / Russian → English concept lexicon used for scope, retrieval, and topic classification | | `src/lib/assistant/civi-governance-voting.test.ts` | Regression question set (EN / HY / RU) for the voting, proposal, notification, and help features | | `src/lib/assistant/learned-memory.ts` | Checked Gemini-answer memory (does not override identity or capabilities) | | `src/pages/settings/AiAgentSettings.tsx` | Founder development review of Civi questions and replies | | `src/lib/assistant/generated/knowledge-pack.ts` | Generated searchable index (do not edit by hand) | | `supabase/functions/messaging-agen",
       "status": "implemented",
       "priority": 5,
       "kind": "doc"
@@ -2757,6 +3532,33 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     },
     {
       "id": "docs/assistant/README.md#3",
+      "title": "Languages",
+      "path": "docs/assistant/README.md",
+      "text": "## Languages English is the canonical knowledge language. For Armenian and Russian, `language.ts` detects the script, maps word stems and whole question forms to the English wording the FAQ uses, and retrieval searches only that English wording (non-Latin tokens never match the pack and would drag overlap ratios down). A FAQ item may carry `localizedAnswers.hy` / `.ru`; when the question's language has one, Civi returns it directly and skips the model. Otherwise the English grounded answer stays the evidence and the system prompt tells the model to reply in the member's language. Greetings and the out-of-scope reply are localized in `LOCALIZED_REPLIES`.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "doc"
+    },
+    {
+      "id": "docs/assistant/README.md#4",
+      "title": "Languages",
+      "path": "docs/assistant/README.md",
+      "text": "When adding a feature members will ask about, add the FAQ card with hand-written Armenian and Russian answers in the same change, add the natural question forms to `ARMENIAN_QUESTIONS` / `RUSSIAN_QUESTIONS`, and extend `civi-governance-voting.test.ts` with the question in all three languages.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "doc"
+    },
+    {
+      "id": "docs/assistant/README.md#5",
+      "title": "Audit process",
+      "path": "docs/assistant/README.md",
+      "text": "## Audit process Run realistic questions through `prepareNelaTurn` (the same path the edge function and the public widget use) and check `diagnostics.matchedFaqId`, `inScope`, `skipLlm`, and the grounded answer. The regression suite in `civi-governance-voting.test.ts` is that question set; an answer that falls back to the generic capability blurb, to “I couldn't verify…”, or to the English scope refusal for an Armenian or Russian question counts as a gap to fix at the source (catalog card, FAQ, `NELA_PAGE_LINKS`, scope terms, lexicon), then `npm run assistant:knowledge`.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "doc"
+    },
+    {
+      "id": "docs/assistant/README.md#6",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "## Internal-first routing Civi uses the closest authoritative resource first: 1. Conversation context 2. Canonical identity (`civizen-identity.md`) for what Civizen is, its purpose, mission, scope, or one-sentence description 3. FAQ / this cheat sheet 4. Capability registry for what is implemented **now** 5. Project knowledge index 6. Authorized runtime / member data 7. Civi memory of **checked** previous model answers (similar questions only; never overrides 2–5) 8. AI reasoning over collected evidence 9. Broader API-agent resources only when the request needs the outside world Identity questions must not be answered by reconstructing Civizen from feature docs. Capability questions must not be answered with the identity sentence alone.",
@@ -2765,7 +3567,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#4",
+      "id": "docs/assistant/README.md#7",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "Someone asking for housing, food, or a safe place tonight is not a Contribute question. Civi acknowledges the situation, says Civizen is not emergency housing, points to local emergency services / 211, and may mention Jobs — not Volunteer lanes. Peace, war, and “how do we unite humanity” questions are in scope. Answer from founding documents, including the need to unite around shared human responsibility. Unity does not require uniformity. Invite signing up and making a contribution; name Study, Community Challenges, Opportunities, and Governance in ordinary sentences. Do not write “learn in Study”. Do not recap manifesto prose. How-questions do not start with Yes. Do not claim Civizen currently stops wars or is a government.",
@@ -2774,7 +3576,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#5",
+      "id": "docs/assistant/README.md#8",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "Civizen product facts stay internal even after escalation. Missing internal evidence does not authorize a generic web/model guess about Civizen. Gemini (or another model) may fill a gap for a general or mixed question; Civi then **checks** that reply before storing it. Invented Civizen capabilities, personal records, and one-off drafts are not remembered.",
@@ -2783,7 +3585,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#6",
+      "id": "docs/assistant/README.md#9",
       "title": "Status vocabulary",
       "path": "docs/assistant/README.md",
       "text": "## Status vocabulary Capabilities use: `implemented` · `experimental` · `in_development` · `proposed` · `deprecated` · `historical`. “Civizen supports X” means X is **implemented** in this build.",
