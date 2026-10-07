@@ -1,7 +1,24 @@
 import type { HistoryTurn } from './types';
+import { expandAssistantQuery } from './language';
 import { isScopeRefusal, isVerificationFollowUp, lastSubstantiveUserMessage } from './query-rewrite';
 
-const GREETINGS = ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening'];
+const GREETINGS = [
+  'hi',
+  'hello',
+  'hey',
+  'good morning',
+  'good afternoon',
+  'good evening',
+  'բարև',
+  'բարեւ',
+  'բարև ձեզ',
+  'բարի օր',
+  'привет',
+  'здравствуйте',
+  'добрый день',
+  'добрый вечер',
+  'доброе утро',
+];
 
 const CIVIZEN_TERMS = [
   'civizen',
@@ -67,6 +84,27 @@ const CIVIZEN_TERMS = [
   'cooperate',
   'cooperation',
   'coexistence',
+  'ballot',
+  'receipt',
+  'consultation',
+  'quorum',
+  'threshold',
+  'notification',
+  'notifications',
+  'bell',
+  'help and support',
+  'help page',
+  'support page',
+  'observer',
+  'job',
+  'jobs',
+  'verified',
+  'verification',
+  'sign up',
+  'sign in',
+  'tools tab',
+  'votes tab',
+  'proposals tab',
 ];
 
 export function isGreetingOnly(content: string): boolean {
@@ -79,7 +117,8 @@ export function textLooksCivizenRelated(content: string): boolean {
   const c = content.trim().toLowerCase();
   if (!c) return false;
   if (isGreetingOnly(c)) return true;
-  return CIVIZEN_TERMS.some((t) => c.includes(t));
+  const expanded = expandAssistantQuery(c);
+  return CIVIZEN_TERMS.some((t) => expanded.includes(t));
 }
 
 export function isRelevantToCivizen(resolvedQuery: string, messages: HistoryTurn[]): boolean {

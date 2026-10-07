@@ -36,7 +36,7 @@ const PRIORITY_WEIGHT: Record<number, number> = {
 export function tokenize(text: string): string[] {
   return text
     .toLowerCase()
-    .replace(/[^a-z0-9+/.-]+/g, ' ')
+    .replace(/[^a-z0-9+/.\-\u0400-\u04FF\u0530-\u058F]+/g, ' ')
     .split(/\s+/)
     .filter((t) => t.length > 1 && !STOP.has(t));
 }
@@ -91,7 +91,8 @@ export function searchFaq(query: string, faq: AssistantFaqItem[], limit = 3): Re
     .map((item) => {
       const hay = faqHaystack(item).toLowerCase();
       let score = bm25Score(qTokens, tokenize(hay), avg);
-      if (item.question.toLowerCase() === q || q.includes(item.question.toLowerCase())) score += 8;
+      const question = item.question.toLowerCase().replace(/[?.!]+$/, '');
+      if (question === q || q.includes(question)) score += 8;
       for (const alias of [item.question, ...item.aliases]) {
         if (alias && q.includes(alias.toLowerCase()) && alias.length > 8) score += 6;
       }

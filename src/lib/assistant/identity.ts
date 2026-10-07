@@ -1,6 +1,12 @@
 export const CANONICAL_CIVIZEN_IDENTITY =
   'Civizen is an open participatory system for organizing how humanity learns, contributes, collaborates, governs, shares resources, solves common challenges, and continuously improves the systems we live and work within.';
 
+/** Hand-written renderings of the canonical sentence; the English text stays the source of truth. */
+export const CANONICAL_CIVIZEN_IDENTITY_LOCALIZED = {
+  hy: 'Civizen-ը բաց մասնակցային համակարգ է, որը կազմակերպում է, թե ինչպես է մարդկությունը սովորում, ներդրում կատարում, համագործակցում, կառավարում, կիսվում ռեսուրսներով, լուծում ընդհանուր մարտահրավերները և շարունակաբար բարելավում այն համակարգերը, որոնցում ապրում և աշխատում ենք։',
+  ru: 'Civizen — это открытая система участия, которая организует то, как человечество учится, вносит вклад, сотрудничает, управляет, делится ресурсами, решает общие проблемы и постоянно улучшает системы, в которых мы живём и работаем.',
+} as const;
+
 export const IDENTITY_SOURCE_PATH = 'docs/assistant/civizen-identity.md';
 
 export const IDENTITY_FAQ_IDS = new Set([

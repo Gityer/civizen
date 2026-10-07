@@ -1,3 +1,4 @@
+import { ASSISTANT_LANGUAGE_NAMES, type AssistantLanguage } from './language';
 import type { KnowledgePack, NelaTurnPrep, ResourcePlan, RetrievalResult } from './types';
 
 const CORE_INSTRUCTIONS = [
@@ -59,8 +60,14 @@ export function buildNelaSystemPrompt(args: {
   resourcePlan: ResourcePlan;
   isVerification: boolean;
   audience?: 'member' | 'guest';
+  language?: AssistantLanguage;
 }): string {
   const { pack, resolvedQuery, retrievedContext, groundedAnswer, resourcePlan, isVerification, audience } = args;
+  const language = args.language ?? 'en';
+  const languageLine =
+    language === 'en'
+      ? ''
+      : `The member wrote in ${ASSISTANT_LANGUAGE_NAMES[language]}. Reply in natural, grammatically correct ${ASSISTANT_LANGUAGE_NAMES[language]}. Translate the evidence faithfully and do not add facts. Keep Civizen, Civi, and addresses such as /governance/workspace unchanged, and name screens the way the app shows them in that language.`;
   const meta = pack.meta;
   const escalation = resourcePlan.allowExternalResources
     ? `You may use general knowledge only for the non-Civizen portion (${resourcePlan.externalResourceKind}). Civizen facts still come only from the evidence below.`
@@ -76,6 +83,7 @@ export function buildNelaSystemPrompt(args: {
   return [
     CORE_INSTRUCTIONS,
     guest,
+    languageLine,
     `Knowledge build: app ${meta.appVersion} (${meta.appReleaseId}).`,
     `Resolved question: ${resolvedQuery}`,
     `Internal resolution: ${resourcePlan.internalResolution}. ${escalation}`,
@@ -89,7 +97,10 @@ export function buildNelaSystemPrompt(args: {
     .join('\n\n');
 }
 
-export function shouldSkipLlm(prep: Pick<NelaTurnPrep, 'resourcePlan' | 'diagnostics' | 'isGreeting' | 'inScope'>): boolean {
+export function shouldSkipLlm(
+  prep: Pick<NelaTurnPrep, 'resourcePlan' | 'diagnostics' | 'isGreeting' | 'inScope'>,
+  options?: { answerIsLocalized?: boolean },
+): boolean {
   if (prep.diagnostics.usedLearnedMemoryKey) return true;
   if (
     prep.diagnostics.matchedFaqId === 'if_i_need_housing_or_emergency_help' ||
@@ -99,6 +110,8 @@ export function shouldSkipLlm(prep: Pick<NelaTurnPrep, 'resourcePlan' | 'diagnos
   }
   if (!prep.inScope) return true;
   if (prep.isGreeting) return true;
+  // English evidence for an Armenian or Russian question: let the model render it in that language.
+  if (options?.answerIsLocalized === false) return false;
   if (prep.resourcePlan.internalResolution === 'requires_runtime_data' && !prep.resourcePlan.allowLlmReasoning) {
     return true;
   }

@@ -1,6 +1,13 @@
 import { shapeAnswerToQuestion } from './answer-shape';
 import { isPersonalHardshipAsk, PERSONAL_HARDSHIP_FAQ_ID, PERSONAL_HARDSHIP_REPLY } from './hardship';
 import { IDENTITY_FAQ_IDS, classifyAssistantTopic } from './identity';
+import {
+  detectAssistantLanguage,
+  expandAssistantQuery,
+  LOCALIZED_REPLIES,
+  retrievalQueryFor,
+  type AssistantLanguage,
+} from './language';
 import { isPeaceCooperationAsk, PEACE_COOPERATION_FAQ_ID, PEACE_COOPERATION_REPLY } from './peace';
 import { pickLearnedMemory } from './learned-memory';
 import { buildNelaSystemPrompt, formatRetrievedContext, shouldSkipLlm } from './prompt';
@@ -10,6 +17,7 @@ import { classifyRequest, planResources, retrievalConfidence, shouldInvokeExtern
 import { isGreetingOnly, isRelevantToCivizen } from './scope';
 import type {
   AssistantCapabilityStatus,
+  AssistantFaqItem,
   ExternalResourceKind,
   HistoryTurn,
   KnowledgePack,
@@ -87,37 +95,48 @@ function distinctiveEnough(query: string, text: string): boolean {
   return hits >= 1 && hits / qTerms.length >= 0.28;
 }
 
+/** Hand-written answer in the member's language when the FAQ has one; English otherwise. */
+export function faqAnswerFor(item: AssistantFaqItem, language: AssistantLanguage): string {
+  const localized = language === 'en' ? undefined : item.localizedAnswers?.[language];
+  return (localized ?? item.answer).trim();
+}
+
 function composeFromRetrieval(
   retrieval: RetrievalResult,
   query: string,
   topic: ReturnType<typeof classifyAssistantTopic>,
+  language: AssistantLanguage = 'en',
 ): string {
   const faq = retrieval.faq[0];
   const cap = retrieval.capabilities[0];
   if (topic === 'identity') {
     const identityFaq =
       retrieval.faq.find((hit) => IDENTITY_FAQ_IDS.has(hit.item.id)) ?? faq;
-    if (identityFaq) return identityFaq.item.answer.trim();
+    if (identityFaq) return faqAnswerFor(identityFaq.item, language);
   }
   if (topic === 'current_capability') {
     const nowFaq = retrieval.faq.find((hit) => hit.item.id === 'what_can_i_do_in_civizen_now') ?? faq;
-    if (nowFaq) return nowFaq.item.answer.trim();
+    if (nowFaq) return faqAnswerFor(nowFaq.item, language);
   }
   const faqRelated = faq
     ? distinctiveEnough(query, `${faq.item.question} ${faq.item.aliases.join(' ')} ${faq.item.answer}`)
     : false;
+  // A hand-written answer in the member's language beats a capability card in English.
+  if (faq && faqRelated && language !== 'en' && faq.item.localizedAnswers?.[language]) {
+    return faqAnswerFor(faq.item, language);
+  }
   const capRelated = cap ? distinctiveEnough(query, `${cap.item.name} ${cap.item.description}`) : false;
   if (topic !== 'current_capability' && faq && faqRelated && (!cap || !capRelated || retrieval.faq[0].score >= (cap.score ?? 0) * 0.7)) {
     const related = cap && faq.item.capabilityIds.includes(cap.item.id) ? cap.item : null;
     const prefix = related && capRelated ? statusPrefix(related.status) : '';
-    return `${prefix}${faq.item.answer}`.trim();
+    return `${prefix}${faqAnswerFor(faq.item, language)}`.trim();
   }
   if (cap && capRelated) {
     const prefix = statusPrefix(cap.item.status);
     const how = cap.item.howTo ? ` ${cap.item.howTo}` : '';
     return `${prefix}${cap.item.description}${how}`.trim();
   }
-  if (faq && faqRelated) return faq.item.answer.trim();
+  if (faq && faqRelated) return faqAnswerFor(faq.item, language);
   const docs = preferCurrentEvidence(retrieval.documents).filter((d) =>
     distinctiveEnough(query, `${d.chunk.title} ${d.chunk.text}`),
   );
@@ -161,17 +180,21 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
   const pack = options.pack ?? GENERATED_PACK;
   const latest = [...messages].reverse().find((m) => m.role === 'user');
   const latestText = latest?.content.trim() ?? '';
+  const language = detectAssistantLanguage(latestText);
   const rewritten = resolveConversationalQuery(messages, pack.aliases);
-  const resolvedQuery = rewritten.resolvedQuery;
-  const searchQuery =
+  const resolvedQuery = expandAssistantQuery(rewritten.resolvedQuery);
+  const searchQuery = retrievalQueryFor(
     rewritten.isVerification && rewritten.previousUserQuestion
       ? rewritten.previousUserQuestion
-      : resolvedQuery;
+      : rewritten.resolvedQuery,
+    language,
+  );
+  const canned = language === 'en' ? null : LOCALIZED_REPLIES[language];
   const greeting = isGreetingOnly(latestText);
   const hardship = isPersonalHardshipAsk(latestText);
   const peace = !hardship && isPeaceCooperationAsk(latestText);
-  const canned = hardship || peace;
-  const inScope = greeting || canned || isRelevantToCivizen(resolvedQuery, messages);
+  const cannedTopic = hardship || peace;
+  const inScope = greeting || cannedTopic || isRelevantToCivizen(resolvedQuery, messages);
   const topic = classifyAssistantTopic(searchQuery);
 
   const rawRetrieval = inScope
@@ -209,7 +232,7 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
 
   let usedLearnedMemoryKey: string | null = null;
   const learnedHit =
-    !greeting && !canned && !rewritten.isVerification
+    !greeting && !cannedTopic && !rewritten.isVerification
       ? pickLearnedMemory(searchQuery, options.learnedMemories, {
           catalogFaqScore: retrieval.faq[0]?.score,
           topic,
@@ -218,7 +241,7 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
 
   const externalResourcesInvoked: ExternalResourceKind[] = [];
   const invokeKind = shouldInvokeExternalSearch(resourcePlan, latestText);
-  if (invokeKind && !canned && !learnedHit && options.externalAdapter?.search) {
+  if (invokeKind && !cannedTopic && !learnedHit && options.externalAdapter?.search) {
     void options.externalAdapter.search(resolvedQuery);
     externalResourcesInvoked.push(invokeKind);
   }
@@ -229,9 +252,9 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
   } else if (peace) {
     groundedAnswer = PEACE_COOPERATION_REPLY;
   } else if (!inScope) {
-    groundedAnswer = SCOPE_REFUSAL;
+    groundedAnswer = canned?.scopeRefusal ?? SCOPE_REFUSAL;
   } else if (greeting) {
-    groundedAnswer = options.audience === 'guest' ? GREETING_GUEST : GREETING;
+    groundedAnswer = options.audience === 'guest' ? (canned?.greetingGuest ?? GREETING_GUEST) : (canned?.greeting ?? GREETING);
   } else if (resourcePlan.internalResolution === 'requires_runtime_data' && !options.runtimeData) {
     const need = resourcePlan.runtimeDataNeed;
     groundedAnswer =
@@ -240,10 +263,10 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
         : `I don't have your personal Civizen records in project knowledge. ${need?.hint ?? 'Open the relevant page while signed in.'}`;
   } else if (resourcePlan.internalResolution === 'insufficient' && kinds.includes('civizen_product') && !kinds.includes('external_world')) {
     groundedAnswer = retrieval.faq.length || retrieval.capabilities.length || retrieval.documents.length
-      ? composeFromRetrieval(retrieval, searchQuery, topic)
-      : `${UNVERIFIED} I can help with related current features if you name one.`;
+      ? composeFromRetrieval(retrieval, searchQuery, topic, language)
+      : canned?.unverified ?? `${UNVERIFIED} I can help with related current features if you name one.`;
   } else {
-    groundedAnswer = composeFromRetrieval(retrieval, searchQuery, topic);
+    groundedAnswer = composeFromRetrieval(retrieval, searchQuery, topic, language);
     if (groundedAnswer === UNVERIFIED && kinds.includes('external_world')) {
       groundedAnswer = 'I do not have a Civizen-specific fact for that. I can explain the general topic, separate from current Civizen features.';
     }
@@ -257,18 +280,18 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
     usedLearnedMemoryKey = learnedHit.questionKey;
   }
 
-  if (inScope && !greeting) {
+  if (inScope && !greeting && language === 'en') {
     const shapeQuery = rewritten.isVerification
       ? (rewritten.previousUserQuestion ?? latestText)
       : latestText;
     groundedAnswer = shapeAnswerToQuestion(shapeQuery, groundedAnswer);
   }
 
-  if (rewritten.isVerification && inScope && !greeting && !canned) {
+  if (rewritten.isVerification && inScope && !greeting && !cannedTopic) {
     groundedAnswer = composeVerification(rewritten.previousAssistantClaim, groundedAnswer);
   }
 
-  if (options.runtimeData?.summary && !canned && resourcePlan.internalResolution !== 'insufficient') {
+  if (options.runtimeData?.summary && !cannedTopic && resourcePlan.internalResolution !== 'insufficient') {
     groundedAnswer = `${groundedAnswer}\n\nFor your account: ${options.runtimeData.summary}`.trim();
   }
 
@@ -281,6 +304,7 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
     resourcePlan,
     isVerification: rewritten.isVerification,
     audience: options.audience,
+    language,
   });
 
   const prep: NelaTurnPrep = {
@@ -295,6 +319,7 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
     resourcePlan,
     diagnostics: {
       resolvedQuery,
+      language,
       isVerification: rewritten.isVerification,
       previousUserQuestion: rewritten.previousUserQuestion,
       matchedFaqId: hardship
@@ -325,8 +350,20 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
       },
     },
   };
-  prep.skipLlm = canned || shouldSkipLlm(prep);
+  prep.skipLlm = cannedTopic || shouldSkipLlm(prep, { answerIsLocalized: answerIsLocalized(prep, language) });
   return prep;
 }
+
+/** English evidence for a non-English question needs the model unless a hand-written answer was used. */
+function answerIsLocalized(prep: NelaTurnPrep, language: AssistantLanguage): boolean {
+  if (language === 'en') return true;
+  if (!prep.inScope || prep.isGreeting) return true;
+  const faqId = prep.diagnostics.matchedFaqId;
+  const item = faqId ? ASSISTANT_FAQ_BY_ID.get(faqId) : undefined;
+  const localized = item?.localizedAnswers?.[language];
+  return Boolean(localized && prep.groundedAnswer.includes(localized.trim()));
+}
+
+const ASSISTANT_FAQ_BY_ID = new Map(GENERATED_PACK.faq.map((item) => [item.id, item]));
 
 export { UNVERIFIED, SCOPE_REFUSAL, GREETING, GREETING_GUEST };
