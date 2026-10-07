@@ -5,6 +5,7 @@ import { ShieldCheck } from 'lucide-react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { AppDownloadCard } from '@/components/download/AppDownloadCard';
+import { OpenConsultationBanner } from '@/components/governance/OpenConsultationBanner';
 import { OnboardingDeepDive } from '@/components/public/OnboardingDeepDive';
 import { OnboardingGetStartedHub } from '@/components/public/OnboardingGetStartedHub';
 import { OnboardingHero } from '@/components/public/OnboardingHero';
@@ -100,6 +101,10 @@ export default function Onboarding() {
             ctaRef={heroCtaRef}
             aside={isDesktop ? <OnboardingScreenshots variant="hero" /> : undefined}
           />
+
+          <MotionSection reducedMotion={reducedMotion} delay={0.08}>
+            <OpenConsultationBanner />
+          </MotionSection>
 
           <MotionSection reducedMotion={reducedMotion} delay={0.1} className="space-y-3 lg:max-w-3xl">
             <h2 className={onboardingSectionTitleClass}>{t('onboarding.missionTitle')}</h2>

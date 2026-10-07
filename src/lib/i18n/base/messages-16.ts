@@ -118,6 +118,15 @@ export const m_messages_16 = {
     "published": "Published",
     "closed": "Closed"
   },
+  "openConsultation": {
+    "eyebrow": "Open consultation",
+    "closes": "Voting closes {date}",
+    "ballots": "{count} countable ballots so far",
+    "ballotsOne": "1 countable ballot so far",
+    "cta": "Read and vote",
+    "more": "{count} more open votes",
+    "hub": "All consultations"
+  },
   "notificationCenter": {
     "title": "Notifications",
     "subtitle": "Consultations, Matters, agreements, and posts that involve you.",

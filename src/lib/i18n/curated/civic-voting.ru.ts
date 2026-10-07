@@ -119,6 +119,15 @@ export const civicVotingRu = {
     published: 'Опубликованные',
     closed: 'Закрытые',
   },
+  openConsultation: {
+    eyebrow: 'Открытая консультация',
+    closes: 'Голосование закрывается {date}',
+    ballots: 'Учтённых бюллетеней: {count}',
+    ballotsOne: 'Уже учтён 1 бюллетень',
+    cta: 'Прочитать и проголосовать',
+    more: 'Ещё открытых голосований: {count}',
+    hub: 'Все консультации',
+  },
   notificationCenter: {
     title: 'Уведомления',
     subtitle: 'Консультации, Вопросы, соглашения и записи, которые вас касаются.',

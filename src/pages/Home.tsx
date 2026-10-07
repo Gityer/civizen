@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { type Post } from '@/pages/home/home-shared';
 import { useHome } from '@/pages/home/useHome';
 import { HomeScoreCard } from '@/pages/home/HomeScoreCard';
+import { OpenConsultationBanner } from '@/components/governance/OpenConsultationBanner';
 import { HomeComposer } from '@/pages/home/HomeComposer';
 import { HomeFeedItem } from '@/pages/home/HomeFeedItem';
 import { HomeStories } from '@/pages/home/HomeStories';
@@ -76,6 +77,9 @@ export default function Home() {
 
         {/* Score Card */}
         <HomeScoreCard model={model} />
+
+        {/* The open consultation members can vote on right now */}
+        <OpenConsultationBanner />
 
         {/* Quick Actions */}
         {showHomeGovernanceHub && showQuickActions ? (

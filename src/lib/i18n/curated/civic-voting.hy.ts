@@ -119,6 +119,15 @@ export const civicVotingHy = {
     published: 'Հրապարակված',
     closed: 'Փակված',
   },
+  openConsultation: {
+    eyebrow: 'Բաց խորհրդակցություն',
+    closes: 'Քվեարկությունը փակվում է {date}',
+    ballots: 'Արդեն {count} հաշվվող քվեաթերթիկ',
+    ballotsOne: 'Արդեն 1 հաշվվող քվեաթերթիկ',
+    cta: 'Կարդալ և քվեարկել',
+    more: 'Եվս {count} բաց քվեարկություն',
+    hub: 'Բոլոր խորհրդակցությունները',
+  },
   notificationCenter: {
     title: 'Ծանուցումներ',
     subtitle: 'Ձեզ վերաբերող խորհրդակցություններ, Հարցեր, համաձայնագրեր և գրառումներ։',
