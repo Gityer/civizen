@@ -17,11 +17,19 @@ const { rpcMock, switchToKnownAccountMock } = vi.hoisted(() => ({
   switchToKnownAccountMock: vi.fn(async () => ({ error: null })),
 }));
 
+function emptyQuery() {
+  const result = { data: [], error: null };
+  const builder = {
+    eq: () => builder,
+    then: (resolve: (value: typeof result) => unknown) => Promise.resolve(result).then(resolve),
+  };
+  return builder;
+}
+
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: () => ({
-      select: () =>
-        Promise.resolve({ data: [], error: null }),
+      select: () => emptyQuery(),
       insert: () => Promise.resolve({ data: null, error: null }),
     }),
     functions: {

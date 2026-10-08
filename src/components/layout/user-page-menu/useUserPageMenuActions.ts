@@ -1,5 +1,6 @@
-import { isOwnerSingleBusinessConstraintError, normalizeBusinessName, shouldUseConnectAction, toBusinessUsernameCandidate } from '@/lib/linked-business-accounts';
-import { isDuplicateLinkError, isMissingBusinessAccessRequestsTableError } from '@/lib/linked-accounts-errors';
+import { shouldUseConnectAction, toBusinessUsernameCandidate } from '@/lib/linked-business-accounts';
+import { isMissingBusinessAccessRequestsTableError } from '@/lib/linked-accounts-errors';
+import { establishBusinessAccountLink, type LinkErrorCode } from '@/lib/linked-account-link';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { type AccountOption, type UserPageMenuProps, createEphemeralSupabaseClient, isNetworkFetchError, raceTimeout } from '@/components/layout/user-page-menu/user-page-menu-shared';
@@ -74,37 +75,11 @@ export function useUserPageMenuActions({ setOpen, setCreateBusinessOpen, busines
     setSwitchingAccountId(null);
   };
 
-  const resolveProfileIdForUser = async (options: {
-    userId: string;
-    email: string;
-    password: string;
-  }) => {
-    const ephemeralClient = createEphemeralSupabaseClient();
-    if (!ephemeralClient) return null;
-
-    // Try to authenticate in the isolated client to avoid clobbering the current session.
-    await ephemeralClient.auth.signInWithPassword({
-      email: options.email,
-      password: options.password,
-    });
-
-    for (let attempt = 0; attempt < 8; attempt += 1) {
-      const { data: ownProfile } = await ephemeralClient
-        .from('profiles')
-        .select('id')
-        .eq('user_id', options.userId)
-        .maybeSingle();
-
-      if (ownProfile?.id) {
-        await ephemeralClient.auth.signOut();
-        return ownProfile.id;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 250));
-    }
-
-    await ephemeralClient.auth.signOut();
-    return null;
+  const linkErrorMessage = (code: LinkErrorCode) => {
+    if (code === 'already_linked') return t('home.accountSwitchAlreadyLinked');
+    if (code === 'business_name_taken') return t('home.accountSwitchBusinessExists');
+    if (code === 'invalid_or_expired_link_token') return t('home.accountSwitchLinkExpired');
+    return t('home.accountSwitchCreateFailed');
   };
 
   const createBusinessAccountClientSide = async () => {
@@ -136,7 +111,6 @@ export function useUserPageMenuActions({ setOpen, setCreateBusinessOpen, busines
       }
 
       const normalizedEmail = businessEmail.trim().toLowerCase();
-      const normalizedBusinessName = normalizeBusinessName(businessName);
       const ephemeralClient = createEphemeralSupabaseClient();
       if (!ephemeralClient) {
         return { error: t('home.accountSwitchCreateFailed') } as const;
@@ -144,6 +118,21 @@ export function useUserPageMenuActions({ setOpen, setCreateBusinessOpen, busines
 
       const usernameCandidate = toBusinessUsernameCandidate(businessName);
       const existingProfileId = selectedBusinessMatch?.profileId ?? null;
+
+      // The Connect lookup already says who owns a matched business. A stranger cannot read that
+      // business's linked_accounts row (RLS), so decide from the match, not from a second query.
+      if (
+        selectedBusinessMatch?.ownerProfileId
+        && selectedBusinessMatch.ownerProfileId !== profile.id
+        && !selectedBusinessMatch.alreadyLinkedToRequester
+      ) {
+        const requestMessage = await submitBusinessAccessRequest(selectedBusinessMatch.profileId);
+        return {
+          error: null,
+          accessRequested: true,
+          message: requestMessage,
+        } as const;
+      }
 
       const { data: existingBusinessProfile } = existingProfileId
         ? { data: { id: existingProfileId } }
@@ -193,56 +182,37 @@ export function useUserPageMenuActions({ setOpen, setCreateBusinessOpen, busines
         return { error: failureMessage } as const;
       }
 
-      let businessUserId = signUpData.user?.id ?? null;
-      if (!businessUserId) {
+      // The business account's own session is the proof of control the server requires.
+      // Sign-up returns one directly (e-mail autoconfirm); an existing account signs in with
+      // its password in the isolated client so the owner's session is never replaced.
+      if (!signUpData?.session) {
         const { data: fallbackSignIn, error: fallbackSignInError } = await ephemeralClient.auth.signInWithPassword({
           email: normalizedEmail,
           password: businessPassword,
         });
 
-        if (fallbackSignInError || !fallbackSignIn.user?.id) {
+        if (fallbackSignInError || !fallbackSignIn.session) {
           const failureMessage = isNetworkFetchError(fallbackSignInError)
             ? t('home.accountSwitchCreateFailed')
             : (fallbackSignInError?.message || t('home.accountSwitchCreateFailed'));
           return { error: failureMessage } as const;
         }
-
-        businessUserId = fallbackSignIn.user.id;
       }
 
-      const linkedProfileId = await resolveProfileIdForUser({
-        userId: businessUserId,
-        email: normalizedEmail,
-        password: businessPassword,
+      const link = await establishBusinessAccountLink({
+        ownerClient: supabase,
+        businessClient: ephemeralClient,
+        businessName,
+        linkedProfileId: existingProfileId,
       });
+      await ephemeralClient.auth.signOut();
 
-      if (!linkedProfileId) {
-        return { error: t('home.accountSwitchCreateFailed') } as const;
+      if (link.error) {
+        console.warn('Could not establish the business account link:', link.error);
+        return { error: linkErrorMessage(link.error) } as const;
       }
 
-      const { error: linkError } = await supabase.from('linked_accounts').insert({
-        owner_profile_id: profile.id,
-        linked_profile_id: linkedProfileId,
-        relationship_type: 'business',
-        business_name_normalized: normalizedBusinessName,
-      });
-
-      if (linkError) {
-        if (isDuplicateLinkError(linkError)) {
-          if (isOwnerSingleBusinessConstraintError(linkError)) {
-            return { error: t('home.accountSwitchCreateFailed') } as const;
-          }
-          const message = String(linkError.message || '').toLowerCase();
-          if (message.includes('business_name')) {
-            return { error: t('home.accountSwitchBusinessExists') } as const;
-          }
-          return { error: t('home.accountSwitchAlreadyLinked') } as const;
-        }
-        console.warn('Could not create linked_accounts row:', linkError);
-        return { error: t('home.accountSwitchCreateFailed') } as const;
-      }
-
-      return { error: null, linkedProfileId } as const;
+      return { error: null, linkedProfileId: link.linkedProfileId } as const;
     } catch (error) {
       return {
         error: isNetworkFetchError(error as { message?: string; details?: string })

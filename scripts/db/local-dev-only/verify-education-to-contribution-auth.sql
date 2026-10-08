@@ -13,8 +13,8 @@
 BEGIN;
 
 -- 0) Linked-account owner of the publishing profile
-INSERT INTO public.linked_accounts (owner_profile_id, linked_profile_id, relationship_type)
-VALUES (:'owner_profile_id', :'publisher_profile_id', 'business')
+INSERT INTO public.linked_accounts (owner_profile_id, linked_profile_id, relationship_type, business_name_normalized, established_at, established_via)
+VALUES (:'owner_profile_id', :'publisher_profile_id', 'business', 'publisher org', now(), 'session_handshake')
 ON CONFLICT DO NOTHING;
 
 -- Helper: become an authenticated profile

@@ -3,6 +3,7 @@ import { AccountSwitcherTrack } from '@/components/layout/AccountSwitcherTrack';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Pencil, Plus, RefreshCcw } from 'lucide-react';
+import { UserPageMenuAccessRequests } from '@/components/layout/user-page-menu/UserPageMenuAccessRequests';
 import type { useUserPageMenu } from '@/components/layout/user-page-menu/useUserPageMenu';
 
 type UserPageMenuModel = ReturnType<typeof useUserPageMenu>;
@@ -12,7 +13,7 @@ export function UserPageMenuPanel({ model }: { model: UserPageMenuModel }) {
     open, setOpen, linkedLoading, linkedError, setCreateBusinessOpen, switchingAccountId, profile,
     t, navigate, location, currentAccountCardRef, pageLinks, canEditProfile,
     accountSessionByProfileId, directlyLinkedProfileIds, accountOptions, orderedAccountOptions,
-    handleSwitchAccount,
+    handleSwitchAccount, pendingAccessRequests, reviewingAccessRequestId, reviewAccessRequest,
   } = model;
   return (
     <>
@@ -178,6 +179,13 @@ export function UserPageMenuPanel({ model }: { model: UserPageMenuModel }) {
                 )}
               </div>
             </div>
+
+            <UserPageMenuAccessRequests
+              requests={pendingAccessRequests}
+              reviewingId={reviewingAccessRequestId}
+              onReview={reviewAccessRequest}
+              t={t}
+            />
 
             <div className="space-y-2 touch-pan-y">
             {pageLinks.map((page) => {

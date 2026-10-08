@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { resolveSwitchAuthorization } from './authorize.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,6 +9,13 @@ const corsHeaders = {
 type SwitchPayload = {
   targetProfileId?: string;
 };
+
+function json(body: unknown, status: number) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
+}
 
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
@@ -21,11 +29,7 @@ Deno.serve(async (request) => {
     const authHeader = request.headers.get('Authorization') ?? '';
 
     const userClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: {
-          Authorization: authHeader,
-        },
-      },
+      global: { headers: { Authorization: authHeader } },
     });
 
     const {
@@ -34,20 +38,14 @@ Deno.serve(async (request) => {
     } = await userClient.auth.getUser();
 
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Unauthorized' }, 401);
     }
 
     const payload = (await request.json()) as SwitchPayload;
     const targetProfileId = payload.targetProfileId?.trim();
 
     if (!targetProfileId) {
-      return new Response(JSON.stringify({ error: 'Missing targetProfileId.' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Missing targetProfileId.' }, 400);
     }
 
     const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey);
@@ -60,35 +58,22 @@ Deno.serve(async (request) => {
       .single();
 
     if (currentProfileError || !currentProfile?.id) {
-      return new Response(JSON.stringify({ error: 'Current profile not found.' }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Current profile not found.' }, 404);
     }
 
-    const { data: currentAsLinked } = await adminClient
+    // Only established rows count: a row is established by the owner/business session handshake
+    // or by an owner approving an access request. Anything else was never proven.
+    const { data: relatedRows } = await adminClient
       .from('linked_accounts')
-      .select('owner_profile_id, linked_profile_id')
+      .select('owner_profile_id, linked_profile_id, relationship_type, established_at')
+      .eq('relationship_type', 'business')
+      .not('established_at', 'is', null)
       .or(`owner_profile_id.eq.${currentProfile.id},linked_profile_id.eq.${currentProfile.id},linked_profile_id.eq.${targetProfileId},owner_profile_id.eq.${targetProfileId}`);
 
-    const relatedRows = currentAsLinked ?? [];
-    const currentOwners = relatedRows
-      .filter((row) => row.linked_profile_id === currentProfile.id)
-      .map((row) => row.owner_profile_id);
-    const targetOwners = relatedRows
-      .filter((row) => row.linked_profile_id === targetProfileId)
-      .map((row) => row.owner_profile_id);
-    const sibling = currentOwners.some((ownerId) => targetOwners.includes(ownerId));
-    const direct = relatedRows.some((row) => (
-      (row.owner_profile_id === currentProfile.id && row.linked_profile_id === targetProfileId)
-      || (row.linked_profile_id === currentProfile.id && row.owner_profile_id === targetProfileId)
-    ));
+    const authorization = resolveSwitchAuthorization(relatedRows ?? [], currentProfile.id, targetProfileId);
 
-    if (!direct && !sibling) {
-      return new Response(JSON.stringify({ error: 'Target account is not linked.' }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    if (authorization === 'denied') {
+      return json({ error: 'Target account is not linked.' }, 403);
     }
 
     const { data: targetProfile, error: targetProfileError } = await adminClient
@@ -99,28 +84,19 @@ Deno.serve(async (request) => {
       .single();
 
     if (targetProfileError || !targetProfile?.user_id) {
-      return new Response(JSON.stringify({ error: 'Target profile not found.' }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Target profile not found.' }, 404);
     }
 
     const { data: targetUser, error: targetUserError } = await adminClient.auth.admin.getUserById(targetProfile.user_id);
 
     if (targetUserError || !targetUser?.user) {
-      return new Response(JSON.stringify({ error: 'Target user not found.' }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Target user not found.' }, 404);
     }
 
     const email = targetUser.user.email ?? null;
 
     if (!email) {
-      return new Response(JSON.stringify({ error: 'Target user has no email.' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Target user has no email.' }, 400);
     }
 
     const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
@@ -131,26 +107,11 @@ Deno.serve(async (request) => {
     const token = linkData?.properties?.email_otp ?? null;
 
     if (linkError || !token) {
-      return new Response(JSON.stringify({ error: linkError?.message || 'Could not generate switch token.' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: linkError?.message || 'Could not generate switch token.' }, 400);
     }
 
-    return new Response(
-      JSON.stringify({
-        email,
-        token,
-      }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
-    );
+    return json({ email, token }, 200);
   } catch (error) {
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unexpected error' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return json({ error: error instanceof Error ? error.message : 'Unexpected error' }, 500);
   }
 });

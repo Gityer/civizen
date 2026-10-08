@@ -267,3 +267,54 @@ export function businessConnectDisplayName(match: BusinessConnectMatch, typedNam
 export function shouldUseConnectAction(match: BusinessConnectMatch | null | undefined) {
   return Boolean(match?.profileId);
 }
+
+export type PendingBusinessAccessRequest = {
+  id: string;
+  targetProfileId: string;
+  requesterProfileId: string;
+  createdAt: string;
+  requesterName: string | null;
+  requesterUsername: string | null;
+  requesterAvatarUrl: string | null;
+  businessName: string | null;
+};
+
+type ProfileSummary = { id?: string | null; full_name?: string | null; username?: string | null; avatar_url?: string | null } | null | undefined;
+
+type AccessRequestRow = {
+  id: string;
+  target_profile_id: string;
+  requester_profile_id: string;
+  created_at: string;
+  requester?: ProfileSummary | ProfileSummary[];
+  target?: ProfileSummary | ProfileSummary[];
+};
+
+function firstProfile(value: ProfileSummary | ProfileSummary[]): ProfileSummary {
+  return Array.isArray(value) ? value[0] ?? null : value;
+}
+
+/** Pending requests that the signed-in profile may review: those aimed at businesses it owns. */
+export function selectOwnedPendingAccessRequests(
+  rows: readonly AccessRequestRow[],
+  ownedBusinessProfileIds: readonly string[],
+): PendingBusinessAccessRequest[] {
+  const owned = new Set(ownedBusinessProfileIds);
+  return rows
+    .filter((row) => owned.has(row.target_profile_id))
+    .map((row) => {
+      const requester = firstProfile(row.requester);
+      const target = firstProfile(row.target);
+      return {
+        id: row.id,
+        targetProfileId: row.target_profile_id,
+        requesterProfileId: row.requester_profile_id,
+        createdAt: row.created_at,
+        requesterName: requester?.full_name ?? null,
+        requesterUsername: requester?.username ?? null,
+        requesterAvatarUrl: requester?.avatar_url ?? null,
+        businessName: target?.full_name ?? target?.username ?? null,
+      };
+    })
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}

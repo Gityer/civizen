@@ -33,6 +33,7 @@ Before planning or editing, agents **must read**:
    Public Market Jobs: **`docs/04-operations/dev/market-jobs-public.md`** when touching public Jobs posting, the listings board, or `/market` guest access
    Home post formatting and author editing: **`docs/04-operations/dev/home-post-formatting.md`**
    Manual identity verification (ID + selfie, staff review): **`docs/04-operations/dev/identity-verification-manual.md`**
+   Business accounts (linking, switching, access requests; clients never write `linked_accounts`): **`docs/04-operations/dev/business-accounts-linking.md`**
 8. When work touches Civi / the built-in assistant:
    **`docs/assistant/README.md`**, **`docs/assistant/civizen-identity.md`**, and **`docs/assistant/civizen-assistant-cheatsheet.md`**. Identity, purpose, mission, and one-sentence description come from the identity source, not from feature docs. After changing product facts Civi should know, run **`npm run assistant:knowledge`**. After adding or changing a user-facing surface, flow, public page, or mission copy, update the cheat sheet and/or `src/lib/assistant/catalog.ts` in the **same session**, then regenerate knowledge. Civi is internal-first: Civizen evidence before general AI knowledge. External resources must never override current Civizen project information.
 9. Documentation map: `docs/README.md`

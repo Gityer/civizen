@@ -82,6 +82,9 @@ describe.skipIf(!harness)('Slice 1 authorization (local supabase)', () => {
       owner_profile_id: owner.profileId,
       linked_profile_id: publisher.profileId,
       relationship_type: 'business',
+      business_name_normalized: `publisher org ${suffix}`,
+      established_at: new Date().toISOString(),
+      established_via: 'session_handshake',
     });
     if (linkError) throw linkError;
 

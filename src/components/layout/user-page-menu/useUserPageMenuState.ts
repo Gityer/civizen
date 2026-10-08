@@ -339,6 +339,6 @@ export function useUserPageMenuState({ size }: UserPageMenuProps) {
     lookingUpBusiness, switchingAccountId, setSwitchingAccountId, profile, switchToKnownAccount,
     signIn, signInWithOtp, t, navigate, location, panelRef, currentAccountCardRef, triggerSizeClass,
     avatarSizeClass, pageLinks, canEditProfile, accountSessionByProfileId, directlyLinkedProfileIds,
-    accountOptions, orderedAccountOptions,
+    accountOptions, orderedAccountOptions, linkedAccounts,
   };
 }

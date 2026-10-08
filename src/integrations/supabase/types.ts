@@ -783,6 +783,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"business_account_link_grants": {
+                  Row: {
+                    "business_name_normalized": string | null,"consumed_at": string | null,"created_at": string,"expires_at": string,"id": string,"linked_profile_id": string | null,"owner_profile_id": string,"token_hash": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "business_name_normalized"?: string | null,"consumed_at"?: string | null,"created_at"?: string,"expires_at": string,"id"?: string,"linked_profile_id"?: string | null,"owner_profile_id": string,"token_hash": string
+                  }
+                  Update: {
+                    "business_name_normalized"?: string | null,"consumed_at"?: string | null,"created_at"?: string,"expires_at"?: string,"id"?: string,"linked_profile_id"?: string | null,"owner_profile_id"?: string,"token_hash"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "business_account_link_grants_linked_profile_id_fkey"
+      columns: ["linked_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "business_account_link_grants_owner_profile_id_fkey"
+      columns: ["owner_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"challenge_proposals": {
                   Row: {
                     "author_profile_id": string,"challenge_id": string,"created_at": string,"expected_result": string,"id": string,"implementation_approach": string | null,"rationale": string,"resources_needed": string | null,"risks": string | null,"status": string,"supporting_evidence": string | null,"title": string,"updated_at": string
@@ -5229,17 +5255,23 @@ isOneToOne: false
                   ]
                 },"linked_accounts": {
                   Row: {
-                    "business_name_normalized": string | null,"created_at": string,"id": string,"linked_profile_id": string,"owner_profile_id": string,"relationship_type": string,"updated_at": string
+                    "business_name_normalized": string | null,"created_at": string,"established_at": string | null,"established_by_profile_id": string | null,"established_via": string | null,"id": string,"linked_profile_id": string,"owner_profile_id": string,"relationship_type": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "business_name_normalized"?: string | null,"created_at"?: string,"id"?: string,"linked_profile_id": string,"owner_profile_id": string,"relationship_type"?: string,"updated_at"?: string
+                    "business_name_normalized"?: string | null,"created_at"?: string,"established_at"?: string | null,"established_by_profile_id"?: string | null,"established_via"?: string | null,"id"?: string,"linked_profile_id": string,"owner_profile_id": string,"relationship_type"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "business_name_normalized"?: string | null,"created_at"?: string,"id"?: string,"linked_profile_id"?: string,"owner_profile_id"?: string,"relationship_type"?: string,"updated_at"?: string
+                    "business_name_normalized"?: string | null,"created_at"?: string,"established_at"?: string | null,"established_by_profile_id"?: string | null,"established_via"?: string | null,"id"?: string,"linked_profile_id"?: string,"owner_profile_id"?: string,"relationship_type"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "linked_accounts_established_by_profile_id_fkey"
+      columns: ["established_by_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "linked_accounts_linked_profile_id_fkey"
       columns: ["linked_profile_id"]
 isOneToOne: false
@@ -8143,8 +8175,14 @@ isOneToOne: false
 "authorize_matter_agent_run":
 { Args: { "p_run_id": string }; Returns: Json
                            },
+"begin_business_account_link":
+{ Args: { "p_business_name"?: string,"p_linked_profile_id"?: string }; Returns: string
+                           },
 "build_default_agreement_body_markdown":
 { Args: { "p_listing_kind": string,"p_listing_title": string,"p_price_lumens": number,"p_template_key": string }; Returns: string
+                           },
+"business_account_link_token_hash":
+{ Args: { "p_token": string }; Returns: string
                            },
 "can_access_agreement":
 { Args: { "p_agreement_id": string }; Returns: boolean
@@ -8350,6 +8388,9 @@ isOneToOne: false
                            },
 "complete_agreement":
 { Args: { "p_agreement_id": string }; Returns: undefined
+                           },
+"complete_business_account_link":
+{ Args: { "p_token": string }; Returns: string
                            },
 "complete_community_challenge":
 { Args: { "p_challenge_id": string }; Returns: string
@@ -9213,6 +9254,9 @@ isOneToOne: false
 "invite_matter_participant":
 { Args: { "p_kind": string,"p_matter_id": string,"p_profile_id": string,"p_role": string,"p_unit_label"?: string }; Returns: undefined
                            },
+"is_established_business_profile":
+{ Args: { "p_profile_id": string }; Returns: boolean
+                           },
 "link_implementation_opportunity":
 { Args: { "p_opportunity_id": string,"p_project_id": string }; Returns: undefined
                            },
@@ -9767,6 +9811,9 @@ isOneToOne: false
                            },
 "retry_matter_agent_run":
 { Args: { "p_assignment_id": string }; Returns: string
+                           },
+"review_business_account_access_request":
+{ Args: { "p_decision": string,"p_request_id": string }; Returns: undefined
                            },
 "review_governance_emergency_access_request":
 { Args: { "next_status": string,"review_notes"?: string,"target_request_id": string }; Returns: string
