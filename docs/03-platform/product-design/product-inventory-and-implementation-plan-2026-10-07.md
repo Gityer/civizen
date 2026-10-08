@@ -471,7 +471,7 @@ Typed client in the remaining civic-voting files and Wellbeing types; delete dea
 | Step | Status | Evidence | Updated |
 | --- | --- | --- | --- |
 | Inventory and plan (this document) | done (owner review pending) | this file; production read-only checks 2026-10-07 | 2026-10-07 |
-| 0.3 Close the account-switch hole | implemented, awaiting production deploy (D1) | migration `20261007100000_linked_accounts_proof_of_control.sql`; SQL test `linked_accounts_proof_of_control_test.sql` (18 checks); `linked-account-switch` honours established rows only; `create-linked-business-account` removed; production audit: 2 rows, both the founder's; spec `docs/04-operations/dev/business-accounts-linking.md` | 2026-10-08 |
+| 0.3 Close the account-switch hole | on production since 2026-10-08 (owner confirmation pending) | migration `20261007100000_linked_accounts_proof_of_control.sql` applied to production after backup `civizen-pre-linked-accounts-20261008-154742.dump`; `linked-account-switch` (established rows only) and `admin-impersonate-user` (kill switch) redeployed; web release v0.1.202; SQL test `linked_accounts_proof_of_control_test.sql` (18 checks); `create-linked-business-account` removed; production audit: 2 rows, both the founder's; spec `docs/04-operations/dev/business-accounts-linking.md` | 2026-10-08 |
 | 0.1, 0.2, 0.4–0.8 | planned | | |
 | 1.1–1.8 | planned | | |
 | 2.1–2.9 | planned | | |

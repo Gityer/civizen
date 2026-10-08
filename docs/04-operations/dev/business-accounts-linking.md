@@ -33,7 +33,8 @@ Tests: `supabase/tests/linked_accounts_proof_of_control_test.sql` (run with
 `src/lib/linked-account-switch-authorize.test.ts`, `src/lib/linked-business-accounts.access-requests.test.ts`,
 `src/components/layout/user-page-menu/UserPageMenuAccessRequests.test.tsx`.
 
-Deploying the fix to the hosted stack: apply the migration (backup first), then copy
+Deployed to the hosted stack on 2026-10-08 (migration after backup, both functions, web v0.1.202). For a
+redeploy: apply the migration (backup first), then copy
 `supabase/functions/linked-account-switch/{index.ts,authorize.ts}` into the functions volume and restart
 the `functions` service (same procedure as the Civi edge function in `RELEASING.md`). The web bundle must
 ship with or after the migration, because the new Accounts dialog calls the two RPCs.
