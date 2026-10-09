@@ -44,7 +44,6 @@ import {
   Law,
   Login,
   Market,
-  MarketTaxonomy,
   MatterDetail,
   MatterForm,
   Matters,
@@ -75,11 +74,9 @@ import {
   StudyCivicLearning,
   StudyLayout,
   StudyMaterials,
-  TaxonomySettings,
   TermsOfUse,
   UserProfile,
   UsersAdmin,
-  WalletPage,
   WhyThisExists,
 } from '@/app-routes/lazy-pages';
 
@@ -252,7 +249,7 @@ export const appRoutes1 = (
         }
       />
       <Route path="/market" element={<Market />} />
-      <Route path="/market/taxonomy" element={<ProtectedRoute><MarketTaxonomy /></ProtectedRoute>} />
+      <Route path="/market/taxonomy" element={<Navigate to="/market" replace />} />
       <Route path="/agreements/new" element={<ProtectedRoute><AgreementCreate /></ProtectedRoute>} />
       <Route path="/agreements/:agreementId" element={<ProtectedRoute><AgreementDetail /></ProtectedRoute>} />
       <Route path="/agreements" element={<ProtectedRoute><Agreements /></ProtectedRoute>} />
@@ -317,11 +314,11 @@ export const appRoutes1 = (
         }
       />
       <Route path="/settings/social-accounts" element={<ProtectedRoute><SocialAccountsSettings /></ProtectedRoute>} />
-      <Route path="/settings/prototype-credits" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
-      <Route path="/settings/wallet" element={<ProtectedRoute><Navigate to="/settings/prototype-credits" replace /></ProtectedRoute>} />
-      <Route path="/settings/taxonomy" element={<ProtectedRoute><TaxonomySettings /></ProtectedRoute>} />
+      <Route path="/settings/prototype-credits" element={<Navigate to="/settings" replace />} />
+      <Route path="/settings/wallet" element={<Navigate to="/settings" replace />} />
+      <Route path="/settings/taxonomy" element={<Navigate to="/settings" replace />} />
       <Route path="/settings/help" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
-      <Route path="/settings/luma-wallet" element={<ProtectedRoute><Navigate to="/settings/prototype-credits" replace /></ProtectedRoute>} />
+      <Route path="/settings/luma-wallet" element={<Navigate to="/settings" replace />} />
       <Route
         path="/settings/messaging"
         element={

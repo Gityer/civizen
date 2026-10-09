@@ -166,9 +166,9 @@ Created when a Community Challenge completes with a recorded outcome. A coordina
 
 ## Market
 
-`/market` is public. **Jobs** (`/jobs`, also Market > Jobs) is the first open participation surface: anyone can look for work or post a job without an account. The page title on that section is **Marketplace / Jobs**. The sentence form fills city/region/country from the visitor’s location, shows an indicative minimum pay for the rotating job type, and includes Full-time, level, and start — those extra dropdowns stay a bit dimmer than job type, place, and pay. Workers can choose job, volunteering, or internship; employers do not use the word job in the sentence. Signed-in members can unfold **More** for preferred work days, hours, languages, and notes. The public website header and onboarding hero link to Jobs. Contact details stay locked until sign-in. Other Market sections (For you, Local, Sell, products/services) remain member workflows. Members can list products/services and start agreements. Ordinary purchases are Order + Marketplace terms — they do **not** auto-create a Sale / Purchase Agreement.
+`/market` is public. **Jobs** (`/jobs`, also Market > Jobs) is the first open participation surface: anyone can look for work or post a job without an account. The page title on that section is **Marketplace / Jobs**. The sentence form fills city/region/country from the visitor’s location, shows an indicative minimum pay for the rotating job type, and includes Full-time, level, and start — those extra dropdowns stay a bit dimmer than job type, place, and pay. Workers can choose job, volunteering, or internship; employers do not use the word job in the sentence. Signed-in members can unfold **More** for preferred work days, hours, languages, and notes. The public website header and onboarding hero link to Jobs. Contact details stay locked until sign-in. Market is Jobs plus Agreements: the former product/service listings, categories, Saved, filters and prototype credits were retired in October 2026 (decision D3). Members formalise work through Agreements.
 
-Luma amounts on listings are **illustrative prototype credits**, not checkout or settlement. There is no sold-via-Luma buy button.
+Prototype credits (Luma) are retired from the app; there is no credits page, no listing prices and nothing to spend.
 
 ## Agreements
 
@@ -288,7 +288,7 @@ No adopted tokenomics constitution. Crypto/token mechanisms are conditional/futu
 
 ## Terminology
 
-Use current UI names: Opportunities, Community Challenges, Learning Commons, Knowledge Spaces, Knowledge Gaps, Solution Records, My Contributions, Agreements, Prototype credits, Community Governance Charter, Areas, Happiness & Fulfillment, Work Fulfillment, Wellbeing Insights, Human Outcome Review.
+Use current UI names: Opportunities, Community Challenges, Learning Commons, Knowledge Spaces, Knowledge Gaps, Solution Records, My Contributions, Agreements, Community Governance Charter, Areas, Happiness & Fulfillment, Work Fulfillment, Wellbeing Insights, Human Outcome Review.
 
 ## Commonly confused concepts
 
@@ -302,7 +302,7 @@ Use current UI names: Opportunities, Community Challenges, Learning Commons, Kno
 | Study vs Learning Commons | Study = learning hub; Learning Commons = shared contribution knowledge |
 | Tasks / professional listings | Opportunities |
 | Community projects board | Projects inside Challenges |
-| Luma / wallet | Prototype credits; not money; transfers disabled |
+| Luma / wallet | Retired prototype credits; never money; nothing to spend or move |
 | Sale/Purchase Agreement vs Market order | Negotiated agreement vs ordinary listing order |
 | Employment vs Service / Contribution | Employment is a job relationship; Service / Contribution is independent/consulting/volunteer work |
 | Areas vs product pillars | Separate taxonomies |

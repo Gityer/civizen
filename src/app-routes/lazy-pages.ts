@@ -55,7 +55,6 @@ export const SolutionProblemDetail = lazyWithChunkReload(() => import('@/pages/g
 export const Home = lazyWithChunkReload(() => import('@/pages/Home'));
 export const Law = lazyWithChunkReload(() => import('@/pages/Law'));
 export const Market = lazyWithChunkReload(() => import('@/pages/Market'));
-export const MarketTaxonomy = lazyWithChunkReload(() => import('@/pages/MarketTaxonomy'));
 export const Agreements = lazyWithChunkReload(() => import('@/pages/Agreements'));
 export const AgreementCreate = lazyWithChunkReload(() => import('@/pages/AgreementCreate'));
 export const AgreementDetail = lazyWithChunkReload(() => import('@/pages/AgreementDetail'));
@@ -74,13 +73,10 @@ export const RolesAdmin = lazyWithChunkReload(() => import('@/pages/settings/Rol
 export const UsersAdmin = lazyWithChunkReload(() => import('@/pages/settings/UsersAdmin'));
 export const PermissionsAdmin = lazyWithChunkReload(() => import('@/pages/settings/PermissionsAdmin'));
 export const GovernanceAdmin = lazyWithChunkReload(() => import('@/pages/settings/GovernanceAdmin'));
-export const LumaCreditsAdmin = lazyWithChunkReload(() => import('@/pages/settings/LumaCreditsAdmin'));
 export const FundingAdmin = lazyWithChunkReload(() => import('@/pages/settings/FundingAdmin'));
 export const DevEconomicsVisual = import.meta.env.DEV
   ? lazyWithChunkReload(() => import('@/pages/dev/DevEconomicsVisual'))
   : null;
-export const WalletPage = lazyWithChunkReload(() => import('@/pages/settings/PrototypeCredits'));
-export const TaxonomySettings = lazyWithChunkReload(() => import('@/pages/settings/Taxonomy'));
 export const HelpSupport = lazyWithChunkReload(() => import('@/pages/settings/HelpSupport'));
 export const GovernanceMember = lazyWithChunkReload(() => import('@/pages/governance/GovernanceMember'));
 export const Notifications = lazyWithChunkReload(() => import('@/pages/Notifications'));

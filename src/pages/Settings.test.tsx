@@ -180,8 +180,6 @@ describe('Settings page', () => {
       'Pillars',
       'Privacy',
       'Professional credentials',
-      'Prototype credits',
-      'Taxonomy',
       'Terms of Use',
     ];
 

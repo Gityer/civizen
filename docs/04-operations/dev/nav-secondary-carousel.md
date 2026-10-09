@@ -11,6 +11,8 @@
 
 ---
 
+> **Market (since 2026-10-09, decision D3):** the Market page is the Jobs board plus the Agreements shortcut and no longer registers a secondary arc. The Market-specific rules below (icons + loop, persistence, carousel order, last-section memory) are historical; Home and Study still use the arc exactly as described.
+
 ## Purpose
 
 When the user is on a primary tab that exposes secondary sections (Home, Study, Market), tapping/hovering that tab reveals a **curved arc wheel** above the bottom nav (and above the center **+** FAB when present). The wheel lets users **swipe/drag** to change section without leaving the page.

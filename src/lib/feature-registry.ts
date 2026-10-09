@@ -114,12 +114,7 @@ export type FeatureId =
   | 'identifierLogin'
   | 'mobileDownloads'
   | 'lawLibrary'
-  | 'lumaLedgerTransfers'
-  | 'lumaTreasuryMintAndActivity'
-  | 'lumaNativeCurrency'
-  | 'marketListingsLuma'
   | 'digitalAgreements'
-  | 'marketPreview'
   | 'phoneFirstSignup'
   | 'profileEditing'
   | 'profilePageMenu'
@@ -490,56 +485,6 @@ export const featureRegistry: FeatureEntry[] = [
     detailsKey: 'features.catalog.termsUse.details',
     section: 'preferences',
     page: 'terms',
-  },
-  {
-    id: 'lumaNativeCurrency',
-    icon: Coins,
-    titleKey: 'features.catalog.lumaNativeCurrency.title',
-    summaryKey: 'features.catalog.lumaNativeCurrency.summary',
-    workflowKey: 'features.catalog.lumaNativeCurrency.workflow',
-    detailsKey: 'features.catalog.lumaNativeCurrency.details',
-    section: 'marketplace',
-    page: 'market',
-  },
-  {
-    id: 'lumaLedgerTransfers',
-    icon: ArrowLeftRight,
-    titleKey: 'features.catalog.lumaLedgerTransfers.title',
-    summaryKey: 'features.catalog.lumaLedgerTransfers.summary',
-    workflowKey: 'features.catalog.lumaLedgerTransfers.workflow',
-    detailsKey: 'features.catalog.lumaLedgerTransfers.details',
-    section: 'marketplace',
-    page: 'market',
-  },
-  {
-    id: 'lumaTreasuryMintAndActivity',
-    icon: PiggyBank,
-    titleKey: 'features.catalog.lumaTreasuryMintAndActivity.title',
-    summaryKey: 'features.catalog.lumaTreasuryMintAndActivity.summary',
-    workflowKey: 'features.catalog.lumaTreasuryMintAndActivity.workflow',
-    detailsKey: 'features.catalog.lumaTreasuryMintAndActivity.details',
-    section: 'marketplace',
-    page: 'market',
-  },
-  {
-    id: 'marketListingsLuma',
-    icon: Tag,
-    titleKey: 'features.catalog.marketListingsLuma.title',
-    summaryKey: 'features.catalog.marketListingsLuma.summary',
-    workflowKey: 'features.catalog.marketListingsLuma.workflow',
-    detailsKey: 'features.catalog.marketListingsLuma.details',
-    section: 'marketplace',
-    page: 'market',
-  },
-  {
-    id: 'marketPreview',
-    icon: ShoppingBag,
-    titleKey: 'features.catalog.marketPreview.title',
-    summaryKey: 'features.catalog.marketPreview.summary',
-    workflowKey: 'features.catalog.marketPreview.workflow',
-    detailsKey: 'features.catalog.marketPreview.details',
-    section: 'marketplace',
-    page: 'market',
   },
   {
     id: 'digitalAgreements',

@@ -6,9 +6,9 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.205",
     "appReleaseId": "20261009-v0.1.205",
     "androidVersionCode": 207,
-    "gitSha": "f59a52ff8dbcd0d259e57da9ece0886d923e3ccf",
-    "generatedAt": "2026-10-09T16:56:47.691Z",
-    "sourceFingerprint": "a1121f61671c92e97148fe3b606ec950d31cf58e3e93a776827198d712bb0f40",
+    "gitSha": "87b48a57a41b8a3c85263e5a0cf3a50684d1f2fa",
+    "generatedAt": "2026-10-09T17:02:38.765Z",
+    "sourceFingerprint": "ee27cf6fa00a95aee820669f650efaff8299c8fb1d4eeb0408a1e58b04dff0b3",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 394
@@ -941,10 +941,8 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "prototype_credits",
       "name": "Prototype credits",
       "status": "experimental",
-      "description": "Luma is a non-transferable prototype credit for demonstration. Not money, not a wallet for settlement, no governance rights. Peer send is disabled.",
-      "routes": [
-        "/settings/prototype-credits"
-      ],
+      "description": "Prototype credits (Luma) were retired from the app in October 2026 (decision D3): no credits page, no listing prices, nothing to spend or move. Luma was never money and confers no governance rights.",
+      "routes": [],
       "roles": [
         "member"
       ],
@@ -967,10 +965,8 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "luma_transfers",
       "name": "Luma transfers",
       "status": "deprecated",
-      "description": "Peer Luma transfer and marketplace Luma checkout are disabled. Do not describe Luma as a working currency.",
-      "routes": [
-        "/settings/prototype-credits"
-      ],
+      "description": "There is no Luma transfer or checkout anywhere in the app; Market is Jobs plus Agreements. Do not describe Luma as a working currency.",
+      "routes": [],
       "roles": [
         "member"
       ],
@@ -2683,7 +2679,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "capability:prototype_credits",
       "title": "Prototype credits",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Prototype credits status=experimental. Luma is a non-transferable prototype credit for demonstration. Not money, not a wallet for settlement, no governance rights. Peer send is disabled.  Routes: /settings/prototype-credits.",
+      "text": "Prototype credits status=experimental. Prototype credits (Luma) were retired from the app in October 2026 (decision D3): no credits page, no listing prices, nothing to spend or move. Luma was never money and confers no governance rights.  Routes: .",
       "status": "experimental",
       "priority": 3,
       "kind": "capability"
@@ -2692,7 +2688,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "capability:luma_transfers",
       "title": "Luma transfers",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Luma transfers status=deprecated. Peer Luma transfer and marketplace Luma checkout are disabled. Do not describe Luma as a working currency.  Routes: /settings/prototype-credits.",
+      "text": "Luma transfers status=deprecated. There is no Luma transfer or checkout anywhere in the app; Market is Jobs plus Agreements. Do not describe Luma as a working currency.  Routes: .",
       "status": "deprecated",
       "priority": 3,
       "kind": "capability"
@@ -3277,7 +3273,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "registry:civi-pages",
       "title": "Pages Civi can open",
       "path": "src/lib/nela-nav-paths.ts",
-      "text": "Civi can link these live pages in answers: Why Civizen Exists (/why-this-exists); Community Governance Charter (/governance/charter); Organization Partnership (/partners); Governance Solutions (/governance/solutions); Community Challenges (/contribute/challenges); make a contribution (/contribute); Questions, Issues & Ideas (/contribute/matters); Suggest Improvements (/contribute/improvements); Learning Commons (/contribute/knowledge); My Contributions (/contribute/impact); Financial Support (/fund); Prototype credits (/settings/prototype-credits); Governance workspace (/governance/workspace); Member workspace (/governance/workspace); Help and support (/settings/help); Governance page (/governance/workspace); Notifications (/notifications); Edit Profile (/settings/profile); Civic voting (/governance/voting); Opportunities (/contribute/professional); Agreements (/agreements); Contribute (/contribute); Messaging (/messaging); Governance (/governance); Documents (/documents); Partners (/partners); Settings (/settings); Profile (/profile); Jobs (/jobs); Market (/market); Study (/study); signing up (/signup); Sign up (/signup); Areas (/areas); Home (/).",
+      "text": "Civi can link these live pages in answers: Why Civizen Exists (/why-this-exists); Community Governance Charter (/governance/charter); Organization Partnership (/partners); Governance Solutions (/governance/solutions); Community Challenges (/contribute/challenges); make a contribution (/contribute); Questions, Issues & Ideas (/contribute/matters); Suggest Improvements (/contribute/improvements); Learning Commons (/contribute/knowledge); My Contributions (/contribute/impact); Financial Support (/fund); Governance workspace (/governance/workspace); Member workspace (/governance/workspace); Help and support (/settings/help); Governance page (/governance/workspace); Notifications (/notifications); Edit Profile (/settings/profile); Civic voting (/governance/voting); Opportunities (/contribute/professional); Agreements (/agreements); Contribute (/contribute); Messaging (/messaging); Governance (/governance); Documents (/documents); Partners (/partners); Settings (/settings); Profile (/profile); Jobs (/jobs); Market (/market); Study (/study); signing up (/signup); Sign up (/signup); Areas (/areas); Home (/).",
       "status": "implemented",
       "priority": 2,
       "kind": "registry"

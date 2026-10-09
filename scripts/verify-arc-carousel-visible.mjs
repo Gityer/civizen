@@ -20,7 +20,7 @@ function rotationFromTransform(transform) {
 
 const VIEWPORT_WIDTHS = [390, 412, 430];
 const REQUIRED_AT_390 = ['Sell', 'For you', 'Local', 'Jobs'];
-// Live Market flanks use a wide shallow arc (~8° at ±1). Layout math is gated separately
+// Live Home flanks use a wide shallow arc (~8° at ±1). Layout math is gated separately
  // by verify:arc-carousel-layout; keep this band loose enough for DOM CSS transforms.
 const MIN_FLANK_ROTATION_DEG = 6;
 const MAX_FLANK_ROTATION_DEG = 60;
@@ -49,13 +49,13 @@ try {
 
   for (const width of VIEWPORT_WIDTHS) {
     await page.setViewportSize({ width, height: 844 });
-    await page.goto(`${baseUrl}/market?section=for-you`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle', timeout: 60000 });
     await acceptTermsIfPresent();
-    // Market secondary arc opens when the Market primary tab is activated.
+    // Home secondary arc opens when the Home primary tab is activated (Market no longer has an arc).
     // Scope to the phone bottom bar — AppSideNav also has Market on large screens.
     const marketTab = page
       .locator('[data-testid="mobile-bottom-nav"] button')
-      .filter({ hasText: /^Market$/i })
+      .filter({ hasText: /^Home$/i })
       .first();
     if (await marketTab.count()) {
       await marketTab.click({ force: false });

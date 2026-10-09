@@ -13,7 +13,6 @@ export const NELA_PAGE_LINKS: readonly { label: string; href: string }[] = [
   { label: 'Learning Commons', href: '/contribute/knowledge' },
   { label: 'My Contributions', href: '/contribute/impact' },
   { label: 'Financial Support', href: '/fund' },
-  { label: 'Prototype credits', href: '/settings/prototype-credits' },
   { label: 'Governance workspace', href: '/governance/workspace' },
   { label: 'Member workspace', href: '/governance/workspace' },
   { label: 'Help and support', href: '/settings/help' },

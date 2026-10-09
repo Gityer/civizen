@@ -6,7 +6,6 @@ import {
   Features,
   FundingAdmin,
   GovernanceAdmin,
-  LumaCreditsAdmin,
   PermissionsAdmin,
 } from '@/app-routes/lazy-pages';
 
@@ -74,14 +73,7 @@ export const appRoutes2 = (
         path="/settings/admin/funding-contributors"
         element={<Navigate to="/settings/admin/funding?section=contributors&legacy=1" replace />}
       />
-      <Route
-        path="/settings/market/luma-credits"
-        element={
-          <ProtectedRoute requiredPermissions={['market.manage']}>
-            <LumaCreditsAdmin />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/settings/market/luma-credits" element={<Navigate to="/settings" replace />} />
 
       {DevEconomicsVisual ? (
         <Route path="/dev/economics-visual" element={<DevEconomicsVisual />} />
