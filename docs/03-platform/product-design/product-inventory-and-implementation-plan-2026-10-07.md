@@ -477,7 +477,10 @@ Typed client in the remaining civic-voting files and Wellbeing types; delete dea
 | 0.5 Stories ingest | grant + policy live on production (2026-10-08); "Development log" label pending with 1.3 | migration `20261008120300_development_story_ingest_privileged.sql`; member seed loop removed from the Home Stories hook; "Development log" label still to do with 1.3 | 2026-10-08 |
 | 0.6 Eligibility snapshots | live on production (2026-10-08) | migration `20261008120200_governance_eligibility_snapshots_privileged_writes.sql`; client persists only for staff (`governance-eligibility-snapshots.ts`) | 2026-10-08 |
 | 0.8 Ship | S3 shipped as v0.1.202 (sibling session); S1/S2/S6/S7 shipped as v0.1.203; `RELEASING.md` has the migration step | production post-check 2026-10-08: guard triggers present, ingest grants service_role only, snapshot policies admins only | 2026-10-08 |
-| 0.4, 0.7 | planned | | |
+| 0.4 Profile privacy (S4) | live on production: profile rows need a signed-in reader (migration `20261009090000_profiles_require_sign_in.sql`, applied 2026-10-09 after backup `civizen-pre-profiles-privacy-20261009-000239.dump`); guest surfaces keep their SECURITY DEFINER functions | SQL test `profiles_privacy_test.sql`; production post-check: anon REST read of profiles returns no rows, guest job-board RPC answers | 2026-10-09 |
+| 0.4 Login lookup (S5) | username/phone sign-in runs through the `sign-in-with-identifier` edge function (deployed 2026-10-09, uniform refusal smoke-tested; web v0.1.204); the anonymous lookup RPC is revoked by `20261009090100_login_lookup_service_role_only.sql`, to be applied once a username sign-in is confirmed on production (the client falls back to the legacy lookup only while the function is unreachable) | unit tests `sign-in-with-identifier.test.ts` (7); local-stack logic check: lookup + password grant ok, wrong password refused, anon lookup denied | 2026-10-09 |
+| 0.4 member-to-member identity fields | deferred to Phase 3.7 (privacy settings + private identity table); members still read other members' full rows through the shared table | | 2026-10-09 |
+| 0.7 Call signalling | planned | | |
 | 1.1–1.8 | planned | | |
 | 2.1–2.9 | planned | | |
 | 3.x–11 | planned | | |
