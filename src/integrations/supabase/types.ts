@@ -1705,14 +1705,14 @@ isOneToOne: false
                   ]
                 },"community_challenges": {
                   Row: {
-                    "affected": string | null,"area_node_id": string | null,"completed_at": string | null,"completed_by": string | null,"constraints": string | null,"context_detail": string | null,"created_at": string,"evidence_links": string | null,"id": string,"lessons_learned": string | null,"outcome_evidence": string | null,"outcome_summary": string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources": string | null,"scope_text": string | null,"selected_proposal_id": string | null,"status": string,"success_criteria": string,"success_criteria_result": string | null,"title": string,"updated_at": string,"why_it_matters": string
+                    "affected": string | null,"area_node_id": string | null,"completed_at": string | null,"completed_by": string | null,"constraints": string | null,"context_detail": string | null,"created_at": string,"evidence_links": string | null,"id": string,"is_demo": boolean,"lessons_learned": string | null,"outcome_evidence": string | null,"outcome_summary": string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources": string | null,"scope_text": string | null,"selected_proposal_id": string | null,"status": string,"success_criteria": string,"success_criteria_result": string | null,"title": string,"updated_at": string,"why_it_matters": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"status"?: string,"success_criteria": string,"success_criteria_result"?: string | null,"title": string,"updated_at"?: string,"why_it_matters": string
+                    "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"is_demo"?: boolean,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"status"?: string,"success_criteria": string,"success_criteria_result"?: string | null,"title": string,"updated_at"?: string,"why_it_matters": string
                   }
                   Update: {
-                    "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement"?: string,"program_id"?: string,"publisher_profile_id"?: string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"status"?: string,"success_criteria"?: string,"success_criteria_result"?: string | null,"title"?: string,"updated_at"?: string,"why_it_matters"?: string
+                    "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"is_demo"?: boolean,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement"?: string,"program_id"?: string,"publisher_profile_id"?: string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"status"?: string,"success_criteria"?: string,"success_criteria_result"?: string | null,"title"?: string,"updated_at"?: string,"why_it_matters"?: string
                   }
                   Relationships: [
                     {
@@ -1893,14 +1893,14 @@ isOneToOne: false
                   ]
                 },"contribution_opportunities": {
                   Row: {
-                    "application_deadline": string | null,"area_node_id": string | null,"compensation_status": string,"created_at": string,"description": string | null,"estimated_effort": string | null,"evaluation_criteria": string | null,"evaluation_dimensions": (string)[],"evidence_requirements": string | null,"expected_outcome": string | null,"id": string,"implementation_project_id": string | null,"is_remote": boolean,"knowledge_gap_id": string | null,"knowledge_space_id": string | null,"location_text": string | null,"opportunity_kind": string,"optional_skills": (string)[],"program_id": string | null,"publisher_profile_id": string,"required_skills": (string)[],"status": string,"summary": string,"title": string,"updated_at": string,"work_ends_at": string | null,"work_starts_at": string | null
+                    "application_deadline": string | null,"area_node_id": string | null,"compensation_status": string,"created_at": string,"description": string | null,"estimated_effort": string | null,"evaluation_criteria": string | null,"evaluation_dimensions": (string)[],"evidence_requirements": string | null,"expected_outcome": string | null,"id": string,"implementation_project_id": string | null,"is_demo": boolean,"is_remote": boolean,"knowledge_gap_id": string | null,"knowledge_space_id": string | null,"location_text": string | null,"opportunity_kind": string,"optional_skills": (string)[],"program_id": string | null,"publisher_profile_id": string,"required_skills": (string)[],"status": string,"summary": string,"title": string,"updated_at": string,"work_ends_at": string | null,"work_starts_at": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "application_deadline"?: string | null,"area_node_id"?: string | null,"compensation_status"?: string,"created_at"?: string,"description"?: string | null,"estimated_effort"?: string | null,"evaluation_criteria"?: string | null,"evaluation_dimensions"?: (string)[],"evidence_requirements"?: string | null,"expected_outcome"?: string | null,"id"?: string,"implementation_project_id"?: string | null,"is_remote"?: boolean,"knowledge_gap_id"?: string | null,"knowledge_space_id"?: string | null,"location_text"?: string | null,"opportunity_kind"?: string,"optional_skills"?: (string)[],"program_id"?: string | null,"publisher_profile_id": string,"required_skills"?: (string)[],"status"?: string,"summary": string,"title": string,"updated_at"?: string,"work_ends_at"?: string | null,"work_starts_at"?: string | null
+                    "application_deadline"?: string | null,"area_node_id"?: string | null,"compensation_status"?: string,"created_at"?: string,"description"?: string | null,"estimated_effort"?: string | null,"evaluation_criteria"?: string | null,"evaluation_dimensions"?: (string)[],"evidence_requirements"?: string | null,"expected_outcome"?: string | null,"id"?: string,"implementation_project_id"?: string | null,"is_demo"?: boolean,"is_remote"?: boolean,"knowledge_gap_id"?: string | null,"knowledge_space_id"?: string | null,"location_text"?: string | null,"opportunity_kind"?: string,"optional_skills"?: (string)[],"program_id"?: string | null,"publisher_profile_id": string,"required_skills"?: (string)[],"status"?: string,"summary": string,"title": string,"updated_at"?: string,"work_ends_at"?: string | null,"work_starts_at"?: string | null
                   }
                   Update: {
-                    "application_deadline"?: string | null,"area_node_id"?: string | null,"compensation_status"?: string,"created_at"?: string,"description"?: string | null,"estimated_effort"?: string | null,"evaluation_criteria"?: string | null,"evaluation_dimensions"?: (string)[],"evidence_requirements"?: string | null,"expected_outcome"?: string | null,"id"?: string,"implementation_project_id"?: string | null,"is_remote"?: boolean,"knowledge_gap_id"?: string | null,"knowledge_space_id"?: string | null,"location_text"?: string | null,"opportunity_kind"?: string,"optional_skills"?: (string)[],"program_id"?: string | null,"publisher_profile_id"?: string,"required_skills"?: (string)[],"status"?: string,"summary"?: string,"title"?: string,"updated_at"?: string,"work_ends_at"?: string | null,"work_starts_at"?: string | null
+                    "application_deadline"?: string | null,"area_node_id"?: string | null,"compensation_status"?: string,"created_at"?: string,"description"?: string | null,"estimated_effort"?: string | null,"evaluation_criteria"?: string | null,"evaluation_dimensions"?: (string)[],"evidence_requirements"?: string | null,"expected_outcome"?: string | null,"id"?: string,"implementation_project_id"?: string | null,"is_demo"?: boolean,"is_remote"?: boolean,"knowledge_gap_id"?: string | null,"knowledge_space_id"?: string | null,"location_text"?: string | null,"opportunity_kind"?: string,"optional_skills"?: (string)[],"program_id"?: string | null,"publisher_profile_id"?: string,"required_skills"?: (string)[],"status"?: string,"summary"?: string,"title"?: string,"updated_at"?: string,"work_ends_at"?: string | null,"work_starts_at"?: string | null
                   }
                   Relationships: [
                     {
@@ -1943,14 +1943,14 @@ isOneToOne: false
                   ]
                 },"contribution_programs": {
                   Row: {
-                    "area_node_id": string | null,"created_at": string,"description": string | null,"id": string,"program_kind": string,"publisher_profile_id": string,"seed_key": string | null,"status": string,"summary": string,"title": string,"updated_at": string
+                    "area_node_id": string | null,"created_at": string,"description": string | null,"id": string,"is_demo": boolean,"program_kind": string,"publisher_profile_id": string,"seed_key": string | null,"status": string,"summary": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"program_kind"?: string,"publisher_profile_id": string,"seed_key"?: string | null,"status"?: string,"summary": string,"title": string,"updated_at"?: string
+                    "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"is_demo"?: boolean,"program_kind"?: string,"publisher_profile_id": string,"seed_key"?: string | null,"status"?: string,"summary": string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"program_kind"?: string,"publisher_profile_id"?: string,"seed_key"?: string | null,"status"?: string,"summary"?: string,"title"?: string,"updated_at"?: string
+                    "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"is_demo"?: boolean,"program_kind"?: string,"publisher_profile_id"?: string,"seed_key"?: string | null,"status"?: string,"summary"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -5137,14 +5137,14 @@ isOneToOne: false
                   ]
                 },"knowledge_spaces": {
                   Row: {
-                    "area_node_id": string | null,"created_at": string,"description": string | null,"id": string,"program_id": string,"publisher_profile_id": string,"status": string,"summary": string,"title": string,"updated_at": string
+                    "area_node_id": string | null,"created_at": string,"description": string | null,"id": string,"is_demo": boolean,"program_id": string,"publisher_profile_id": string,"status": string,"summary": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"program_id": string,"publisher_profile_id": string,"status"?: string,"summary": string,"title": string,"updated_at"?: string
+                    "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"is_demo"?: boolean,"program_id": string,"publisher_profile_id": string,"status"?: string,"summary": string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"program_id"?: string,"publisher_profile_id"?: string,"status"?: string,"summary"?: string,"title"?: string,"updated_at"?: string
+                    "area_node_id"?: string | null,"created_at"?: string,"description"?: string | null,"id"?: string,"is_demo"?: boolean,"program_id"?: string,"publisher_profile_id"?: string,"status"?: string,"summary"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -8184,6 +8184,9 @@ isOneToOne: false
 "business_account_link_token_hash":
 { Args: { "p_token": string }; Returns: string
                            },
+"call_inbox_owner":
+{ Args: { "p_topic": string }; Returns: string
+                           },
 "can_access_agreement":
 { Args: { "p_agreement_id": string }; Returns: boolean
                            },
@@ -8216,6 +8219,9 @@ isOneToOne: false
                            },
 "can_review_identity_verification_storage":
 { Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"can_signal_call_inbox":
+{ Args: { "p_topic": string }; Returns: boolean
                            },
 "cancel_agreement":
 { Args: { "p_agreement_id": string }; Returns: undefined

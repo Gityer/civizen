@@ -1049,9 +1049,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.205",
     "appReleaseId": "20261009-v0.1.205",
     "androidVersionCode": 207,
-    "gitSha": "87b48a57a41b8a3c85263e5a0cf3a50684d1f2fa",
-    "generatedAt": "2026-10-09T17:02:38.765Z",
-    "sourceFingerprint": "ee27cf6fa00a95aee820669f650efaff8299c8fb1d4eeb0408a1e58b04dff0b3",
+    "gitSha": "2d183363ee55614aacc5b250cd3410260f8abc67",
+    "generatedAt": "2026-10-09T17:10:57.054Z",
+    "sourceFingerprint": "c48bdc9770e32959d04148fa4f6d9b9e7adf76cb08efc303d842f2571f940617",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 394
@@ -5054,7 +5054,7 @@ var KNOWLEDGE_PACK = {
       "id": "docs/04-operations/dev/phase-1-pilot-operating-model.md#10",
       "title": "Intentional Phase 1 limitations",
       "path": "docs/04-operations/dev/phase-1-pilot-operating-model.md",
-      "text": "## Intentional Phase 1 limitations - No LMS, quizzes, credentials, or peer-review journal - No contributor-share / IP accounting - No automated knowledge synthesis - No separate task board or community-projects board - Suggest Improvements opens Matter create as a Suggestion to Civizen (not a separate backend) - Financial contribution remains inquiry-only - Local RLS harness for opportunities stays skipped without loopback Supabase credentials",
+      "text": "## Intentional Phase 1 limitations - No LMS, quizzes, credentials, or peer-review journal (Study's former Courses / Tests / Schedules placeholders were removed on 2026-10-09, decision D4) - No contributor-share / IP accounting - No automated knowledge synthesis - No separate task board or community-projects board - Suggest Improvements opens Matter create as a Suggestion to Civizen (not a separate backend) - Financial contribution remains inquiry-only - Local RLS harness for opportunities stays skipped without loopback Supabase credentials",
       "status": "implemented",
       "priority": 6,
       "kind": "doc"

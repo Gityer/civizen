@@ -125,6 +125,7 @@ export function mapContributionOpportunity(row: Record<string, unknown>): Contri
     : 'learning';
   return {
     id: asString(row.id),
+    isDemo: row.is_demo === true,
     publisherProfileId: asString(row.publisher_profile_id),
     title: asString(row.title),
     summary: asString(row.summary),

@@ -80,7 +80,7 @@ My Contributions: `/contribute/impact` (participations) and Profile/Score (deriv
 
 ## Intentional Phase 1 limitations
 
-- No LMS, quizzes, credentials, or peer-review journal
+- No LMS, quizzes, credentials, or peer-review journal (Study's former Courses / Tests / Schedules placeholders were removed on 2026-10-09, decision D4)
 - No contributor-share / IP accounting
 - No automated knowledge synthesis
 - No separate task board or community-projects board

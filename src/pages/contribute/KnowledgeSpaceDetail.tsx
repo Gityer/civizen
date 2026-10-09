@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
+import { DemoBadge } from '@/components/contribute/DemoBadge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -44,7 +44,6 @@ import {
 } from '@/lib/knowledge-api';
 import { listOwnedLinkedProfileIds } from '@/lib/opportunities-api';
 import { toast } from 'sonner';
-
 export default function KnowledgeSpaceDetail() {
   const { spaceId } = useParams<{ spaceId: string }>();
   const { t } = useLanguage();
@@ -172,6 +171,7 @@ export default function KnowledgeSpaceDetail() {
       <div className="space-y-5 px-4 py-6">
         <AppPageHeader
           title={space.title}
+          titleAccessory={space.isDemo ? <DemoBadge /> : undefined}
           subtitle={space.summary}
           fallbackPath="/contribute/knowledge"
           actions={

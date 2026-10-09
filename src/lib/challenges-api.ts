@@ -90,7 +90,7 @@ async function rpcVoid(
 export async function listActivePrograms(client: DbClient = supabase): Promise<ContributionProgram[]> {
   const { data, error } = await db(client)
     .from('contribution_programs')
-    .select('*')
+    .select('*').eq('is_demo', false)
     .in('status', ['active', 'completed'])
     .order('created_at', { ascending: false });
   if (error) throw new Error(rpcErrorMessage(error));
@@ -114,7 +114,7 @@ export async function listManagedPrograms(
 export async function listBrowsableChallenges(client: DbClient = supabase): Promise<CommunityChallenge[]> {
   const { data, error } = await db(client)
     .from('community_challenges')
-    .select('*')
+    .select('*').eq('is_demo', false)
     .in('status', ['active', 'proposal_review', 'implementation', 'completed'])
     .order('updated_at', { ascending: false });
   if (error) throw new Error(rpcErrorMessage(error));

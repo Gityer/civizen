@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
+import { DemoBadge } from '@/components/contribute/DemoBadge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -52,7 +53,6 @@ import { listOwnedLinkedProfileIds } from '@/lib/opportunities-api';
 import { toast } from 'sonner';
 import { RelatedAgreementsCard } from '@/components/agreements/RelatedAgreementsCard';
 type ProjectOpportunity = { id: string; title: string; status: string; summary: string };
-
 const emptyProposal: ProposalPayload = {
   title: '',
   rationale: '',
@@ -62,7 +62,6 @@ const emptyProposal: ProposalPayload = {
   risks: '',
   supportingEvidence: '',
 };
-
 export default function ChallengeDetail() {
   const { challengeId } = useParams<{ challengeId: string }>();
   const { t } = useLanguage();
@@ -224,6 +223,7 @@ export default function ChallengeDetail() {
       <div className="space-y-5 px-4 py-6">
         <AppPageHeader
           title={challenge.title}
+          titleAccessory={challenge.isDemo ? <DemoBadge /> : undefined}
           subtitle={challenge.problemStatement}
           fallbackPath="/contribute/challenges"
           actions={

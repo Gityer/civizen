@@ -46,6 +46,7 @@ const PROJECT_STATUS_SET = new Set<string>(PROJECT_STATUSES);
 
 export type ContributionProgram = {
   id: string;
+  isDemo?: boolean;
   publisherProfileId: string;
   title: string;
   summary: string;
@@ -60,6 +61,7 @@ export type ContributionProgram = {
 
 export type CommunityChallenge = {
   id: string;
+  isDemo?: boolean;
   programId: string;
   publisherProfileId: string;
   title: string;

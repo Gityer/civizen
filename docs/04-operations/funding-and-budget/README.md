@@ -25,7 +25,7 @@ Institutional architecture: [`../../institutional/institutional-blueprint.md`](.
 | [`18-funder-inquiry-faq-and-response-kit-v0.1.md`](./18-funder-inquiry-faq-and-response-kit-v0.1.md) | Safe FAQ + phrases for inquiry replies | inquiry pack | stewards | response kit |
 | [`19-funding-due-diligence-index-v0.1.md`](./19-funding-due-diligence-index-v0.1.md) | Diligence map + explicit gaps | inquiry pack | owner, serious inquirers | index |
 
-**Immediate ask (canonical `14`):** ~$202M / **~$446M** / ~$898M (Months 1–24 validation). Five-year (`11`) is primary program hypothesis. Years 6–20 (`13`) are long-range scenarios only. In-app: Settings → Funding → **Program plan** (read-only generated summary).
+**Immediate ask (canonical `14`, Low / Base / High):** ~$202M / ~$446M / ~$898M (Months 1–24 validation) as the v0.1 external brief figures; the working draft Base is **v0.3 $634.4M** (`33`), not yet carried into the external brief. Five-year (`11`) is primary program hypothesis. Years 6–20 (`13`) are long-range scenarios only. In-app: Settings → Funding → **Program plan** (read-only generated summary).
 
 ## 2. Current planning baseline
 

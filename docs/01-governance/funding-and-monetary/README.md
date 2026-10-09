@@ -98,7 +98,7 @@ Receiving entities for grants, donations, commercial revenue, or future investme
 | `/fund/contribute` | Contributors | Recognition path — no fixed reward pool |
 | `/fund/transparency` | Public | Aggregates by class/lane when published; prototype label when none |
 | `/documents` | Public | Institutional documents index |
-| `/settings/admin/funding-*` | Admins | Ledger, inquiry, compliance, audit tools; some prototype distribution/calculator UI may remain |
+| `/settings/admin/funding?section=…` | Admins | Budget, Program plan, Economics, Sources ledger, Interest list; legacy ledger/audit/compliance/contributors tabs behind `?legacy=1` (old `/settings/admin/funding-*` URLs redirect) |
 
 ---
 

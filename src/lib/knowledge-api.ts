@@ -79,7 +79,7 @@ async function rpcVoid(name: string, args: Record<string, unknown>, client: DbCl
 export async function listBrowsableKnowledgeSpaces(client: DbClient = supabase): Promise<KnowledgeSpace[]> {
   const { data, error } = await db(client)
     .from('knowledge_spaces')
-    .select('*')
+    .select('*').eq('is_demo', false)
     .in('status', ['shared'])
     .order('updated_at', { ascending: false });
   if (error) throw new Error(rpcErrorMessage(error));

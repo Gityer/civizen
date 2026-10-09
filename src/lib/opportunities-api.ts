@@ -89,7 +89,7 @@ export async function listOpenOpportunities(
 ): Promise<ContributionOpportunity[]> {
   const { data, error } = await db(client)
     .from('contribution_opportunities')
-    .select('*')
+    .select('*').eq('is_demo', false)
     .eq('status', 'open')
     .eq('opportunity_kind', 'education_to_contribution')
     .order('created_at', { ascending: false });

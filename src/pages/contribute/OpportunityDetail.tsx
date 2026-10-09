@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
+import { DemoBadge } from '@/components/contribute/DemoBadge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -147,7 +147,6 @@ export default function OpportunityDetail() {
     if (!opportunity?.areaNodeId) return null;
     return listCurrentAreas().find((node) => node.id === opportunity.areaNodeId)?.displayName ?? null;
   }, [opportunity?.areaNodeId]);
-
   const run = async (action: () => Promise<unknown>, successKey: string) => {
     setBusy(true);
     try {
@@ -195,6 +194,7 @@ export default function OpportunityDetail() {
       <div className="space-y-5 px-4 py-6">
         <AppPageHeader
           title={opportunity.title}
+          titleAccessory={opportunity.isDemo ? <DemoBadge /> : undefined}
           subtitle={opportunity.summary}
           fallbackPath={
             opportunity.opportunityKind === 'knowledge_gap' && opportunity.knowledgeSpaceId

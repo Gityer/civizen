@@ -30,6 +30,7 @@ export function mapContributionProgram(row: Record<string, unknown>): Contributi
       : 'community_problem_solving';
   return {
     id: asString(row.id),
+    isDemo: row.is_demo === true,
     publisherProfileId: asString(row.publisher_profile_id),
     title: asString(row.title),
     summary: asString(row.summary),
@@ -46,6 +47,7 @@ export function mapContributionProgram(row: Record<string, unknown>): Contributi
 export function mapCommunityChallenge(row: Record<string, unknown>): CommunityChallenge {
   return {
     id: asString(row.id),
+    isDemo: row.is_demo === true,
     programId: asString(row.program_id),
     publisherProfileId: asString(row.publisher_profile_id),
     title: asString(row.title),

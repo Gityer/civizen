@@ -42,6 +42,7 @@ function asNumberOrNull(value: unknown): number | null {
 export function mapKnowledgeSpace(row: Record<string, unknown>): KnowledgeSpace {
   return {
     id: asString(row.id),
+    isDemo: row.is_demo === true,
     publisherProfileId: asString(row.publisher_profile_id),
     programId: asString(row.program_id),
     title: asString(row.title),

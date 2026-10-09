@@ -10,8 +10,9 @@ Working institutional model (project reference, not this product guide): [Instit
 |---|---|---|
 | `/governance` | `PublicGovernanceLanding` | Public landing |
 | `/governance/voting` | `CivicVotingHub` | Public elections and civic proposals |
-| `/governance/workspace` | `Governance` | Full member workspace: create proposals, vote, execution, guardian and audit tooling |
-| `/governance/new` | `GovernanceNew` | Member dashboard: open/closed proposals with weighted results and voting, plus the steward console |
+| `/governance/workspace` | `GovernanceMember` | Member Governance page: Votes · Proposals · Tools (Tools for stewards only) |
+| `/governance/tools` | `Governance` | Legacy workspace tools (proposals, execution, guardian and audit tooling); stewards only (`role.assign` / `settings.manage`), no member navigation entry since 2026-10-09 |
+| `/governance/tools/steward` (`/governance/new` redirects) | `GovernanceNew` | Steward console: identity verification review, constitutional offices, policies; stewards only |
 
 ## Tables
 

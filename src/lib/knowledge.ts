@@ -48,6 +48,7 @@ const ATTRIBUTION_KIND_SET = new Set<string>(KNOWLEDGE_ATTRIBUTION_KINDS);
 
 export type KnowledgeSpace = {
   id: string;
+  isDemo?: boolean;
   publisherProfileId: string;
   programId: string;
   title: string;

@@ -201,14 +201,14 @@ Must all pass before booth opens:
 
 | # | Addition | Status | Implementation |
 |---|----------|--------|----------------|
-| 1 | **Duress PIN** — lookalike booth, void ballot, silent watcher alert | **Built** | `src/lib/civic-voting/duress.ts`, `civic_duress_settings` / `civic_duress_alerts` |
+| 1 | **Duress PIN** — lookalike booth, void ballot, silent watcher alert | **Library + tables only** (no runtime caller; exercised by the sample-election simulator) | `src/lib/civic-voting/duress.ts`, `civic_duress_settings` / `civic_duress_alerts` |
 | 2 | **Observer mode** — turnout / gate fails without PII | **Built** (live data since 2026-10-06 via `civic_election_observer_metrics`; says plainly when no roster/gates/risk/canvass exist) | `src/lib/civic-voting/observer.ts`, `observer-metrics.ts`, `/governance/voting/:id/observe` |
-| 3 | **Risk engine** — velocity, device farm, GPS cluster, impossible travel | **Built** | `src/lib/civic-voting/risk-engine.ts`, `civic_risk_findings` |
-| 4 | **Paper / assisted fallback** — dual-control audit | **Built** | `src/lib/civic-voting/assisted-ballot.ts`, `civic_assisted_ballots` |
-| 5 | **Candidate / measure challenge period** | **Built** | `src/lib/civic-voting/challenge-period.ts`, `civic_candidate_challenges` |
-| 6 | **Cooling-off** after enrollment / home change | **Built** | `src/lib/civic-voting/cooling-off.ts` (+ `cooling_off_until`) |
-| 7 | **Open-source client attestation** | **Built** | `src/lib/civic-voting/client-attestation.ts`, `civic_client_attestations` |
-| 8 | **Post-election canvass** | **Built** | `src/lib/civic-voting/canvass.ts`, `civic_canvass_samples` |
+| 3 | **Risk engine** — velocity, device farm, GPS cluster, impossible travel | **Library + tables only** (no runtime caller; exercised by the sample-election simulator) | `src/lib/civic-voting/risk-engine.ts`, `civic_risk_findings` |
+| 4 | **Paper / assisted fallback** — dual-control audit | **Library + tables only** (no runtime caller; exercised by the sample-election simulator) | `src/lib/civic-voting/assisted-ballot.ts`, `civic_assisted_ballots` |
+| 5 | **Candidate / measure challenge period** | **Library + tables only** (no runtime caller; exercised by the sample-election simulator) | `src/lib/civic-voting/challenge-period.ts`, `civic_candidate_challenges` |
+| 6 | **Cooling-off** after enrollment / home change | **Library + tables only** (no runtime caller; exercised by the sample-election simulator) | `src/lib/civic-voting/cooling-off.ts` (+ `cooling_off_until`) |
+| 7 | **Open-source client attestation** | **Library + tables only** (no runtime caller; exercised by the sample-election simulator) | `src/lib/civic-voting/client-attestation.ts`, `civic_client_attestations` |
+| 8 | **Post-election canvass** | **Library + tables only** (no runtime caller; exercised by the sample-election simulator) | `src/lib/civic-voting/canvass.ts`, `civic_canvass_samples` |
 
 Schema migration: `supabase/migrations/20260731210000_civic_voting_extras.sql`.
 

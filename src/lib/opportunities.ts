@@ -77,6 +77,7 @@ export const OPPORTUNITY_CONTRIBUTION_EVENT_TYPE = 'opportunity_participation';
 
 export type ContributionOpportunity = {
   id: string;
+  isDemo?: boolean;
   publisherProfileId: string;
   title: string;
   summary: string;
@@ -468,7 +469,6 @@ export function shouldProjectScoreEvent(
 ): boolean {
   return isVerifiedCompletedParticipation(participation);
 }
-
 export function buildOpportunityScoreEvent(args: {
   participation: OpportunityParticipation;
   opportunity: Pick<ContributionOpportunity, 'title' | 'opportunityKind'>;
@@ -509,7 +509,6 @@ export function buildOpportunityScoreEvent(args: {
     rawMeta: { kind: args.opportunity.opportunityKind },
   };
 }
-
 function clampScoreFactor(value: number): number {
   if (!Number.isFinite(value)) return 0;
   return Math.max(0, Math.min(100, value));
