@@ -2,12 +2,14 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { baseTranslations, supportedLanguageCodes } from './base-bundle.js';
 
 /**
- * language-pack: returns the machine-translated catalog for one language, built once on the server and cached in
- * public.language_packs (Phase 8 step 8.2). The browser then downloads one JSON document instead of translating
- * thousands of strings itself. English (EN), Armenian (HY) and Russian (RU) curated text is applied client-side.
+ * language-pack: returns the machine-translated catalog for one language, built on the server in resumable batches
+ * and cached in public.language_packs (Phase 8 step 8.2). A request translates at most BATCH strings, stores the
+ * progress in public.language_pack_builds and answers 202 until the pack is complete; the browser falls back to its
+ * own translation meanwhile and downloads the finished pack next time. EN, HY and RU curated text is applied client-side.
  */
 const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, apikey, content-type' };
 const CONCURRENCY = 6;
+const BATCH = 320;
 
 type Tree = Record<string, unknown>;
 
@@ -51,31 +53,25 @@ function collectStrings(node: unknown, out: Set<string>): void {
   else if (node && typeof node === 'object') Object.values(node as Tree).forEach((value) => collectStrings(value, out));
 }
 
-function rebuild(node: unknown, map: Map<string, string>): unknown {
-  if (typeof node === 'string') return map.get(node) ?? node;
+function rebuild(node: unknown, map: Record<string, string>): unknown {
+  if (typeof node === 'string') return map[node] ?? node;
   if (Array.isArray(node)) return node.map((item) => rebuild(item, map));
   if (node && typeof node === 'object') return Object.fromEntries(Object.entries(node as Tree).map(([k, v]) => [k, rebuild(v, map)]));
   return node;
 }
 
-async function buildPack(target: string): Promise<{ pack: Tree; count: number }> {
-  const strings = new Set<string>();
-  collectStrings(baseTranslations, strings);
-  const list = [...strings];
-  const map = new Map<string, string>();
+async function translateBatch(strings: string[], target: string): Promise<Record<string, string>> {
+  const out: Record<string, string> = {};
   let index = 0;
   await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
-    while (index < list.length) {
-      const current = list[index];
+    while (index < strings.length) {
+      const current = strings[index];
       index += 1;
-      map.set(current, await translateText(current, target));
+      out[current] = await translateText(current, target);
     }
   }));
-  return { pack: rebuild(baseTranslations, map) as Tree, count: list.length };
+  return out;
 }
-
-// deno-lint-ignore no-explicit-any
-const building = new Map<string, Promise<any>>();
 
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -94,28 +90,28 @@ Deno.serve(async (request) => {
     return json(200, { ok: true, language: lang, version, pack: cached.pack, built_at: cached.built_at }, { 'Cache-Control': 'public, max-age=3600' });
   }
 
-  // Build once; later callers for the same language wait on the same promise or get the stale pack meanwhile.
-  if (!building.has(lang)) {
-    const task = buildPack(lang)
-      .then(async ({ pack, count }) => {
-        await admin.from('language_packs').upsert({ language: lang, base_version: version, pack, string_count: count, built_at: new Date().toISOString() });
-        return pack;
-      })
-      .finally(() => building.delete(lang));
-    building.set(lang, task);
-    // deno-lint-ignore no-explicit-any
-    const runtime = (globalThis as any).EdgeRuntime;
-    if (runtime?.waitUntil) runtime.waitUntil(task);
-  }
-  if (cached) {
-    return json(200, { ok: true, language: lang, version: cached.base_version, pack: cached.pack, stale: true }, { 'Cache-Control': 'public, max-age=300' });
-  }
-  try {
-    const pack = await Promise.race([building.get(lang)!, new Promise((resolve) => setTimeout(() => resolve(null), 110_000))]);
-    if (!pack) return json(202, { ok: true, language: lang, status: 'building' });
+  // Resume or start the build for this language and base version.
+  const all = new Set<string>();
+  collectStrings(baseTranslations, all);
+  const strings = [...all];
+  const { data: build } = await admin.from('language_pack_builds').select('base_version, translated').eq('language', lang).maybeSingle();
+  const translated: Record<string, string> = build && build.base_version === version && build.translated && typeof build.translated === 'object'
+    ? (build.translated as Record<string, string>)
+    : {};
+  const pending = strings.filter((s) => !(s in translated));
+  const slice = pending.slice(0, BATCH);
+  if (slice.length > 0) Object.assign(translated, await translateBatch(slice, lang));
+  const done = strings.filter((s) => s in translated).length;
+
+  if (done >= strings.length) {
+    const pack = rebuild(baseTranslations, translated) as Tree;
+    await admin.from('language_packs').upsert({ language: lang, base_version: version, pack, string_count: strings.length, built_at: new Date().toISOString() });
+    await admin.from('language_pack_builds').delete().eq('language', lang);
     return json(200, { ok: true, language: lang, version, pack });
-  } catch (err) {
-    console.error('[language-pack] build failed', lang, (err as Error)?.message);
-    return json(500, { error: 'build_failed' });
   }
+  await admin.from('language_pack_builds').upsert({ language: lang, base_version: version, translated, done_count: done, total_count: strings.length, updated_at: new Date().toISOString() });
+  if (cached) {
+    return json(200, { ok: true, language: lang, version: cached.base_version, pack: cached.pack, stale: true, building: { done, total: strings.length } }, { 'Cache-Control': 'public, max-age=300' });
+  }
+  return json(202, { ok: true, language: lang, status: 'building', done, total: strings.length });
 });

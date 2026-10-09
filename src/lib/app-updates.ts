@@ -10,6 +10,8 @@ export type AndroidUpdateManifest = {
   downloadUrl: string;
   publishedAt: string;
   notes?: string[];
+  /** SHA-256 of the published APK, for members who verify the download (Phase 9 step 9.1). */
+  sha256?: string;
 };
 
 export type InstalledAndroidRelease = {
@@ -89,5 +91,6 @@ export function isAndroidUpdateManifest(value: unknown): value is AndroidUpdateM
     && typeof manifest.downloadUrl === 'string'
     && typeof manifest.publishedAt === 'string'
     && (manifest.notes === undefined || Array.isArray(manifest.notes))
+    && (manifest.sha256 === undefined || typeof manifest.sha256 === 'string')
   );
 }

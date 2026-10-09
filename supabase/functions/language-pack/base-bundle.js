@@ -444,6 +444,11 @@ var m_messages_02 = {
     "backToApp": "Back to the app",
     "qrAlt": "QR code: open the Android download page on your phone",
     "android": {
+      "whatChanged": "What changed in {version}",
+      "checksumLabel": "SHA-256 of this APK",
+      "checksumHint": "Compare it with the file you downloaded before installing; a different value means the file was altered on the way.",
+      "copyChecksum": "Copy checksum",
+      "copied": "Checksum copied.",
       "title": "Android",
       "subtitle": "Installable APK",
       "description": "This is the latest Civizen Android build, packaged as a native Capacitor app for sideload install.",

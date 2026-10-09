@@ -31,10 +31,6 @@
     "src/lib/civizen-score-tiers.ts": 871,
     "src/lib/civizen-score.ts": 1333,
     "src/lib/content-governance.ts": 533,
-    "src/lib/deployment/approval-workflow.ts": 555,
-    "src/lib/deployment/deployment.test.ts": 480,
-    "src/lib/deployment/environment-manager.ts": 649,
-    "src/lib/deployment/testing-framework.ts": 660,
     "src/lib/development-story-curation.ts": 854,
     "src/lib/feature-registry.ts": 634,
     "src/lib/finance/budget-api.ts": 453,
@@ -62,7 +58,6 @@
     "src/lib/opportunities.ts": 532,
     "src/lib/profile-experience.ts": 492,
     "src/lib/profile-skills.ts": 576,
-    "src/lib/protocol/protocol-versioning.ts": 547,
     "src/lib/solution-authorities.ts": 410,
     "src/lib/solutions-api.ts": 493,
     "src/lib/use-governance-guardian-relay-actions.ts": 425,
@@ -84,17 +79,14 @@
     "src/lib/agreements-templates.ts": 1507,
     "src/pages/settings/EditProfile.tsx": 883,
     "src/pages/settings/FundingBudgetAdmin.tsx": 1455,
-    "src/pages/settings/FundingComplianceAdmin.tsx": 452,
     "src/pages/settings/FundingEconomicsAdmin.tsx": 648,
-    "src/pages/settings/FundingLedgerAdmin.tsx": 631,
     "src/pages/settings/FundingSourcesAdmin.tsx": 658,
     "src/pages/settings/GovernanceAdmin.tsx": 634,
     "src/pages/settings/MessagingSettings.tsx": 624,
     "src/pages/settings/PermissionsAdmin.tsx": 468,
     "src/pages/settings/UsersAdmin.tsx": 1943,
     "src/pages/UserProfile.tsx": 411,
-    "src/pages/study/StudyCivicLearning.tsx": 1227,
-    "src/pages/study/StudySpecialists.tsx": 603
+    "src/pages/study/StudyCivicLearning.tsx": 1227
   },
   "remediation_note": "See engineering-standards-remediation.md. Caps freeze current sizes; do not raise again without splitting."
 }

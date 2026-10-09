@@ -59,7 +59,6 @@ export const allPages: PageEntry[] = [
   { name: 'Profile', path: '/profile', load: () => import('@/pages/Profile') },
   { name: 'ContributionsLedger', path: '/profile/contributions', load: () => import('@/pages/profile/ContributionsLedger') },
   { name: 'UserProfile', path: '/u/founder', routePath: '/u/:username', load: () => import('@/pages/UserProfile') },
-  { name: 'EndorseSelect', path: '/endorse', load: () => import('@/pages/EndorseSelect') },
   { name: 'EndorseFlow', path: '/endorse/demo', routePath: '/endorse/:userId', load: () => import('@/pages/EndorseFlow') },
   { name: 'GovernanceMember', path: '/governance', load: () => import('@/pages/governance/GovernanceMember') },
   { name: 'Governance', path: '/governance/tools', load: () => import('@/pages/Governance') },

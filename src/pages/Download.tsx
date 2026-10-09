@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ANDROID_DOWNLOAD_URL } from '@/lib/downloads';
+import { AndroidChecksum } from '@/components/download/AndroidChecksum';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
 
 function isAndroidUserAgent(ua: string) {
@@ -71,6 +72,8 @@ export default function DownloadPage() {
                 <li>2. {t('downloads.android.step2')}</li>
                 <li>3. {t('downloads.android.step3')}</li>
               </ol>
+
+              <AndroidChecksum />
 
               {downloadStarted ? (
                 <p className="rounded-2xl border border-primary/25 bg-primary/10 p-3 text-sm text-primary">

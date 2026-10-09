@@ -92,6 +92,20 @@ prune_download_archive() {
   done
 }
 
+# Release notes: the feat/fix subjects committed since the previous release commit (no tags are used).
+release_notes_json() {
+  local since range lines
+  since="$(git -C "$ROOT_DIR" log --grep='^chore(release)' -n1 --format=%H 2>/dev/null || true)"
+  range="HEAD"
+  if [ -n "$since" ]; then range="${since}..HEAD"; fi
+  lines="$(git -C "$ROOT_DIR" log --no-merges --format=%s "$range" 2>/dev/null | grep -E '^(feat|fix)(\(|:)' | sed -E 's/^(feat|fix)(\([^)]*\))?: ?//' | head -6 || true)"
+  if [ -z "$lines" ]; then
+    printf '["Latest Civizen Android release built from the current application.", "Open Settings to confirm the installed version and build number."]'
+    return
+  fi
+  node -e 'const lines = process.argv[1].split("\n").map((s) => s.trim()).filter(Boolean); process.stdout.write(JSON.stringify(lines))' "$lines"
+}
+
 write_update_manifest() {
   local channel="$1"
   local suffix
@@ -105,6 +119,12 @@ write_update_manifest() {
   apk_filename="$(versioned_apk_filename "$channel")"
   local apk_path="/downloads/$apk_filename"
   local apk_url="https://civizen.world${apk_path}?v=${RELEASE_ID}"
+  local apk_sha256=""
+  if [ -f "$APK_TARGET_DIR/$apk_filename" ]; then
+    apk_sha256="$(sha256sum "$APK_TARGET_DIR/$apk_filename" | cut -d' ' -f1)"
+  fi
+  local notes_json
+  notes_json="$(release_notes_json)"
 
   mkdir -p "$UPDATE_MANIFEST_DIR"
   local published_at
@@ -122,10 +142,8 @@ write_update_manifest() {
   "downloadPath": "$apk_path",
   "downloadUrl": "$apk_url",
   "publishedAt": "$published_at",
-  "notes": [
-    "Latest Civizen Android release built from the current application.",
-    "Open Settings to confirm the installed version and build number."
-  ]
+  "sha256": "$apk_sha256",
+  "notes": $notes_json
 }
 EOF
 
@@ -139,10 +157,8 @@ window.__CIVIZEN_ANDROID_UPDATE__ = {
   downloadPath: '$apk_path',
   downloadUrl: '$apk_url',
   publishedAt: '$published_at',
-  notes: [
-    'Latest Civizen Android release built from the current application.',
-    'Open Settings to confirm the installed version and build number.',
-  ],
+  sha256: '$apk_sha256',
+  notes: $notes_json,
 };
 EOF
 }

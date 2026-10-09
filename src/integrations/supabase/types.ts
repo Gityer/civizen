@@ -5211,6 +5211,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"language_pack_builds": {
+                  Row: {
+                    "base_version": string,"done_count": number,"language": string,"total_count": number,"translated": NonNullable<Json>,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "base_version": string,"done_count"?: number,"language": string,"total_count"?: number,"translated"?: NonNullable<Json>,"updated_at"?: string
+                  }
+                  Update: {
+                    "base_version"?: string,"done_count"?: number,"language"?: string,"total_count"?: number,"translated"?: NonNullable<Json>,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"language_packs": {
                   Row: {
                     "base_version": string,"built_at": string,"language": string,"pack": NonNullable<Json>,"string_count": number
