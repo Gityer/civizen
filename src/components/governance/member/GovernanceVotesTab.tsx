@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import type { CivicElection, MyConsultationBallot } from '@/lib/civic-voting';
 import { consultationOptionLabel, describeConsultationOutcome, readConsultationOutcome } from '@/lib/civic-voting/outcome';
-import { readFinalTally, type ElectionGroups } from './governance-member-model';
+import { electionsWithMyBallot, readFinalTally, type ElectionGroups } from './governance-member-model';
 
 type Translate = (key: string, params?: Record<string, string>) => string;
 
@@ -121,9 +121,17 @@ function ResultRow({
   );
 }
 
+export type GovernanceVotesMode = 'open' | 'mine' | 'results';
+
+function SectionTitle({ children }: { children: string }) {
+  return <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">{children}</h2>;
+}
+
+/** Open votes (with scheduled ones), My votes (what the member voted in), or Results (closed). */
 export function GovernanceVotesTab({
   t,
   language,
+  mode,
   groups,
   ballots,
   signedIn,
@@ -131,17 +139,58 @@ export function GovernanceVotesTab({
 }: {
   t: Translate;
   language: string;
+  mode: GovernanceVotesMode;
   groups: ElectionGroups;
   ballots: Record<string, MyConsultationBallot | null>;
   signedIn: boolean;
   onOpen: (id: string) => void;
 }) {
+  if (mode === 'results') {
+    return (
+      <section className="space-y-3" data-testid="governance-results">
+        <SectionTitle>{t('governanceMember.results')}</SectionTitle>
+        {groups.closed.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t('governanceMember.noResults')}</p>
+        ) : (
+          groups.closed.map((election) => (
+            <ResultRow key={election.id} t={t} language={language} election={election} onOpen={onOpen} />
+          ))
+        )}
+      </section>
+    );
+  }
+
+  if (mode === 'mine') {
+    const mine = electionsWithMyBallot(groups, ballots);
+    return (
+      <div className="space-y-6" data-testid="governance-my-votes">
+        {mine.open.length === 0 && mine.closed.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t('governanceMember.noMyVotes')}</p>
+        ) : null}
+        {mine.open.length > 0 ? (
+          <section className="space-y-3">
+            <SectionTitle>{t('governanceMember.openVotes')}</SectionTitle>
+            {mine.open.map((election) => (
+              <ElectionRow key={election.id} t={t} language={language} election={election} ballot={ballots[election.id]} signedIn={signedIn} onOpen={onOpen} />
+            ))}
+          </section>
+        ) : null}
+        {mine.closed.length > 0 ? (
+          <section className="space-y-3">
+            <SectionTitle>{t('governanceMember.results')}</SectionTitle>
+            {mine.closed.map((election) => (
+              <ResultRow key={election.id} t={t} language={language} election={election} onOpen={onOpen} />
+            ))}
+          </section>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="governance-open-votes">
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          {t('governanceMember.openVotes')}
-        </h2>
+        <SectionTitle>{t('governanceMember.openVotes')}</SectionTitle>
         {groups.open.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t('governanceMember.noOpenVotes')}</p>
         ) : (
@@ -161,9 +210,7 @@ export function GovernanceVotesTab({
 
       {groups.scheduled.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            {t('governanceMember.scheduledVotes')}
-          </h2>
+          <SectionTitle>{t('governanceMember.scheduledVotes')}</SectionTitle>
           {groups.scheduled.map((election) => (
             <Card key={election.id} className="rounded-2xl border-border/60 p-4">
               <p className="font-semibold text-foreground">{election.title}</p>
@@ -174,19 +221,6 @@ export function GovernanceVotesTab({
           ))}
         </section>
       ) : null}
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          {t('governanceMember.results')}
-        </h2>
-        {groups.closed.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t('governanceMember.noResults')}</p>
-        ) : (
-          groups.closed.map((election) => (
-            <ResultRow key={election.id} t={t} language={language} election={election} onOpen={onOpen} />
-          ))
-        )}
-      </section>
     </div>
   );
 }

@@ -79,6 +79,7 @@ export const DevEconomicsVisual = import.meta.env.DEV
   : null;
 export const HelpSupport = lazyWithChunkReload(() => import('@/pages/settings/HelpSupport'));
 export const GovernanceMember = lazyWithChunkReload(() => import('@/pages/governance/GovernanceMember'));
+export const GovernanceEntry = lazyWithChunkReload(() => import('@/pages/governance/GovernanceEntry'));
 export const Notifications = lazyWithChunkReload(() => import('@/pages/Notifications'));
 export const MessagingSettingsPage = lazyWithChunkReload(() => import('@/pages/settings/MessagingSettings'));
 export const MessagingSecurity = lazyWithChunkReload(() => import('@/pages/settings/MessagingSecurity'));

@@ -177,6 +177,9 @@ export default function CivicVotingProposal() {
               {proposal.status === 'draft' && isAuthor && !isManager && !canPublish ? (
                 <p className="text-xs text-muted-foreground">{t('proposalSupport.authorPublishHint')}</p>
               ) : null}
+              {proposal.status === 'draft' && (isAuthor || isManager) ? (
+                <p className="text-xs text-muted-foreground">{t('civicVoting.proposals.publishMakesMatterPublic')}</p>
+              ) : null}
             </Card>
 
             <ProposalSupportCard

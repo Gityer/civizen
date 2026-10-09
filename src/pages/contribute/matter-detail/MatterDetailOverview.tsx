@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { OutlinedField } from '@/components/ui/outlined-field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { consultationOptionLabel, describeConsultationOutcome, readConsultationOutcome } from '@/lib/civic-voting/outcome';
 import { REOPEN_REASONS, actorLabel, type ReopenReason } from '@/lib/matters';
 import type { useMatterDetail } from '@/pages/contribute/matter-detail/useMatterDetail';
 
@@ -19,6 +20,18 @@ export function MatterDetailOverview({ model }: { model: MatterDetailModel }) {
     section, votingProposals, creatingProposal, t, matter, action, canDraftVotingProposal,
     openVotingDraft, hasWork, options, selectedOption, createVotingProposal, runAction,
   } = model;
+  // Step 2.2: the close tick writes the consultation outcome onto the Matter as a system event.
+  const outcomeFor = (proposalId: string) => {
+    const event = bundle?.events.find(
+      (item) => item.eventType === 'consultation_closed' && String(item.payload?.proposal_id ?? '') === proposalId,
+    );
+    const outcome = event ? readConsultationOutcome(event.payload) : null;
+    if (!outcome) return null;
+    const tally = Array.isArray(event?.payload?.final_tally) ? (event?.payload?.final_tally as Array<Record<string, unknown>>) : [];
+    return describeConsultationOutcome(outcome, (key) =>
+      consultationOptionLabel(t, key, tally.find((row) => String(row.option_key) === key)?.display_name as string | undefined),
+    );
+  };
   return (
     <>
     {(!hasWork || section === 'overview') ? (
@@ -70,6 +83,15 @@ export function MatterDetailOverview({ model }: { model: MatterDetailModel }) {
                       </Link>
                     </Button>
                   ) : null}
+                  {(() => {
+                    const line = outcomeFor(proposal.id);
+                    return line ? (
+                      <p className="w-full text-sm text-foreground" data-testid="matter-consultation-outcome">
+                        <span className="font-medium">{t('civicBallot.outcomeTitle')}: </span>
+                        {t(line.key, line.params)}
+                      </p>
+                    ) : null;
+                  })()}
                 </Card>
               </li>
             ))}
@@ -86,6 +108,9 @@ export function MatterDetailOverview({ model }: { model: MatterDetailModel }) {
             {creatingProposal ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             {t('civicVoting.proposals.createFromMatter')}
           </Button>
+        ) : null}
+        {canDraftVotingProposal && matter.visibility !== 'public' ? (
+          <p className="text-xs text-muted-foreground">{t('civicVoting.proposals.createFromMatterHint')}</p>
         ) : null}
       </section>
     ) : null}

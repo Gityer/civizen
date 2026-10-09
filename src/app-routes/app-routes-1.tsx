@@ -1,3 +1,4 @@
+import { GovernanceWorkspaceRedirect } from '@/app-routes/GovernanceWorkspaceRedirect';
 import { Navigate, Route } from 'react-router-dom';
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -51,7 +52,7 @@ import {
   MessagingSecurity,
   MessagingSettingsPage,
   Onboarding,
-  GovernanceMember,
+  GovernanceEntry,
   HelpSupport,
   Notifications,
   OpportunityDetail,
@@ -62,7 +63,6 @@ import {
   Professions,
   Profile,
   PublicDocumentsIndex,
-  PublicGovernanceLanding,
   ResetPassword,
   RolesAdmin,
   Search,
@@ -110,7 +110,7 @@ export const appRoutes1 = (
       <Route path="/about/planetary-citizenship-pathway" element={<InstitutionalDocRoute />} />
       <Route path="/governance/about" element={<InstitutionalDocRoute />} />
       <Route path="/governance/charter" element={<InstitutionalDocRoute />} />
-      <Route path="/governance" element={<PublicGovernanceLanding />} />
+      <Route path="/governance" element={<GovernanceEntry />} />
       <Route path="/governance/voting" element={<CivicVotingHub />} />
       <Route path="/governance/voting/proposals/:proposalId" element={<CivicVotingProposal />} />
       <Route path="/governance/voting/:electionId" element={<CivicVotingElection />} />
@@ -224,7 +224,7 @@ export const appRoutes1 = (
         <Route path="materials" element={<StudyMaterials />} />
         <Route path="tests" element={<Navigate to="/study" replace />} />
       </Route>
-      <Route path="/governance/workspace" element={<ProtectedRoute><GovernanceMember /></ProtectedRoute>} />
+      <Route path="/governance/workspace" element={<GovernanceWorkspaceRedirect />} />
       <Route path="/governance/tools" element={<ProtectedRoute requiredPermissions={['role.assign', 'settings.manage']}><Governance /></ProtectedRoute>} />
       <Route path="/governance/tools/steward" element={<ProtectedRoute requiredPermissions={['role.assign', 'settings.manage']}><GovernanceNew /></ProtectedRoute>} />
       <Route path="/governance/new" element={<ProtectedRoute><Navigate to="/governance/tools/steward" replace /></ProtectedRoute>} />

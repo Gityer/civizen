@@ -37,6 +37,8 @@ export const m_messages_14 = {
       "draft": "Draft",
       "nonbinding": "Nonbinding consultation",
       "createFromMatter": "Create voting proposal",
+      "createFromMatterHint": "A consultation is public: publishing a proposal from this Matter makes the Matter public too.",
+      "publishMakesMatterPublic": "Publishing opens the Matter to everyone, since the consultation is public. When voting closes, the outcome is written back onto the Matter and the responsible party gets a follow-up.",
       "creating": "Creating proposal…",
       "createFailed": "Could not create the voting proposal.",
       "openProposal": "Open proposal",

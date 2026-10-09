@@ -52,10 +52,10 @@ const ENGLISH_CASES: Array<[string, string, RegExp]> = [
   ['What is the bell icon?', 'where_are_my_notifications', /Settings > Notifications/],
   ['How do I get notified when a vote result is published?', 'where_are_my_notifications', /result/],
   ['Where is help and support?', 'where_is_help_and_support', /Settings > Help and support/],
-  ['Where is the Governance page?', 'where_is_the_governance_page', /\/governance\/workspace/],
-  ['What are the Votes, Proposals and Tools tabs?', 'where_is_the_governance_page', /Votes/],
+  ['Where is the Governance page?', 'where_is_the_governance_page', /\/governance\b/],
+  ['What are the Open votes, My votes, Proposals, Results and Tools tabs?', 'where_is_the_governance_page', /Open votes/],
   ['Who can see the Tools tab?', 'where_is_the_governance_page', /office holders/],
-  ['What is the Governance workspace?', 'where_is_the_governance_page', /Member workspace/],
+  ['What is the Governance workspace?', 'where_is_the_governance_page', /five tabs/],
   ['What is the Observer console?', 'what_is_the_observer_console', /no voter identities/],
   ['Where can I see open votes in Study?', 'where_are_open_votes_in_study', /Open votes card/],
   ['Where do I look for a job?', 'where_are_jobs', /Market > Jobs/],
@@ -73,7 +73,7 @@ const ARMENIAN_CASES: Array<[string, string, RegExp]> = [
   ['Ի՞նչ է քվորումը։', 'what_are_quorum_and_pass_threshold', /Քվորումը/],
   ['Ինչպես առաջարկ ներկայացնել?', 'how_do_i_submit_a_proposal', /Ստեղծել քվեարկության առաջարկ/],
   ['Որտե՞ղ են իմ ծանուցումները։', 'where_are_my_notifications', /Կարգավորումներ > Ծանուցումներ/],
-  ['Որտե՞ղ է Կառավարում էջը։', 'where_is_the_governance_page', /Քվեարկություններ/],
+  ['Որտե՞ղ է Կառավարում էջը։', 'where_is_the_governance_page', /Բաց քվեարկություններ/],
   ['Ի՞նչ է Civizen-ը։', 'what_is_civizen', /^Civizen-ը բաց մասնակցային համակարգ է/],
 ];
 
@@ -92,7 +92,7 @@ const RUSSIAN_CASES: Array<[string, string, RegExp]> = [
   ['Как подать предложение?', 'how_do_i_submit_a_proposal', /Создать предложение для голосования/],
   ['Где мои уведомления?', 'where_are_my_notifications', /Настройки > Уведомления/],
   ['Где страница помощи?', 'where_is_help_and_support', /Помощь и поддержка/],
-  ['Где страница Управление?', 'where_is_the_governance_page', /Голосования/],
+  ['Где страница Управление?', 'where_is_the_governance_page', /Открытые голосования/],
   ['Что такое Civizen?', 'what_is_civizen', /^Civizen — это открытая система участия/],
 ];
 
@@ -136,7 +136,7 @@ describe('Civi answers the October 2026 voting and governance questions', () => 
   });
 
   it('uses the Governance capability card, not the Civic voting blurb, for tab questions', () => {
-    const prep = ask('What are the Votes, Proposals and Tools tabs?');
+    const prep = ask('What are the Open votes, My votes, Proposals, Results and Tools tabs?');
     expect(prep.groundedAnswer).not.toMatch(/A Single World Citizenship/);
   });
 });

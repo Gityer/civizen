@@ -8291,6 +8291,12 @@ isOneToOne: false
 "civic_close_due_elections":
 { Args: Record<PropertyKey, never>; Returns: number
                            },
+"civic_consultation_outcome_statement":
+{ Args: { "p_outcome": Json,"p_tally": Json }; Returns: string
+                           },
+"civic_consultation_outcome_to_matter":
+{ Args: { "p_election_id": string }; Returns: number
+                           },
 "civic_election_country_stats":
 { Args: { "p_election_id": string }; Returns: {
               "country_code": string,"participant_count": number

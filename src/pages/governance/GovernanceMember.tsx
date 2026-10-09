@@ -33,8 +33,8 @@ import {
 } from '@/lib/civic-voting';
 
 /**
- * The one member-facing Governance page: what is open to vote on, what members are proposing,
- * and (for people who can act there) the steward and workspace tools.
+ * The one member-facing Governance page at /governance (step 2.3): Open votes · My votes ·
+ * Proposals · Results, and (for people who can act there) Tools. Guests see the public landing.
  */
 export default function GovernanceMember() {
   const { t, language } = useLanguage();
@@ -67,7 +67,7 @@ export default function GovernanceMember() {
 
     if (user) {
       const ballotEntries = await Promise.all(
-        groups.open.map(async (election) => [election.id, await myConsultationBallot(election.id)] as const),
+        [...groups.open, ...groups.closed].map(async (election) => [election.id, await myConsultationBallot(election.id)] as const),
       );
       setBallots(Object.fromEntries(ballotEntries));
       const drafts = proposalRows.filter((row) => row.status === 'draft');
@@ -91,7 +91,7 @@ export default function GovernanceMember() {
 
   const setTab = (next: string) => {
     const params = new URLSearchParams(location.search);
-    if (next === 'votes') params.delete('tab');
+    if (next === 'open') params.delete('tab');
     else params.set('tab', next);
     const query = params.toString();
     navigate({ pathname: location.pathname, search: query ? `?${query}` : '' }, { replace: true });
@@ -116,14 +116,16 @@ export default function GovernanceMember() {
             title={t('governanceMember.title')}
             subtitle={t('governanceMember.subtitle')}
             leading={<Landmark className="h-5 w-5 text-primary" aria-hidden />}
-            fallbackPath="/governance"
+            fallbackPath="/"
           />
         </div>
 
         <Tabs value={tab} onValueChange={(value) => setTab(value as GovernanceMemberTab)}>
           <TabsList className="mb-4 w-full justify-start overflow-x-auto">
-            <TabsTrigger value="votes">{t('governanceMember.tabVotes')}</TabsTrigger>
+            <TabsTrigger value="open">{t('governanceMember.tabOpen')}</TabsTrigger>
+            <TabsTrigger value="mine">{t('governanceMember.tabMine')}</TabsTrigger>
             <TabsTrigger value="proposals">{t('governanceMember.tabProposals')}</TabsTrigger>
+            <TabsTrigger value="results">{t('governanceMember.tabResults')}</TabsTrigger>
             {toolsAllowed ? <TabsTrigger value="tools">{t('governanceMember.tabTools')}</TabsTrigger> : null}
           </TabsList>
 
@@ -134,16 +136,19 @@ export default function GovernanceMember() {
             </div>
           ) : (
             <>
-              <TabsContent value="votes">
-                <GovernanceVotesTab
-                  t={t}
-                  language={language}
-                  groups={electionGroups}
-                  ballots={ballots}
-                  signedIn={Boolean(user)}
-                  onOpen={(id) => navigate(`/governance/voting/${id}`)}
-                />
-              </TabsContent>
+              {(['open', 'mine', 'results'] as const).map((mode) => (
+                <TabsContent key={mode} value={mode}>
+                  <GovernanceVotesTab
+                    t={t}
+                    language={language}
+                    mode={mode}
+                    groups={electionGroups}
+                    ballots={ballots}
+                    signedIn={Boolean(user)}
+                    onOpen={(id) => navigate(`/governance/voting/${id}`)}
+                  />
+                </TabsContent>
+              ))}
               <TabsContent value="proposals">
                 <GovernanceProposalsTab
                   t={t}

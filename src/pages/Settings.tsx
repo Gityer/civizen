@@ -103,7 +103,7 @@ export default function Settings() {
                 icon: Landmark,
                 labelKey: 'settings.governanceWorkspaceTitle',
                 descriptionKey: 'settings.governanceWorkspaceDescription',
-                path: '/governance/workspace',
+                path: '/governance',
               },
             ]
           : []),

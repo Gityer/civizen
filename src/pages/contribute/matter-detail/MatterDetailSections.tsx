@@ -126,7 +126,7 @@ export function MatterDetailSections({ model }: { model: MatterDetailModel }) {
       />
     ) : null}
 
-    {hasWork && (section === 'decisions' || section === 'overview') ? (
+    {(hasWork || (bundle?.decisions.length ?? 0) > 0) && (section === 'decisions' || section === 'overview') ? (
       <section className="space-y-2">
         <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
           {t('contribute.matters.sections.decisions')}

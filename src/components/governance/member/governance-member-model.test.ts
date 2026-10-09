@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { CivicElection, VotingProposal } from '@/lib/civic-voting';
 import {
   canAccessGovernanceTools,
+  electionsWithMyBallot,
   groupElections,
   groupProposals,
   readFinalTally,
@@ -105,7 +106,27 @@ describe('governance member model', () => {
     expect(canAccessGovernanceTools({ role: 'founder', permissions: [], officeKeys: [] })).toBe(true);
     expect(canAccessGovernanceTools({ role: 'member', permissions: ['role.assign'], officeKeys: [] })).toBe(true);
     expect(canAccessGovernanceTools({ role: 'member', permissions: [], officeKeys: ['founder'] })).toBe(true);
-    expect(readGovernanceTab('?tab=tools', false)).toBe('votes');
+    expect(readGovernanceTab('?tab=tools', false)).toBe('open');
+    expect(readGovernanceTab('?tab=tools', true)).toBe('tools');
     expect(readGovernanceTab('?tab=proposals', false)).toBe('proposals');
+    expect(readGovernanceTab('?tab=mine', false)).toBe('mine');
+    expect(readGovernanceTab('?tab=results', false)).toBe('results');
+    expect(readGovernanceTab('?tab=votes', false)).toBe('open');
+    expect(readGovernanceTab('', false)).toBe('open');
+  });
+
+  it('lists only the elections the member has a ballot in under My votes', () => {
+    const groups = groupElections([
+      election({ id: 'open-voted' }),
+      election({ id: 'open-not-voted' }),
+      election({ id: 'closed-voted', status: 'closed', votingClosesAt: '2026-02-01T00:00:00Z' }),
+    ]);
+    const mine = electionsWithMyBallot(groups, {
+      'open-voted': { optionKey: 'support' },
+      'closed-voted': { optionKey: 'oppose' },
+      'open-not-voted': null,
+    });
+    expect(mine.open.map((e) => e.id)).toEqual(['open-voted']);
+    expect(mine.closed.map((e) => e.id)).toEqual(['closed-voted']);
   });
 });

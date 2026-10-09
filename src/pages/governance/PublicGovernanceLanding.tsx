@@ -105,7 +105,7 @@ export default function PublicGovernanceLanding() {
               </h2>
               <p className="text-xs text-muted-foreground">{t('civicVoting.publicLanding.memberBody')}</p>
               <Button type="button" variant="secondary" asChild>
-                <Link to="/governance/workspace">{t('civicVoting.publicLanding.openWorkspace')}</Link>
+                <Link to="/governance">{t('civicVoting.publicLanding.openWorkspace')}</Link>
               </Button>
             </Card>
           </div>

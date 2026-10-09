@@ -51,7 +51,7 @@ export function notificationRoute(notification: Pick<AppNotification, 'entityTyp
     case 'civic_election':
       return id ? `/governance/voting/${id}` : '/governance/voting';
     case 'civic_voting_proposal':
-      return id ? `/governance/voting/proposals/${id}` : '/governance/workspace?tab=proposals';
+      return id ? `/governance/voting/proposals/${id}` : '/governance?tab=proposals';
     case 'matter':
       return id ? `/contribute/matters/${id}` : '/contribute/matters';
     case 'agreement':

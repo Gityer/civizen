@@ -2,6 +2,7 @@ import {
   isCivicElectionSample,
   resolveVotingWindow,
   type CivicElection,
+  type MyConsultationBallot,
   type VotingProposal,
 } from '@/lib/civic-voting';
 import { permissionListHasAny } from '@/lib/access-control';
@@ -84,11 +85,23 @@ export function canAccessGovernanceTools(input: {
   return Boolean(input.officeKeys && input.officeKeys.length > 0);
 }
 
-export type GovernanceMemberTab = 'votes' | 'proposals' | 'tools';
+/** Open votes · My votes · Proposals · Results · Tools (step 2.3). `votes` is the pre-2.3 name of `open`. */
+export type GovernanceMemberTab = 'open' | 'mine' | 'proposals' | 'results' | 'tools';
 
 export function readGovernanceTab(search: string, toolsAllowed: boolean): GovernanceMemberTab {
   const value = new URLSearchParams(search).get('tab');
+  if (value === 'mine') return 'mine';
   if (value === 'proposals') return 'proposals';
+  if (value === 'results') return 'results';
   if (value === 'tools' && toolsAllowed) return 'tools';
-  return 'votes';
+  return 'open';
+}
+
+/** Elections (open or closed) the member has a ballot in, newest closing first. */
+export function electionsWithMyBallot(
+  groups: ElectionGroups,
+  ballots: Record<string, Pick<MyConsultationBallot, 'optionKey'> | null | undefined>,
+): { open: CivicElection[]; closed: CivicElection[] } {
+  const voted = (election: CivicElection) => Boolean(ballots[election.id]?.optionKey);
+  return { open: groups.open.filter(voted), closed: groups.closed.filter(voted) };
 }

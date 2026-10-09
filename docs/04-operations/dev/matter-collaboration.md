@@ -89,6 +89,13 @@ The Contribute card stays. `/contribute/improvements` is a shortcut into Matter 
 - Geographic scope offers Global · Country · Region · City; region and city come from the shared geo catalog (`listGeoRegions`, `listGeoCities`) and are stored as `scope_region_code` / `scope_locality_code`, which `create_matter` already validated.
 - SQL test: `supabase/tests/public_matters_browse_test.sql`.
 
+## Consultation outcome returns to the Matter (Phase 2 step 2.2, 2026-10-09)
+
+- `publish_voting_proposal` makes a non-public Matter public (`made_public_for_consultation` system event with `previous_visibility`), because the consultation it starts is public. The proposal page and the Matter say so before publishing.
+- Trigger `civic_election_closed_to_matter` (AFTER UPDATE OF status on `civic_elections`, open → closed) calls `civic_consultation_outcome_to_matter(election)`: for every proposal published from a Matter it logs a `consultation_closed` system event (payload `election_id`, `proposal_id`, `final_outcome`, `final_tally`), records a `matter_decisions` row (`Consultation result: <title>`, status accepted / rejected from the outcome, attributed to the proposal author), and, unless the Matter is closed, opens a `matter_outcome_followups` row (`pending`) with an `outcome_followup` action for the Matter's responsible party, so it appears in Needs Your Action. Idempotent per election and Matter; a backfill ran for consultations already closed.
+- The Matter page shows the outcome line on the proposal card (from the event payload), the Decision in the Decisions section (now shown whenever a Decision exists, not only with collaborative work), and the event in Activity.
+- SQL test: `supabase/tests/consultation_outcome_to_matter_test.sql`.
+
 ## Phase 1 surfaces
 
 - Contribute lane **Questions, Issues & Ideas**
