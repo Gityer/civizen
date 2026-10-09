@@ -1,7 +1,7 @@
 {
   "name": "civizen",
   "private": true,
-  "version": "0.1.222",
+  "version": "0.1.223",
   "type": "module",
   "engines": {
     "node": ">=24.18.1",
@@ -39,6 +39,7 @@
     "db:apply-remote:federation-distribution": "bash scripts/db/apply-remote-federation-distribution-migrations.sh",
     "db:vps-install-agent-key": "bash scripts/db/vps-install-agent-ssh-key.sh",
     "assistant:knowledge": "npx tsx scripts/assistant-knowledge.ts",
+    "i18n:coverage": "npx tsx scripts/i18n-coverage.ts",
     "assistant:knowledge:check": "npx tsx scripts/assistant-knowledge.ts --check",
     "verify:agent-context": "node scripts/verify-agent-context.mjs",
     "verify:dev-load": "node scripts/verify-dev-app-load.mjs",
