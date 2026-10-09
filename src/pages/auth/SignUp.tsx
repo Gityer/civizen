@@ -17,11 +17,12 @@ import { PublicPageShell } from '@/components/public/PublicPageShell';
 import { TERMS_ACCEPTANCE_VERSION } from '@/lib/terms-version';
 import { resolveAuthReturnPath } from '@/lib/auth-return-path';
 import { savePendingAuthReturn } from '@/lib/pending-auth-return';
+import { toast } from 'sonner';
 
 export default function SignUp() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signUp } = useAuth();
+  const { signUp, resendSignUpConfirmation } = useAuth();
   // Arriving from a page such as a ballot: keep sign-up short and return there afterwards.
   const returnPath = resolveAuthReturnPath(location.state, '');
   const quickMode = Boolean(returnPath);
@@ -40,6 +41,16 @@ export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [successContactLabel, setSuccessContactLabel] = useState('');
+  const [resending, setResending] = useState(false);
+
+  const handleResend = async () => {
+    if (resending || !successContactLabel) return;
+    setResending(true);
+    const { error: resendError } = await resendSignUpConfirmation(successContactLabel);
+    setResending(false);
+    if (resendError) setError(t('auth.resendConfirmationFailed'));
+    else toast.success(t('auth.resendConfirmationSent'));
+  };
 
   useEffect(() => {
     let active = true;
@@ -125,6 +136,11 @@ export default function SignUp() {
           message={successMessage}
           onBackToLogin={() => navigate('/login', { state: location.state })}
           title={successTitle}
+          extra={
+            <Button variant="ghost" disabled={resending} onClick={() => void handleResend()} data-testid="resend-confirmation">
+              {resending ? t('auth.sending') : t('auth.resendConfirmation')}
+            </Button>
+          }
         />
       </PublicPageShell>
     );

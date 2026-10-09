@@ -34,6 +34,19 @@ Then deploy `dist/`. Do not leave a build on the Testing track without a plan to
 
 On native Android sideload builds, the app loads **only the manifest for the track** the user chose in **Settings** (Production vs Testing). Switching tracks triggers an immediate check against the server for that track's latest version.
 
+## E-mail digest (optional sender)
+
+The daily notification digest is an edge function (`supabase/functions/notification-digest`). It only sends when the
+functions container has `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME`
+(the same values GoTrue uses) and `DIGEST_CRON_SECRET`, and when a host cron posts to it once a day:
+
+```
+curl -fsS -X POST -H "x-digest-secret: $DIGEST_CRON_SECRET" https://<functions-host>/notification-digest
+```
+
+`DIGEST_DRY_RUN=1` makes it list candidates without mailing. Members opt in under Settings > Privacy; nobody is
+mailed by default.
+
 ## Database migrations
 
 The hosted database receives `supabase/migrations/` only at release time, by hand, by someone with database

@@ -114,6 +114,7 @@ interface AuthContextType {
   loading: boolean;
   /** Session exists but the latest profile refresh returned no usable row. */
   profileLoadFailed: boolean;
+  resendSignUpConfirmation: (email: string) => Promise<{ error: Error | null }>;
   signUp: (
     credentials: SignUpCredentials,
     password: string,
@@ -622,6 +623,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error as Error | null };
   };
 
+  /** Step 2.6: a member whose confirmation link expired asks for a new one. */
+  const resendSignUpConfirmation = async (email: string) => {
+    const supabase = await getSupabase();
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: email.trim().toLowerCase(),
+      options: { emailRedirectTo: window.location.origin },
+    });
+    return { error: error as Error | null };
+  };
+
   const signIn = async (identifier: string, password: string, options?: SignInOptions) => {
     const trimmedIdentifier = identifier.trim();
     const email = trimmedIdentifier;
@@ -803,6 +815,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         profileLoadFailed,
         signUp,
+        resendSignUpConfirmation,
         signIn,
         signInWithBiometrics,
         signInWithOtp,

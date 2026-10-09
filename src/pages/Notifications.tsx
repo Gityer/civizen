@@ -15,6 +15,7 @@ import {
   notificationRoute,
   type AppNotification,
 } from '@/lib/notifications';
+import { describeNotification } from '@/lib/notification-text';
 import { cn } from '@/lib/utils';
 
 function formatWhen(value: string, language: string): string {
@@ -32,7 +33,7 @@ export function NotificationList({
   rows,
   onOpen,
 }: {
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string>) => string;
   language: string;
   rows: AppNotification[];
   onOpen: (row: AppNotification) => void;
@@ -49,6 +50,7 @@ export function NotificationList({
       {rows.map((row) => {
         const route = notificationRoute(row);
         const unread = !row.readAt;
+        const text = describeNotification(row, t);
         return (
           <li key={row.id}>
             <Card
@@ -70,8 +72,8 @@ export function NotificationList({
             >
               <span className={cn('mt-1 h-2 w-2 shrink-0 rounded-full', unread ? 'bg-primary' : 'bg-transparent')} aria-hidden />
               <div className="min-w-0 flex-1">
-                <p className={cn('text-sm text-foreground', unread && 'font-semibold')}>{row.title}</p>
-                {row.body ? <p className="mt-0.5 text-sm text-muted-foreground">{row.body}</p> : null}
+                <p className={cn('text-sm text-foreground', unread && 'font-semibold')}>{text.title}</p>
+                {text.body ? <p className="mt-0.5 text-sm text-muted-foreground">{text.body}</p> : null}
                 <p className="mt-1 text-xs text-muted-foreground">{formatWhen(row.createdAt, language)}</p>
               </div>
               {route ? <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden /> : null}

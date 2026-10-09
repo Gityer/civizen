@@ -22,6 +22,8 @@ const GREETINGS = [
 
 const CIVIZEN_TERMS = [
   'civizen',
+  'matter',
+  'matters',
   'nela',
   'civi',
   'agreement',

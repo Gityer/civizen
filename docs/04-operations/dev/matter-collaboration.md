@@ -96,6 +96,12 @@ The Contribute card stays. `/contribute/improvements` is a shortcut into Matter 
 - The Matter page shows the outcome line on the proposal card (from the event payload), the Decision in the Decisions section (now shown whenever a Decision exists, not only with collaborative work), and the event in Activity.
 - SQL test: `supabase/tests/consultation_outcome_to_matter_test.sql`.
 
+## Loop notifications (Phase 2 step 2.5, 2026-10-09)
+
+- New senders: `civic_election_opened_notify` (trigger, scheduled → open) tells the consultation's followers (`civic_consultation_followers`: proposal supporters, author, Matter initiator / responsible / addressee, Matter parties); `civic_consultation_reminders()` (pg_cron `civic_consultation_reminders_tick`, minute 40) tells followers who have not voted 7 days and 24 hours before closing (flags `reminder_7d_sent_at` / `reminder_24h_sent_at` on the election); `matter_comment_notify` (trigger on `matter_comments`) tells the Matter's people about a new comment (mentions keep their own notification); `withdraw_voting_proposal` tells supporters.
+- Text: the client renders `notificationTypes.<type>.title|body` (EN base, HY/RU curated) with `metadata` as parameters (`title`, `hours`); rows without a key fall back to the stored English `title`/`body`. New senders store `metadata.title`.
+- E-mail digest: `profiles.notification_email_digest` (opt-in, Settings > Privacy, `set_notification_email_digest`), `notification_digest_candidates()` / `record_notification_digest()` (service role), `notification_digests` log, edge function `supabase/functions/notification-digest` (POST with `x-digest-secret`; SMTP via the GoTrue SMTP variables; `DIGEST_DRY_RUN=1` lists only). Operator steps: give the functions container `SMTP_*` + `DIGEST_CRON_SECRET`, deploy the function folder, add a daily cron `curl -X POST -H "x-digest-secret: …" https://<functions-host>/notification-digest`.
+
 ## Phase 1 surfaces
 
 - Contribute lane **Questions, Issues & Ideas**

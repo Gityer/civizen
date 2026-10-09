@@ -10,16 +10,19 @@ import { UserRound, Lock, ArrowRight, Fingerprint } from 'lucide-react';
 import { PublicAuthHeader } from '@/components/public/PublicAuthHeader';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
 import { resolvePostAuthPath } from '@/lib/pending-auth-return';
+import { isEmailIdentifier } from '@/lib/sign-in-with-identifier';
+import { toast } from 'sonner';
 import { getBiometricSignInCapability } from '@/lib/biometric-sign-in';
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn, signInWithBiometrics } = useAuth();
+  const { signIn, resendSignUpConfirmation, signInWithBiometrics } = useAuth();
   const { t } = useLanguage();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
   const [biometricLoading, setBiometricLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [biometricReady, setBiometricReady] = useState(false);
@@ -53,6 +56,15 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleResend = async () => {
+    if (resending) return;
+    setResending(true);
+    const { error: resendError } = await resendSignUpConfirmation(identifier);
+    setResending(false);
+    if (resendError) toast.error(t('auth.resendConfirmationFailed'));
+    else toast.success(t('auth.resendConfirmationSent'));
   };
 
   const handleBiometricSignIn = async () => {
@@ -143,6 +155,20 @@ export default function Login() {
                 className="text-sm text-destructive"
               >
                 {error}
+                {error.toLowerCase().includes('not confirmed') && isEmailIdentifier(identifier) && (
+                  <span className="block mt-1 text-muted-foreground">
+                    {t('auth.emailNotConfirmedHint')}{' '}
+                    <button
+                      type="button"
+                      className="text-primary hover:underline font-medium"
+                      disabled={resending}
+                      onClick={() => void handleResend()}
+                      data-testid="resend-confirmation"
+                    >
+                      {resending ? t('auth.sending') : t('auth.resendConfirmation')}
+                    </button>
+                  </span>
+                )}
                 {error.toLowerCase().includes('invalid login credentials') && (
                   <span className="block mt-1 text-muted-foreground">
                     {t('auth.invalidCredentialsPrefix')}{' '}

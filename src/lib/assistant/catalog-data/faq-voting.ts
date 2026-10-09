@@ -17,6 +17,26 @@ function localized(id: string) {
 /** Civic voting, member proposals, notifications, and the member Governance page. */
 export const ASSISTANT_FAQ_VOTING: AssistantFaqItem[] = [
   {
+    id: 'where_are_public_matters',
+    question: 'Where are the public Matters?',
+    answer:
+      'Open Contribute > Questions, Issues & Ideas: the page lands on Public Matters, the browsable list of every public Matter. Search by words, and filter by Area, country and type (question, issue, suggestion, request, discussion). Your own queues (Needs your action, My Matters, Participating, Organization) are the other tabs. A Matter becomes public when its author chooses Public, or automatically when a consultation is published from it.',
+    localizedAnswers: localized('where_are_public_matters'),
+    aliases: ['public matters', 'browse matters', 'find a matter', 'search matters', 'list of matters', 'see what others raised'],
+    capabilityIds: ['matters', 'civic_voting'],
+    sourceRefs: ['src/pages/contribute/Matters.tsx', 'supabase/migrations/20261009130000_public_matters_browse.sql'],
+  },
+  {
+    id: 'how_do_i_raise_a_matter_for_the_community',
+    question: 'How do I raise a Matter for the whole community?',
+    answer:
+      'Open Contribute > Questions, Issues & Ideas and tap the + button. Write a title and description, choose the type, and under Recipient tap Address it to the Civizen community: the official Civizen organization receives it on behalf of everyone, so you do not have to name a person. Set the geographic scope (Global, Country, Region or City) and the Area, choose Public visibility if you want everyone to find it, and submit. From the Matter you can later Create voting proposal; publishing that proposal makes the Matter public and, when voting closes, the outcome returns to the Matter.',
+    localizedAnswers: localized('how_do_i_raise_a_matter_for_the_community'),
+    aliases: ['raise a matter', 'raise an issue for everyone', 'address the community', 'matter without a person', 'suggest something to the community', 'propose to the community'],
+    capabilityIds: ['matters', 'civic_voting'],
+    sourceRefs: ['src/pages/contribute/MatterForm.tsx', 'supabase/migrations/20261009140000_consultation_outcome_to_matter.sql'],
+  },
+  {
     id: 'how_do_i_vote',
     question: 'How do I vote?',
     answer:

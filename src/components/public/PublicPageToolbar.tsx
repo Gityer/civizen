@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Download } from 'lucide-react';
 
 import { PublicLanguageSelect } from '@/components/public/PublicLanguageSelect';
@@ -25,6 +25,8 @@ type PublicPageToolbarProps = {
 export function PublicPageToolbar({ className, hideGuestAuthActions = false }: PublicPageToolbarProps) {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
+  // Guests arriving from a protected page keep that page as their return path (step 2.6).
+  const location = useLocation();
   const showGuestActions = !user;
   const showProfileMenu = Boolean(user && profile?.id);
   const authActionProps = {
@@ -48,6 +50,7 @@ export function PublicPageToolbar({ className, hideGuestAuthActions = false }: P
         <>
           <Link
             to="/login"
+            state={location.state}
             {...authActionProps}
             className={cn(
               'hidden h-9 items-center rounded-full px-3 text-sm font-medium text-muted-foreground transition-[color,background-color,opacity] duration-300 hover:bg-accent/70 hover:text-foreground motion-reduce:transition-none lg:inline-flex',
@@ -59,6 +62,7 @@ export function PublicPageToolbar({ className, hideGuestAuthActions = false }: P
           </Link>
           <Link
             to="/signup"
+            state={location.state}
             {...authActionProps}
             className={cn(
               'hidden h-9 items-center rounded-full bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-[background-color,opacity] duration-300 hover:bg-primary/90 motion-reduce:transition-none lg:inline-flex',

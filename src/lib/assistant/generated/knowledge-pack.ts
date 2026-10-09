@@ -6,12 +6,12 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.208",
     "appReleaseId": "20261009-v0.1.208",
     "androidVersionCode": 210,
-    "gitSha": "19954fb56783b01cdc0728810b7da248eef5e8ea",
-    "generatedAt": "2026-10-09T18:05:22.506Z",
-    "sourceFingerprint": "8a307246578a986f176d07c416ee34669aa1d9f330437b937d4b06ba9f41a859",
+    "gitSha": "13224f4100dcc6caa98c9b1d1382df109c7e2d40",
+    "generatedAt": "2026-10-09T18:22:48.621Z",
+    "sourceFingerprint": "79550af5c22ff07262bf3a0a035823655e6b0a5720ced99b750ab9a2309477e9",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 394
+    "chunkCount": 396
   },
   "capabilities": [
     {
@@ -170,7 +170,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "name": "Questions, Issues & Ideas",
       "status": "implemented",
       "description": "Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review — it does not commit, push, or deploy.",
-      "howTo": "Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the intended person or organization, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks.",
+      "howTo": "Open Contribute > Questions, Issues & Ideas: the page lands on the public Matters list (search, Area, country and type filters). Tap + to create a Matter, choose the intended person or organization or address it to the Civizen community, set the geographic scope and Area, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks.",
       "routes": [
         "/contribute/matters",
         "/contribute/matters/new"
@@ -1217,7 +1217,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     {
       "id": "how_do_i_raise_a_question_or_issue",
       "question": "How do I ask a question or raise an issue?",
-      "answer": "Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the person or organization it is for, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.",
+      "answer": "Open Contribute > Questions, Issues & Ideas and tap +. Create a Matter, choose the person or organization it is for (or tap Address it to the Civizen community), set its geographic scope (Global, Country, Region or City) and Area, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.",
       "aliases": [
         "how do I raise an issue",
         "how do I ask a question in civizen",
@@ -1777,6 +1777,56 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
         "docs/03-platform/happiness-and-fulfillment/happiness-human-fulfillment-v1.md",
         "src/pages/happiness/HappinessPrivacy.tsx",
         "src/pages/wellbeing/WellbeingInsights.tsx"
+      ]
+    },
+    {
+      "id": "where_are_public_matters",
+      "question": "Where are the public Matters?",
+      "answer": "Open Contribute > Questions, Issues & Ideas: the page lands on Public Matters, the browsable list of every public Matter. Search by words, and filter by Area, country and type (question, issue, suggestion, request, discussion). Your own queues (Needs your action, My Matters, Participating, Organization) are the other tabs. A Matter becomes public when its author chooses Public, or automatically when a consultation is published from it.",
+      "localizedAnswers": {
+        "hy": "Բացեք Ներդրում > Հարցեր, խնդիրներ և գաղափարներ․ էջը բացվում է «Հրապարակային Հարցեր» ցուցակով՝ բոլոր հրապարակային Հարցերը։ Փնտրեք բառերով և զտեք ըստ Ոլորտի, երկրի և տեսակի (հարց, խնդիր, առաջարկ, խնդրանք, քննարկում)։ Ձեր սեփական ցուցակները («Պահանջում է ձեր գործողությունը», «Իմ Հարցերը», «Մասնակցում եմ», «Կազմակերպություն») մյուս ներդիրներում են։ Հարցը հրապարակային է դառնում, երբ հեղինակն ընտրում է «Հրապարակային», կամ ավտոմատ՝ երբ դրանից խորհրդակցություն է հրապարակվում։",
+        "ru": "Откройте Вклад > Вопросы, проблемы и идеи: страница открывается на списке «Публичные Вопросы» — все публичные Вопросы. Ищите по словам и фильтруйте по Области, стране и типу (вопрос, проблема, предложение, запрос, обсуждение). Ваши собственные очереди («Требует вашего действия», «Мои Вопросы», «Участвую», «Организация») — на других вкладках. Вопрос становится публичным, когда автор выбирает «Публичный», или автоматически, когда из него публикуется консультация."
+      },
+      "aliases": [
+        "public matters",
+        "browse matters",
+        "find a matter",
+        "search matters",
+        "list of matters",
+        "see what others raised"
+      ],
+      "capabilityIds": [
+        "matters",
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/pages/contribute/Matters.tsx",
+        "supabase/migrations/20261009130000_public_matters_browse.sql"
+      ]
+    },
+    {
+      "id": "how_do_i_raise_a_matter_for_the_community",
+      "question": "How do I raise a Matter for the whole community?",
+      "answer": "Open Contribute > Questions, Issues & Ideas and tap the + button. Write a title and description, choose the type, and under Recipient tap Address it to the Civizen community: the official Civizen organization receives it on behalf of everyone, so you do not have to name a person. Set the geographic scope (Global, Country, Region or City) and the Area, choose Public visibility if you want everyone to find it, and submit. From the Matter you can later Create voting proposal; publishing that proposal makes the Matter public and, when voting closes, the outcome returns to the Matter.",
+      "localizedAnswers": {
+        "hy": "Բացեք Ներդրում > Հարցեր, խնդիրներ և գաղափարներ և սեղմեք + կոճակը։ Գրեք վերնագիր և նկարագրություն, ընտրեք տեսակը, իսկ «Ստացող» դաշտում սեղմեք «Ուղղել Civizen համայնքին»․ պաշտոնական Civizen կազմակերպությունը ստանում է այն բոլորի անունից, այնպես որ կոնկրետ անձ նշել պետք չէ։ Նշեք աշխարհագրական ընդգրկումը (Համաշխարհային, Երկիր, Մարզ կամ Քաղաք) և Ոլորտը, ցանկության դեպքում ընտրեք «Հրապարակային» տեսանելիություն և ներկայացրեք։ Հարցից հետագայում կարող եք ստեղծել քվեարկության առաջարկ․ դրա հրապարակումը Հարցը հրապարակային է դարձնում, իսկ քվեարկության փակվելուն պես արդյունքը վերադառնում է Հարցին։",
+        "ru": "Откройте Вклад > Вопросы, проблемы и идеи и нажмите кнопку +. Напишите заголовок и описание, выберите тип, а в поле «Получатель» нажмите «Адресовать сообществу Civizen»: официальная организация Civizen получит его от имени всех, и называть конкретного человека не нужно. Задайте географический охват (Весь мир, Страна, Регион или Город) и Область, при желании выберите видимость «Публичный» и отправьте. Позже из Вопроса можно создать предложение для голосования: его публикация делает Вопрос публичным, а когда голосование закроется, итог вернётся в Вопрос."
+      },
+      "aliases": [
+        "raise a matter",
+        "raise an issue for everyone",
+        "address the community",
+        "matter without a person",
+        "suggest something to the community",
+        "propose to the community"
+      ],
+      "capabilityIds": [
+        "matters",
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/pages/contribute/MatterForm.tsx",
+        "supabase/migrations/20261009140000_consultation_outcome_to_matter.sql"
       ]
     },
     {
@@ -2435,7 +2485,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "capability:matters",
       "title": "Questions, Issues & Ideas",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Questions, Issues & Ideas status=implemented. Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review — it does not commit, push, or deploy. Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the intended person or organization, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks. Routes: /contribute/matters, /contribute/matters/new.",
+      "text": "Questions, Issues & Ideas status=implemented. Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review — it does not commit, push, or deploy. Open Contribute > Questions, Issues & Ideas: the page lands on the public Matters list (search, Area, country and type filters). Tap + to create a Matter, choose the intended person or organization or address it to the Civizen community, set the geographic scope and Area, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks. Routes: /contribute/matters, /contribute/matters/new.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"
@@ -2804,7 +2854,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "faq:how_do_i_raise_a_question_or_issue",
       "title": "How do I ask a question or raise an issue?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: How do I ask a question or raise an issue? A: Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the person or organization it is for, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.",
+      "text": "Q: How do I ask a question or raise an issue? A: Open Contribute > Questions, Issues & Ideas and tap +. Create a Matter, choose the person or organization it is for (or tap Address it to the Civizen community), set its geographic scope (Global, Country, Region or City) and Area, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
@@ -3084,6 +3134,24 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "title": "Can my employer see my Happiness?",
       "path": "src/lib/assistant/catalog.ts",
       "text": "Q: Can my employer see my Happiness? A: No. Individual Happiness & Fulfillment stays private. If you turn on privacy-protected group insights in Happiness Privacy, qualifying information may contribute to group insights only when enough people are included. Authorized viewers may open Wellbeing Insights. That is not employer access to your Happiness, and it is separate from Job Fit sharing.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_are_public_matters",
+      "title": "Where are the public Matters?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where are the public Matters? A: Open Contribute > Questions, Issues & Ideas: the page lands on Public Matters, the browsable list of every public Matter. Search by words, and filter by Area, country and type (question, issue, suggestion, request, discussion). Your own queues (Needs your action, My Matters, Participating, Organization) are the other tabs. A Matter becomes public when its author chooses Public, or automatically when a consultation is published from it.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:how_do_i_raise_a_matter_for_the_community",
+      "title": "How do I raise a Matter for the whole community?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How do I raise a Matter for the whole community? A: Open Contribute > Questions, Issues & Ideas and tap the + button. Write a title and description, choose the type, and under Recipient tap Address it to the Civizen community: the official Civizen organization receives it on behalf of everyone, so you do not have to name a person. Set the geographic scope (Global, Country, Region or City) and the Area, choose Public visibility if you want everyone to find it, and submit. From the Matter you can later Create voting proposal; publishing that proposal makes the Matter public and, when voting closes, the outcome returns to the Matter.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"

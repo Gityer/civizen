@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -7,6 +8,8 @@ type SignUpSuccessStateProps = {
   message: string;
   onBackToLogin: () => void;
   title: string;
+  /** Extra action under the message, e.g. resend the confirmation e-mail. */
+  extra?: ReactNode;
 };
 
 export function SignUpSuccessState({
@@ -14,6 +17,7 @@ export function SignUpSuccessState({
   message,
   onBackToLogin,
   title,
+  extra,
 }: SignUpSuccessStateProps) {
   return (
     <motion.div
@@ -26,9 +30,12 @@ export function SignUpSuccessState({
       </div>
       <h1 className="mb-2 font-display text-2xl font-bold text-foreground">{title}</h1>
       <p className="mb-6 text-muted-foreground">{message}</p>
-      <Button variant="outline" onClick={onBackToLogin}>
-        {backToLoginLabel}
-      </Button>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <Button variant="outline" onClick={onBackToLogin}>
+          {backToLoginLabel}
+        </Button>
+        {extra}
+      </div>
     </motion.div>
   );
 }

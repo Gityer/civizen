@@ -130,7 +130,7 @@ export const ASSISTANT_FAQ_PART_1: AssistantFaqItem[] = [
     id: 'how_do_i_raise_a_question_or_issue',
     question: 'How do I ask a question or raise an issue?',
     answer:
-      'Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the person or organization it is for, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.',
+      'Open Contribute > Questions, Issues & Ideas and tap +. Create a Matter, choose the person or organization it is for (or tap Address it to the Civizen community), set its geographic scope (Global, Country, Region or City) and Area, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.',
     aliases: [
       'how do I raise an issue',
       'how do I ask a question in civizen',

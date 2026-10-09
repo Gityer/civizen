@@ -149,4 +149,22 @@ export const m_messages_16 = {
     "markAllFailed": "Could not mark notifications as read.",
     "loadFailed": "Notifications could not be loaded."
   },
+  "notificationTypes": {
+    "civic_consultation_published": { "title": "Consultation published: {title}", "body": "A consultation you follow was published. Open it to see when voting starts." },
+    "civic_consultation_opened": { "title": "Voting is open: {title}", "body": "Cast your ballot while the window is open." },
+    "civic_consultation_closing_soon": { "title": "Voting closes in {hours} hours: {title}", "body": "You have not voted yet. Cast your ballot before the window ends." },
+    "civic_consultation_closed": { "title": "Result published: {title}", "body": "Voting has closed and the final count is public." },
+    "civic_proposal_withdrawn": { "title": "Proposal withdrawn: {title}", "body": "A proposal you supported was withdrawn by its author." },
+    "matter_comment": { "title": "New comment: {title}", "body": "Someone commented on a Matter you are part of." },
+    "matter_mention": { "title": "You were mentioned", "body": "Someone mentioned you on a Matter." },
+    "matter_invited": { "title": "You were invited", "body": "You were invited to take part in a Matter." },
+    "matter_action_reminder": { "title": "Matter deadline approaching", "body": "An action assigned to you on a Matter is due soon." },
+    "matter_action_overdue": { "title": "Matter action overdue", "body": "An action assigned to you on a Matter is overdue." },
+    "matter_escalated": { "title": "Matter escalated", "body": "A Matter you are part of was escalated or returned for review." },
+    "task_changes_requested": { "title": "Changes requested", "body": "A reviewer asked for changes on a Task of yours." },
+    "task_became_actionable": { "title": "Task is ready", "body": "A Task assigned to you can now be worked on." },
+    "agreement_signature_required": { "title": "Your signature is needed: {title}", "body": "An agreement is ready for you to sign." },
+    "agreement_signed": { "title": "Agreement signed: {title}", "body": "A party signed an agreement you are part of." },
+    "agreement_active": { "title": "Agreement active: {title}", "body": "All required signatures are in; the agreement is active." }
+  },
 } as const;

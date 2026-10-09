@@ -77,6 +77,8 @@ var ARMENIAN_LEXICON = [
   { match: /անդորրագ/i, terms: "receipt" },
   { match: /հաշվվ|հաշվել|հաշված|հաշվարկ/i, terms: "counted count" },
   { match: /առաջարկ/i, terms: "proposal" },
+  { match: /հրապարակային հարց/i, terms: "public matters" },
+  { match: /հարց(եր)?(ը|ն|ի|ին|երը|երի|երին)?/i, terms: "matter" },
   { match: /ներկայաց/i, terms: "submit create" },
   { match: /ծանուց/i, terms: "notifications" },
   { match: /զանգ/i, terms: "bell" },
@@ -128,6 +130,8 @@ var RUSSIAN_LEXICON = [
   { match: /квитанц/i, terms: "receipt" },
   { match: /учт[её]н|учтен|учитыва|посчит|подсч[её]т/i, terms: "counted count" },
   { match: /предложен/i, terms: "proposal" },
+  { match: /публичны[ехй] вопрос/i, terms: "public matters" },
+  { match: /вопрос(ы|ов|е|ах|а)?/i, terms: "matter" },
   { match: /подать|создать|внести|выдвин/i, terms: "submit create" },
   { match: /уведомлен/i, terms: "notifications" },
   { match: /колокол/i, terms: "bell" },
@@ -759,6 +763,8 @@ var GREETINGS = [
 ];
 var CIVIZEN_TERMS = [
   "civizen",
+  "matter",
+  "matters",
   "nela",
   "civi",
   "agreement",
@@ -1049,12 +1055,12 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.208",
     "appReleaseId": "20261009-v0.1.208",
     "androidVersionCode": 210,
-    "gitSha": "19954fb56783b01cdc0728810b7da248eef5e8ea",
-    "generatedAt": "2026-10-09T18:05:22.506Z",
-    "sourceFingerprint": "8a307246578a986f176d07c416ee34669aa1d9f330437b937d4b06ba9f41a859",
+    "gitSha": "13224f4100dcc6caa98c9b1d1382df109c7e2d40",
+    "generatedAt": "2026-10-09T18:22:48.621Z",
+    "sourceFingerprint": "79550af5c22ff07262bf3a0a035823655e6b0a5720ced99b750ab9a2309477e9",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 394
+    "chunkCount": 396
   },
   "capabilities": [
     {
@@ -1213,7 +1219,7 @@ var KNOWLEDGE_PACK = {
       "name": "Questions, Issues & Ideas",
       "status": "implemented",
       "description": "Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review \u2014 it does not commit, push, or deploy.",
-      "howTo": "Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the intended person or organization, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks.",
+      "howTo": "Open Contribute > Questions, Issues & Ideas: the page lands on the public Matters list (search, Area, country and type filters). Tap + to create a Matter, choose the intended person or organization or address it to the Civizen community, set the geographic scope and Area, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks.",
       "routes": [
         "/contribute/matters",
         "/contribute/matters/new"
@@ -2260,7 +2266,7 @@ var KNOWLEDGE_PACK = {
     {
       "id": "how_do_i_raise_a_question_or_issue",
       "question": "How do I ask a question or raise an issue?",
-      "answer": "Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the person or organization it is for, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.",
+      "answer": "Open Contribute > Questions, Issues & Ideas and tap +. Create a Matter, choose the person or organization it is for (or tap Address it to the Civizen community), set its geographic scope (Global, Country, Region or City) and Area, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.",
       "aliases": [
         "how do I raise an issue",
         "how do I ask a question in civizen",
@@ -2820,6 +2826,56 @@ var KNOWLEDGE_PACK = {
         "docs/03-platform/happiness-and-fulfillment/happiness-human-fulfillment-v1.md",
         "src/pages/happiness/HappinessPrivacy.tsx",
         "src/pages/wellbeing/WellbeingInsights.tsx"
+      ]
+    },
+    {
+      "id": "where_are_public_matters",
+      "question": "Where are the public Matters?",
+      "answer": "Open Contribute > Questions, Issues & Ideas: the page lands on Public Matters, the browsable list of every public Matter. Search by words, and filter by Area, country and type (question, issue, suggestion, request, discussion). Your own queues (Needs your action, My Matters, Participating, Organization) are the other tabs. A Matter becomes public when its author chooses Public, or automatically when a consultation is published from it.",
+      "localizedAnswers": {
+        "hy": "\u0532\u0561\u0581\u0565\u0584 \u0546\u0565\u0580\u0564\u0580\u0578\u0582\u0574 > \u0540\u0561\u0580\u0581\u0565\u0580, \u056D\u0576\u0564\u056B\u0580\u0576\u0565\u0580 \u0587 \u0563\u0561\u0572\u0561\u0583\u0561\u0580\u0576\u0565\u0580\u2024 \u0567\u057B\u0568 \u0562\u0561\u0581\u057E\u0578\u0582\u0574 \u0567 \xAB\u0540\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0540\u0561\u0580\u0581\u0565\u0580\xBB \u0581\u0578\u0582\u0581\u0561\u056F\u0578\u057E\u055D \u0562\u0578\u056C\u0578\u0580 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0540\u0561\u0580\u0581\u0565\u0580\u0568\u0589 \u0553\u0576\u057F\u0580\u0565\u0584 \u0562\u0561\u057C\u0565\u0580\u0578\u057E \u0587 \u0566\u057F\u0565\u0584 \u0568\u057D\u057F \u0548\u056C\u0578\u0580\u057F\u056B, \u0565\u0580\u056F\u0580\u056B \u0587 \u057F\u0565\u057D\u0561\u056F\u056B (\u0570\u0561\u0580\u0581, \u056D\u0576\u0564\u056B\u0580, \u0561\u057C\u0561\u057B\u0561\u0580\u056F, \u056D\u0576\u0564\u0580\u0561\u0576\u0584, \u0584\u0576\u0576\u0561\u0580\u056F\u0578\u0582\u0574)\u0589 \u0541\u0565\u0580 \u057D\u0565\u0583\u0561\u056F\u0561\u0576 \u0581\u0578\u0582\u0581\u0561\u056F\u0576\u0565\u0580\u0568 (\xAB\u054A\u0561\u0570\u0561\u0576\u057B\u0578\u0582\u0574 \u0567 \u0571\u0565\u0580 \u0563\u0578\u0580\u056E\u0578\u0572\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568\xBB, \xAB\u053B\u0574 \u0540\u0561\u0580\u0581\u0565\u0580\u0568\xBB, \xAB\u0544\u0561\u057D\u0576\u0561\u056F\u0581\u0578\u0582\u0574 \u0565\u0574\xBB, \xAB\u053F\u0561\u0566\u0574\u0561\u056F\u0565\u0580\u057A\u0578\u0582\u0569\u0575\u0578\u0582\u0576\xBB) \u0574\u0575\u0578\u0582\u057D \u0576\u0565\u0580\u0564\u056B\u0580\u0576\u0565\u0580\u0578\u0582\u0574 \u0565\u0576\u0589 \u0540\u0561\u0580\u0581\u0568 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0567 \u0564\u0561\u057C\u0576\u0578\u0582\u0574, \u0565\u0580\u0562 \u0570\u0565\u0572\u056B\u0576\u0561\u056F\u0576 \u0568\u0576\u057F\u0580\u0578\u0582\u0574 \u0567 \xAB\u0540\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576\xBB, \u056F\u0561\u0574 \u0561\u057E\u057F\u0578\u0574\u0561\u057F\u055D \u0565\u0580\u0562 \u0564\u0580\u0561\u0576\u056B\u0581 \u056D\u0578\u0580\u0570\u0580\u0564\u0561\u056F\u0581\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0567 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u057E\u0578\u0582\u0574\u0589",
+        "ru": "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0412\u043A\u043B\u0430\u0434 > \u0412\u043E\u043F\u0440\u043E\u0441\u044B, \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u044B \u0438 \u0438\u0434\u0435\u0438: \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0430 \u043E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u043D\u0430 \u0441\u043F\u0438\u0441\u043A\u0435 \xAB\u041F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u0435 \u0412\u043E\u043F\u0440\u043E\u0441\u044B\xBB \u2014 \u0432\u0441\u0435 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u0435 \u0412\u043E\u043F\u0440\u043E\u0441\u044B. \u0418\u0449\u0438\u0442\u0435 \u043F\u043E \u0441\u043B\u043E\u0432\u0430\u043C \u0438 \u0444\u0438\u043B\u044C\u0442\u0440\u0443\u0439\u0442\u0435 \u043F\u043E \u041E\u0431\u043B\u0430\u0441\u0442\u0438, \u0441\u0442\u0440\u0430\u043D\u0435 \u0438 \u0442\u0438\u043F\u0443 (\u0432\u043E\u043F\u0440\u043E\u0441, \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u0430, \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435, \u0437\u0430\u043F\u0440\u043E\u0441, \u043E\u0431\u0441\u0443\u0436\u0434\u0435\u043D\u0438\u0435). \u0412\u0430\u0448\u0438 \u0441\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0435 \u043E\u0447\u0435\u0440\u0435\u0434\u0438 (\xAB\u0422\u0440\u0435\u0431\u0443\u0435\u0442 \u0432\u0430\u0448\u0435\u0433\u043E \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F\xBB, \xAB\u041C\u043E\u0438 \u0412\u043E\u043F\u0440\u043E\u0441\u044B\xBB, \xAB\u0423\u0447\u0430\u0441\u0442\u0432\u0443\u044E\xBB, \xAB\u041E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u044F\xBB) \u2014 \u043D\u0430 \u0434\u0440\u0443\u0433\u0438\u0445 \u0432\u043A\u043B\u0430\u0434\u043A\u0430\u0445. \u0412\u043E\u043F\u0440\u043E\u0441 \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u043C, \u043A\u043E\u0433\u0434\u0430 \u0430\u0432\u0442\u043E\u0440 \u0432\u044B\u0431\u0438\u0440\u0430\u0435\u0442 \xAB\u041F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u0439\xBB, \u0438\u043B\u0438 \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438, \u043A\u043E\u0433\u0434\u0430 \u0438\u0437 \u043D\u0435\u0433\u043E \u043F\u0443\u0431\u043B\u0438\u043A\u0443\u0435\u0442\u0441\u044F \u043A\u043E\u043D\u0441\u0443\u043B\u044C\u0442\u0430\u0446\u0438\u044F."
+      },
+      "aliases": [
+        "public matters",
+        "browse matters",
+        "find a matter",
+        "search matters",
+        "list of matters",
+        "see what others raised"
+      ],
+      "capabilityIds": [
+        "matters",
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/pages/contribute/Matters.tsx",
+        "supabase/migrations/20261009130000_public_matters_browse.sql"
+      ]
+    },
+    {
+      "id": "how_do_i_raise_a_matter_for_the_community",
+      "question": "How do I raise a Matter for the whole community?",
+      "answer": "Open Contribute > Questions, Issues & Ideas and tap the + button. Write a title and description, choose the type, and under Recipient tap Address it to the Civizen community: the official Civizen organization receives it on behalf of everyone, so you do not have to name a person. Set the geographic scope (Global, Country, Region or City) and the Area, choose Public visibility if you want everyone to find it, and submit. From the Matter you can later Create voting proposal; publishing that proposal makes the Matter public and, when voting closes, the outcome returns to the Matter.",
+      "localizedAnswers": {
+        "hy": "\u0532\u0561\u0581\u0565\u0584 \u0546\u0565\u0580\u0564\u0580\u0578\u0582\u0574 > \u0540\u0561\u0580\u0581\u0565\u0580, \u056D\u0576\u0564\u056B\u0580\u0576\u0565\u0580 \u0587 \u0563\u0561\u0572\u0561\u0583\u0561\u0580\u0576\u0565\u0580 \u0587 \u057D\u0565\u0572\u0574\u0565\u0584 + \u056F\u0578\u0573\u0561\u056F\u0568\u0589 \u0533\u0580\u0565\u0584 \u057E\u0565\u0580\u0576\u0561\u0563\u056B\u0580 \u0587 \u0576\u056F\u0561\u0580\u0561\u0563\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576, \u0568\u0576\u057F\u0580\u0565\u0584 \u057F\u0565\u057D\u0561\u056F\u0568, \u056B\u057D\u056F \xAB\u054D\u057F\u0561\u0581\u0578\u0572\xBB \u0564\u0561\u0577\u057F\u0578\u0582\u0574 \u057D\u0565\u0572\u0574\u0565\u0584 \xAB\u0548\u0582\u0572\u0572\u0565\u056C Civizen \u0570\u0561\u0574\u0561\u0575\u0576\u0584\u056B\u0576\xBB\u2024 \u057A\u0561\u0577\u057F\u0578\u0576\u0561\u056F\u0561\u0576 Civizen \u056F\u0561\u0566\u0574\u0561\u056F\u0565\u0580\u057A\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568 \u057D\u057F\u0561\u0576\u0578\u0582\u0574 \u0567 \u0561\u0575\u0576 \u0562\u0578\u056C\u0578\u0580\u056B \u0561\u0576\u0578\u0582\u0576\u056B\u0581, \u0561\u0575\u0576\u057A\u0565\u057D \u0578\u0580 \u056F\u0578\u0576\u056F\u0580\u0565\u057F \u0561\u0576\u0571 \u0576\u0577\u0565\u056C \u057A\u0565\u057F\u0584 \u0579\u0567\u0589 \u0546\u0577\u0565\u0584 \u0561\u0577\u056D\u0561\u0580\u0570\u0561\u0563\u0580\u0561\u056F\u0561\u0576 \u0568\u0576\u0564\u0563\u0580\u056F\u0578\u0582\u0574\u0568 (\u0540\u0561\u0574\u0561\u0577\u056D\u0561\u0580\u0570\u0561\u0575\u056B\u0576, \u0535\u0580\u056F\u056B\u0580, \u0544\u0561\u0580\u0566 \u056F\u0561\u0574 \u0554\u0561\u0572\u0561\u0584) \u0587 \u0548\u056C\u0578\u0580\u057F\u0568, \u0581\u0561\u0576\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u0564\u0565\u057A\u0584\u0578\u0582\u0574 \u0568\u0576\u057F\u0580\u0565\u0584 \xAB\u0540\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576\xBB \u057F\u0565\u057D\u0561\u0576\u0565\u056C\u056B\u0578\u0582\u0569\u0575\u0578\u0582\u0576 \u0587 \u0576\u0565\u0580\u056F\u0561\u0575\u0561\u0581\u0580\u0565\u0584\u0589 \u0540\u0561\u0580\u0581\u056B\u0581 \u0570\u0565\u057F\u0561\u0563\u0561\u0575\u0578\u0582\u0574 \u056F\u0561\u0580\u0578\u0572 \u0565\u0584 \u057D\u057F\u0565\u0572\u056E\u0565\u056C \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u0561\u057C\u0561\u057B\u0561\u0580\u056F\u2024 \u0564\u0580\u0561 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0578\u0582\u0574\u0568 \u0540\u0561\u0580\u0581\u0568 \u0570\u0580\u0561\u057A\u0561\u0580\u0561\u056F\u0561\u0575\u056B\u0576 \u0567 \u0564\u0561\u0580\u0571\u0576\u0578\u0582\u0574, \u056B\u057D\u056F \u0584\u057E\u0565\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0561\u0576 \u0583\u0561\u056F\u057E\u0565\u056C\u0578\u0582\u0576 \u057A\u0565\u057D \u0561\u0580\u0564\u0575\u0578\u0582\u0576\u0584\u0568 \u057E\u0565\u0580\u0561\u0564\u0561\u057C\u0576\u0578\u0582\u0574 \u0567 \u0540\u0561\u0580\u0581\u056B\u0576\u0589",
+        "ru": "\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0412\u043A\u043B\u0430\u0434 > \u0412\u043E\u043F\u0440\u043E\u0441\u044B, \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u044B \u0438 \u0438\u0434\u0435\u0438 \u0438 \u043D\u0430\u0436\u043C\u0438\u0442\u0435 \u043A\u043D\u043E\u043F\u043A\u0443 +. \u041D\u0430\u043F\u0438\u0448\u0438\u0442\u0435 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043E\u043A \u0438 \u043E\u043F\u0438\u0441\u0430\u043D\u0438\u0435, \u0432\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0442\u0438\u043F, \u0430 \u0432 \u043F\u043E\u043B\u0435 \xAB\u041F\u043E\u043B\u0443\u0447\u0430\u0442\u0435\u043B\u044C\xBB \u043D\u0430\u0436\u043C\u0438\u0442\u0435 \xAB\u0410\u0434\u0440\u0435\u0441\u043E\u0432\u0430\u0442\u044C \u0441\u043E\u043E\u0431\u0449\u0435\u0441\u0442\u0432\u0443 Civizen\xBB: \u043E\u0444\u0438\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u043E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u044F Civizen \u043F\u043E\u043B\u0443\u0447\u0438\u0442 \u0435\u0433\u043E \u043E\u0442 \u0438\u043C\u0435\u043D\u0438 \u0432\u0441\u0435\u0445, \u0438 \u043D\u0430\u0437\u044B\u0432\u0430\u0442\u044C \u043A\u043E\u043D\u043A\u0440\u0435\u0442\u043D\u043E\u0433\u043E \u0447\u0435\u043B\u043E\u0432\u0435\u043A\u0430 \u043D\u0435 \u043D\u0443\u0436\u043D\u043E. \u0417\u0430\u0434\u0430\u0439\u0442\u0435 \u0433\u0435\u043E\u0433\u0440\u0430\u0444\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u043E\u0445\u0432\u0430\u0442 (\u0412\u0435\u0441\u044C \u043C\u0438\u0440, \u0421\u0442\u0440\u0430\u043D\u0430, \u0420\u0435\u0433\u0438\u043E\u043D \u0438\u043B\u0438 \u0413\u043E\u0440\u043E\u0434) \u0438 \u041E\u0431\u043B\u0430\u0441\u0442\u044C, \u043F\u0440\u0438 \u0436\u0435\u043B\u0430\u043D\u0438\u0438 \u0432\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C \xAB\u041F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u0439\xBB \u0438 \u043E\u0442\u043F\u0440\u0430\u0432\u044C\u0442\u0435. \u041F\u043E\u0437\u0436\u0435 \u0438\u0437 \u0412\u043E\u043F\u0440\u043E\u0441\u0430 \u043C\u043E\u0436\u043D\u043E \u0441\u043E\u0437\u0434\u0430\u0442\u044C \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u0434\u043B\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F: \u0435\u0433\u043E \u043F\u0443\u0431\u043B\u0438\u043A\u0430\u0446\u0438\u044F \u0434\u0435\u043B\u0430\u0435\u0442 \u0412\u043E\u043F\u0440\u043E\u0441 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u044B\u043C, \u0430 \u043A\u043E\u0433\u0434\u0430 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u0437\u0430\u043A\u0440\u043E\u0435\u0442\u0441\u044F, \u0438\u0442\u043E\u0433 \u0432\u0435\u0440\u043D\u0451\u0442\u0441\u044F \u0432 \u0412\u043E\u043F\u0440\u043E\u0441."
+      },
+      "aliases": [
+        "raise a matter",
+        "raise an issue for everyone",
+        "address the community",
+        "matter without a person",
+        "suggest something to the community",
+        "propose to the community"
+      ],
+      "capabilityIds": [
+        "matters",
+        "civic_voting"
+      ],
+      "sourceRefs": [
+        "src/pages/contribute/MatterForm.tsx",
+        "supabase/migrations/20261009140000_consultation_outcome_to_matter.sql"
       ]
     },
     {
@@ -3478,7 +3534,7 @@ var KNOWLEDGE_PACK = {
       "id": "capability:matters",
       "title": "Questions, Issues & Ideas",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Questions, Issues & Ideas status=implemented. Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review \u2014 it does not commit, push, or deploy. Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the intended person or organization, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks. Routes: /contribute/matters, /contribute/matters/new.",
+      "text": "Questions, Issues & Ideas status=implemented. Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review \u2014 it does not commit, push, or deploy. Open Contribute > Questions, Issues & Ideas: the page lands on the public Matters list (search, Area, country and type filters). Tap + to create a Matter, choose the intended person or organization or address it to the Civizen community, set the geographic scope and Area, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks. Routes: /contribute/matters, /contribute/matters/new.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"
@@ -3847,7 +3903,7 @@ var KNOWLEDGE_PACK = {
       "id": "faq:how_do_i_raise_a_question_or_issue",
       "title": "How do I ask a question or raise an issue?",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Q: How do I ask a question or raise an issue? A: Open Contribute > Questions, Issues & Ideas. Create a Matter, choose the person or organization it is for, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.",
+      "text": "Q: How do I ask a question or raise an issue? A: Open Contribute > Questions, Issues & Ideas and tap +. Create a Matter, choose the person or organization it is for (or tap Address it to the Civizen community), set its geographic scope (Global, Country, Region or City) and Area, and submit. The Current Action panel shows who must respond and when. Comments are discussion only; only Provide final answer starts the review timer. If the Matter needs actual work, the responsible party can start collaborative work and assign Tasks. Completing a Task does not close the Matter. Ordinary work completion waits until required Tasks are Completed or Cancelled. Suggest Improvements opens a Suggestion to Civizen.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
@@ -4127,6 +4183,24 @@ var KNOWLEDGE_PACK = {
       "title": "Can my employer see my Happiness?",
       "path": "src/lib/assistant/catalog.ts",
       "text": "Q: Can my employer see my Happiness? A: No. Individual Happiness & Fulfillment stays private. If you turn on privacy-protected group insights in Happiness Privacy, qualifying information may contribute to group insights only when enough people are included. Authorized viewers may open Wellbeing Insights. That is not employer access to your Happiness, and it is separate from Job Fit sharing.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:where_are_public_matters",
+      "title": "Where are the public Matters?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: Where are the public Matters? A: Open Contribute > Questions, Issues & Ideas: the page lands on Public Matters, the browsable list of every public Matter. Search by words, and filter by Area, country and type (question, issue, suggestion, request, discussion). Your own queues (Needs your action, My Matters, Participating, Organization) are the other tabs. A Matter becomes public when its author chooses Public, or automatically when a consultation is published from it.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "faq"
+    },
+    {
+      "id": "faq:how_do_i_raise_a_matter_for_the_community",
+      "title": "How do I raise a Matter for the whole community?",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Q: How do I raise a Matter for the whole community? A: Open Contribute > Questions, Issues & Ideas and tap the + button. Write a title and description, choose the type, and under Recipient tap Address it to the Civizen community: the official Civizen organization receives it on behalf of everyone, so you do not have to name a person. Set the geographic scope (Global, Country, Region or City) and the Area, choose Public visibility if you want everyone to find it, and submit. From the Matter you can later Create voting proposal; publishing that proposal makes the Matter public and, when voting closes, the outcome returns to the Matter.",
       "status": "implemented",
       "priority": 5,
       "kind": "faq"
