@@ -8,11 +8,12 @@ Working institutional model (project reference, not this product guide): [Instit
 
 | Route | Page | Purpose |
 |---|---|---|
-| `/governance` | `PublicGovernanceLanding` | Public landing |
 | `/governance/voting` | `CivicVotingHub` | Public elections and civic proposals |
 | `/governance` | `GovernanceEntry` → `GovernanceMember` (signed in) / `PublicGovernanceLanding` (guest) | One Governance surface (2026-10-09): Open votes · My votes · Proposals · Results · Tools (Tools for stewards only); `/governance/workspace` redirects here |
 | `/governance/tools` | `Governance` | Legacy workspace tools (proposals, execution, guardian and audit tooling); stewards only (`role.assign` / `settings.manage`), no member navigation entry since 2026-10-09 |
 | `/governance/tools/steward` (`/governance/new` redirects) | `GovernanceNew` | Steward console: identity verification review, constitutional offices, policies; stewards only |
+| `/governance/solutions`, `/governance/solutions/:problemId` | `SolutionsHub`, `SolutionProblemDetail` | AI council problems; each problem is also a public Matter (2026-10-09) |
+| `/contribute/matters`, `/contribute/matters/:matterId` | Matters | The entry point for every problem; voting proposals, community challenges and Solutions problems link back here |
 
 ## Tables
 

@@ -6,12 +6,12 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.222",
     "appReleaseId": "20261009-v0.1.222",
     "androidVersionCode": 224,
-    "gitSha": "1327ff05842fab54930c8e73212fbe34e1de1235",
-    "generatedAt": "2026-10-09T21:32:36.209Z",
-    "sourceFingerprint": "0106ed58c60ed71899e783f29bb348d87d7a08d65301731f7f6b45c853934d94",
+    "gitSha": "4899e1f50d07a2542fe4fb0367d8cbb3b700e403",
+    "generatedAt": "2026-10-09T21:54:44.909Z",
+    "sourceFingerprint": "578a78bca1b3c2207f34545d6e3f8583a600cb811f32ab84013c9373542c9039",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 396
+    "chunkCount": 397
   },
   "capabilities": [
     {
@@ -3592,16 +3592,16 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "docs/assistant/README.md#2",
       "title": "Refresh",
       "path": "docs/assistant/README.md",
-      "text": "## Refresh After changing product behavior, registries, public pages, flows, or assistant-authoritative docs, update the cheat sheet and/or `src/lib/assistant/catalog.ts` in the same session, then: ```bash npm run assistant:knowledge ``` Knowledge regen also indexes live bottom nav, Contribute lanes, and the pages Civi can link (`CIVI_PAGE_LINKS`). When Civi gives directions, it should match the question: **Can I** starts with Yes or No, then the path; **How** starts with `Open Market > Agreements`. Chat turns those page names into links. Type names in the main answer (General, Partnership / Collaboration, and the rest) also link to New agreement for that type. CI and `verify:agent-context` fail if the generated pack is stale relative to its sources.",
+      "text": "## Refresh After changing product behavior, registries, public pages, flows, or assistant-authoritative docs, update the cheat sheet and/or `src/lib/assistant/catalog.ts` in the same session, then: ```bash npm run assistant:knowledge ``` Knowledge regen also indexes live bottom nav, Contribute lanes, and the pages Civi can link (`CIVI_PAGE_LINKS`). When Civi gives directions, it should match the question: **Can I** starts with Yes or No, then the path; **How** starts with the page, for example `Open Agreements` (agreements live at `/agreements`; Market is Jobs plus a link to Agreements, and `Earnings` lists the agreements a member is party to). Chat turns those page names into links. Type names in the main answer (General, Partnership / Collaboration, and the rest) also link to New agreement for that type.",
       "status": "implemented",
       "priority": 5,
       "kind": "doc"
     },
     {
       "id": "docs/assistant/README.md#3",
-      "title": "Languages",
+      "title": "Refresh",
       "path": "docs/assistant/README.md",
-      "text": "## Languages English is the canonical knowledge language. For Armenian and Russian, `language.ts` detects the script, maps word stems and whole question forms to the English wording the FAQ uses, and retrieval searches only that English wording (non-Latin tokens never match the pack and would drag overlap ratios down). A FAQ item may carry `localizedAnswers.hy` / `.ru`; when the question's language has one, Civi returns it directly and skips the model. Otherwise the English grounded answer stays the evidence and the system prompt tells the model to reply in the member's language. Greetings and the out-of-scope reply are localized in `LOCALIZED_REPLIES`.",
+      "text": "CI and `verify:agent-context` fail if the generated pack is stale relative to its sources.",
       "status": "implemented",
       "priority": 5,
       "kind": "doc"
@@ -3610,13 +3610,22 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "docs/assistant/README.md#4",
       "title": "Languages",
       "path": "docs/assistant/README.md",
-      "text": "When adding a feature members will ask about, add the FAQ card with hand-written Armenian and Russian answers in the same change, add the natural question forms to `ARMENIAN_QUESTIONS` / `RUSSIAN_QUESTIONS`, and extend `civi-governance-voting.test.ts` with the question in all three languages.",
+      "text": "## Languages English is the canonical knowledge language. For Armenian and Russian, `language.ts` detects the script, maps word stems and whole question forms to the English wording the FAQ uses, and retrieval searches only that English wording (non-Latin tokens never match the pack and would drag overlap ratios down). A FAQ item may carry `localizedAnswers.hy` / `.ru`; when the question's language has one, Civi returns it directly and skips the model. Otherwise the English grounded answer stays the evidence and the system prompt tells the model to reply in the member's language. Greetings and the out-of-scope reply are localized in `LOCALIZED_REPLIES`.",
       "status": "implemented",
       "priority": 5,
       "kind": "doc"
     },
     {
       "id": "docs/assistant/README.md#5",
+      "title": "Languages",
+      "path": "docs/assistant/README.md",
+      "text": "When adding a feature members will ask about, add the FAQ card with hand-written Armenian and Russian answers in the same change, add the natural question forms to `ARMENIAN_QUESTIONS` / `RUSSIAN_QUESTIONS`, and extend `civi-governance-voting.test.ts` with the question in all three languages.",
+      "status": "implemented",
+      "priority": 5,
+      "kind": "doc"
+    },
+    {
+      "id": "docs/assistant/README.md#6",
       "title": "Audit process",
       "path": "docs/assistant/README.md",
       "text": "## Audit process Run realistic questions through `prepareCiviTurn` (the same path the edge function and the public widget use) and check `diagnostics.matchedFaqId`, `inScope`, `skipLlm`, and the grounded answer. The regression suite in `civi-governance-voting.test.ts` is that question set; an answer that falls back to the generic capability blurb, to “I couldn't verify…”, or to the English scope refusal for an Armenian or Russian question counts as a gap to fix at the source (catalog card, FAQ, `CIVI_PAGE_LINKS`, scope terms, lexicon), then `npm run assistant:knowledge`.",
@@ -3625,7 +3634,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#6",
+      "id": "docs/assistant/README.md#7",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "## Internal-first routing Civi uses the closest authoritative resource first: 1. Conversation context 2. Canonical identity (`civizen-identity.md`) for what Civizen is, its purpose, mission, scope, or one-sentence description 3. FAQ / this cheat sheet 4. Capability registry for what is implemented **now** 5. Project knowledge index 6. Authorized runtime / member data 7. Civi memory of **checked** previous model answers (similar questions only; never overrides 2–5) 8. AI reasoning over collected evidence 9. Broader API-agent resources only when the request needs the outside world Identity questions must not be answered by reconstructing Civizen from feature docs. Capability questions must not be answered with the identity sentence alone.",
@@ -3634,7 +3643,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#7",
+      "id": "docs/assistant/README.md#8",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "Someone asking for housing, food, or a safe place tonight is not a Contribute question. Civi acknowledges the situation, says Civizen is not emergency housing, points to local emergency services / 211, and may mention Jobs — not Volunteer lanes. Peace, war, and “how do we unite humanity” questions are in scope. Answer from founding documents, including the need to unite around shared human responsibility. Unity does not require uniformity. Invite signing up and making a contribution; name Study, Community Challenges, Opportunities, and Governance in ordinary sentences. Do not write “learn in Study”. Do not recap manifesto prose. How-questions do not start with Yes. Do not claim Civizen currently stops wars or is a government.",
@@ -3643,7 +3652,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#8",
+      "id": "docs/assistant/README.md#9",
       "title": "Internal-first routing",
       "path": "docs/assistant/README.md",
       "text": "Civizen product facts stay internal even after escalation. Missing internal evidence does not authorize a generic web/model guess about Civizen. Gemini (or another model) may fill a gap for a general or mixed question; Civi then **checks** that reply before storing it. Invented Civizen capabilities, personal records, and one-off drafts are not remembered.",
@@ -3652,7 +3661,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "kind": "doc"
     },
     {
-      "id": "docs/assistant/README.md#9",
+      "id": "docs/assistant/README.md#10",
       "title": "Status vocabulary",
       "path": "docs/assistant/README.md",
       "text": "## Status vocabulary Capabilities use: `implemented` · `experimental` · `in_development` · `proposed` · `deprecated` · `historical`. “Civizen supports X” means X is **implemented** in this build.",

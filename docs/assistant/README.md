@@ -33,7 +33,7 @@ npm run assistant:knowledge
 
 Knowledge regen also indexes live bottom nav, Contribute lanes, and the pages Civi can link (`CIVI_PAGE_LINKS`).
 
-When Civi gives directions, it should match the question: **Can I** starts with Yes or No, then the path; **How** starts with `Open Market > Agreements`. Chat turns those page names into links. Type names in the main answer (General, Partnership / Collaboration, and the rest) also link to New agreement for that type.
+When Civi gives directions, it should match the question: **Can I** starts with Yes or No, then the path; **How** starts with the page, for example `Open Agreements` (agreements live at `/agreements`; Market is Jobs plus a link to Agreements, and `Earnings` lists the agreements a member is party to). Chat turns those page names into links. Type names in the main answer (General, Partnership / Collaboration, and the rest) also link to New agreement for that type.
 
 CI and `verify:agent-context` fail if the generated pack is stale relative to its sources.
 

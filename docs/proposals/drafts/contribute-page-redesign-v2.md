@@ -2,7 +2,7 @@
 **Project:** Civizen  
 **Page:** Contribute  
 **Version:** 2.0  
-**Status:** Replace current implementation
+**Status:** Superseded on 2026-10-09 by the shipped Contribute hub (Matters, Opportunities, Challenges, Knowledge, Impact); kept as design history
 
 ---
 
