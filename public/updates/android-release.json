@@ -1,12 +1,12 @@
 {
   "platform": "android",
-  "version": "0.1.224",
-  "versionTag": "v0.1.224",
-  "buildNumber": 226,
-  "releaseId": "20261009-v0.1.224",
-  "downloadPath": "/downloads/civizen-debug-release-20261009-v0.1.224.apk",
-  "downloadUrl": "https://civizen.world/downloads/civizen-debug-release-20261009-v0.1.224.apk?v=20261009-v0.1.224",
-  "publishedAt": "2026-10-09T22:18:01Z",
-  "sha256": "c317618396a0a0c307c9ae144b1f7c35d4474738fb55d7cbd7a08b1a7e95dde4",
-  "notes": ["language-pack builder falls back to gemini-3.5-flash and saves progress after every chunk","Home, landing, profile, edit-profile and settings hand-written in Armenian and Russian"]
+  "version": "0.1.225",
+  "versionTag": "v0.1.225",
+  "buildNumber": 227,
+  "releaseId": "20261009-v0.1.225",
+  "downloadPath": "/downloads/civizen-debug-release-20261009-v0.1.225.apk",
+  "downloadUrl": "https://civizen.world/downloads/civizen-debug-release-20261009-v0.1.225.apk?v=20261009-v0.1.225",
+  "publishedAt": "2026-10-09T22:23:57Z",
+  "sha256": "b902bc4159a60a626a64a52dcca04ad6829784c3d08db01cc36e79a29de3c867",
+  "notes": ["charter and pathway as full Armenian and Russian documents"]
 }
