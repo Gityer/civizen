@@ -74,6 +74,13 @@ export function MatterAgentPanel({ bundle, profileId, linkedIds, busy, onBusy, o
     () => bundle.parties.filter((party) => party.actor.kind !== 'ai_agent'),
     [bundle.parties],
   );
+  // The backend accepts only a supervisor the assigning person represents (themselves or an organization they manage).
+  const supervisorOptions = useMemo(() => {
+    const represented = humanParties.filter((party) => party.actor.profileId && viewerRepresents(profileId, party.actor, linkedIds));
+    return represented.some((party) => party.actor.profileId === profileId)
+      ? represented
+      : [{ id: 'self', actor: { kind: 'person' as const, profileId, displayName: t('contribute.matters.ai.supervisorSelf') } }, ...represented];
+  }, [humanParties, profileId, linkedIds, t]);
 
   const parseAllowedPaths = () => allowedPathsText
     .split('\n')
@@ -314,13 +321,11 @@ export function MatterAgentPanel({ bundle, profileId, linkedIds, busy, onBusy, o
           <Select value={supervisorId} onValueChange={setSupervisorId}>
             <SelectTrigger><SelectValue placeholder={t('contribute.matters.ai.supervisor')} /></SelectTrigger>
             <SelectContent>
-              {humanParties
-                .filter((party) => party.actor.profileId)
-                .map((party) => (
-                  <SelectItem key={party.id} value={party.actor.profileId!}>
-                    {actorLabel(party.actor)}
-                  </SelectItem>
-                ))}
+              {supervisorOptions.map((party) => (
+                <SelectItem key={party.id} value={party.actor.profileId!}>
+                  {actorLabel(party.actor)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Button type="button" disabled={busy || instructions.trim().length < 3} onClick={() => void assignAgent()}>

@@ -9,6 +9,7 @@ export {
   demonstratedProjectsFromContributionEvents,
 } from '@/lib/civizen-contribution-score';
 import { supabase } from '@/integrations/supabase/client';
+import { collectCivicContributionSources } from '@/lib/civizen-contributions-civic-sources';
 import type { SupabaseDbClient } from '@/integrations/supabase/client-type';
 import type { Json } from '@/integrations/supabase/types';
 import {
@@ -30,7 +31,9 @@ export type ContributionEventType =
   | 'post'
   | 'post_comment'
   | 'content_item'
-  | 'opportunity_participation';
+  | 'opportunity_participation'
+  | 'matter_raised'
+  | 'knowledge_resource';
 
 export type ContributionEvent = {
   id?: string;
@@ -70,22 +73,12 @@ export const CONTRIBUTION_TYPE_BASES: Record<ContributionEventType, TypeBase> = 
   post_comment: { capacity: 15, impact: 10, collaboration: 55, beneficiaries: 15 },
   content_item: { capacity: 50, impact: 40, collaboration: 25, beneficiaries: 45 },
   opportunity_participation: { capacity: 75, impact: 70, collaboration: 40, beneficiaries: 65 },
+  matter_raised: { capacity: 55, impact: 50, collaboration: 45, beneficiaries: 60 },
+  knowledge_resource: { capacity: 55, impact: 45, collaboration: 30, beneficiaries: 55 },
 };
 
-export const CONTRIBUTION_EVENT_TYPE_LABELS: Record<ContributionEventType, string> = {
-  law_contribution: 'Law library',
-  funding_record: 'Verified work',
-  solution_problem: 'Solution problem',
-  solution_comment: 'Solution discuss',
-  solution_endorsement: 'Solution endorsement',
-  governance_proposal: 'Governance proposal',
-  governance_vote: 'Governance vote',
-  development_story: 'Platform improvement',
-  post: 'Post',
-  post_comment: 'Comment',
-  content_item: 'Content',
-  opportunity_participation: 'Verified contribution',
-};
+import { CONTRIBUTION_EVENT_TYPE_LABELS } from '@/lib/civizen-contributions-labels';
+export { CONTRIBUTION_EVENT_TYPE_LABELS };
 
 /** Soft-cap for quantity curve — sustained builders need room before diminishing returns flatten. */
 export const CONTRIBUTION_QUANTITY_SOFT_CAP = 48;
@@ -630,6 +623,7 @@ export async function collectContributionSources(
     }
   }
 
+  events.push(...(await collectCivicContributionSources(profileId, db)));
   events.sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt));
   return events;
 }

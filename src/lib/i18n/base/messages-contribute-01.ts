@@ -65,6 +65,10 @@ export const m_messages_contribute_01 = {
     "impact": {
       "subtitle": "Your applications and completed work across Opportunities and Challenges, the Matters you raised and the proposals you drafted.",
       "mattersTitle": "Matters you raised",
+      "knowledgeTitle": "Knowledge you shared",
+      "knowledgeProposed": "Proposed",
+      "agreementsTitle": "Your agreements",
+      "ledgerLink": "Open your contributions ledger",
       "proposalsTitle": "Proposals you drafted",
       "empty": "You have not joined a contribution yet. Start from Opportunities, Challenges, or the Learning Commons.",
       "loadFailed": "Could not load your contributions."

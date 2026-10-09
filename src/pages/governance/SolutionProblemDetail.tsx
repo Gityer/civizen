@@ -15,7 +15,6 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   addSolutionComment,
   getSolutionProblem,
-  invokeSolutionsCouncil,
   isMissingSolutionsBackend,
   listSolutionComments,
   listSolutionProposals,
@@ -38,6 +37,8 @@ import {
 } from '@/lib/solutions-constants';
 import { toast } from 'sonner';
 import { HumanOutcomeLinks } from '@/pages/wellbeing/HumanOutcomeLinks';
+import { SolutionsCouncilNotice } from '@/pages/governance/SolutionsCouncilNotice';
+import { councilErrorMessageKey, runSolutionsCouncil } from '@/lib/solutions-council-client';
 
 function statusBadgeVariant(status: SolutionProblemStatus): 'default' | 'secondary' | 'outline' | 'destructive' {
   if (status === 'consensus' || status === 'resolved' || status === 'accepted') return 'default';
@@ -159,10 +160,10 @@ export default function SolutionProblemDetail() {
   async function onContinueDebate() {
     if (!problemId) return;
     setContinuing(true);
-    const { error } = await invokeSolutionsCouncil(problemId, { continue: true });
+    const code = await runSolutionsCouncil(problemId, { continue: true });
     setContinuing(false);
-    if (error) {
-      toast.error(t('solutions.continueFailed'));
+    if (code) {
+      toast.error(t(councilErrorMessageKey(code)));
       return;
     }
     void refresh();
@@ -258,12 +259,7 @@ export default function SolutionProblemDetail() {
               ) : null}
             </Card>
 
-            {problem.status === 'debating' ? (
-              <Card className="flex items-center gap-2 rounded-2xl border-border/60 p-3 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin shrink-0" />
-                {t('solutions.debatingHint')}
-              </Card>
-            ) : null}
+            <SolutionsCouncilNotice status={problem.status} turns={turns} t={t} />
 
             {problem.mode === 'discuss' && (problem.status === 'split' || problem.status === 'open') ? (
               <Button
@@ -274,7 +270,7 @@ export default function SolutionProblemDetail() {
                 onClick={() => void onContinueDebate()}
               >
                 {continuing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                {t('solutions.continueDebate')}
+                {t(problem.status === 'open' ? 'solutions.runCouncil' : 'solutions.continueDebate')}
               </Button>
             ) : null}
 

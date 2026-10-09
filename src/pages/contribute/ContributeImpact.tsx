@@ -21,6 +21,7 @@ import {
 } from '@/lib/opportunities';
 import { RelatedAgreementsCard } from '@/components/agreements/RelatedAgreementsCard';
 import { ImpactMattersAndProposals } from '@/pages/contribute/impact/ImpactMattersAndProposals';
+import { ImpactKnowledgeAndAgreements } from '@/pages/contribute/impact/ImpactKnowledgeAndAgreements';
 
 export default function ContributeImpact() {
   const { t } = useLanguage();
@@ -145,6 +146,7 @@ export default function ContributeImpact() {
         )}
 
         {profileId ? <ImpactMattersAndProposals profileId={profileId} /> : null}
+        {profileId ? <ImpactKnowledgeAndAgreements profileId={profileId} /> : null}
       </div>
     </AppLayout>
   );

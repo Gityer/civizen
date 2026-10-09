@@ -99,6 +99,48 @@ function rolePrompt(roleType: string): string {
   }
 }
 
+type ContextRow = Record<string, unknown>;
+const str = (value: unknown): string => (value == null ? '' : String(value));
+const day = (value: unknown): string => str(value).slice(0, 10);
+
+/** The Matter's discussion, tasks, decisions, evidence and activity, limited to the scopes the assignment allows. */
+// deno-lint-ignore no-explicit-any
+async function loadMatterContext(client: any, matterId: string, allowed: string[]): Promise<{ text: string; references: Array<{ kind: string; label: string }> }> {
+  const sections: string[] = [];
+  const references: Array<{ kind: string; label: string }> = [];
+  const has = (scope: string) => allowed.length === 0 || allowed.includes(scope);
+  const rows = async (table: string, columns: string, order: string, ascending: boolean, limit: number): Promise<ContextRow[]> => {
+    const { data } = await client.from(table).select(columns).eq('matter_id', matterId).order(order, { ascending }).limit(limit);
+    return (data ?? []) as ContextRow[];
+  };
+  const add = (scope: string, title: string, lines: string[]) => {
+    if (lines.length === 0) return;
+    sections.push(`${title} (${lines.length}):\n${lines.join('\n')}`);
+    references.push({ kind: `matter_${scope}`, label: `${title}: ${lines.length}` });
+  };
+  if (has('discussion')) {
+    const list = await rows('matter_comments', 'author_kind, body, created_at', 'created_at', true, 40);
+    add('discussion', 'Discussion, oldest first', list.map((r) => `- [${day(r.created_at)} ${str(r.author_kind)}] ${str(r.body).slice(0, 600)}`));
+  }
+  if (has('tasks')) {
+    const list = await rows('matter_action_requirements', 'action_type, status, due_at, assigned_kind', 'created_at', true, 40);
+    add('tasks', 'Tasks and actions', list.map((r) => `- ${str(r.action_type)} · ${str(r.status)}${r.due_at ? ` · due ${day(r.due_at)}` : ''} · ${str(r.assigned_kind)}`));
+  }
+  if (has('decisions')) {
+    const list = await rows('matter_decisions', 'title, statement, status', 'created_at', true, 20);
+    add('decisions', 'Decisions', list.map((r) => `- ${str(r.title)} (${str(r.status)}): ${str(r.statement).slice(0, 400)}`));
+  }
+  if (has('evidence')) {
+    const list = await rows('matter_attachments', 'kind, file_name, label, url, created_at', 'created_at', true, 30);
+    add('evidence', 'Evidence and attachments', list.map((r) => `- [${day(r.created_at)}] ${str(r.label) || str(r.file_name) || str(r.url)} (${str(r.kind)})`));
+  }
+  if (has('activity')) {
+    const list = await rows('matter_events', 'event_type, summary, created_at', 'created_at', false, 25);
+    add('activity', 'Recent activity, newest first', list.map((r) => `- [${day(r.created_at)}] ${str(r.event_type)}${r.summary ? `: ${str(r.summary).slice(0, 200)}` : ''}`));
+  }
+  return { text: sections.join('\n\n'), references };
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
@@ -172,13 +214,17 @@ Deno.serve(async (req) => {
 
     await serviceClient.from('ai_agent_runs').update({ status: 'running', started_at: new Date().toISOString() }).eq('id', runId);
 
+    const allowedContext = (assignment.allowed_context ?? []) as string[];
+    const context = await loadMatterContext(serviceClient, assignment.matter_id, allowedContext);
     const userPrompt = [
       `Matter: ${matter?.title ?? ''}`,
       matter?.description ?? '',
       '',
       `Assignment instructions: ${assignment.instructions}`,
       '',
-      `Allowed context scopes: ${(assignment.allowed_context ?? []).join(', ')}`,
+      `Allowed context scopes: ${allowedContext.join(', ')}`,
+      '',
+      context.text || 'No discussion, tasks, decisions or evidence have been recorded on this Matter yet.',
     ].join('\n');
 
     const { text: output, meta } = await completeGemini(rolePrompt(roleType), userPrompt);
@@ -212,7 +258,7 @@ Deno.serve(async (req) => {
         title: `${agent.display_name} · AI ${meta.execution_mode === 'provider' ? 'submission' : 'fallback output'}`,
         body: planBody,
         output_summary: output.slice(0, 400),
-        source_references: [{ kind: 'matter_context', label: 'Scoped Matter context' }],
+        source_references: [{ kind: 'matter_context', label: 'Scoped Matter context' }, ...context.references],
         comment_body: roleType === 'facilitation' || roleType === 'research' ? output.slice(0, 1200) : null,
         usage_metadata: meta,
       },

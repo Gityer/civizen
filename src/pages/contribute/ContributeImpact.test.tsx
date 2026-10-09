@@ -25,8 +25,10 @@ vi.mock('@/contexts/AuthContext', () => ({
   }),
 }));
 
+vi.mock('@/lib/impact-api', () => ({ listMyKnowledgeResources: async () => [] }));
 vi.mock('@/lib/agreements-api', () => ({
   listAgreementsForEntity: async () => [],
+  listAccessibleAgreements: async () => [],
 }));
 
 vi.mock('@/lib/opportunities-api', () => ({

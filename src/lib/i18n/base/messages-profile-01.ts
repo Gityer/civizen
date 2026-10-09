@@ -118,6 +118,7 @@ export const m_messages_profile_01 = {
     },
     "contributionsLedger": {
       "title": "Contributions ledger",
+      "openImpact": "Impact page",
       "subtitle": "Inspect every contribution that supports your Contributions reputation.",
       "howReputation": "How this reputation is produced",
       "howReputationDetail": "Score V2 accumulates unique verified contribution observations with evidence weight, recency, independence, and shrinkage. A single contribution evaluation is not added as points to your Civizen Score.",

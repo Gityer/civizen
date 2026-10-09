@@ -209,6 +209,7 @@ export const m_messages_contribute_02 = {
         "instructions": "What should the agent do?",
         "instructionsRequired": "Describe what the agent should do.",
         "supervisor": "Supervising reviewer",
+        "supervisorSelf": "You (the assigning person)",
         "reviewTitle": "Review AI submission",
         "reviewMessage": "Review notes",
         "reviewSaved": "AI review recorded.",

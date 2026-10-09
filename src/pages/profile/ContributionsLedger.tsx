@@ -143,6 +143,9 @@ export default function ContributionsLedger() {
           title={t('profile.contributionsLedger.title')}
           subtitle={t('profile.contributionsLedger.subtitle')}
           fallbackPath={isOwn ? '/profile' : `/user/${profileId}`}
+          actions={isOwn ? (
+            <Button asChild size="sm" variant="outline"><Link to="/contribute/impact">{t('profile.contributionsLedger.openImpact')}</Link></Button>
+          ) : undefined}
         />
 
         <section className="space-y-2 rounded-xl border border-border/80 p-4">
