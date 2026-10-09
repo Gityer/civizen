@@ -10,6 +10,11 @@ vi.mock('@/components/public/PublicPageShell', () => ({
   PublicPageShell: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
+const authState = { user: { id: 'member-1' } as null | { id: string } };
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({ user: authState.user, profile: null }),
+}));
+
 vi.mock('@/components/public/PublicPageFooter', () => ({
   PublicPageFooter: () => <footer>Public footer</footer>,
 }));
@@ -108,5 +113,16 @@ describe('public Areas pages', () => {
     renderAreas('/areas/not-a-real-area');
     expect(screen.getByRole('heading', { name: 'Area not found' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Back to Areas' })).toHaveAttribute('href', '/areas');
+  });
+
+  it('sends a guest to sign in before Contribute and links members straight through', () => {
+    authState.user = null;
+    const { unmount } = renderAreas('/areas/education');
+    expect(screen.getByRole('link', { name: 'Contribute' }).getAttribute('href')).toBe('/login');
+    unmount();
+
+    authState.user = { id: 'member-1' };
+    renderAreas('/areas/education');
+    expect(screen.getByRole('link', { name: 'Contribute' }).getAttribute('href')).toBe('/contribute');
   });
 });

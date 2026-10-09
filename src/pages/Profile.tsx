@@ -1284,7 +1284,7 @@ export default function Profile() {
             <span key={pillar.id}>{pillar.name}</span>
           ))}
         </div>
-        <Button className="sr-only" onClick={() => navigate('/endorse/select')}>
+        <Button className="sr-only" onClick={() => navigate('/search?tab=people')}>
           {t('score.requestEndorsement')}
         </Button>
       </div>

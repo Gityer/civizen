@@ -1,7 +1,10 @@
+import type React from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Scale, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { PublicPageShell } from '@/components/public/PublicPageShell';
+import { useAuth } from '@/contexts/AuthContext';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -21,12 +24,23 @@ const sectionKeys = [
   'changes',
 ] as const;
 
+function PublicTermsShell({ children }: { hideNav?: boolean; children: React.ReactNode }) {
+  return (
+    <PublicPageShell showFooter contentClassName="pb-16">
+      {children}
+    </PublicPageShell>
+  );
+}
+
 export default function TermsOfUse() {
   const { t, getNode } = useLanguage();
+  const { user } = useAuth();
   const bullets = (getNode('terms.acceptanceBullets') as string[] | undefined) || [];
+  // Guests read the Terms on the public shell; members keep the app chrome.
+  const Shell = user ? AppLayout : PublicTermsShell;
 
   return (
-    <AppLayout hideNav={false}>
+    <Shell hideNav={false}>
       <div className="space-y-6 px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -141,6 +155,6 @@ export default function TermsOfUse() {
           <p className="mt-1">{t('terms.versionFooterNote')}</p>
         </motion.div>
       </div>
-    </AppLayout>
+    </Shell>
   );
 }

@@ -178,7 +178,7 @@ export const m_messages_09 = {
     "domains": {
       "constitution": {
         "title": "Constitution",
-        "description": "Study the Universal Constitution of Civizen and foundational civic principles."
+        "description": "Study the draft Civizen constitution (superseded by the Community Governance Charter) and foundational civic principles."
       },
       "laws": {
         "title": "Laws & Governance",
@@ -218,7 +218,7 @@ export const m_messages_09 = {
       }
     },
     "updates": {
-      "constitutionCore": "Universal Constitution foundational articles updated",
+      "constitutionCore": "Draft constitution foundational articles updated",
       "lawLibrary": "Law reading pathways and contribution workflow refined",
       "lumaMonetary": "Luma monetary policy baseline published"
     },
@@ -229,7 +229,7 @@ export const m_messages_09 = {
     },
     "materials": {
       "constitutionCore": {
-        "title": "Universal Constitution: Core Articles",
+        "title": "Draft Constitution: Core Articles",
         "summary": "Primary constitutional text covering foundational principles and civic order."
       },
       "constitutionSummary": {

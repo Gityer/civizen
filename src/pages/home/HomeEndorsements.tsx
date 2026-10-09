@@ -45,7 +45,7 @@ export function HomeEndorsements({ model }: { model: HomeModel }) {
             <Button size="sm" variant="ghost" onClick={() => navigate('/profile')}>
               {t('home.addQualification')}
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => navigate('/endorse/select')}>
+            <Button size="sm" variant="ghost" onClick={() => navigate('/search?tab=people')}>
               {t('home.requestEndorsement')}
             </Button>
           </div>

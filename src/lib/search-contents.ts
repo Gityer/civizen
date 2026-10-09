@@ -30,7 +30,7 @@ const PAGE_PATHS: Partial<Record<PageId, string>> = {
   law: '/law',
   terms: '/terms',
   search: '/search',
-  endorse: '/endorse/select',
+  endorse: '/search?tab=people',
   market: '/market',
   agreements: '/agreements',
   earnings: '/earnings',

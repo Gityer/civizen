@@ -1,5 +1,11 @@
 export const m_messages_11 = {
   "userProfile": {
+    "reportTitle": "Report this member",
+    "reportDescription": "Tell the moderators what {name} did that breaks the community rules. Reports stay confidential.",
+    "reportPlaceholder": "What happened?",
+    "reportSubmit": "Send report",
+    "reportSubmitted": "Report sent. A moderator will review it.",
+    "reportFailed": "Could not send the report. Please try again.",
     "userNotFound": "User not found",
     "back": "Back",
     "endorse": "Endorse",
@@ -87,7 +93,7 @@ export const m_messages_11 = {
     "disputedItems": "Disputed items",
     "addEvidence": "Add Evidence",
     "requestVerification": "Request Verification",
-    "requestEndorsement": "Request Endorsement",
+    "requestEndorsement": "Endorse someone",
     "historyHeading": "Score History",
     "historyEmpty": "Score changes will appear here as verified activity is recorded.",
     "nextStepsHeading": "Strengthen Your Profile",

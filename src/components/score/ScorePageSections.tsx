@@ -319,10 +319,10 @@ export function ScoreEvidenceValidation({ score }: EvidenceValidationProps) {
           <Button size="sm" variant="outline" onClick={() => navigate('/profile')}>
             {t('score.addEvidence')}
           </Button>
-          <Button size="sm" variant="outline" onClick={() => navigate('/profile')}>
+          <Button size="sm" variant="outline" onClick={() => navigate('/settings/profile')}>
             {t('score.requestVerification')}
           </Button>
-          <Button size="sm" variant="outline" onClick={() => navigate('/endorse/select')}>
+          <Button size="sm" variant="outline" onClick={() => navigate('/search?tab=people')}>
             {t('score.requestEndorsement')}
           </Button>
         </div>

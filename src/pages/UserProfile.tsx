@@ -32,8 +32,9 @@ import {
   type PerformanceActivity,
 } from '@/lib/civizen-performance';
 import { PerformanceDetailsPanel } from '@/components/profile/PerformanceDetailsPanel';
+import { UserProfileActions } from '@/components/profile/UserProfileActions';
 import { useAuth } from '@/contexts/AuthContext';
-import { CheckCircle, Star, Flag } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface UserProfile {
@@ -296,19 +297,11 @@ export default function UserProfile() {
           )}
 
           {currentProfile && currentProfile.id !== profile.id && (
-            <div className="mt-4 flex justify-center gap-2">
-              <Button className="gap-2" onClick={() => navigate(`/endorse/${profile.id}`)}>
-                <Star className="h-4 w-4" />
-                {t('userProfile.endorse')}
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => navigate(`/report/user/${profile.id}`)}
-              >
-                <Flag className="h-4 w-4" />
-              </Button>
-            </div>
+            <UserProfileActions
+              viewerProfileId={currentProfile.id}
+              profileId={profile.id}
+              profileName={profile.full_name || profile.username || ''}
+            />
           )}
         </motion.div>
 

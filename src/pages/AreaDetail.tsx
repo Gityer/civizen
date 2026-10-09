@@ -5,6 +5,7 @@ import { PublicPageShell } from '@/components/public/PublicPageShell';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { agreementsCreatePath } from '@/lib/agreements-model';
@@ -37,6 +38,16 @@ function SystemCard({ item }: { item: PublicRelatedSystem }) {
   );
 }
 
+/** Members go straight to the page; guests sign in first and come back to it. */
+function useMemberLink() {
+  const { user } = useAuth();
+  return (target: string) => {
+    if (user) return { to: target, state: undefined };
+    const [pathname, search = ''] = target.split('?');
+    return { to: '/login', state: { from: { pathname, search: search ? `?${search}` : '' } } };
+  };
+}
+
 function InitiativeCard({
   item,
   areaSlug,
@@ -44,6 +55,7 @@ function InitiativeCard({
   item: PublicInitiative;
   areaSlug: string;
 }) {
+  const memberLink = useMemberLink();
   const { t } = useLanguage();
   const statusText = t(statusLabelKey(item.status));
   const actionLabel = item.actionLabel ?? t('areas.open');
@@ -75,11 +87,11 @@ function InitiativeCard({
         </Button>
         <Button type="button" size="sm" variant="outline" asChild>
           <Link
-            to={agreementsCreatePath({
+            {...memberLink(agreementsCreatePath({
               source: 'initiative',
               relatedTitle: item.title,
               agreementType: 'program',
-            })}
+            }))}
           >
             {t('agreements.createAction')}
           </Link>
@@ -90,6 +102,7 @@ function InitiativeCard({
 }
 
 export default function AreaDetail() {
+  const memberLink = useMemberLink();
   const { t } = useLanguage();
   const { slug = '' } = useParams<{ slug: string }>();
   const page = getPublicAreaPage(slug);
@@ -170,7 +183,7 @@ export default function AreaDetail() {
           </h2>
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Button type="button" className="w-full sm:w-auto" asChild>
-              <Link to={page.contributeHref}>{t('areas.contribute')}</Link>
+              <Link {...memberLink(page.contributeHref)}>{t('areas.contribute')}</Link>
             </Button>
             <Button type="button" variant="outline" className="w-full sm:w-auto" asChild>
               <Link to={page.partnerHref}>{t('areas.partner')}</Link>

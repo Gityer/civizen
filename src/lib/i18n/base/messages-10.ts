@@ -1,5 +1,11 @@
 export const m_messages_10 = {
   "home": {
+    "tabDevelopmentLog": "Development log",
+    "tabDevelopmentLogTitle": "What the team built, and member suggestions, documented in the open.",
+    "storiesDevelopment": "Development",
+    "storiesSuggestions": "Suggestions",
+    "addSuggestion": "Suggest an improvement",
+    "addSuggestionAria": "Suggest an improvement to Civizen",
     "welcomeBack": "Welcome back,",
     "welcomeUser": "Welcome, {name}",
     "worldCitizen": "World Citizen",
@@ -74,7 +80,7 @@ export const m_messages_10 = {
     "addSkill": "Add Skill",
     "addContribution": "Add Contribution",
     "addQualification": "Add Qualification",
-    "requestEndorsement": "Request Endorsement",
+    "requestEndorsement": "Endorse someone",
     "findPeople": "Find people",
     "discoverEndorse": "Discover and endorse",
     "discoverPeopleInMarket": "Discover people and companies in Market",

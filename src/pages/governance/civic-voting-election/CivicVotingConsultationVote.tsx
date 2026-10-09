@@ -92,6 +92,21 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
     </div>
   ) : null;
 
+  if (votingClosed) {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-muted-foreground">
+          {votingWindow
+            ? t('civicBallot.closedOn', { date: formatDate(votingWindow.closesAt, language) })
+            : t('civicVoting.proposals.votingClosed')}
+        </p>
+        {outcomeBlock}
+        {receiptBlock}
+        {directoryToggle}
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <div className="space-y-2 rounded-xl border border-primary/30 bg-primary/5 p-3" data-testid="consultation-guest-cta">
@@ -106,21 +121,6 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
           </Button>
         </div>
         {closesText ? <p className="text-xs text-muted-foreground">{closesText}</p> : null}
-      </div>
-    );
-  }
-
-  if (votingClosed) {
-    return (
-      <div className="space-y-3">
-        <p className="text-sm text-muted-foreground">
-          {votingWindow
-            ? t('civicBallot.closedOn', { date: formatDate(votingWindow.closesAt, language) })
-            : t('civicVoting.proposals.votingClosed')}
-        </p>
-        {outcomeBlock}
-        {receiptBlock}
-        {directoryToggle}
       </div>
     );
   }

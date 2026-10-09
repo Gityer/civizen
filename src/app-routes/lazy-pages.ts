@@ -42,11 +42,7 @@ export const InstitutionalDocRoute = lazyWithChunkReload(() => import('@/pages/i
 export const Features = lazyWithChunkReload(() => import('@/pages/Features'));
 export const StudyLayout = lazyWithChunkReload(() => import('@/pages/StudyLayout'));
 export const StudyCivicLearning = lazyWithChunkReload(() => import('@/pages/study/StudyCivicLearning'));
-export const StudySpecialists = lazyWithChunkReload(() => import('@/pages/study/StudySpecialists'));
-export const StudyCourses = lazyWithChunkReload(() => import('@/pages/study/StudyCourses'));
-export const StudySchedules = lazyWithChunkReload(() => import('@/pages/study/StudySchedules'));
 export const StudyMaterials = lazyWithChunkReload(() => import('@/pages/study/StudyMaterials'));
-export const StudyTests = lazyWithChunkReload(() => import('@/pages/study/StudyTests'));
 export const Governance = lazyWithChunkReload(() => import('@/pages/Governance'));
 export const GovernanceNew = lazyWithChunkReload(() => import('@/pages/GovernanceNew'));
 export const PublicGovernanceLanding = lazyWithChunkReload(() => import('@/pages/governance/PublicGovernanceLanding'));

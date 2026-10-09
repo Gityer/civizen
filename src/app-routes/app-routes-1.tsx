@@ -73,12 +73,8 @@ import {
   SolutionProblemDetail,
   SolutionsHub,
   StudyCivicLearning,
-  StudyCourses,
   StudyLayout,
   StudyMaterials,
-  StudySchedules,
-  StudySpecialists,
-  StudyTests,
   TaxonomySettings,
   TermsOfUse,
   UserProfile,
@@ -225,20 +221,20 @@ export const appRoutes1 = (
       <Route path="/messagin" element={<ProtectedRoute><Navigate to="/messaging" replace /></ProtectedRoute>} />
       <Route path="/study" element={<ProtectedRoute><StudyLayout /></ProtectedRoute>}>
         <Route index element={<StudyCivicLearning />} />
-        <Route path="specialists" element={<StudySpecialists />} />
-        <Route path="courses" element={<StudyCourses />} />
-        <Route path="schedules" element={<StudySchedules />} />
+        <Route path="specialists" element={<Navigate to="/study" replace />} />
+        <Route path="courses" element={<Navigate to="/study" replace />} />
+        <Route path="schedules" element={<Navigate to="/study" replace />} />
         <Route path="materials" element={<StudyMaterials />} />
-        <Route path="tests" element={<StudyTests />} />
+        <Route path="tests" element={<Navigate to="/study" replace />} />
       </Route>
       <Route path="/governance/workspace" element={<ProtectedRoute><GovernanceMember /></ProtectedRoute>} />
-      <Route path="/governance/tools" element={<ProtectedRoute><Governance /></ProtectedRoute>} />
-      <Route path="/governance/tools/steward" element={<ProtectedRoute><GovernanceNew /></ProtectedRoute>} />
+      <Route path="/governance/tools" element={<ProtectedRoute requiredPermissions={['role.assign', 'settings.manage']}><Governance /></ProtectedRoute>} />
+      <Route path="/governance/tools/steward" element={<ProtectedRoute requiredPermissions={['role.assign', 'settings.manage']}><GovernanceNew /></ProtectedRoute>} />
       <Route path="/governance/new" element={<ProtectedRoute><Navigate to="/governance/tools/steward" replace /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
       <Route path="/governance/solutions" element={<ProtectedRoute><SolutionsHub /></ProtectedRoute>} />
       <Route path="/governance/solutions/:problemId" element={<ProtectedRoute><SolutionProblemDetail /></ProtectedRoute>} />
-      <Route path="/features" element={<ProtectedRoute><Navigate to="/study" replace /></ProtectedRoute>} />
+      <Route path="/features" element={<Navigate to="/study" replace />} />
       <Route
         path="/law"
         element={

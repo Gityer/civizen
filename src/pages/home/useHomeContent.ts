@@ -64,39 +64,38 @@ export function useHomeContent({ endorsements, educationCount, verifiedEducation
     () => ({
       defaultValue: 'all',
       items: [
-        { id: 'all', label: 'All' },
-        { id: 'favourite', label: 'Favourite' },
+        { id: 'all', label: t('home.tabAll') },
         {
           id: 'stories',
-          label: 'Stories',
-          title: 'Requests and implemented outcomes, documented for ecosystem transparency.',
+          label: t('home.tabDevelopmentLog'),
+          title: t('home.tabDevelopmentLogTitle'),
         },
       ],
       value: homeTab,
       onChange: (value: string) => {
-        if (value === 'all' || value === 'favourite' || value === 'stories') {
+        if (value === 'all' || value === 'stories') {
           setHomeTab(value);
         }
       },
       fab:
         homeTab === 'stories' && storyGroupTab === 'suggestions'
           ? {
-              label: 'Add suggestion',
-              ariaLabel: 'Add a new suggestion story',
-              onClick: () => navigate('/governance/workspace'),
+              label: t('home.addSuggestion'),
+              ariaLabel: t('home.addSuggestionAria'),
+              onClick: () => navigate('/contribute/matters/new?intent=improvement'),
             }
           : null,
     }),
-    [homeTab, storyGroupTab, navigate],
+    [homeTab, storyGroupTab, navigate, t],
   );
   usePageSecondaryNav(homeSecondaryNav);
 
   const showHomeGovernanceHub = Boolean(profile);
-  const showScoreCard = homeTab === 'all' || homeTab === 'favourite';
+  const showScoreCard = homeTab === 'all';
   const showComposer = homeTab === 'all';
   const showQuickActions = homeTab === 'all';
   const showPostsFeed = homeTab === 'all';
-  const showRecentEndorsements = homeTab === 'all' || homeTab === 'favourite';
+  const showRecentEndorsements = homeTab === 'all';
   const showDevelopmentStories = homeTab === 'stories';
   const homeScoreTierId = score.tier.finalTier ?? 'explorer';
   const homeScoreTierLabel = t(`score.tier.${homeScoreTierId}`);

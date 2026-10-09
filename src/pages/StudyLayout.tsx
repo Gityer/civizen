@@ -9,6 +9,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageSecondaryNav } from '@/hooks/usePageSecondaryNav';
 import { APP_DIRECTORY_MAX_CLASS } from '@/lib/responsive-layout';
 import { studySectionRegistry } from '@/lib/study-sections';
+
+/** Placeholders are not offered as features: tests and schedules have no content yet; specialists were canned personas (decision D4). */
+const HIDDEN_STUDY_SECTIONS = new Set<string>(['specialists', 'courses', 'schedules', 'tests']);
 import { cn } from '@/lib/utils';
 
 export type StudyLayoutOutletContext = {
@@ -36,7 +39,7 @@ export default function StudyLayout() {
     () => ({
       defaultValue: 'civicLearning',
       items: studySectionRegistry
-        .filter((section) => section.id !== 'specialists')
+        .filter((section) => !HIDDEN_STUDY_SECTIONS.has(section.id))
         .map((section) => ({
           id: section.id,
           label: t(section.labelKey),

@@ -71,7 +71,7 @@ export function groupProposals(proposals: VotingProposal[], profileId: string | 
 }
 
 const TOOL_ROLES = new Set(['founder', 'admin', 'system']);
-const TOOL_PERMISSIONS = ['role.assign', 'settings.manage', 'governance.manage'];
+const TOOL_PERMISSIONS = ['role.assign', 'settings.manage'];
 
 /** Steward / workspace tools are advanced depth: shown only to people who can act there. */
 export function canAccessGovernanceTools(input: {

@@ -32,7 +32,7 @@ export function HomeStories({ model }: { model: HomeModel }) {
               onClick={() => setStoryGroupTab('development')}
               className="h-8 rounded-full px-3"
             >
-              Development
+              {t('home.storiesDevelopment')}
             </Button>
             <Button
               size="sm"
@@ -40,7 +40,7 @@ export function HomeStories({ model }: { model: HomeModel }) {
               onClick={() => setStoryGroupTab('suggestions')}
               className="h-8 rounded-full px-3"
             >
-              Suggestions
+              {t('home.storiesSuggestions')}
             </Button>
             <div className="group relative">
               <button

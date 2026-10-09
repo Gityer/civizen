@@ -1,4 +1,4 @@
-import { ChevronRight, Landmark, ShieldCheck } from 'lucide-react';
+import { ChevronRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card } from '@/components/ui/card';
@@ -7,10 +7,9 @@ type Translate = (key: string) => string;
 
 const TOOLS = [
   { icon: ShieldCheck, titleKey: 'governanceMember.stewardConsole', bodyKey: 'governanceMember.stewardConsoleBody', path: '/governance/tools/steward' },
-  { icon: Landmark, titleKey: 'governanceMember.workspaceTools', bodyKey: 'governanceMember.workspaceToolsBody', path: '/governance/tools' },
 ] as const;
 
-/** Advanced depth: steward console and the legacy workspace tools, for people who can act there. */
+/** Advanced depth: the steward console, for people who can act there. */
 export function GovernanceToolsTab({ t }: { t: Translate }) {
   const navigate = useNavigate();
   return (
