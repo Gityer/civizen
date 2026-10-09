@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { INTENT_SCOPES, signatureSummaryFor, type SignatureSummary } from '@/lib/governance-intents';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   canManageVotingProposals,
@@ -37,6 +39,16 @@ export default function CivicVotingProposal() {
 
   const isManager = canManageVotingProposals(profile?.role);
   const isAuthor = Boolean(profile?.id && proposal && proposal.createdByProfileId === profile.id);
+  // Phase 10.2: the author's signature over the proposal, verified on this device (members only; the store is not public).
+  const [authorSignature, setAuthorSignature] = useState<SignatureSummary | null>(null);
+  useEffect(() => {
+    if (!proposal?.id || !user) { setAuthorSignature(null); return; }
+    let active = true;
+    void signatureSummaryFor(supabase, INTENT_SCOPES.votingProposalCreate, proposal.id, proposal.createdByProfileId).then((summary) => {
+      if (active) setAuthorSignature(summary);
+    });
+    return () => { active = false; };
+  }, [proposal?.id, proposal?.createdByProfileId, user]);
   const canPublish = proposal
     ? canPublishVotingProposal({ role: profile?.role, profileId: profile?.id, proposal, support })
     : false;
@@ -81,7 +93,7 @@ export default function CivicVotingProposal() {
   const handlePublish = () =>
     run(async () => {
       if (!proposal) return;
-      const electionId = await publishVotingProposal(proposal.id);
+      const electionId = await publishVotingProposal(proposal.id, profile ?? null);
       toast.success(t('civicVoting.proposals.published'));
       navigate(`/governance/voting/${electionId}`);
     }, 'civicVoting.proposals.publishFailed');
@@ -158,6 +170,11 @@ export default function CivicVotingProposal() {
                 <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">{proposal.body}</p>
               ) : null}
               <p className="text-xs text-muted-foreground">{t('civicVoting.proposals.limitations')}</p>
+              {authorSignature ? (
+                <p className="text-xs text-muted-foreground" data-testid="proposal-author-signature" data-status={authorSignature.status}>
+                  {t(`civicBallot.proposalSignature.${authorSignature.status}`, { fingerprint: authorSignature.fingerprint ?? '' })}
+                </p>
+              ) : null}
               <div className="flex flex-wrap gap-2">
                 <Button type="button" size="sm" variant="outline" asChild>
                   <Link to={`/contribute/matters/${proposal.matterId}`}>{t('civicVoting.proposals.openMatter')}</Link>

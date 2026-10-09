@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { INTENT_SCOPES, recordSignedIntent, type SignerProfile } from '@/lib/governance-intents';
 
 /** Civic voting proposal tables / RPCs are not yet in generated Database types. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -166,6 +167,8 @@ export async function createVotingProposalFromMatter(input: {
   summary: string;
   body: string;
   votingClosesAt?: string | null;
+  /** When given, the device signs the proposal with the author's citizen key (Phase 10 step 10.2). */
+  signer?: SignerProfile | null;
 }): Promise<string> {
   const { data, error } = await db.rpc('create_voting_proposal_from_matter', {
     p_matter_id: input.matterId,
@@ -175,15 +178,33 @@ export async function createVotingProposalFromMatter(input: {
     p_voting_closes_at: input.votingClosesAt || null,
   });
   if (error) throw new Error(error.message);
-  return String(data);
+  const proposalId = String(data);
+  if (input.signer) {
+    void recordSignedIntent(db, {
+      profile: input.signer,
+      scope: INTENT_SCOPES.votingProposalCreate,
+      targetId: proposalId,
+      payload: { proposal_id: proposalId, matter_id: input.matterId, title: input.title },
+    });
+  }
+  return proposalId;
 }
 
-export async function publishVotingProposal(proposalId: string): Promise<string> {
+export async function publishVotingProposal(proposalId: string, signer?: SignerProfile | null): Promise<string> {
   const { data, error } = await db.rpc('publish_voting_proposal', {
     p_proposal_id: proposalId,
   });
   if (error) throw new Error(error.message);
-  return String(data);
+  const electionId = String(data);
+  if (signer) {
+    void recordSignedIntent(db, {
+      profile: signer,
+      scope: INTENT_SCOPES.votingProposalPublish,
+      targetId: proposalId,
+      payload: { proposal_id: proposalId, election_id: electionId },
+    });
+  }
+  return electionId;
 }
 
 export type ConsultationCastResult = { ballotId: string; receipt: string };

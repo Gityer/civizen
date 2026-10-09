@@ -186,6 +186,7 @@ export function useMatterDetail() {
         title: matter.title.slice(0, 160),
         summary: (matter.description || '').slice(0, 280),
         body: matter.description || '',
+        signer: profile ?? null,
       });
       toast.success(tRef.current('civicVoting.proposals.openProposal'));
       navigate(`/governance/voting/proposals/${proposalId}`);

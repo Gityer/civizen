@@ -8,6 +8,18 @@ export const m_messages_16 = {
     "receiptCheckFailed": "Could not check the receipt right now.",
     "merkleRoot": "Ballot box commitment (Merkle root over the counted receipts):",
     "proofVerified": "Your receipt is counted: leaf {index} of {count}, and the inclusion proof recomputed on this device matches the published root.",
+    "signature": {
+      "verified": "Signed with your citizen key {fingerprint}; the signature was verified on this device.",
+      "invalid": "The stored signature for this ballot does not verify on this device.",
+      "unsigned": "Not signed: this device holds no citizen key, so only the server's record of your ballot exists.",
+      "unavailable": "The signature status could not be read right now."
+    },
+    "proposalSignature": {
+      "verified": "Signed by the author's citizen key {fingerprint}; the signature was verified on this device.",
+      "invalid": "The stored author signature for this proposal does not verify on this device.",
+      "unsigned": "Not signed by the author's citizen key; only the server's record exists.",
+      "unavailable": "The author signature could not be read right now."
+    },
     "advisoryTitle": "Your ballot is advisory until your identity is verified",
     "advisoryBody": "Anyone with an account can vote. Only ballots from verified members are counted; yours is recorded and will be counted automatically once your verification is approved while voting is open.",
     "advisoryVerifyLink": "Verify your identity in profile settings.",

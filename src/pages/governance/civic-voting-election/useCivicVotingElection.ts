@@ -9,6 +9,7 @@ import { advanceAssistedBallot, assertDistinctAssistedRoles, attestVotingClient,
 import { MIN_GOVERNANCE_SCORE, isNativeGovernanceApp } from '@/lib/governance-eligibility';
 import { toast } from 'sonner';
 import { type DemoGateState, VOTING_MANIFEST } from '@/pages/governance/civic-voting-election/civic-voting-election-shared';
+import { useBallotSignature } from '@/pages/governance/civic-voting-election/useBallotSignature';
 
 export function useCivicVotingElection() {
   const { electionId = '' } = useParams();
@@ -33,6 +34,7 @@ export function useCivicVotingElection() {
   const [advisoryVoter, setAdvisoryVoter] = useState(false);
   const [eligibilityReason, setEligibilityReason] = useState<string | null>(null);
   const [casting, setCasting] = useState(false);
+  const { signature: ballotSignature, signBallot } = useBallotSignature(electionId, profile, myReceipt);
   const [withdrawing, setWithdrawing] = useState(false);
 
   const refreshPublicParticipation = async (id: string, signedIn: boolean) => {
@@ -117,6 +119,7 @@ export function useCivicVotingElection() {
       setMyOptions(keys);
       setMyReceipt(result.receipt || null);
       setMyBallotAdvisory(advisoryVoter);
+      void signBallot(result.receipt || '');
       toast.success(t(advisoryVoter ? 'civicBallot.advisorySaved' : 'civicVoting.proposals.castSaved'));
       await refreshPublicParticipation(electionId, true);
     } catch (error) {
@@ -370,7 +373,7 @@ export function useCivicVotingElection() {
     detail, detailLoading, detailError, electionId, t, language, user, isConsultation, title,
     displayTitle, verificationSplit, tallies, tallyTotal, tallyError, countryStats, directory, directoryVisible,
     directoryBusy, myOption, myOptions, myReceipt, myBallotAdvisory, advisoryVoter, eligibilityReason, votingWindow, casting, withdrawing,
-    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, merkleRoot, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
+    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, merkleRoot, ballotSignature, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
     pinInput, setPinInput, assistedStatus, pinMessage, canOpenBooth, failed, policy,
     coolingOffUntil, coolingOffActive, attestation, challengeOpen, eligibility, secondsLeft,
     startSimulatedWindow, toggleGate, tryOpenBooth, enrollPins, unlockWithPin, castSimulatedBallot,

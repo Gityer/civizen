@@ -62,6 +62,8 @@ test('verified member casts, gets a receipt, checks it, and withdraws', async ({
   await expect(receipt).toBeVisible();
   await expect(receipt.getByTestId('consultation-receipt-code')).toHaveText(/^[0-9A-F]{4}(-[0-9A-F]{4}){5}$/);
 
+  // Phase 10.2: the device signed the ballot with the citizen key and verified the stored signature
+  await expect(receipt.getByTestId('consultation-signature')).toHaveAttribute('data-status', 'verified', { timeout: 20_000 });
   await receipt.getByRole('button', { name: /Check that my receipt is counted/ }).click();
   await expect(page.getByText(/Your receipt is counted: leaf 1 of 1/)).toBeVisible();
 

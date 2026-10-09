@@ -30,7 +30,7 @@ function formatDate(date: Date | undefined, language: string): string {
 export function CivicVotingConsultationVote({ model }: { model: CivicVotingElectionModel }) {
   const {
     myOption, myOptions, myReceipt, myBallotAdvisory, advisoryVoter, eligibilityReason, votingWindow, casting, withdrawing, t, language, user,
-    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, merkleRoot,
+    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, merkleRoot, ballotSignature,
     directoryVisible, directoryBusy, toggleDirectoryPresence, detail,
   } = model;
   const location = useLocation();
@@ -91,6 +91,11 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
       {merkleRoot ? (
         <p className="text-xs text-muted-foreground" data-testid="consultation-merkle-root" title={merkleRoot}>
           {t('civicBallot.merkleRoot')} <span className="font-mono">{shortHash(merkleRoot)}</span>
+        </p>
+      ) : null}
+      {ballotSignature ? (
+        <p className="text-xs text-muted-foreground" data-testid="consultation-signature" data-status={ballotSignature.status}>
+          {t(`civicBallot.signature.${ballotSignature.status}`, { fingerprint: ballotSignature.fingerprint ?? '' })}
         </p>
       ) : null}
       {myBallotAdvisory ? null : (
