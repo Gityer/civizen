@@ -1,7 +1,7 @@
 {
   "name": "civizen",
   "private": true,
-  "version": "0.1.226",
+  "version": "0.1.227",
   "type": "module",
   "engines": {
     "node": ">=24.18.1",
@@ -40,6 +40,7 @@
     "db:vps-install-agent-key": "bash scripts/db/vps-install-agent-ssh-key.sh",
     "assistant:knowledge": "npx tsx scripts/assistant-knowledge.ts",
     "i18n:coverage": "npx tsx scripts/i18n-coverage.ts",
+    "build:verify-reproducible": "bash scripts/verify-reproducible-build.sh",
     "assistant:knowledge:check": "npx tsx scripts/assistant-knowledge.ts --check",
     "verify:agent-context": "node scripts/verify-agent-context.mjs",
     "verify:dev-load": "node scripts/verify-dev-app-load.mjs",
