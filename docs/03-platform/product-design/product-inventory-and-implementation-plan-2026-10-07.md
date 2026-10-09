@@ -472,11 +472,12 @@ Typed client in the remaining civic-voting files and Wellbeing types; delete dea
 | --- | --- | --- | --- |
 | Inventory and plan (this document) | done (owner review pending) | this file; production read-only checks 2026-10-07 | 2026-10-07 |
 | 0.3 Close the account-switch hole | on production since 2026-10-08 (owner confirmation pending) | migration `20261007100000_linked_accounts_proof_of_control.sql` applied to production after backup `civizen-pre-linked-accounts-20261008-154742.dump`; `linked-account-switch` (established rows only) and `admin-impersonate-user` (kill switch) redeployed; web release v0.1.202; SQL test `linked_accounts_proof_of_control_test.sql` (18 checks); `create-linked-business-account` removed; production audit: 2 rows, both the founder's; spec `docs/04-operations/dev/business-accounts-linking.md` | 2026-10-08 |
-| 0.1 Protect privileged profile columns | implemented, awaiting production deploy (D1) | migration `20261008120000_profiles_privileged_columns_guard.sql` (BEFORE INSERT/UPDATE guard; staff and server functions pass); SQL test `phase0_trust_hardening_test.sql` | 2026-10-08 |
-| 0.2 Lock verification cases | implemented, awaiting production deploy (D1) | migration `20261008120100_identity_verification_case_owner_lock.sql` (owner: draft → submitted only; reviewers unchanged); same SQL test | 2026-10-08 |
-| 0.5 Stories ingest | implemented (grant + policy), awaiting production deploy (D1) | migration `20261008120300_development_story_ingest_privileged.sql`; member seed loop removed from the Home Stories hook; "Development log" label still to do with 1.3 | 2026-10-08 |
-| 0.6 Eligibility snapshots | implemented, awaiting production deploy (D1) | migration `20261008120200_governance_eligibility_snapshots_privileged_writes.sql`; client persists only for staff (`governance-eligibility-snapshots.ts`) | 2026-10-08 |
-| 0.4, 0.7, 0.8 | planned | | |
+| 0.1 Protect privileged profile columns | live on production (migration applied 2026-10-08 after backup `civizen-pre-phase0-hardening-20261008-234337.dump`; web v0.1.203) | migration `20261008120000_profiles_privileged_columns_guard.sql` (BEFORE INSERT/UPDATE guard; staff and server functions pass); SQL test `phase0_trust_hardening_test.sql` | 2026-10-08 |
+| 0.2 Lock verification cases | live on production (2026-10-08, same backup) | migration `20261008120100_identity_verification_case_owner_lock.sql` (owner: draft → submitted only; reviewers unchanged); same SQL test | 2026-10-08 |
+| 0.5 Stories ingest | grant + policy live on production (2026-10-08); "Development log" label pending with 1.3 | migration `20261008120300_development_story_ingest_privileged.sql`; member seed loop removed from the Home Stories hook; "Development log" label still to do with 1.3 | 2026-10-08 |
+| 0.6 Eligibility snapshots | live on production (2026-10-08) | migration `20261008120200_governance_eligibility_snapshots_privileged_writes.sql`; client persists only for staff (`governance-eligibility-snapshots.ts`) | 2026-10-08 |
+| 0.8 Ship | S3 shipped as v0.1.202 (sibling session); S1/S2/S6/S7 shipped as v0.1.203; `RELEASING.md` has the migration step | production post-check 2026-10-08: guard triggers present, ingest grants service_role only, snapshot policies admins only | 2026-10-08 |
+| 0.4, 0.7 | planned | | |
 | 1.1–1.8 | planned | | |
 | 2.1–2.9 | planned | | |
 | 3.x–11 | planned | | |
