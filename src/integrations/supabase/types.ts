@@ -10239,6 +10239,9 @@ isOneToOne: false
 "update_knowledge_space":
 { Args: { "p_space_id": string,"payload": Json }; Returns: undefined
                            },
+"update_market_job_interest":
+{ Args: { "p_id": string,"payload": Json }; Returns: undefined
+                           },
 "update_voting_proposal_settings":
 { Args: { "p_ballot_method"?: string,"p_max_selections"?: number,"p_options"?: Json,"p_pass_threshold"?: number,"p_proposal_id": string,"p_quorum"?: number,"p_scope_country_code"?: string,"p_scope_kind"?: string,"p_voting_closes_at"?: string,"p_voting_opens_at"?: string }; Returns: Json
                            },
@@ -10299,6 +10302,9 @@ isOneToOne: false
                            },
 "withdraw_consultation_ballot":
 { Args: { "p_election_id": string }; Returns: boolean
+                           },
+"withdraw_market_job_interest":
+{ Args: { "p_id": string }; Returns: undefined
                            },
 "withdraw_opportunity_participation":
 { Args: { "p_participation_id": string }; Returns: undefined

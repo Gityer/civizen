@@ -56,6 +56,16 @@ export function notificationRoute(notification: Pick<AppNotification, 'entityTyp
       return id ? `/contribute/matters/${id}` : '/contribute/matters';
     case 'agreement':
       return id ? `/agreements/${id}` : '/agreements';
+    case 'knowledge_space':
+      return id ? `/contribute/knowledge/${id}` : '/contribute/knowledge';
+    case 'knowledge_resource': {
+      const spaceId = typeof notification.metadata.space_id === 'string' ? notification.metadata.space_id : '';
+      return spaceId ? `/contribute/knowledge/${spaceId}` : '/contribute/knowledge';
+    }
+    case 'funding_interest_inquiry':
+      return '/settings/admin/funding?section=interest';
+    case 'market_job_interest':
+      return '/market';
     case 'post':
       return '/';
     default:

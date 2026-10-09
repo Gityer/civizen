@@ -17,7 +17,7 @@ import { isOfficialCivizenOrgProfile } from '@/lib/civizen-org-account';
 import { APP_VERSION_TAG, ANDROID_VERSION_CODE } from '@/lib/app-release';
 import { ensureAuthorizedAppUpdateChannel, getAppUpdateChannel, getAppUpdateChannelExpiresAt, onAppUpdateChannelChange, setAppUpdateChannel, type AppUpdateChannel } from '@/lib/update-channel';
 import { cn } from '@/lib/utils';
-import { LogOut, ChevronRight, Globe, Palette, Users, KeyRound, ShieldCheck, Fingerprint, Bot, Landmark, LayoutGrid, Lightbulb, Coins, Vote, FlaskConical } from 'lucide-react';
+import { LogOut, ChevronRight, Globe, Palette, Users, KeyRound, ShieldCheck, Fingerprint, Bot, Landmark, LayoutGrid, Lightbulb, Coins, Vote, FlaskConical, Briefcase } from 'lucide-react';
 import { type SettingsNavItem, settingsItems } from '@/pages/settings-items';
 
 
@@ -113,10 +113,10 @@ export default function Settings() {
   const marketOpsItems = canManageMarket
     ? [
         {
-          icon: Coins,
-          labelKey: 'settings.lumaCreditsCardTitle',
-          descriptionKey: 'settings.lumaCreditsCardDescription',
-          path: '/settings/market/luma-credits',
+          icon: Briefcase,
+          labelKey: 'settings.marketJobsAdminCardTitle',
+          descriptionKey: 'settings.marketJobsAdminCardDescription',
+          path: '/settings/admin/market-jobs',
         },
       ]
     : [];

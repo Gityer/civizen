@@ -3,6 +3,7 @@ import { m_messages_02 } from './i18n/base/messages-02';
 import { m_messages_settings_01 } from './i18n/base/messages-settings-01';
 import { m_messages_settings_02 } from './i18n/base/messages-settings-02';
 import { m_messages_settings_03 } from './i18n/base/messages-settings-03';
+import { m_messages_market_jobs_admin, m_messages_settings_04 } from './i18n/base/messages-settings-04';
 import { m_messages_study_02 } from './i18n/base/messages-study-02';
 import { m_messages_03 } from './i18n/base/messages-03';
 import { m_messages_04 } from './i18n/base/messages-04';
@@ -36,7 +37,7 @@ import { m_messages_16 } from './i18n/base/messages-16';
 export const baseTranslations = {
   ...m_messages_01,
   ...m_messages_02,
-  "settings": { ...m_messages_settings_01, ...m_messages_settings_02, ...m_messages_settings_03, },
+  "settings": { ...m_messages_settings_01, ...m_messages_settings_02, ...m_messages_settings_03, ...m_messages_settings_04, },
   ...m_messages_03,
   ...m_messages_04,
   ...m_messages_05,
@@ -48,6 +49,7 @@ export const baseTranslations = {
   "features": { ...m_messages_features_01, "catalog": { ...m_messages_features_catalog_01, ...m_messages_features_catalog_02, }, },
   ...m_messages_09,
   ...m_messages_study_02,
+  ...m_messages_market_jobs_admin,
   ...m_messages_10,
   "profile": { ...m_messages_profile_01, ...m_messages_profile_02, },
   ...m_messages_11,

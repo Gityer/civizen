@@ -174,6 +174,7 @@ export const m_messages_16 = {
     "verification_revoked": { "title": "Your identity verification was revoked", "body": "A reviewer revoked your verification. Open profile settings to see the reason and verify again." },
     "knowledge_resource_proposed": { "title": "Resource proposed: {title}", "body": "A member proposed a resource for your knowledge space. Review it under Resources." },
     "knowledge_gap_reported": { "title": "Gap reported: {title}", "body": "A member reported a knowledge gap in your space." },
-    "knowledge_resource_published": { "title": "Your resource is live: {title}", "body": "Coordinators shared the resource you proposed." }
+    "knowledge_resource_published": { "title": "Your resource is live: {title}", "body": "Coordinators shared the resource you proposed." },
+    "fund_inquiry_received": { "title": "New Fund inquiry ({lane})", "body": "Someone sent an inquiry through the Fund pages. Open Funding › Interest to answer it." }
   },
 } as const;

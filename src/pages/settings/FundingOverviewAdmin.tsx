@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { FundingTransparencyPublishCard } from '@/components/fund/FundingTransparencyPublishCard';
 import { fundingAdminPath, type FundingAdminPrimarySection } from '@/lib/funding/admin-sections';
 
 type FundingOverviewAdminProps = {
@@ -78,6 +79,8 @@ export default function FundingOverviewAdmin({ onGoToSection }: FundingOverviewA
           </li>
         </ul>
       </Card>
+
+      <FundingTransparencyPublishCard />
 
       <Card className="space-y-2 p-4 text-sm">
         <h3 className="text-sm font-medium">{t('settings.adminFundingOverviewPublic')}</h3>

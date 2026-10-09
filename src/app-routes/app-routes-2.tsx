@@ -5,6 +5,7 @@ import {
   DevEconomicsVisual,
   Features,
   FundingAdmin,
+  MarketJobsAdmin,
   GovernanceAdmin,
   PermissionsAdmin,
 } from '@/app-routes/lazy-pages';
@@ -52,6 +53,10 @@ export const appRoutes2 = (
             <FundingAdmin />
           </ProtectedRoute>
         }
+      />
+      <Route
+        path="/settings/admin/market-jobs"
+        element={<ProtectedRoute requiredPermissions={['market.manage', 'settings.manage', 'role.assign']}><MarketJobsAdmin /></ProtectedRoute>}
       />
       <Route
         path="/settings/admin/funding-interest"

@@ -76,6 +76,7 @@ export const UsersAdmin = lazyWithChunkReload(() => import('@/pages/settings/Use
 export const PermissionsAdmin = lazyWithChunkReload(() => import('@/pages/settings/PermissionsAdmin'));
 export const GovernanceAdmin = lazyWithChunkReload(() => import('@/pages/settings/GovernanceAdmin'));
 export const FundingAdmin = lazyWithChunkReload(() => import('@/pages/settings/FundingAdmin'));
+export const MarketJobsAdmin = lazyWithChunkReload(() => import('@/pages/settings/MarketJobsAdmin'));
 export const DevEconomicsVisual = import.meta.env.DEV
   ? lazyWithChunkReload(() => import('@/pages/dev/DevEconomicsVisual'))
   : null;

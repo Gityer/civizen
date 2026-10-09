@@ -45,7 +45,7 @@ export type AgreementListItem = {
   endAt: string | null;
   executionMethod: string | null;
   needsAction: boolean;
-  parties: { id?: string; displayName: string }[];
+  parties: { id?: string; displayName: string; profileId?: string | null; roleInAgreement?: string | null }[];
   bucket: AgreementListBucket;
 };
 
@@ -144,8 +144,8 @@ function mapListItem(row: Record<string, unknown>): AgreementListItem {
   const needsAction = Boolean(row.needs_action ?? row.needsAction);
   const status = str(row.status) || 'draft';
   const parties = asRows(row.parties).map((party) => ({
-    id: str(party.id) || undefined,
-    displayName: str(party.displayName) || str(party.display_name) || 'Party',
+    id: str(party.id) || undefined, displayName: str(party.displayName) || str(party.display_name) || 'Party',
+    profileId: str(party.profileId) || str(party.profile_id) || null, roleInAgreement: str(party.roleInAgreement) || str(party.role_in_agreement) || null,
   }));
   return {
     id: str(row.id) || '',

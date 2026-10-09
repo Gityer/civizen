@@ -243,7 +243,16 @@ export const m_messages_03 = {
       "colAge": "Age",
       "colPay": "Pay",
       "colPhone": "Phone number",
-      "colAction": "Action"
+      "colAction": "Action",
+      "ownEdit": "Edit your posting",
+      "ownWithdraw": "Withdraw your posting",
+      "ownWithdrawConfirm": "Withdraw this posting? It leaves the board at once.",
+      "ownWithdrawn": "Posting withdrawn.",
+      "ownSaved": "Posting updated.",
+      "ownSaveFailed": "Could not update the posting.",
+      "ownPay": "Pay",
+      "ownPayPeriod": "Per",
+      "ownNotes": "Note for the reviewers (optional)"
     },
     "agreementButton": "Start agreement",
     "contactButton": "Contact"

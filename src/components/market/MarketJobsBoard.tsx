@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { RoundCountryFlag } from '@/components/governance/RoundCountryFlag';
+import { MarketJobOwnActions } from '@/components/market/MarketJobOwnActions';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -198,26 +199,36 @@ export function MarketJobsBoard({
                       {phone}
                     </td>
                     <td className="px-2 py-2.5">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                        onClick={() => void onUnlock(listing)}
-                        disabled={unlocking}
-                        aria-label={
-                          contact ? t('market.jobsBoard.lockAgain') : t('market.jobsBoard.unlockLabel')
-                        }
-                        data-testid={`market-jobs-unlock-${listing.id}`}
-                      >
-                        {unlocking ? (
-                          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                        ) : contact ? (
-                          <LockOpen className="h-4 w-4" aria-hidden />
-                        ) : (
-                          <Lock className="h-4 w-4" aria-hidden />
-                        )}
-                      </Button>
+                      {listing.is_own ? (
+                        <MarketJobOwnActions
+                          listing={listing}
+                          onWithdrawn={(id) => setListings((current) => current.filter((item) => item.id !== id))}
+                          onUpdated={(id, patch) => setListings((current) => current.map((item) => (item.id === id
+                            ? { ...item, pay_amount: patch.pay_amount ?? item.pay_amount, pay_period: patch.pay_period ?? item.pay_period, city: patch.city ?? item.city }
+                            : item)))}
+                        />
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                          onClick={() => void onUnlock(listing)}
+                          disabled={unlocking}
+                          aria-label={
+                            contact ? t('market.jobsBoard.lockAgain') : t('market.jobsBoard.unlockLabel')
+                          }
+                          data-testid={`market-jobs-unlock-${listing.id}`}
+                        >
+                          {unlocking ? (
+                            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                          ) : contact ? (
+                            <LockOpen className="h-4 w-4" aria-hidden />
+                          ) : (
+                            <Lock className="h-4 w-4" aria-hidden />
+                          )}
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 );
