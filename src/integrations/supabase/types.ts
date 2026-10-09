@@ -6295,6 +6295,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"messaging_key_backups": {
+                  Row: {
+                    "blob": NonNullable<Json>,"created_at": string,"profile_id": string,"public_key": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "blob": NonNullable<Json>,"created_at"?: string,"profile_id": string,"public_key": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "blob"?: NonNullable<Json>,"created_at"?: string,"profile_id"?: string,"public_key"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "messaging_key_backups_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"monetary_policy_approvals": {
                   Row: {
                     "approval_class": string,"approver_id": string,"created_at": string,"decision": string,"id": string,"notes": string | null,"policy_profile_id": string

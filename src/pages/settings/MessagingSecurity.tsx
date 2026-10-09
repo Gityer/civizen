@@ -3,6 +3,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { MessagingKeyBackupCard } from '@/components/settings/MessagingKeyBackupCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -146,6 +147,10 @@ export default function MessagingSecurity() {
             </div>
           </Card>
         )}
+
+        {profile?.id ? (
+          <MessagingKeyBackupCard profileId={profile.id} hasLocalKey={hasLocalKey} serverPublicKey={serverPublicKey} onChanged={() => void refresh()} />
+        ) : null}
       </div>
     </AppLayout>
   );
