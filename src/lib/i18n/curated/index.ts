@@ -8,6 +8,14 @@ import { participationLoopHy } from './participation-loop.hy';
 import { participationLoopRu } from './participation-loop.ru';
 import { mattersHy } from './matters.hy';
 import { mattersRu } from './matters.ru';
+import { homeLandingHy } from './home-landing.hy';
+import { homeLandingRu } from './home-landing.ru';
+import { profileHy } from './profile.hy';
+import { profileRu } from './profile.ru';
+import { profileLedgerHy } from './profile-ledger.hy';
+import { profileLedgerRu } from './profile-ledger.ru';
+import { settingsHy } from './settings.hy';
+import { settingsRu } from './settings.ru';
 
 type Tree = Record<string, unknown>;
 
@@ -20,8 +28,8 @@ function mergeGroups(...groups: Tree[]): Tree {
 }
 
 export const curatedTranslations: Record<string, Tree> = {
-  hy: mergeGroups({ governanceDashboard: governanceDashboardHy, ...governanceHubHy }, civicVotingHy, participationLoopHy, { contribute: { matters: mattersHy } }),
-  ru: mergeGroups({ governanceDashboard: governanceDashboardRu, ...governanceHubRu }, civicVotingRu, participationLoopRu, { contribute: { matters: mattersRu } }),
+  hy: mergeGroups({ governanceDashboard: governanceDashboardHy, ...governanceHubHy }, civicVotingHy, participationLoopHy, { contribute: { matters: mattersHy } }, homeLandingHy, profileHy, profileLedgerHy, settingsHy),
+  ru: mergeGroups({ governanceDashboard: governanceDashboardRu, ...governanceHubRu }, civicVotingRu, participationLoopRu, { contribute: { matters: mattersRu } }, homeLandingRu, profileRu, profileLedgerRu, settingsRu),
 };
 
 /** Languages a person has reviewed; every other language is machine translation and is labelled so (Phase 8 step 8.2). */
