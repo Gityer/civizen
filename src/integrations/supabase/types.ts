@@ -8466,6 +8466,9 @@ isOneToOne: false
 "capture_governance_public_audit_batch":
 { Args: { "batch_source"?: string,"created_by_profile_id"?: string,"max_events"?: number,"requested_from"?: string,"requested_metadata"?: Json,"requested_to"?: string }; Returns: string
                            },
+"capture_governance_public_audit_batch_scheduled":
+{ Args: { "max_events"?: number }; Returns: string
+                           },
 "capture_governance_public_audit_verifier_federation_package":
 { Args: { "package_metadata"?: Json,"package_notes"?: string,"requested_policy_key"?: string,"target_batch_id"?: string }; Returns: string
                            },
@@ -9421,6 +9424,9 @@ isOneToOne: false
 { Args: Record<PropertyKey, never>; Returns: undefined
                            },
 "gpav_gr_proof_dist_esc_tick":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"gpav_public_audit_capture_tick":
 { Args: Record<PropertyKey, never>; Returns: undefined
                            },
 "gpav_verify_federation_exchange_receipt":
