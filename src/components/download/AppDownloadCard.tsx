@@ -49,7 +49,7 @@ export function AppDownloadCard({
             {titleBlock}
           </div>
           <div className="rounded-2xl border border-border/50 bg-background p-2">
-            <DeferredQrCode value={ANDROID_INSTALL_PAGE_URL} size={qrSize} includeMargin />
+            <DeferredQrCode value={ANDROID_INSTALL_PAGE_URL} size={qrSize} includeMargin title={t('downloads.qrAlt')} />
           </div>
         </div>
 
@@ -107,7 +107,7 @@ export function AppDownloadCard({
 
         <div className="flex items-center gap-3 self-start rounded-2xl border border-border/60 bg-background/85 p-3 sm:self-center">
           <div className="rounded-xl bg-white p-2 shadow-sm">
-            <DeferredQrCode value={ANDROID_INSTALL_PAGE_URL} size={qrSize} includeMargin />
+            <DeferredQrCode value={ANDROID_INSTALL_PAGE_URL} size={qrSize} includeMargin title={t('downloads.qrAlt')} />
           </div>
           <p className="max-w-32 text-xs leading-5 text-muted-foreground">
             {t('home.scanQrInstall')}

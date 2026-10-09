@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { RoundCountryFlag } from '@/components/governance/RoundCountryFlag';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { isReviewedLanguage } from '@/lib/i18n/curated';
 import {
   getLanguageFlagCountryCode,
   loadLanguageOptions,
@@ -105,6 +106,7 @@ export function PublicLanguageSelect() {
           if (canHoverOpen()) scheduleClose();
         }}
       >
+        <p className="px-2.5 pt-1.5 text-[11px] leading-snug text-muted-foreground">{t('auth.languageAutomaticNote')}</p>
         <div className="max-h-72 overflow-y-auto overscroll-contain py-0.5" role="listbox" aria-label={t('auth.language')}>
           {languageOptions.map((option) => {
             const selected = option.code === language;
@@ -131,6 +133,7 @@ export function PublicLanguageSelect() {
                   size="xs"
                 />
                 <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                {!isReviewedLanguage(option.code) ? <span className="shrink-0 text-[10px] opacity-70">{t('auth.languageAutomaticTag')}</span> : null}
               </button>
             );
           })}

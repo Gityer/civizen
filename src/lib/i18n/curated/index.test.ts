@@ -60,8 +60,8 @@ describe('curated governanceDashboard translations', () => {
   }
 
   it('overrides a machine-translated pack without dropping other groups', () => {
-    const merged = applyCuratedTranslations('hy-AM', { common: { back: 'x' }, governanceDashboard: { title: 'bad' } });
+    const merged = applyCuratedTranslations('hy-AM', { editProfile: { title: 'x' }, governanceDashboard: { title: 'bad' } });
     expect((merged.governanceDashboard as Tree).title).toBe('Կառավարում');
-    expect((merged.common as Tree).back).toBe('x');
+    expect((merged.editProfile as Tree).title).toBe('x');
   });
 });

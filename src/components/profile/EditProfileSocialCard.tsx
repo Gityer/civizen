@@ -209,7 +209,7 @@ export function EditProfileSocialCard({
                   'socialBackQr',
                   <div className="shrink-0 rounded-2xl bg-white p-2">
                     {lsiQrValue ? (
-                      <DeferredQrCode value={lsiQrValue} size={60} includeMargin bgColor="#ffffff" fgColor="#0f172a" />
+                      <DeferredQrCode value={lsiQrValue} size={60} includeMargin bgColor="#ffffff" fgColor="#0f172a" title="QR code" />
                     ) : null}
                   </div>,
                   { roundedClassName: 'rounded-2xl' },

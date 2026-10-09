@@ -62,7 +62,7 @@ export function SentenceToken({
           className={cn(
             'ml-0.5 mr-0.5 inline-flex max-w-[min(22rem,calc(100vw-6rem))] items-center rounded-sm border-b border-dashed px-0.5 text-left transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
             emphasis === 'secondary'
-              ? 'border-primary/35 font-normal text-primary/55 hover:border-primary/70 hover:text-primary'
+              ? 'border-primary/35 font-normal text-primary hover:border-primary/70'
               : 'border-primary/55 font-medium text-primary hover:border-primary',
             empty && dimWhenEmpty && 'text-muted-foreground',
             triggerClassName,

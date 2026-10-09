@@ -73,7 +73,8 @@
     "release:guard": "node scripts/verify-release-lifecycle.mjs",
     "release:testing": "CIVIZEN_UPDATE_CHANNEL=testing npm run update:application",
     "release:mark-tested": "npm run promote:android-testing-to-release && npm run build",
-    "release:production:promote": "npm run promote:android-testing-to-release && npm run build"
+    "release:production:promote": "npm run promote:android-testing-to-release && npm run build",
+    "i18n:pack-bundle": "node scripts/i18n-pack-bundle.mjs"
   },
   "dependencies": {
     "@capacitor-community/contacts": "^8.0.0",
@@ -139,6 +140,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",

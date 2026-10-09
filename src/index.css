@@ -20,7 +20,7 @@
     --popover-foreground: 200 25% 10%;
 
     /* Primary - Deep Teal (Trust) */
-    --primary: 174 62% 35%;
+    --primary: 174 62% 29%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary - Warm slate */
@@ -28,13 +28,13 @@
     --secondary-foreground: 200 25% 15%;
 
     --muted: 200 10% 96%;
-    --muted-foreground: 200 10% 45%;
+    --muted-foreground: 200 10% 40%;
 
     /* Accent - Warm Gold (Achievement) */
     --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 200 15% 90%;

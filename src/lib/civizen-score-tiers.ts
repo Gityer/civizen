@@ -108,7 +108,7 @@ export const DEFAULT_TIER_RULES: TierRule[] = [
     minScore: 0,
     maxScore: 29.9,
     colorHex: TIER_COLORS.explorer,
-    accentClass: 'text-[#7B8AA1]',
+    accentClass: 'text-[#5F6E86]',
     icon: 'Compass',
     description:
       'You are beginning your Civizen journey. Add verified learning, experience, skills, assignments, and contributions to build a stronger profile.',
@@ -123,7 +123,7 @@ export const DEFAULT_TIER_RULES: TierRule[] = [
     minScoredCategories: TIER_EVIDENCE_GATES.builder.minScoredCategories,
     minConfidence: TIER_EVIDENCE_GATES.builder.minConfidence,
     colorHex: TIER_COLORS.builder,
-    accentClass: 'text-[#2BA8A0]',
+    accentClass: 'text-[#1F7F79]',
     icon: 'Blocks',
     description:
       'You are building a demonstrated record of capability, reliability, and participation across Civizen.',
@@ -142,7 +142,7 @@ export const DEFAULT_TIER_RULES: TierRule[] = [
     requiresRecurrence: TIER_EVIDENCE_GATES.contributor.requiresRecurrence,
     minTimeSpanDays: TIER_EVIDENCE_GATES.contributor.minTimeSpanDays,
     colorHex: TIER_COLORS.contributor,
-    accentClass: 'text-[#3B82F6]',
+    accentClass: 'text-[#2563EB]',
     icon: 'Handshake',
     description:
       'You consistently create verified value and demonstrate reliable participation in the Civizen ecosystem.',
@@ -162,7 +162,7 @@ export const DEFAULT_TIER_RULES: TierRule[] = [
     requiresRecurrence: TIER_EVIDENCE_GATES.catalyst.requiresRecurrence,
     minTimeSpanDays: TIER_EVIDENCE_GATES.catalyst.minTimeSpanDays,
     colorHex: TIER_COLORS.catalyst,
-    accentClass: 'text-[#8B5CF6]',
+    accentClass: 'text-[#6D28D9]',
     icon: 'Sparkles',
     description:
       'You help people and initiatives move forward through sustained contribution, collaboration, and measurable impact.',
@@ -182,7 +182,7 @@ export const DEFAULT_TIER_RULES: TierRule[] = [
     requiresRecurrence: TIER_EVIDENCE_GATES.steward.requiresRecurrence,
     minTimeSpanDays: TIER_EVIDENCE_GATES.steward.minTimeSpanDays,
     colorHex: TIER_COLORS.steward,
-    accentClass: 'text-[#D9A441]',
+    accentClass: 'text-[#8A6410]',
     icon: 'Shield',
     description:
       'You demonstrate sustained responsibility, trusted contribution, and exceptional care for the Civizen ecosystem and its mission.',

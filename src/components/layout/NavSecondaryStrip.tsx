@@ -57,7 +57,7 @@ export function NavSecondaryStrip() {
               ref={scrollRef}
               role="listbox"
               aria-label="Section navigation"
-              aria-activedescendant={config.value}
+              aria-activedescendant={`nav-secondary-strip-${config.value}`}
               className="flex items-center gap-0 overflow-x-auto overscroll-x-contain px-3 py-1 scrollbar-none [&::-webkit-scrollbar]:hidden"
             >
               {items.map((item, index) => {
@@ -74,6 +74,7 @@ export function NavSecondaryStrip() {
                     <button
                       ref={isActive ? activeItemRef : undefined}
                       type="button"
+                      id={`nav-secondary-strip-${item.id}`}
                       role="option"
                       aria-selected={isActive}
                       disabled={item.disabled}

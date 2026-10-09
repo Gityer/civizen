@@ -78,13 +78,16 @@ export const m_messages_02 = {
     "biometricSignIn": "Sign in with biometrics",
     "biometricSigningIn": "Checking biometrics...",
     "biometricOrPassword": "Or sign in with your password",
-    "biometricPromptReason": "Sign in to Civizen"
+    "biometricPromptReason": "Sign in to Civizen",
+    "languageAutomaticNote": "English, Armenian and Russian are reviewed by people; every other language is automatic translation.",
+    "languageAutomaticTag": "automatic"
   },
   "downloads": {
     "badge": "Mobile testing",
     "title": "Download Civizen",
     "subtitle": "Install the current Android build, or keep using the web app while native distribution expands.",
     "backToApp": "Back to the app",
+    "qrAlt": "QR code: open the Android download page on your phone",
     "android": {
       "title": "Android",
       "subtitle": "Installable APK",

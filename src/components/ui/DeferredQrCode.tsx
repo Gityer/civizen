@@ -13,6 +13,7 @@ type DeferredQrCodeProps = {
   bgColor?: string;
   fgColor?: string;
   className?: string;
+  title?: string;
 };
 
 export function DeferredQrCode(props: DeferredQrCodeProps) {

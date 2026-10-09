@@ -254,9 +254,9 @@ describe('civizen score tiers', () => {
 
   it('does not use destructive red for low developmental scores', () => {
     expect(getDevelopmentalScoreColor(8.4, 'explorer')).not.toContain('destructive');
-    expect(getDevelopmentalScoreColor(8.4, 'explorer')).toBe('text-[#7B8AA1]');
-    expect(getDevelopmentalScoreColor(42, 'builder')).toBe('text-[#2BA8A0]');
-    expect(getDevelopmentalScoreColor(90, 'steward')).toBe('text-[#D9A441]');
+    expect(getDevelopmentalScoreColor(8.4, 'explorer')).toBe('text-[#5F6E86]');
+    expect(getDevelopmentalScoreColor(42, 'builder')).toBe('text-[#1F7F79]');
+    expect(getDevelopmentalScoreColor(90, 'steward')).toBe('text-[#8A6410]');
   });
 
   it('example: score 78 with Performance 61 qualifies as Contributor not Catalyst', () => {

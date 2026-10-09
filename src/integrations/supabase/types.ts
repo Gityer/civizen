@@ -5211,6 +5211,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"language_packs": {
+                  Row: {
+                    "base_version": string,"built_at": string,"language": string,"pack": NonNullable<Json>,"string_count": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "base_version": string,"built_at"?: string,"language": string,"pack": NonNullable<Json>,"string_count"?: number
+                  }
+                  Update: {
+                    "base_version"?: string,"built_at"?: string,"language"?: string,"pack"?: NonNullable<Json>,"string_count"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"law_articles": {
                   Row: {
                     "body": string | null,"created_at": string,"id": string,"label": string,"section_id": string,"slug": string,"sort_order": number,"summary": string,"updated_at": string

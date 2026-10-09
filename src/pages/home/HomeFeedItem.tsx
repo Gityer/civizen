@@ -82,7 +82,7 @@ export function HomeFeedItem({ model, item, index }: { model: HomeModel; item: H
 
           <div className="flex items-start gap-3">
             <Avatar className="h-10 w-10 shrink-0">
-              <AvatarImage src={post.author?.avatar_url || undefined} />
+              <AvatarImage src={post.author?.avatar_url || undefined} alt="" />
               <AvatarFallback className="bg-secondary text-sm text-secondary-foreground">
                 {getInitials(post.author?.full_name)}
               </AvatarFallback>

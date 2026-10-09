@@ -1,6 +1,7 @@
 import { getCountryName } from './countries';
 import type { BaseTranslations } from './i18n.base';
 import { applyCuratedTranslations } from './i18n/curated';
+import { fetchServerLanguagePack } from './i18n.server-pack';
 import type { LanguageCode, LanguageOption } from './i18n.languages';
 
 export type TranslationTree = Record<string, unknown>;
@@ -357,7 +358,9 @@ export async function loadLanguagePack(language: LanguageCode): Promise<Translat
   const inFlight = inFlightLanguageLoads.get(language);
   if (inFlight) return inFlight;
 
-  const promise = translateTree(baseTranslations, language, new Map())
+  // One server-built pack first (step 8.2); the per-string browser translation stays as the fallback.
+  const promise = fetchServerLanguagePack(language)
+    .then((server) => (server ? (server.pack as TranslationTree) : translateTree(baseTranslations, language, new Map())))
     .then((messages) => {
       const tree = applyCuratedTranslations(language, scrubLegacyBrandTree(messages) as TranslationTree);
       cachedLanguagePacks.set(language, tree);

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { loadLanguageOptions, type LanguageCode, type LanguageOption } from '@/lib/i18n.runtime';
+import { isReviewedLanguage } from '@/lib/i18n/curated';
 import { permissionListHas, permissionListHasAny } from '@/lib/access-control';
 import { canViewCiviAgentSettings } from '@/lib/assistant/interaction-log';
 import { isOfficialCivizenOrgProfile } from '@/lib/civizen-org-account';
@@ -323,14 +324,12 @@ export default function Settings() {
                         <p className="text-sm text-muted-foreground">{t('settings.languageDescription')}</p>
                       </div>
                       <Select value={language} onValueChange={handleLanguageChange}>
-                        <SelectTrigger className="w-auto">
+                        <SelectTrigger className="w-auto" aria-label={t('settings.languageTitle')}>
                           <SelectValue placeholder={t('settings.languageTitle')} />
                         </SelectTrigger>
                         <SelectContent>
                           {languageOptions.map((option) => (
-                            <SelectItem key={option.code} value={option.code}>
-                              {option.label}
-                            </SelectItem>
+                            <SelectItem key={option.code} value={option.code}>{option.label}{isReviewedLanguage(option.code) ? '' : ` · ${t('auth.languageAutomaticTag')}`}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

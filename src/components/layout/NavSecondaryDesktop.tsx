@@ -39,7 +39,7 @@ export function NavSecondaryDesktop() {
         ref={scrollRef}
         role="listbox"
         aria-label="Section navigation"
-        aria-activedescendant={config.value}
+        aria-activedescendant={`nav-secondary-desktop-${config.value}`}
         className="flex items-center gap-0 overflow-x-auto overscroll-x-contain px-4 py-2.5 lg:pr-28 scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         {items.map((item, index) => {
@@ -56,7 +56,8 @@ export function NavSecondaryDesktop() {
               <button
                 ref={isActive ? activeItemRef : undefined}
                 type="button"
-                role="option"
+                id={`nav-secondary-desktop-${item.id}`}
+                      role="option"
                 aria-selected={isActive}
                 disabled={item.disabled}
                 title={item.title}

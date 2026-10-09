@@ -61,6 +61,7 @@ export default function Home() {
                           ? 'bg-sky-500/10 text-sky-600 dark:text-sky-300'
                           : 'bg-muted text-muted-foreground',
                       )}
+                      role="img"
                       aria-label={profile?.is_verified ? t('home.verifiedBadge') : t('home.unverifiedBadge')}
                     >
                       {profile?.is_verified ? <BadgeCheck className="h-3.5 w-3.5" /> : <BadgeX className="h-3.5 w-3.5" />}

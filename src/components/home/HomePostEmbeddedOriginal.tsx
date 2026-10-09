@@ -68,7 +68,7 @@ export function HomePostEmbeddedOriginal({
     >
       <div className="mb-1.5 flex items-center gap-2">
         <Avatar className="h-7 w-7 shrink-0">
-          <AvatarImage src={original.author?.avatar_url || undefined} />
+          <AvatarImage src={original.author?.avatar_url || undefined} alt="" />
           <AvatarFallback className="bg-secondary text-[10px] text-secondary-foreground">
             {initials(authorName)}
           </AvatarFallback>
@@ -103,7 +103,7 @@ export function HomeFullOriginalBody({ original }: HomeFullOriginalDialogBodyPro
     <div className="space-y-3">
       <div className="flex items-center gap-3">
         <Avatar className="h-10 w-10 shrink-0">
-          <AvatarImage src={original.author?.avatar_url || undefined} />
+          <AvatarImage src={original.author?.avatar_url || undefined} alt="" />
           <AvatarFallback className="bg-secondary text-secondary-foreground">
             {initials(authorName)}
           </AvatarFallback>
