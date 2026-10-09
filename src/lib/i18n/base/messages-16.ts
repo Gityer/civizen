@@ -148,6 +148,12 @@ export const m_messages_16 = {
     "bellWithCount": "Notifications, {count} unread",
     "empty": "Nothing to show yet. You will see consultations you follow, results, and Matter updates here.",
     "markAllRead": "Mark all read",
+    "pushEnable": "Notify this device",
+    "pushDisable": "Stop notifying this device",
+    "pushBlocked": "Notifications blocked in the browser",
+    "pushEnabled": "This device will be notified about messages, consultations and Matters.",
+    "pushDenied": "The browser refused notifications. Allow them in the site settings to turn this on.",
+    "pushFailed": "Could not enable notifications on this device.",
     "markAllFailed": "Could not mark notifications as read.",
     "loadFailed": "Notifications could not be loaded."
   },

@@ -8,13 +8,13 @@ import {
   expandAssistantQuery,
   retrievalQueryFor,
 } from '@/lib/assistant/language';
-import { prepareNelaTurn, SCOPE_REFUSAL, UNVERIFIED } from '@/lib/assistant/orchestrator';
+import { prepareCiviTurn, SCOPE_REFUSAL, UNVERIFIED } from '@/lib/assistant/orchestrator';
 import type { HistoryTurn } from '@/lib/assistant/types';
-import { NELA_PAGE_LINKS } from '@/lib/nela-nav-paths';
+import { CIVI_PAGE_LINKS } from '@/lib/civi-nav-paths';
 
 function ask(text: string, audience: 'member' | 'guest' = 'member') {
   const history: HistoryTurn[] = [{ role: 'user', content: text }];
-  return prepareNelaTurn(history, { audience });
+  return prepareCiviTurn(history, { audience });
 }
 
 /**
@@ -129,7 +129,7 @@ describe('Civi answers the October 2026 voting and governance questions', () => 
   });
 
   it('keeps every voting FAQ answer free of routes Civi cannot link', () => {
-    const declared = new Set(NELA_PAGE_LINKS.map((page) => page.href));
+    const declared = new Set(CIVI_PAGE_LINKS.map((page) => page.href));
     const votingFaq = ASSISTANT_FAQ.filter((item) => ENGLISH_CASES.some(([, id]) => id === item.id));
     expect(votingFaq.length).toBeGreaterThan(15);
     for (const item of votingFaq) {

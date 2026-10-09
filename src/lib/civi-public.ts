@@ -4,7 +4,7 @@ import {
   shouldRecordCiviInteraction,
 } from '@/lib/assistant/interaction-log';
 import { learnedMemoryFromRow } from '@/lib/assistant/learned-memory';
-import type { CiviLearnedMemory, HistoryTurn, NelaTurnPrep } from '@/lib/assistant/types';
+import type { CiviLearnedMemory, HistoryTurn, CiviTurnPrep } from '@/lib/assistant/types';
 
 export const CIVI_PUBLIC_HISTORY_LIMIT = 12;
 export const CIVI_PUBLIC_MESSAGE_MAX = 2000;
@@ -30,7 +30,7 @@ export async function listCiviLearnedMemories(): Promise<CiviLearnedMemory[]> {
   }
 }
 
-async function recordPublicFallbackInteraction(question: string, prep: NelaTurnPrep) {
+async function recordPublicFallbackInteraction(question: string, prep: CiviTurnPrep) {
   const source = classifyCiviInteractionSource({ prep, usedModel: false });
   if (!shouldRecordCiviInteraction({ question, source })) return;
   try {
@@ -53,8 +53,8 @@ export async function askCiviPublic(message: string, history: HistoryTurn[] = []
 
   const safeHistory = sanitizeCiviPublicHistory(history);
   const memories = await listCiviLearnedMemories();
-  const { prepareNelaTurn } = await import('@/lib/assistant/orchestrator');
-  const prep = prepareNelaTurn([...safeHistory, { role: 'user', content: trimmed }], {
+  const { prepareCiviTurn } = await import('@/lib/assistant/orchestrator');
+  const prep = prepareCiviTurn([...safeHistory, { role: 'user', content: trimmed }], {
     audience: 'guest',
     learnedMemories: memories,
   });

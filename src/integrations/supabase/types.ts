@@ -7045,6 +7045,40 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"push_dispatch_config": {
+                  Row: {
+                    "dispatch_secret": string | null,"function_url": string | null,"id": boolean,"updated_at": string,"vapid_private_key": string | null,"vapid_public_key": string | null,"vapid_subject": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "dispatch_secret"?: string | null,"function_url"?: string | null,"id"?: boolean,"updated_at"?: string,"vapid_private_key"?: string | null,"vapid_public_key"?: string | null,"vapid_subject"?: string | null
+                  }
+                  Update: {
+                    "dispatch_secret"?: string | null,"function_url"?: string | null,"id"?: boolean,"updated_at"?: string,"vapid_private_key"?: string | null,"vapid_public_key"?: string | null,"vapid_subject"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"push_subscriptions": {
+                  Row: {
+                    "auth": string,"created_at": string,"endpoint": string,"id": string,"last_seen_at": string,"p256dh": string,"profile_id": string,"user_agent": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "auth": string,"created_at"?: string,"endpoint": string,"id"?: string,"last_seen_at"?: string,"p256dh": string,"profile_id": string,"user_agent"?: string | null
+                  }
+                  Update: {
+                    "auth"?: string,"created_at"?: string,"endpoint"?: string,"id"?: string,"last_seen_at"?: string,"p256dh"?: string,"profile_id"?: string,"user_agent"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "push_subscriptions_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"reports": {
                   Row: {
                     "admin_notes": string | null,"created_at": string,"endorsement_id": string | null,"id": string,"reason": string,"report_context": Json | null,"reported_user_id": string | null,"reporter_id": string,"resolved_at": string | null,"status": string | null
@@ -9861,6 +9895,12 @@ isOneToOne: false
                            },
 "publisher_notification_recipients":
 { Args: { "p_publisher_profile_id": string }; Returns: (string)[]
+                           },
+"push_dispatch":
+{ Args: { "payload": Json }; Returns: undefined
+                           },
+"push_vapid_public_key":
+{ Args: Record<PropertyKey, never>; Returns: string
                            },
 "queue_matter_agent_run":
 { Args: { "p_assignment_id": string }; Returns: string

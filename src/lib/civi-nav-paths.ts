@@ -1,7 +1,7 @@
 import { agreementsCreatePath } from '@/lib/agreements-model';
 
 /** Visible in-app paths Civi should speak, longest labels first for link matching. */
-export const NELA_PAGE_LINKS: readonly { label: string; href: string }[] = [
+export const CIVI_PAGE_LINKS: readonly { label: string; href: string }[] = [
   { label: 'Why Civizen Exists', href: '/why-this-exists' },
   { label: 'Community Governance Charter', href: '/governance/charter' },
   { label: 'Organization Partnership', href: '/partners' },
@@ -39,7 +39,7 @@ export const NELA_PAGE_LINKS: readonly { label: string; href: string }[] = [
 ];
 
 /** Selectable agreement types in Civi’s main answer → New agreement for that type. */
-export const NELA_CHOICE_LINKS: readonly { label: string; href: string; listItem?: boolean }[] = [
+export const CIVI_CHOICE_LINKS: readonly { label: string; href: string; listItem?: boolean }[] = [
   { label: 'Partnership / Collaboration', href: agreementsCreatePath({ agreementType: 'partnership' }) },
   { label: 'Service / Contribution', href: agreementsCreatePath({ agreementType: 'service_contribution' }) },
   { label: 'Funding / Sponsorship', href: agreementsCreatePath({ agreementType: 'funding' }) },
@@ -63,6 +63,6 @@ export const NELA_CHOICE_LINKS: readonly { label: string; href: string; listItem
   { label: 'Lease', href: agreementsCreatePath({ agreementType: 'lease' }), listItem: true },
 ];
 
-export function nelaOpenPath(...screens: string[]): string {
+export function civiOpenPath(...screens: string[]): string {
   return `Open ${screens.join(' > ')}`;
 }

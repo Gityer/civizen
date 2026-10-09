@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { isPeaceCooperationAsk, PEACE_COOPERATION_REPLY } from '@/lib/assistant/peace';
-import { prepareNelaTurn } from '@/lib/assistant/orchestrator';
+import { prepareCiviTurn } from '@/lib/assistant/orchestrator';
 import type { HistoryTurn } from '@/lib/assistant/types';
 
 function turn(content: string, history: HistoryTurn[] = []): HistoryTurn[] {
@@ -17,7 +17,7 @@ describe('Civi peace and cooperation', () => {
   });
 
   it('answers a first-message peace ask with practical Civizen steps, not manifesto recap', () => {
-    const prep = prepareNelaTurn(turn('How can we stop wars?'), { audience: 'guest' });
+    const prep = prepareCiviTurn(turn('How can we stop wars?'), { audience: 'guest' });
     expect(prep.inScope).toBe(true);
     expect(prep.skipLlm).toBe(true);
     expect(prep.groundedAnswer).toBe(PEACE_COOPERATION_REPLY);
@@ -43,7 +43,7 @@ describe('Civi peace and cooperation', () => {
           'Civizen is an open participatory system for organizing how humanity learns, contributes, collaborates, governs, shares resources, solves common challenges, and continuously improves the systems we live and work within.',
       },
     ];
-    const prep = prepareNelaTurn(turn('How can we stop wars?', history), { audience: 'guest' });
+    const prep = prepareCiviTurn(turn('How can we stop wars?', history), { audience: 'guest' });
     expect(prep.diagnostics.matchedFaqId).toBe('how_can_we_stop_wars');
     expect(prep.groundedAnswer).toBe(PEACE_COOPERATION_REPLY);
   });

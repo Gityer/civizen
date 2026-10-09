@@ -359,7 +359,7 @@ function matchFeatureTopic(story: DevelopmentStory): TopicMatch | null {
   if (/\b(nela|gemini|openai|self[- ]?hosted|api key|\bai key\b|llm)\b/i.test(blob)) {
     return {
       groupKey: 'development|topic|nela-ai',
-      featureTitle: 'Configure Nela AI assistant and model hosting',
+      featureTitle: 'Configure Civi AI assistant and model hosting',
     };
   }
 

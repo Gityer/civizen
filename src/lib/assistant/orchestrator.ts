@@ -10,7 +10,7 @@ import {
 } from './language';
 import { isPeaceCooperationAsk, PEACE_COOPERATION_FAQ_ID, PEACE_COOPERATION_REPLY } from './peace';
 import { pickLearnedMemory } from './learned-memory';
-import { buildNelaSystemPrompt, formatRetrievedContext, shouldSkipLlm } from './prompt';
+import { buildCiviSystemPrompt, formatRetrievedContext, shouldSkipLlm } from './prompt';
 import { resolveConversationalQuery } from './query-rewrite';
 import { preferCurrentEvidence, retrieveKnowledge, tokenize } from './retrieval';
 import { classifyRequest, planResources, retrievalConfidence, shouldInvokeExternalSearch } from './routing';
@@ -21,8 +21,8 @@ import type {
   ExternalResourceKind,
   HistoryTurn,
   KnowledgePack,
-  NelaTurnPrep,
-  PrepareNelaTurnOptions,
+  CiviTurnPrep,
+  PrepareCiviTurnOptions,
   RetrievalResult,
 } from './types';
 import { KNOWLEDGE_PACK as GENERATED_PACK } from './generated/knowledge-pack';
@@ -176,7 +176,7 @@ function composeVerification(previousClaim: string | null, answer: string): stri
   return `I re-checked against current Civizen sources and need to correct that. ${core}`;
 }
 
-export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTurnOptions = {}): NelaTurnPrep {
+export function prepareCiviTurn(messages: HistoryTurn[], options: PrepareCiviTurnOptions = {}): CiviTurnPrep {
   const pack = options.pack ?? GENERATED_PACK;
   const latest = [...messages].reverse().find((m) => m.role === 'user');
   const latestText = latest?.content.trim() ?? '';
@@ -296,7 +296,7 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
   }
 
   const retrievedContext = formatRetrievedContext(retrieval, options.runtimeData?.summary);
-  const systemPrompt = buildNelaSystemPrompt({
+  const systemPrompt = buildCiviSystemPrompt({
     pack,
     resolvedQuery,
     retrievedContext,
@@ -307,7 +307,7 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
     language,
   });
 
-  const prep: NelaTurnPrep = {
+  const prep: CiviTurnPrep = {
     resolvedQuery,
     inScope,
     isGreeting: greeting,
@@ -355,7 +355,7 @@ export function prepareNelaTurn(messages: HistoryTurn[], options: PrepareNelaTur
 }
 
 /** English evidence for a non-English question needs the model unless a hand-written answer was used. */
-function answerIsLocalized(prep: NelaTurnPrep, language: AssistantLanguage): boolean {
+function answerIsLocalized(prep: CiviTurnPrep, language: AssistantLanguage): boolean {
   if (language === 'en') return true;
   if (!prep.inScope || prep.isGreeting) return true;
   const faqId = prep.diagnostics.matchedFaqId;

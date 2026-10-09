@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 /**
- * Generate Nela's searchable knowledge pack and edge-function bundle.
+ * Generate Civi's searchable knowledge pack and edge-function bundle.
  * Usage:
  *   npx tsx scripts/assistant-knowledge.ts
  *   npx tsx scripts/assistant-knowledge.ts --check
@@ -25,13 +25,13 @@ import { AGREEMENT_TYPES } from '../src/lib/agreements-model.ts';
 import { APP_ROLES } from '../src/lib/access-control.ts';
 import { CONTRIBUTE_LANES } from '../src/lib/contribute-lanes.ts';
 import { MAIN_NAV_ITEMS } from '../src/lib/main-nav.ts';
-import { NELA_PAGE_LINKS } from '../src/lib/nela-nav-paths.ts';
+import { CIVI_PAGE_LINKS } from '../src/lib/civi-nav-paths.ts';
 import { LUMA_PROTOTYPE_NOTICE } from '../src/lib/prototype-credits.ts';
 import { listCurrentAreas } from '../src/lib/classification/registry.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const packPath = resolve(root, 'src/lib/assistant/generated/knowledge-pack.ts');
-const bundlePath = resolve(root, 'supabase/functions/messaging-agent-reply/nela-bundle.js');
+const bundlePath = resolve(root, 'supabase/functions/messaging-agent-reply/civi-bundle.js');
 const checkOnly = process.argv.includes('--check');
 
 function fail(message: string): never {
@@ -130,8 +130,8 @@ function structuredChunks(): KnowledgeChunk[] {
     {
       id: 'registry:civi-pages',
       title: 'Pages Civi can open',
-      path: 'src/lib/nela-nav-paths.ts',
-      text: `Civi can link these live pages in answers: ${NELA_PAGE_LINKS.map((page) => `${page.label} (${page.href})`).join('; ')}.`,
+      path: 'src/lib/civi-nav-paths.ts',
+      text: `Civi can link these live pages in answers: ${CIVI_PAGE_LINKS.map((page) => `${page.label} (${page.href})`).join('; ')}.`,
       status: 'implemented',
       priority: SOURCE_PRIORITY.runtimeStructured,
       kind: 'registry',
@@ -297,7 +297,7 @@ const pack: KnowledgePack = {
 
 if (checkOnly) {
   if (!existsSync(packPath) || !existsSync(bundlePath)) {
-    fail('generated knowledge pack or nela-bundle.js missing; run npm run assistant:knowledge');
+    fail('generated knowledge pack or civi-bundle.js missing; run npm run assistant:knowledge');
   }
   const current = readFileSync(packPath, 'utf8');
   const match = current.match(/"sourceFingerprint": "([a-f0-9]+)"/);
@@ -306,7 +306,7 @@ if (checkOnly) {
   }
   const bundle = readFileSync(bundlePath, 'utf8');
   if (!bundle.includes(sourceFingerprint)) {
-    fail('nela-bundle.js does not contain current knowledge fingerprint; run npm run assistant:knowledge');
+    fail('civi-bundle.js does not contain current knowledge fingerprint; run npm run assistant:knowledge');
   }
   console.log(`assistant:knowledge OK (${chunks.length} chunks, ${APP_VERSION})`);
   process.exit(0);

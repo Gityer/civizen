@@ -72,7 +72,7 @@ Record the applied range and the backup file name in the plan tracker
 npm run release:bump -- patch
 ```
 
-`release:bump` also regenerates the Civi knowledge pack (`src/lib/assistant/generated/knowledge-pack.ts` and `supabase/functions/messaging-agent-reply/nela-bundle.js`); commit both with the release and copy the bundle to the functions volume when deploying. CI's `assistant:knowledge:check` fails when the pack lags the app version (it did for v0.1.202 and v0.1.203).
+`release:bump` also regenerates the Civi knowledge pack (`src/lib/assistant/generated/knowledge-pack.ts` and `supabase/functions/messaging-agent-reply/civi-bundle.js`); commit both with the release and copy the bundle to the functions volume when deploying. CI's `assistant:knowledge:check` fails when the pack lags the app version (it did for v0.1.202 and v0.1.203).
 
 You can also use `minor`, `major`, or an explicit version such as:
 

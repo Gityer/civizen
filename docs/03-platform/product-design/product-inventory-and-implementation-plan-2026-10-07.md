@@ -236,7 +236,7 @@ Legend: ✅ working · 🟡 partial · ⚪ stub or placeholder · 📐 planned, 
 | Grounded answers from knowledge pack, capability catalog, cheat sheet; Gemini / OpenAI fallback; EN/HY/RU detection; voting FAQ hand-written in HY/RU; learned-answer memory | ✅ | Knowledge regenerated per release; edge function and client bundle both need deploying. |
 | Actions, member-data context, authorized runtime data | 📐 | Not wired; "my account" questions get a fixed English reply. |
 | Guest rate limit | 🟡 | In-memory, per spoofable header. |
-| Admin page `/settings/ai-agent` | 🟡 | Read-only log, not settings. Old name "Nela" remains in bundle and ids. |
+| Admin page `/settings/ai-agent` | 🟡 | Read-only log, not settings. Old name "Civi" remains in bundle and ids. |
 
 ### 5.15 Happiness, Work Fulfillment, Wellbeing Insights
 | Capability | Status | Notes |
@@ -414,7 +414,7 @@ Goal: a newcomer signs up, finds a public Matter or raises one, discusses, suppo
 | 7.1 | Attachments in encrypted chats (encrypt file keys); key backup/recovery phrase; multi-device. | L |
 | 7.2 | Push notifications (Capacitor plugin + edge function) for messages, calls, votes and Matters; web push where supported. | L |
 | 7.3 | Real group conversations (schema, membership, RLS) if the owner confirms the need. | L |
-| 7.4 | Civi: member-data context under authorization (my votes, my matters, my agreements), page actions, server-side rate limiting, remove "Nela" remnants; split `chat-bar.tsx` under the 400-line rule. | M |
+| 7.4 | Civi: member-data context under authorization (my votes, my matters, my agreements), page actions, server-side rate limiting, remove "Civi" remnants; split `chat-bar.tsx` under the 400-line rule. | M |
 
 ### Phase 8 — Languages and accessibility (continuous; milestone weeks 14–16)
 | Step | What | Size |
@@ -465,6 +465,7 @@ Typed client in the remaining civic-voting files and Wellbeing types; delete dea
 | D6 | Legacy governance proposal system | **Retire for members; keep steward console** | Rebuild server-side |
 | D7 | iOS timing | **After Phase 2 (participation loop first)** | Start now in parallel |
 | D8 | Phone sign-up | **Disable until SMS OTP exists** | Add SMS provider now |
+| D9 | Group chats (7.3) | **Build real groups (schema, membership, RLS) only if members ask; until then keep 1:1 and Civi** | Build now |
 
 ## 10. Status tracker
 
@@ -523,6 +524,9 @@ Typed client in the remaining civic-voting files and Wellbeing types; delete dea
 | 6.2 (Jobs) Review and poster control | shipped (next release) — posters edit pay, city and notes and withdraw their own posting from the board; market managers (and settings/role admins) review every posting at Settings › Review Jobs postings with new / reviewing / contacted / closed / spam. Seeker names are shown as first name plus initial by the public list function (no username inference). Product listings stay retired (D3) | same migration; SQL test `phase6_jobs_fund_agreements_test.sql`; `MarketJobsAdmin.tsx` | 2026-10-09 |
 | 6.3 Prototype credits | shipped (next release) — the last credits entry point (a Settings card pointing at a retired route) is removed; `prototype-credits.ts` remains only as a referenced library with no UI. One demonstration note lives on Earnings ("Civizen records agreements; it does not move money") | `Settings.tsx`, `Earnings.tsx` | 2026-10-09 |
 | 6.4 Fund | shipped (next release) — a new inquiry notifies founders and admins (notification with a link to Funding › Interest); the transparency publish switch sits on the Funding Overview beside the Sources ledger; the legacy ledger, audit, compliance and contributors tabs are retired (pages removed, old paths land on Sources; tables stay for a later schema cleanup) | same migration; `FundingTransparencyPublishCard.tsx`, `admin-sections.test.ts` | 2026-10-09 |
-| 4.1 (rest), 7.x–11 | planned | | |
+| 7.4 Civi | shipped (next release) — Civi answers "my" questions from the member's own records read with the member's token (civic status, Matters, agreements, ballots cast; counts and titles only), rate limits per member (12 turns a minute, answered in the chat) and globally for guests from the interaction log, and every remaining Nela identifier, copy key and the bundle name are Civi (database identifiers kept). Remaining: splitting `chat-bar.tsx` (4,840 lines) under the 400-line rule | `messaging-agent-reply/index.ts`, `civi-bundle.js` | 2026-10-09 |
+| 7.2 (web) Push notifications | shipped (next release) — a member turns on "Notify this device" on the Notifications page; the browser subscription is stored per device; every new notification and every new private message (sender name only, no content) is handed by the database to the push-dispatch function through pg_net and delivered by Web Push with the project's own VAPID keys (configuration lives server-side in `push_dispatch_config`). Native Android (FCM) and iOS need Firebase / an installed PWA: operator task | migration `20261010150000_web_push.sql`; SQL test `web_push_test.sql`; `push-dispatch/index.ts`; `public/push-sw.js` | 2026-10-09 |
+| 7.3 Group chats | needs owner decision D9 (see Section 9) | | |
+| 4.1 (rest), 7.1, 8.x–11 | planned | | |
 
 Already shipped before this plan (for reference): sealed ballots with receipts and hash-chained events, approval and ranked ballots, server eligibility (sanctions, age, scope), hourly lifecycle tick with outcome, member-supported proposals, one member Governance workspace page, notification center, hand-written HY/RU for voting, error reporting hook, skip link, axe tests, Playwright ballot spec, typed client regeneration, landing consultation banner, production-by-default releases (voting audit §6).

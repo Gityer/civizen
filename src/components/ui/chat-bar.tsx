@@ -80,7 +80,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import {
   CIVI_ASSISTANT_DISPLAY_NAME,
   CIVI_ASSISTANT_USERNAME,
-  NELA_ASSISTANT_PROFILE_ID,
+  CIVI_ASSISTANT_PROFILE_ID,
   resolveMessagingAvatarUrl,
 } from '@/lib/messaging-constants';
 import { shareCivizenInvite } from '@/lib/civizen-invite';
@@ -513,7 +513,7 @@ export function ChatBar({
     const out: { id: string; name: string }[] = [];
     for (const row of conversations) {
       if (row.kind !== 'direct') continue;
-      if (row.peer_profile_id === NELA_ASSISTANT_PROFILE_ID) continue;
+      if (row.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID) continue;
       out.push({
         id: row.peer_profile_id,
         name: row.peer_full_name || row.peer_username || t('chatBar.anonymous'),
@@ -540,7 +540,7 @@ export function ChatBar({
   const directDmE2eeReady = useMemo(() => {
     if (!selectedConversationId) return false;
     const row = conversations.find((c) => c.conversation_id === selectedConversationId);
-    if (!row || row.kind !== 'direct' || row.peer_profile_id === NELA_ASSISTANT_PROFILE_ID) return false;
+    if (!row || row.kind !== 'direct' || row.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID) return false;
     if (!localMessagingSecretKey || localMessagingSecretKey.length !== 32) return false;
     if (!peerMessagingPublicKeyB64) return false;
     const peerPk = decodePublicKeyBase64(peerMessagingPublicKeyB64);
@@ -811,18 +811,18 @@ export function ChatBar({
     [blockedProfileIds, profile?.id],
   );
 
-  const nelaListRow = useMemo(
+  const civiListRow = useMemo(
     () =>
       conversations.find(
-        (r) => r.kind === 'agent' && r.peer_profile_id === NELA_ASSISTANT_PROFILE_ID,
+        (r) => r.kind === 'agent' && r.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID,
       ) ?? null,
     [conversations],
   );
 
-  const dmRowsWithoutNela = useMemo(
+  const dmRowsWithoutCivi = useMemo(
     () =>
       conversations.filter(
-        (row) => !(row.kind === 'agent' && row.peer_profile_id === NELA_ASSISTANT_PROFILE_ID),
+        (row) => !(row.kind === 'agent' && row.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID),
       ),
     [conversations],
   );
@@ -830,28 +830,28 @@ export function ChatBar({
   const filteredDmRows = useMemo(() => {
     if (inboxFilter.startsWith('custom:')) {
       const group = customInboxGroups.find((entry) => `custom:${entry.id}` === inboxFilter);
-      if (!group) return dmRowsWithoutNela;
+      if (!group) return dmRowsWithoutCivi;
       const q = group.name.trim().toLowerCase();
-      if (!q) return dmRowsWithoutNela;
-      return dmRowsWithoutNela.filter((row) =>
+      if (!q) return dmRowsWithoutCivi;
+      return dmRowsWithoutCivi.filter((row) =>
         `${row.peer_full_name ?? ''} ${row.peer_username ?? ''} ${row.last_content ?? ''}`
           .toLowerCase()
           .includes(q),
       );
     }
     if (inboxFilter === 'favourites') {
-      return dmRowsWithoutNela.filter((r) => favouriteConversationIds.has(r.conversation_id));
+      return dmRowsWithoutCivi.filter((r) => favouriteConversationIds.has(r.conversation_id));
     }
     if (inboxFilter === 'unread') {
-      return dmRowsWithoutNela.filter((r) => {
+      return dmRowsWithoutCivi.filter((r) => {
         if (!r.last_at) return false;
         const readAt = lastReadAtByConversation[r.conversation_id];
         if (!readAt) return true;
         return new Date(r.last_at) > new Date(readAt);
       });
     }
-    return dmRowsWithoutNela;
-  }, [dmRowsWithoutNela, inboxFilter, favouriteConversationIds, lastReadAtByConversation, customInboxGroups]);
+    return dmRowsWithoutCivi;
+  }, [dmRowsWithoutCivi, inboxFilter, favouriteConversationIds, lastReadAtByConversation, customInboxGroups]);
 
   const createCustomInboxGroup = useCallback(() => {
     const name = newGroupName.trim();
@@ -876,28 +876,28 @@ export function ChatBar({
     });
   }, [customGroupsStorageOwner, newGroupName]);
 
-  const showNelaPinnedInInbox = useMemo(() => {
+  const showCiviPinnedInInbox = useMemo(() => {
     if (inboxFilter === 'all') return true;
-    if (!nelaListRow) return true;
+    if (!civiListRow) return true;
     if (inboxFilter === 'favourites') {
-      return favouriteConversationIds.has(nelaListRow.conversation_id);
+      return favouriteConversationIds.has(civiListRow.conversation_id);
     }
     if (inboxFilter === 'unread') {
-      if (!nelaListRow.last_at) return false;
-      const readAt = lastReadAtByConversation[nelaListRow.conversation_id];
+      if (!civiListRow.last_at) return false;
+      const readAt = lastReadAtByConversation[civiListRow.conversation_id];
       if (!readAt) return true;
-      return new Date(nelaListRow.last_at) > new Date(readAt);
+      return new Date(civiListRow.last_at) > new Date(readAt);
     }
     return true;
-  }, [inboxFilter, nelaListRow, favouriteConversationIds, lastReadAtByConversation]);
+  }, [inboxFilter, civiListRow, favouriteConversationIds, lastReadAtByConversation]);
 
   const threadPeerTitle = useMemo(() => {
     if (selectedConversationRow) {
       if (
         selectedConversationRow.kind === 'agent' &&
-        selectedConversationRow.peer_profile_id === NELA_ASSISTANT_PROFILE_ID
+        selectedConversationRow.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID
       ) {
-        return t('chatBar.private.nelaPinnedLabel');
+        return t('chatBar.private.civiPinnedLabel');
       }
       return (
         selectedConversationRow.peer_full_name ||
@@ -908,7 +908,7 @@ export function ChatBar({
     if (routeConversationId) {
       const k = resolveConversationKind(routeConversationId, conversations, conversationKindByIdRef);
       if (k === 'agent') {
-        return t('chatBar.private.nelaPinnedLabel');
+        return t('chatBar.private.civiPinnedLabel');
       }
     }
     return t('chatBar.inbox.threadLoadingTitle');
@@ -919,7 +919,7 @@ export function ChatBar({
   const isThreadAgent = Boolean(
     selectedConversationRow &&
       selectedConversationRow.kind === 'agent' &&
-      selectedConversationRow.peer_profile_id === NELA_ASSISTANT_PROFILE_ID,
+      selectedConversationRow.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID,
   );
   const threadAvatarUrl = resolveMessagingAvatarUrl(
     selectedConversationRow?.peer_profile_id,
@@ -1328,7 +1328,7 @@ export function ChatBar({
           .select('id, username, full_name, avatar_url')
           .or(`username.ilike.%${q}%,full_name.ilike.%${q}%`)
           .neq('id', profile.id)
-          .neq('id', NELA_ASSISTANT_PROFILE_ID)
+          .neq('id', CIVI_ASSISTANT_PROFILE_ID)
           .limit(12);
 
         if (!error && data) {
@@ -1467,7 +1467,7 @@ export function ChatBar({
       return;
     }
     const sel = conversations.find((c) => c.conversation_id === selectedConversationId);
-    if (!sel || sel.kind !== 'direct' || sel.peer_profile_id === NELA_ASSISTANT_PROFILE_ID) {
+    if (!sel || sel.kind !== 'direct' || sel.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID) {
       setPeerMessagingPublicKeyB64(null);
       return;
     }
@@ -1538,7 +1538,7 @@ export function ChatBar({
         if (!rows.some((r) => r.kind === 'agent')) {
           const { error: agentErr } = await supabase.rpc('private_get_or_create_agent_conversation');
           if (agentErr) {
-            console.error('ChatBar: ensure Nela conversation failed', agentErr);
+            console.error('ChatBar: ensure Civi conversation failed', agentErr);
           } else {
             const { data: again } = await supabase.rpc('private_list_my_conversations');
             if (!cancelled && again) {
@@ -2900,14 +2900,14 @@ export function ChatBar({
     }
   };
 
-  const openNelaConversation = useCallback(async () => {
+  const openCiviConversation = useCallback(async () => {
     if (!profile?.id) return;
     const { data, error } = await supabase.rpc('private_get_or_create_agent_conversation');
     if (error || data == null) {
-      console.error('ChatBar: open Nela conversation failed', error);
+      console.error('ChatBar: open Civi conversation failed', error);
       const reason = error?.message?.trim();
       toast.error(
-        reason ? t('chatBar.private.nelaOpenFailedWithReason', { reason }) : t('chatBar.private.nelaOpenFailed'),
+        reason ? t('chatBar.private.civiOpenFailedWithReason', { reason }) : t('chatBar.private.civiOpenFailed'),
       );
       return;
     }
@@ -2920,7 +2920,7 @@ export function ChatBar({
       const row: PrivateConversationRow = {
         conversation_id: convId,
         kind: 'agent',
-        peer_profile_id: NELA_ASSISTANT_PROFILE_ID,
+        peer_profile_id: CIVI_ASSISTANT_PROFILE_ID,
         peer_username: CIVI_ASSISTANT_USERNAME,
         peer_full_name: CIVI_ASSISTANT_DISPLAY_NAME,
         peer_avatar_url: null,
@@ -3398,8 +3398,8 @@ export function ChatBar({
     </div>
   );
 
-  // Do not gate typing on conversationsLoading: list/Nela-ensure can hang or take long,
-  // and a selected thread (including Nela) must stay editable while the inbox refreshes.
+  // Do not gate typing on conversationsLoading: list/Civi-ensure can hang or take long,
+  // and a selected thread (including Civi) must stay editable while the inbox refreshes.
   const composerDisabled =
     messageSelectionMode ||
     (isDirectThread && isThreadBlocked) ||
@@ -3883,10 +3883,10 @@ export function ChatBar({
                               {t('chatBar.private.conversationsHint')}
                             </p>
                             <div className="max-h-[min(40vh,320px)] overflow-y-auto">
-                              {showNelaPinnedInInbox ? (
+                              {showCiviPinnedInInbox ? (
                               <CiviInboxRow
-                                label={t('chatBar.private.nelaPinnedLabel')}
-                                onOpen={() => void openNelaConversation()}
+                                label={t('chatBar.private.civiPinnedLabel')}
+                                onOpen={() => void openCiviConversation()}
                               />
                               ) : null}
                               {conversationsLoading && conversations.length === 0 ? (
@@ -4321,12 +4321,12 @@ export function ChatBar({
                             </p>
                             <div className="max-h-36 overflow-y-auto">
                               <CiviInboxRow
-                                label={t('chatBar.private.nelaPinnedLabel')}
+                                label={t('chatBar.private.civiPinnedLabel')}
                                 selected={
                                   selectedConversationRow?.kind === 'agent' &&
-                                  selectedConversationRow.peer_profile_id === NELA_ASSISTANT_PROFILE_ID
+                                  selectedConversationRow.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID
                                 }
-                                onOpen={() => void openNelaConversation()}
+                                onOpen={() => void openCiviConversation()}
                               />
                               {conversationsLoading && conversations.length === 0 ? (
                                 <div className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground">
@@ -4340,7 +4340,7 @@ export function ChatBar({
                                       (row) =>
                                         !(
                                           row.kind === 'agent' &&
-                                          row.peer_profile_id === NELA_ASSISTANT_PROFILE_ID
+                                          row.peer_profile_id === CIVI_ASSISTANT_PROFILE_ID
                                         ),
                                     )
                                     .map((row) => (
@@ -4488,7 +4488,7 @@ export function ChatBar({
                 ) : null}
                 <p className="text-xs text-muted-foreground">
                   {isThreadAgent
-                    ? t('chatBar.private.nelaPinnedSubtitle')
+                    ? t('chatBar.private.civiPinnedSubtitle')
                     : t('chatBar.private.profile.endToEndStatus', {
                         status: directDmE2eeReady ? t('chatBar.private.profile.encrypted') : t('chatBar.private.profile.standard'),
                       })}

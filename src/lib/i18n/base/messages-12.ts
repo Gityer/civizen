@@ -102,11 +102,11 @@ export const m_messages_12 = {
       "conversationsHint": "Your chats",
       "loadFailed": "Could not load your conversations.",
       "loadFailedWithReason": "Could not load your conversations. {reason}",
-      "nelaPinnedSubtitle": "Your AI Assistant",
-      "nelaPinnedLabel": "Civi. Your AI Assistant",
-      "nelaOpenFailed":
+      "civiPinnedSubtitle": "Your AI Assistant",
+      "civiPinnedLabel": "Civi. Your AI Assistant",
+      "civiOpenFailed":
         "Could not open a chat with Civi. Your Supabase project may be missing the private messaging migrations, or the Civi system profile row may not exist yet.",
-      "nelaOpenFailedWithReason": "Could not open a chat with Civi: {reason}",
+      "civiOpenFailedWithReason": "Could not open a chat with Civi: {reason}",
       "selectThread": "Pick a chat from the list above.",
       "openDmFailed": "Could not open this chat.",
       "sendFailed": "Your message could not be sent. Please try again.",

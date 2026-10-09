@@ -1,5 +1,5 @@
 import { ASSISTANT_LANGUAGE_NAMES, type AssistantLanguage } from './language';
-import type { KnowledgePack, NelaTurnPrep, ResourcePlan, RetrievalResult } from './types';
+import type { KnowledgePack, CiviTurnPrep, ResourcePlan, RetrievalResult } from './types';
 
 const CORE_INSTRUCTIONS = [
   'You are Civi, Civizen’s AI assistant for this Civizen build.',
@@ -52,7 +52,7 @@ export function formatRetrievedContext(retrieval: RetrievalResult, runtimeSummar
   return parts.join('\n\n');
 }
 
-export function buildNelaSystemPrompt(args: {
+export function buildCiviSystemPrompt(args: {
   pack: KnowledgePack;
   resolvedQuery: string;
   retrievedContext: string;
@@ -98,7 +98,7 @@ export function buildNelaSystemPrompt(args: {
 }
 
 export function shouldSkipLlm(
-  prep: Pick<NelaTurnPrep, 'resourcePlan' | 'diagnostics' | 'isGreeting' | 'inScope'>,
+  prep: Pick<CiviTurnPrep, 'resourcePlan' | 'diagnostics' | 'isGreeting' | 'inScope'>,
   options?: { answerIsLocalized?: boolean },
 ): boolean {
   if (prep.diagnostics.usedLearnedMemoryKey) return true;

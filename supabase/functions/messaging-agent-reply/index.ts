@@ -1,5 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
-import { prepareNelaTurn, learnedMemoryFromRow, reviewLlmAnswerForLearning } from './nela-bundle.js';
+import { prepareCiviTurn, learnedMemoryFromRow, reviewLlmAnswerForLearning } from './civi-bundle.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,7 +13,7 @@ const AGENT_PROFILE_ID = 'a0000000-0000-4000-8000-000000000001';
 const CIVIZEN_PRODUCT_SUMMARY =
   'Civizen is a human-centered platform and movement designed to help people unite, grow, and govern more wisely through education, responsibility, transparency, and AI-assisted civic collaboration.';
 
-const NELA_FALLBACK_SYSTEM_PROMPT =
+const CIVI_FALLBACK_SYSTEM_PROMPT =
   'You are Civi, Civizen’s AI assistant for this Civizen build. ' +
   CIVIZEN_PRODUCT_SUMMARY +
   ' For questions about Civizen current functionality, architecture, rules, governance, terminology, capabilities, or policies, rely on the supplied current Civizen knowledge and retrieved project sources. Do not invent missing project facts from general model knowledge. ' +
@@ -44,8 +44,8 @@ type ModerationMetricCategory =
   | 'abuse_harassment'
   | 'abuse_sexual_minors';
 
-/** Prior Nela placeholder replies confuse Gemini (HTTP 200 but no output `parts`). */
-function isFailedNelaPlaceholderAssistant(turn: HistoryTurn): boolean {
+/** Prior Civi placeholder replies confuse Gemini (HTTP 200 but no output `parts`). */
+function isFailedCiviPlaceholderAssistant(turn: HistoryTurn): boolean {
   if (turn.role !== 'assistant') return false;
   const c = turn.content.trim().toLowerCase();
   if (!c) return true;
@@ -83,7 +83,7 @@ function isInaccurateCivizenFramingAssistant(turn: HistoryTurn): boolean {
 function compactHistoryForLlm(turns: HistoryTurn[]): HistoryTurn[] {
   const filtered = turns.filter((t) => {
     if (!t.content.trim()) return false;
-    if (isFailedNelaPlaceholderAssistant(t)) return false;
+    if (isFailedCiviPlaceholderAssistant(t)) return false;
     if (isInaccurateCivizenFramingAssistant(t)) return false;
     return true;
   });
@@ -106,7 +106,7 @@ type ResolvedLlm =
   | { kind: 'openai'; key: string };
 
 function resolveLlm(): ResolvedLlm {
-  const explicit = (Deno.env.get('NELA_LLM_PROVIDER') ?? '').trim().toLowerCase();
+  const explicit = (Deno.env.get('CIVI_LLM_PROVIDER') ?? Deno.env.get('NELA_LLM_PROVIDER') ?? '').trim().toLowerCase();
   const geminiKey = (Deno.env.get('GEMINI_API_KEY') ?? '').trim();
   const openaiKey = (Deno.env.get('OPENAI_API_KEY') ?? '').trim();
   const geminiModel = (Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash-lite').trim();
@@ -300,7 +300,7 @@ function abuseMetricCategory(category: AbuseCategory): ModerationMetricCategory 
   }
 }
 
-function normalizeNelaStyle(text: string): string {
+function normalizeCiviStyle(text: string): string {
   const stripped = text
     .replace(/\bAs an AI assistant,?\s*/i, '')
     .replace(/\bAs an AI language model,?\s*/i, '')
@@ -356,7 +356,7 @@ async function completeOpenAi(key: string, history: HistoryTurn[], systemPrompt:
       temperature: 0.3,
       max_tokens: 600,
       messages: [
-        { role: 'system', content: systemPrompt || NELA_FALLBACK_SYSTEM_PROMPT },
+        { role: 'system', content: systemPrompt || CIVI_FALLBACK_SYSTEM_PROMPT },
         ...turns.map((h) => ({ role: h.role, content: h.content })),
       ],
     }),
@@ -414,7 +414,7 @@ async function completeGemini(
   )}:generateContent`;
 
   const buildBody = (turns: HistoryTurn[]) => ({
-    systemInstruction: { parts: [{ text: systemPrompt || NELA_FALLBACK_SYSTEM_PROMPT }] },
+    systemInstruction: { parts: [{ text: systemPrompt || CIVI_FALLBACK_SYSTEM_PROMPT }] },
     contents: turns.map((h) => ({
       role: h.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: h.content }],
@@ -530,7 +530,7 @@ function sanitizePublicHistory(raw: unknown): HistoryTurn[] {
 }
 
 function classifyCiviInteractionSource(args: {
-  prep: ReturnType<typeof prepareNelaTurn> | null;
+  prep: ReturnType<typeof prepareCiviTurn> | null;
   usedModel: boolean;
   abused?: boolean;
 }): 'knowledge' | 'memory' | 'model' | 'refusal' | 'greeting' {
@@ -571,7 +571,7 @@ async function rememberCheckedReply(
   admin: ReturnType<typeof createClient>,
   question: string,
   replyText: string,
-  prep: ReturnType<typeof prepareNelaTurn>,
+  prep: ReturnType<typeof prepareCiviTurn>,
 ): Promise<boolean> {
   try {
     if (prep.diagnostics.usedLearnedMemoryKey) {
@@ -601,7 +601,7 @@ async function recordInteraction(
     answer: string;
     audience: 'guest' | 'member';
     channel: 'public' | 'messaging';
-    prep: ReturnType<typeof prepareNelaTurn> | null;
+    prep: ReturnType<typeof prepareCiviTurn> | null;
     usedModel: boolean;
     abused?: boolean;
     remembered?: boolean;
@@ -643,7 +643,7 @@ async function replyFromHistory(
   if (abuseCategory) {
     return {
       replyText: abuseRefusalReply(abuseCategory),
-      prep: null as ReturnType<typeof prepareNelaTurn> | null,
+      prep: null as ReturnType<typeof prepareCiviTurn> | null,
       usedModel: false,
       remembered: false,
       abused: true,
@@ -651,7 +651,7 @@ async function replyFromHistory(
   }
 
   const memories = await loadLearnedMemories(admin);
-  const prep = prepareNelaTurn(history, { audience, learnedMemories: memories });
+  const prep = prepareCiviTurn(history, { audience, learnedMemories: memories });
   if (!prep.inScope || prep.isGreeting || prep.skipLlm || llm.kind === 'none') {
     const remembered = await rememberCheckedReply(admin, latestUserLine, prep.groundedAnswer, prep);
     return { replyText: prep.groundedAnswer, prep, usedModel: false, remembered, abused: false };
@@ -665,13 +665,86 @@ async function replyFromHistory(
       text = await completeOpenAi(llm.key, history, prep.systemPrompt);
     }
     const usedModel = Boolean(text);
-    const replyText = text ? normalizeNelaStyle(text) : prep.groundedAnswer;
+    const replyText = text ? normalizeCiviStyle(text) : prep.groundedAnswer;
     const remembered = await rememberCheckedReply(admin, latestUserLine, replyText, { ...prep, skipLlm: false });
     return { replyText, prep, usedModel, remembered, abused: false };
   } catch (err) {
     console.error('[messaging-agent-reply] LLM request failed:', err);
     return { replyText: prep.groundedAnswer, prep, usedModel: false, remembered: false, abused: false };
   }
+}
+
+const MEMBER_TURNS_PER_MINUTE = 12;
+const PUBLIC_TURNS_PER_MINUTE_GLOBAL = 240;
+const RATE_LIMIT_REPLY = 'Let’s slow down a little. I can answer again in a minute.';
+
+type ScalarRecord = Record<string, unknown>;
+const compact = (value: unknown): string => (value == null ? '' : String(value));
+
+function describeStatus(row: unknown): string {
+  if (!row || typeof row !== 'object') return '';
+  const r = row as ScalarRecord;
+  const parts: string[] = [];
+  for (const key of ['citizenship_status', 'layer', 'status', 'is_verified', 'verified', 'citizenship_due_at', 'civic_framework_accepted_at']) {
+    if (key in r && r[key] != null && typeof r[key] !== 'object') parts.push(`${key}=${compact(r[key])}`);
+  }
+  return parts.join(', ');
+}
+
+/**
+ * The member's own records, read with the member's token so RLS applies. Civi quotes counts and titles only;
+ * the pages hold the detail. Returns null when nothing could be read.
+ */
+// deno-lint-ignore no-explicit-any
+async function buildMemberRuntimeContext(userClient: any): Promise<{ summary: string; source: 'authenticated_runtime' } | null> {
+  const lines: string[] = [];
+  try {
+    const [status, matters, agreements, ballots] = await Promise.all([
+      userClient.rpc('my_civic_status'),
+      userClient.rpc('list_matters', { p_queue: 'mine' }),
+      userClient.rpc('list_accessible_agreements'),
+      userClient.from('civic_ballots').select('id, is_countable').limit(200),
+    ]);
+    const statusText = describeStatus(status?.data);
+    if (statusText) lines.push(`Civic status: ${statusText}.`);
+    const matterRows = Array.isArray(matters?.data) ? (matters.data as ScalarRecord[]) : [];
+    if (!matters?.error) {
+      const titles = matterRows
+        .map((row) => compact((row.matter as ScalarRecord | undefined)?.title ?? row.title))
+        .filter(Boolean)
+        .slice(0, 3);
+      lines.push(`Matters the member raised or is party to: ${matterRows.length}${titles.length ? ` (latest: ${titles.join('; ')})` : ''}.`);
+    }
+    const agreementRows = Array.isArray(agreements?.data) ? (agreements.data as ScalarRecord[]) : [];
+    if (!agreements?.error) {
+      const byStatus = new Map<string, number>();
+      for (const row of agreementRows) byStatus.set(compact(row.status) || 'unknown', (byStatus.get(compact(row.status) || 'unknown') ?? 0) + 1);
+      const breakdown = [...byStatus.entries()].map(([k, v]) => `${k} ${v}`).join(', ');
+      lines.push(`Agreements the member is party to: ${agreementRows.length}${breakdown ? ` (${breakdown})` : ''}.`);
+    }
+    const ballotRows = Array.isArray(ballots?.data) ? (ballots.data as ScalarRecord[]) : [];
+    if (!ballots?.error) {
+      const countable = ballotRows.filter((row) => row.is_countable === true).length;
+      lines.push(`Ballots cast in consultations: ${ballotRows.length} (${countable} countable, ${ballotRows.length - countable} advisory).`);
+    }
+  } catch (err) {
+    console.error('[messaging-agent-reply] member context failed', err);
+  }
+  if (lines.length === 0) return null;
+  lines.push('These are the member’s own records read with their permission just now; point them to Profile, Matters, Agreements or Governance for details. Never quote another person’s records.');
+  return { summary: lines.join(' '), source: 'authenticated_runtime' };
+}
+
+/** How many Civi turns this actor (or the public channel) used in the last minute, from the interaction log. */
+// deno-lint-ignore no-explicit-any
+async function recentTurnCount(admin: any, filter: { actorProfileId?: string; channel?: string }): Promise<number> {
+  const since = new Date(Date.now() - 60_000).toISOString();
+  let query = admin.from('civi_interaction_log').select('id', { count: 'exact', head: true }).gte('created_at', since);
+  if (filter.actorProfileId) query = query.eq('actor_profile_id', filter.actorProfileId);
+  if (filter.channel) query = query.eq('channel', filter.channel);
+  const { count, error } = await query;
+  if (error) return 0;
+  return count ?? 0;
 }
 
 Deno.serve(async (request) => {
@@ -715,6 +788,9 @@ Deno.serve(async (request) => {
   if (body.public === true) {
     if (!allowPublicIp(clientIp(request))) {
       return jsonResponse(429, { error: 'Too many questions. Try again in a few minutes.' });
+    }
+    if ((await recentTurnCount(admin, { channel: 'public' })) >= PUBLIC_TURNS_PER_MINUTE_GLOBAL) {
+      return jsonResponse(429, { error: 'Civi is busy right now. Try again in a minute.' });
     }
     const message = typeof body.message === 'string' ? body.message.trim().slice(0, PUBLIC_MESSAGE_MAX) : '';
     if (!message) return jsonResponse(400, { error: 'message required' });
@@ -827,17 +903,24 @@ Deno.serve(async (request) => {
   let usedModel = false;
   let remembered = false;
   let abused = false;
-  let memberPrep: ReturnType<typeof prepareNelaTurn> | null = null;
+  let memberPrep: ReturnType<typeof prepareCiviTurn> | null = null;
 
   const latestUserLine = String(last.content ?? '');
   const abuseCategory = classifyAbuse(latestUserLine);
-  if (abuseCategory) {
+  const rateLimited = (await recentTurnCount(admin, { actorProfileId: callerProfile.id })) >= MEMBER_TURNS_PER_MINUTE;
+  if (rateLimited) {
+    replyText = RATE_LIMIT_REPLY;
+  } else if (abuseCategory) {
     replyText = abuseRefusalReply(abuseCategory);
     moderationMetric = abuseMetricCategory(abuseCategory);
     abused = true;
   } else {
     const memories = await loadLearnedMemories(admin);
-    const prep = prepareNelaTurn(history, { learnedMemories: memories });
+    let prep = prepareCiviTurn(history, { learnedMemories: memories });
+    if (prep.resourcePlan.runtimeDataNeed) {
+      const runtimeData = await buildMemberRuntimeContext(userClient);
+      if (runtimeData) prep = prepareCiviTurn(history, { learnedMemories: memories, runtimeData });
+    }
     memberPrep = prep;
     const debugRequested = body.debug === true;
     const debugRole = String((callerProfile as { role?: string }).role ?? '');
@@ -846,7 +929,7 @@ Deno.serve(async (request) => {
       (debugRole === 'founder' ||
         debugRole === 'admin' ||
         debugRole === 'system' ||
-        (Deno.env.get('NELA_KNOWLEDGE_DEBUG') ?? '').trim() === '1');
+        (Deno.env.get('CIVI_KNOWLEDGE_DEBUG') ?? Deno.env.get('NELA_KNOWLEDGE_DEBUG') ?? '').trim() === '1');
     if (debugAllowed) {
       diagnostics = prep.diagnostics as unknown as Record<string, unknown>;
     }
@@ -872,7 +955,7 @@ Deno.serve(async (request) => {
           text = await completeOpenAi(llm.key, effectiveHistory, prep.systemPrompt);
         }
         usedModel = Boolean(text);
-        replyText = text ? normalizeNelaStyle(text) : prep.groundedAnswer;
+        replyText = text ? normalizeCiviStyle(text) : prep.groundedAnswer;
       } catch (err) {
         console.error('[messaging-agent-reply] LLM request failed:', err);
         replyText = prep.groundedAnswer;
@@ -885,7 +968,7 @@ Deno.serve(async (request) => {
     replyText = 'I could not verify that from Civizen’s current project information.';
   }
 
-  await recordInteraction(admin, {
+  if (!rateLimited) await recordInteraction(admin, {
     question: latestUserLine,
     answer: replyText,
     audience: 'member',

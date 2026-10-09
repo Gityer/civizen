@@ -1,4 +1,4 @@
-import type { NelaTurnPrep } from '@/lib/assistant/types';
+import type { CiviTurnPrep } from '@/lib/assistant/types';
 
 export const CIVI_DEV_REVIEW_ROLES = ['founder', 'admin', 'system'] as const;
 
@@ -39,7 +39,7 @@ export function canViewCiviAgentSettings(role: string | null | undefined): boole
 }
 
 export function classifyCiviInteractionSource(args: {
-  prep: NelaTurnPrep | null;
+  prep: CiviTurnPrep | null;
   usedModel: boolean;
   abused?: boolean;
 }): CiviInteractionSource {

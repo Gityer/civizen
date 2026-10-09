@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { APP_VERSION } from '@/lib/app-release';
 import { ASSISTANT_CAPABILITIES, ASSISTANT_FAQ } from '@/lib/assistant/catalog';
 import { KNOWLEDGE_PACK } from '@/lib/assistant/generated/knowledge-pack';
-import { prepareNelaTurn, SCOPE_REFUSAL, UNVERIFIED } from '@/lib/assistant/orchestrator';
+import { prepareCiviTurn, SCOPE_REFUSAL, UNVERIFIED } from '@/lib/assistant/orchestrator';
 import { resolveConversationalQuery } from '@/lib/assistant/query-rewrite';
 import { retrieveKnowledge } from '@/lib/assistant/retrieval';
 import { classifyRequest } from '@/lib/assistant/routing';
@@ -38,7 +38,7 @@ describe('assistant catalog validation', () => {
 
 describe('Civi canonical identity', () => {
   it('answers a one-sentence identity question from the canonical definition', () => {
-    const prep = prepareNelaTurn(turn("What's Civizen in one sentence?"));
+    const prep = prepareCiviTurn(turn("What's Civizen in one sentence?"));
     expect(prep.diagnostics.matchedFaqId).toBe('what_is_civizen');
     expect(prep.groundedAnswer).toContain(
       'open participatory system for organizing how humanity learns, contributes, collaborates, governs, shares resources, solves common challenges',
@@ -48,13 +48,13 @@ describe('Civi canonical identity', () => {
   });
 
   it('explains that Civi is available without an account', () => {
-    const prep = prepareNelaTurn(turn('Who is Civi?'));
+    const prep = prepareCiviTurn(turn('Who is Civi?'));
     expect(prep.diagnostics.matchedFaqId).toBe('who_is_civi');
     expect(prep.groundedAnswer).toMatch(/without creating an account/i);
   });
 
   it('answers current capability from implemented surfaces, not the identity sentence alone', () => {
-    const prep = prepareNelaTurn(turn('What can I do in Civizen right now?'));
+    const prep = prepareCiviTurn(turn('What can I do in Civizen right now?'));
     expect(prep.diagnostics.matchedFaqId).toBe('what_can_i_do_in_civizen_now');
     expect(prep.groundedAnswer).toMatch(/Home/i);
     expect(prep.groundedAnswer).toMatch(/Contribute/i);
@@ -64,7 +64,7 @@ describe('Civi canonical identity', () => {
   });
 
   it('does not reduce Civizen to a project collaboration platform', () => {
-    const prep = prepareNelaTurn(turn('Is Civizen basically a project collaboration platform?'));
+    const prep = prepareCiviTurn(turn('Is Civizen basically a project collaboration platform?'));
     expect(prep.diagnostics.matchedFaqId).toBe('is_civizen_a_project_collaboration_platform');
     expect(prep.groundedAnswer).toMatch(/^No\./);
     expect(prep.groundedAnswer).toMatch(/one component/i);
@@ -75,7 +75,7 @@ describe('Civi canonical identity', () => {
 describe('Civi knowledge regression', () => {
   it('A — known FAQ for Community Challenges', () => {
     const calls: string[] = [];
-    const prep = prepareNelaTurn(turn('What are Community Challenges?'), {
+    const prep = prepareCiviTurn(turn('What are Community Challenges?'), {
       externalAdapter: trackingAdapter(calls),
     });
     expect(prep.diagnostics.matchedFaqId).toBe('what_are_community_challenges');
@@ -88,7 +88,7 @@ describe('Civi knowledge regression', () => {
   });
 
   it('B — current capability workflow for Opportunities', () => {
-    const prep = prepareNelaTurn(turn('How do I use Opportunities?'));
+    const prep = prepareCiviTurn(turn('How do I use Opportunities?'));
     expect(prep.diagnostics.matchedCapabilityIds).toContain('opportunities');
     expect(prep.groundedAnswer).toMatch(/Contribute > Opportunities/);
     expect(prep.diagnostics.capabilityStatuses.some((s) => s.id === 'opportunities' && s.status === 'implemented')).toBe(
@@ -97,7 +97,7 @@ describe('Civi knowledge regression', () => {
   });
 
   it('C — proposed functionality is not described as live', () => {
-    const prep = prepareNelaTurn(turn('What is the Institutional Blueprint in Civizen?'));
+    const prep = prepareCiviTurn(turn('What is the Institutional Blueprint in Civizen?'));
     expect(prep.diagnostics.matchedCapabilityIds).toContain('institutional_blueprint');
     expect(prep.groundedAnswer).toMatch(/proposed/i);
     expect(prep.groundedAnswer).not.toMatch(/open Institutional Blueprint from the bottom navigation/i);
@@ -105,7 +105,7 @@ describe('Civi knowledge regression', () => {
 
   it('D — unknown capability is not invented', () => {
     const calls: string[] = [];
-    const prep = prepareNelaTurn(turn('Can Civizen teleport members between cities?'), {
+    const prep = prepareCiviTurn(turn('Can Civizen teleport members between cities?'), {
       externalAdapter: trackingAdapter(calls),
     });
     expect(prep.groundedAnswer).toMatch(/couldn['’]t verify/i);
@@ -115,7 +115,7 @@ describe('Civi knowledge regression', () => {
   });
 
   it('E — agreement signing uses the current implementation', () => {
-    const prep = prepareNelaTurn(turn('How can I sign an agreement with anyone through Civizen?'));
+    const prep = prepareCiviTurn(turn('How can I sign an agreement with anyone through Civizen?'));
     expect(prep.diagnostics.matchedFaqId).toBe('can_users_make_agreements');
     expect(prep.groundedAnswer).toMatch(/^Open Market > Agreements/);
     expect(prep.groundedAnswer).not.toMatch(/^Yes\./);
@@ -126,7 +126,7 @@ describe('Civi knowledge regression', () => {
   });
 
   it('E2 — a can-question starts with Yes, then the path', () => {
-    const prep = prepareNelaTurn(turn('Can I sign an agreement with anyone through Civizen?'));
+    const prep = prepareCiviTurn(turn('Can I sign an agreement with anyone through Civizen?'));
     expect(prep.diagnostics.matchedFaqId).toBe('can_users_make_agreements');
     expect(prep.groundedAnswer).toMatch(/^Yes\. Open Market > Agreements/);
   });
@@ -136,7 +136,7 @@ describe('Civi knowledge regression', () => {
       { role: 'user', content: 'How can I sign an agreement with anyone through Civizen?' },
       { role: 'assistant', content: 'Open Market > Agreements and use + to create and sign.' },
     ];
-    const prep = prepareNelaTurn(turn('Are you sure?', history));
+    const prep = prepareCiviTurn(turn('Are you sure?', history));
     expect(prep.inScope).toBe(true);
     expect(prep.isVerification).toBe(true);
     expect(prep.groundedAnswer).not.toBe(SCOPE_REFUSAL);
@@ -161,7 +161,7 @@ describe('Civi knowledge regression', () => {
           'I can only help with Civizen-related topics such as governance, messaging, safety, marketplace, profile/account settings, and how to use features in this app. Please ask a Civizen-specific question.',
       },
     ];
-    const prep = prepareNelaTurn(turn('Positive?', history));
+    const prep = prepareCiviTurn(turn('Positive?', history));
     expect(prep.inScope).toBe(true);
     expect(prep.isVerification).toBe(true);
     expect(prep.groundedAnswer).not.toBe(SCOPE_REFUSAL);
@@ -172,7 +172,7 @@ describe('Civi knowledge regression', () => {
   });
 
   it('G — constitutional tokenomics retrieves the current/historical distinction', () => {
-    const prep = prepareNelaTurn(turn('Civizen Constitutional Tokenomics + Governance Model'));
+    const prep = prepareCiviTurn(turn('Civizen Constitutional Tokenomics + Governance Model'));
     expect(prep.groundedAnswer).toMatch(/historical|not adopted/i);
     expect(prep.groundedAnswer).toMatch(/Funding and Financial Integrity/i);
     expect(prep.diagnostics.matchedFaqId).toBe('constitutional_tokenomics');
@@ -199,14 +199,14 @@ describe('Civi knowledge regression', () => {
         ...KNOWLEDGE_PACK.chunks,
       ],
     };
-    const prep = prepareNelaTurn(turn('Can I create an agreement in Civizen?'), { pack: conflicting });
+    const prep = prepareCiviTurn(turn('Can I create an agreement in Civizen?'), { pack: conflicting });
     expect(prep.groundedAnswer).toMatch(/Market > Agreements/);
     expect(prep.groundedAnswer).not.toMatch(/does not have agreements/i);
     expect(prep.diagnostics.matchedCapabilityIds).toContain('agreements');
   });
 
   it('I — old terminology is understood, current name is used', () => {
-    const prep = prepareNelaTurn(turn('What are professional listings?'));
+    const prep = prepareCiviTurn(turn('What are professional listings?'));
     expect(prep.resolvedQuery.toLowerCase()).toMatch(/opportunit/);
     expect(prep.groundedAnswer).toMatch(/Opportunit/);
     expect(prep.groundedAnswer).not.toMatch(/professional listings are the current name/i);
@@ -219,7 +219,7 @@ describe('Civi knowledge regression', () => {
       capabilities: [],
       chunks: [],
     };
-    const prep = prepareNelaTurn(turn('Does Civizen support quantum voting tallies?'), { pack: empty });
+    const prep = prepareCiviTurn(turn('Does Civizen support quantum voting tallies?'), { pack: empty });
     expect(prep.groundedAnswer).toContain(UNVERIFIED);
   });
 });
@@ -227,7 +227,7 @@ describe('Civi knowledge regression', () => {
 describe('Civi resource routing', () => {
   it('uses internal evidence first and does not escalate when a feature is implemented', () => {
     const calls: string[] = [];
-    const prep = prepareNelaTurn(turn('Can I create an agreement in Civizen?'), {
+    const prep = prepareCiviTurn(turn('Can I create an agreement in Civizen?'), {
       externalAdapter: trackingAdapter(calls),
     });
     expect(prep.resourcePlan.internalResolution).toBe('sufficient');
@@ -238,7 +238,7 @@ describe('Civi resource routing', () => {
   });
 
   it('searches the project index when FAQ is not the main hit', () => {
-    const prep = prepareNelaTurn(turn('What does /contribute/tasks redirect to in Civizen?'));
+    const prep = prepareCiviTurn(turn('What does /contribute/tasks redirect to in Civizen?'));
     expect(prep.diagnostics.matchedFaqId).not.toBe('what_are_community_challenges');
     expect(prep.retrievedContext.length + prep.groundedAnswer.length).toBeGreaterThan(20);
     expect(prep.groundedAnswer.toLowerCase()).toMatch(/opportunit/);
@@ -246,13 +246,13 @@ describe('Civi resource routing', () => {
   });
 
   it('treats member-specific questions as runtime data, not static knowledge', () => {
-    const prep = prepareNelaTurn(turn('What Opportunities have I applied to?'));
+    const prep = prepareCiviTurn(turn('What Opportunities have I applied to?'));
     expect(prep.resourcePlan.kinds).toContain('civizen_user_data');
     expect(prep.resourcePlan.internalResolution).toBe('requires_runtime_data');
     expect(prep.diagnostics.usedRuntimeData).toBe(false);
     expect(prep.groundedAnswer).toMatch(/signed in|My Contributions|personal/i);
 
-    const withData = prepareNelaTurn(turn('What Opportunities have I applied to?'), {
+    const withData = prepareCiviTurn(turn('What Opportunities have I applied to?'), {
       runtimeData: { summary: 'You have 2 open applications.', source: 'authenticated_runtime' },
     });
     expect(withData.diagnostics.usedRuntimeData).toBe(true);
@@ -260,19 +260,19 @@ describe('Civi resource routing', () => {
   });
 
   it('greets public visitors as Civi without requiring an account', () => {
-    const prep = prepareNelaTurn(turn('hello'), { audience: 'guest' });
+    const prep = prepareCiviTurn(turn('hello'), { audience: 'guest' });
     expect(prep.isGreeting).toBe(true);
     expect(prep.groundedAnswer).toMatch(/Civi, your AI assistant/i);
   });
 
   it('tells guests that personal records need an account', () => {
-    const prep = prepareNelaTurn(turn('What Opportunities have I applied to?'), { audience: 'guest' });
+    const prep = prepareCiviTurn(turn('What Opportunities have I applied to?'), { audience: 'guest' });
     expect(prep.resourcePlan.internalResolution).toBe('requires_runtime_data');
     expect(prep.groundedAnswer).toMatch(/Sign up|account/i);
   });
 
   it('retrieves Civizen context before allowing AI reasoning on a generative request', () => {
-    const prep = prepareNelaTurn(turn('Help me draft a partnership proposal to a university.'));
+    const prep = prepareCiviTurn(turn('Help me draft a partnership proposal to a university.'));
     expect(prep.resourcePlan.allowLlmReasoning).toBe(true);
     expect(prep.resourcePlan.kinds).toContain('general_reasoning');
     expect(prep.skipLlm).toBe(false);
@@ -280,7 +280,7 @@ describe('Civi resource routing', () => {
 
   it('invokes an external adapter only for the external portion of a request', () => {
     const calls: string[] = [];
-    const prep = prepareNelaTurn(turn('What is participatory budgeting?'), {
+    const prep = prepareCiviTurn(turn('What is participatory budgeting?'), {
       externalAdapter: trackingAdapter(calls),
     });
     expect(prep.resourcePlan.kinds).toContain('external_world');
@@ -291,7 +291,7 @@ describe('Civi resource routing', () => {
 
   it('does not use external knowledge to manufacture a missing Civizen fact', () => {
     const calls: string[] = [];
-    const prep = prepareNelaTurn(turn('Does Civizen support legally binding PKI notary stamps?'), {
+    const prep = prepareCiviTurn(turn('Does Civizen support legally binding PKI notary stamps?'), {
       externalAdapter: trackingAdapter(calls),
     });
     expect(calls).toHaveLength(0);
@@ -304,7 +304,7 @@ describe('Civi resource routing', () => {
       { role: 'assistant', content: 'I am not sure Civizen has that.' },
     ];
     const calls: string[] = [];
-    const prep = prepareNelaTurn(turn('Are you sure?', history), { externalAdapter: trackingAdapter(calls) });
+    const prep = prepareCiviTurn(turn('Are you sure?', history), { externalAdapter: trackingAdapter(calls) });
     expect(prep.isVerification).toBe(true);
     expect(prep.inScope).toBe(true);
     expect(prep.groundedAnswer).toMatch(/Challenge/i);

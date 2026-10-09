@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import { memoryQuestionKey, reviewLlmAnswerForLearning } from '@/lib/assistant/learned-memory';
-import { prepareNelaTurn } from '@/lib/assistant/orchestrator';
-import type { CiviLearnedMemory, HistoryTurn, NelaTurnPrep } from '@/lib/assistant/types';
+import { prepareCiviTurn } from '@/lib/assistant/orchestrator';
+import type { CiviLearnedMemory, HistoryTurn, CiviTurnPrep } from '@/lib/assistant/types';
 
 function turn(content: string): HistoryTurn[] {
   return [{ role: 'user', content }];
 }
 
-function stubPrep(overrides: Partial<NelaTurnPrep> & { resourcePlan?: NelaTurnPrep['resourcePlan'] }): NelaTurnPrep {
-  const base = prepareNelaTurn(turn('What is participatory budgeting?'));
+function stubPrep(overrides: Partial<CiviTurnPrep> & { resourcePlan?: CiviTurnPrep['resourcePlan'] }): CiviTurnPrep {
+  const base = prepareCiviTurn(turn('What is participatory budgeting?'));
   return {
     ...base,
     ...overrides,
@@ -37,7 +37,7 @@ describe('Civi learned memory', () => {
         kind: 'general',
       },
     ];
-    const prep = prepareNelaTurn(turn('What is participatory budgeting?'), { learnedMemories: memories });
+    const prep = prepareCiviTurn(turn('What is participatory budgeting?'), { learnedMemories: memories });
     expect(prep.diagnostics.usedLearnedMemoryKey).toBe('participatory budgeting');
     expect(prep.skipLlm).toBe(true);
     expect(prep.groundedAnswer).toMatch(/residents help decide/i);
@@ -52,7 +52,7 @@ describe('Civi learned memory', () => {
         kind: 'general',
       },
     ];
-    const prep = prepareNelaTurn(turn("What's Civizen in one sentence?"), { learnedMemories: memories });
+    const prep = prepareCiviTurn(turn("What's Civizen in one sentence?"), { learnedMemories: memories });
     expect(prep.diagnostics.usedLearnedMemoryKey).toBeNull();
     expect(prep.groundedAnswer).toMatch(/open participatory system/i);
     expect(prep.groundedAnswer).not.toMatch(/social network for hobbies/i);
@@ -74,7 +74,7 @@ describe('Civi learned memory', () => {
   });
 
   it('rejects Gemini answers that invent a Civizen capability', () => {
-    const prep = prepareNelaTurn(turn('Does Civizen support legally binding PKI notary stamps?'));
+    const prep = prepareCiviTurn(turn('Does Civizen support legally binding PKI notary stamps?'));
     const decision = reviewLlmAnswerForLearning({
       question: 'Does Civizen support legally binding PKI notary stamps?',
       llmAnswer: 'Yes. Civizen has legally binding PKI notary stamps and lets you certify any contract instantly.',
@@ -84,7 +84,7 @@ describe('Civi learned memory', () => {
   });
 
   it('does not store personal records or one-off drafts', () => {
-    const personal = prepareNelaTurn(turn('What Opportunities have I applied to?'));
+    const personal = prepareCiviTurn(turn('What Opportunities have I applied to?'));
     expect(
       reviewLlmAnswerForLearning({
         question: 'What Opportunities have I applied to?',
@@ -93,7 +93,7 @@ describe('Civi learned memory', () => {
       }).action,
     ).toBe('skip');
 
-    const draft = prepareNelaTurn(turn('Help me draft a partnership proposal to a university.'));
+    const draft = prepareCiviTurn(turn('Help me draft a partnership proposal to a university.'));
     expect(
       reviewLlmAnswerForLearning({
         question: 'Help me draft a partnership proposal to a university.',
@@ -104,7 +104,7 @@ describe('Civi learned memory', () => {
   });
 
   it('does not learn when Civi already had the answer', () => {
-    const prep = prepareNelaTurn(turn("What's Civizen in one sentence?"));
+    const prep = prepareCiviTurn(turn("What's Civizen in one sentence?"));
     const decision = reviewLlmAnswerForLearning({
       question: "What's Civizen in one sentence?",
       llmAnswer: 'Civizen is an open participatory system.',

@@ -2,7 +2,7 @@ import { ASSISTANT_CAPABILITIES } from '@/lib/assistant/catalog';
 import { appPageLinks } from '@/lib/app-pages';
 import { CONTRIBUTE_LANES } from '@/lib/contribute-lanes';
 import { MAIN_NAV_ITEMS } from '@/lib/main-nav';
-import { NELA_CHOICE_LINKS, NELA_PAGE_LINKS } from '@/lib/nela-nav-paths';
+import { CIVI_CHOICE_LINKS, CIVI_PAGE_LINKS } from '@/lib/civi-nav-paths';
 
 const EXTRA_PUBLIC_PATHS = [
   '/about',
@@ -47,7 +47,7 @@ function collectKnownAppPaths(): string[] {
     for (const route of capability.routes) paths.add(route);
   }
   for (const extra of EXTRA_PUBLIC_PATHS) paths.add(extra);
-  for (const page of NELA_PAGE_LINKS) paths.add(page.href);
+  for (const page of CIVI_PAGE_LINKS) paths.add(page.href);
   return [...paths]
     .filter((path) => path.startsWith('/') && path.length > 1)
     .sort((a, b) => b.length - a.length);
@@ -95,8 +95,8 @@ function collectLinkSpans(content: string, includeChoices: boolean): MatchSpan[]
     const start = match.index ?? 0;
     spans.push({ start, end: start + value.length, value, href });
   }
-  spans.push(...collectLabelSpans(content, NELA_PAGE_LINKS));
-  if (includeChoices) spans.push(...collectLabelSpans(content, NELA_CHOICE_LINKS));
+  spans.push(...collectLabelSpans(content, CIVI_PAGE_LINKS));
+  if (includeChoices) spans.push(...collectLabelSpans(content, CIVI_CHOICE_LINKS));
   spans.sort((a, b) => a.start - b.start || b.end - a.start - (a.end - a.start));
   const kept: MatchSpan[] = [];
   for (const span of spans) {

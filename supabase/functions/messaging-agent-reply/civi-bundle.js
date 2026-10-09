@@ -597,7 +597,7 @@ function formatRetrievedContext(retrieval, runtimeSummary) {
   }
   return parts.join("\n\n");
 }
-function buildNelaSystemPrompt(args) {
+function buildCiviSystemPrompt(args) {
   const { pack, resolvedQuery, retrievedContext, groundedAnswer, resourcePlan, isVerification, audience } = args;
   const language = args.language ?? "en";
   const languageLine = language === "en" ? "" : `The member wrote in ${ASSISTANT_LANGUAGE_NAMES[language]}. Reply in natural, grammatically correct ${ASSISTANT_LANGUAGE_NAMES[language]}. Translate the evidence faithfully and do not add facts. Keep Civizen, Civi, and addresses such as /governance/workspace unchanged, and name screens the way the app shows them in that language.`;
@@ -1055,9 +1055,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.217",
     "appReleaseId": "20261009-v0.1.217",
     "androidVersionCode": 219,
-    "gitSha": "7e0d368971f5346fc8b27def1461ea35153009cb",
-    "generatedAt": "2026-10-09T20:22:49.533Z",
-    "sourceFingerprint": "c0f46d8b5e912374f0295b48e42f11f1ea61123be9829835b7bc463c79f77d36",
+    "gitSha": "53fe40924c2b24df20442e63c5c98136ee6990cc",
+    "generatedAt": "2026-10-09T20:35:13.523Z",
+    "sourceFingerprint": "fc992bf69bac531d166f39b834db102f92211d093638b6fc12db2a2c8d35cb19",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 396
@@ -4388,7 +4388,7 @@ var KNOWLEDGE_PACK = {
     {
       "id": "registry:civi-pages",
       "title": "Pages Civi can open",
-      "path": "src/lib/nela-nav-paths.ts",
+      "path": "src/lib/civi-nav-paths.ts",
       "text": "Civi can link these live pages in answers: Why Civizen Exists (/why-this-exists); Community Governance Charter (/governance/charter); Organization Partnership (/partners); Governance Solutions (/governance/solutions); Community Challenges (/contribute/challenges); make a contribution (/contribute); Questions, Issues & Ideas (/contribute/matters); Suggest Improvements (/contribute/improvements); Learning Commons (/contribute/knowledge); My Contributions (/contribute/impact); Financial Support (/fund); Governance workspace (/governance); Member workspace (/governance); Help and support (/settings/help); Governance page (/governance); Notifications (/notifications); Edit Profile (/settings/profile); Civic voting (/governance/voting); Opportunities (/contribute/professional); Agreements (/agreements); Contribute (/contribute); Messaging (/messaging); Governance (/governance); Documents (/documents); Partners (/partners); Settings (/settings); Profile (/profile); Jobs (/jobs); Market (/market); Study (/study); signing up (/signup); Sign up (/signup); Areas (/areas); Home (/).",
       "status": "implemented",
       "priority": 2,
@@ -4641,7 +4641,7 @@ var KNOWLEDGE_PACK = {
       "id": "docs/assistant/README.md#2",
       "title": "Refresh",
       "path": "docs/assistant/README.md",
-      "text": "## Refresh After changing product behavior, registries, public pages, flows, or assistant-authoritative docs, update the cheat sheet and/or `src/lib/assistant/catalog.ts` in the same session, then: ```bash npm run assistant:knowledge ``` Knowledge regen also indexes live bottom nav, Contribute lanes, and the pages Civi can link (`NELA_PAGE_LINKS`). When Civi gives directions, it should match the question: **Can I** starts with Yes or No, then the path; **How** starts with `Open Market > Agreements`. Chat turns those page names into links. Type names in the main answer (General, Partnership / Collaboration, and the rest) also link to New agreement for that type. CI and `verify:agent-context` fail if the generated pack is stale relative to its sources.",
+      "text": "## Refresh After changing product behavior, registries, public pages, flows, or assistant-authoritative docs, update the cheat sheet and/or `src/lib/assistant/catalog.ts` in the same session, then: ```bash npm run assistant:knowledge ``` Knowledge regen also indexes live bottom nav, Contribute lanes, and the pages Civi can link (`CIVI_PAGE_LINKS`). When Civi gives directions, it should match the question: **Can I** starts with Yes or No, then the path; **How** starts with `Open Market > Agreements`. Chat turns those page names into links. Type names in the main answer (General, Partnership / Collaboration, and the rest) also link to New agreement for that type. CI and `verify:agent-context` fail if the generated pack is stale relative to its sources.",
       "status": "implemented",
       "priority": 5,
       "kind": "doc"
@@ -4668,7 +4668,7 @@ var KNOWLEDGE_PACK = {
       "id": "docs/assistant/README.md#5",
       "title": "Audit process",
       "path": "docs/assistant/README.md",
-      "text": "## Audit process Run realistic questions through `prepareNelaTurn` (the same path the edge function and the public widget use) and check `diagnostics.matchedFaqId`, `inScope`, `skipLlm`, and the grounded answer. The regression suite in `civi-governance-voting.test.ts` is that question set; an answer that falls back to the generic capability blurb, to \u201CI couldn't verify\u2026\u201D, or to the English scope refusal for an Armenian or Russian question counts as a gap to fix at the source (catalog card, FAQ, `NELA_PAGE_LINKS`, scope terms, lexicon), then `npm run assistant:knowledge`.",
+      "text": "## Audit process Run realistic questions through `prepareCiviTurn` (the same path the edge function and the public widget use) and check `diagnostics.matchedFaqId`, `inScope`, `skipLlm`, and the grounded answer. The regression suite in `civi-governance-voting.test.ts` is that question set; an answer that falls back to the generic capability blurb, to \u201CI couldn't verify\u2026\u201D, or to the English scope refusal for an Armenian or Russian question counts as a gap to fix at the source (catalog card, FAQ, `CIVI_PAGE_LINKS`, scope terms, lexicon), then `npm run assistant:knowledge`.",
       "status": "implemented",
       "priority": 5,
       "kind": "doc"
@@ -7176,7 +7176,7 @@ function composeVerification(previousClaim, answer) {
   }
   return `I re-checked against current Civizen sources and need to correct that. ${core}`;
 }
-function prepareNelaTurn(messages, options = {}) {
+function prepareCiviTurn(messages, options = {}) {
   const pack = options.pack ?? KNOWLEDGE_PACK;
   const latest = [...messages].reverse().find((m) => m.role === "user");
   const latestText = latest?.content.trim() ?? "";
@@ -7267,7 +7267,7 @@ function prepareNelaTurn(messages, options = {}) {
 For your account: ${options.runtimeData.summary}`.trim();
   }
   const retrievedContext = formatRetrievedContext(retrieval, options.runtimeData?.summary);
-  const systemPrompt = buildNelaSystemPrompt({
+  const systemPrompt = buildCiviSystemPrompt({
     pack,
     resolvedQuery,
     retrievedContext,
@@ -7351,7 +7351,7 @@ export {
   classifyRequest,
   isVerificationFollowUp,
   learnedMemoryFromRow,
-  prepareNelaTurn,
+  prepareCiviTurn,
   redactSensitiveCiviQuestion,
   resolveConversationalQuery,
   reviewLlmAnswerForLearning,

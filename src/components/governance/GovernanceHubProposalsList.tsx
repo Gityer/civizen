@@ -263,12 +263,12 @@ export function GovernanceHubProposalsList({
         const quorumProgressPct = Math.min(100, Math.round((voteTally.decisiveVotes / Math.max(1, proposal.required_quorum)) * 100));
         const currentVote = currentUserVotes[proposal.id];
         const recentEvent = events.find((event) => event.proposal_id === proposal.id);
-        const nelaDiscussionEvent = events.find(
+        const civiDiscussionEvent = events.find(
           (event) => event.proposal_id === proposal.id && event.event_type === 'discussion.nela',
         );
-        const nelaDiscussionComment =
-          nelaDiscussionEvent && nelaDiscussionEvent.payload && typeof nelaDiscussionEvent.payload === 'object'
-            ? (nelaDiscussionEvent.payload as Record<string, unknown>).comment
+        const civiDiscussionComment =
+          civiDiscussionEvent && civiDiscussionEvent.payload && typeof civiDiscussionEvent.payload === 'object'
+            ? (civiDiscussionEvent.payload as Record<string, unknown>).comment
             : null;
         const proposalImplementations = implementationsByProposal[proposal.id] || [];
         const executionSpec = readGovernanceProposalExecutionSpec(proposal.metadata);
@@ -383,9 +383,9 @@ export function GovernanceHubProposalsList({
                   </div>
                 )}
 
-                {typeof nelaDiscussionComment === 'string' && nelaDiscussionComment.trim() ? (
+                {typeof civiDiscussionComment === 'string' && civiDiscussionComment.trim() ? (
                   <p className="rounded-xl border border-border/60 bg-background/60 px-2 py-1.5 text-xs text-muted-foreground">
-                    {nelaDiscussionComment}
+                    {civiDiscussionComment}
                   </p>
                 ) : null}
 

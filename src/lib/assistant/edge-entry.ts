@@ -1,4 +1,4 @@
-export { prepareNelaTurn } from './orchestrator';
+export { prepareCiviTurn } from './orchestrator';
 export { learnedMemoryFromRow, reviewLlmAnswerForLearning } from './learned-memory';
 export {
   classifyCiviInteractionSource,
@@ -8,4 +8,4 @@ export {
 export { isVerificationFollowUp, resolveConversationalQuery } from './query-rewrite';
 export { classifyRequest } from './routing';
 export { KNOWLEDGE_PACK } from './generated/knowledge-pack';
-export type { CiviLearnedMemory, HistoryTurn, NelaTurnPrep, PrepareNelaTurnOptions } from './types';
+export type { CiviLearnedMemory, HistoryTurn, CiviTurnPrep, PrepareCiviTurnOptions } from './types';

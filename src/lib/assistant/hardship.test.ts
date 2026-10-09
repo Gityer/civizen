@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { isPersonalHardshipAsk, PERSONAL_HARDSHIP_REPLY } from '@/lib/assistant/hardship';
-import { prepareNelaTurn } from '@/lib/assistant/orchestrator';
+import { prepareCiviTurn } from '@/lib/assistant/orchestrator';
 import type { HistoryTurn } from '@/lib/assistant/types';
 
 function turn(content: string, history: HistoryTurn[] = []): HistoryTurn[] {
@@ -18,7 +18,7 @@ describe('Civi personal hardship', () => {
   });
 
   it('does not send a homelessness ask to Contribute volunteer lanes', () => {
-    const prep = prepareNelaTurn(turn("I'm homeless, can you help me?"));
+    const prep = prepareCiviTurn(turn("I'm homeless, can you help me?"));
     expect(prep.skipLlm).toBe(true);
     expect(prep.groundedAnswer).toBe(PERSONAL_HARDSHIP_REPLY);
     expect(prep.groundedAnswer).not.toMatch(/Volunteer/i);
@@ -36,14 +36,14 @@ describe('Civi personal hardship', () => {
           'Civizen is an open participatory system for organizing how humanity learns, contributes, collaborates, governs, shares resources, solves common challenges, and continuously improves the systems we live and work within.',
       },
     ];
-    const prep = prepareNelaTurn(turn("I'm homeless, can you help me?", history));
+    const prep = prepareCiviTurn(turn("I'm homeless, can you help me?", history));
     expect(prep.diagnostics.matchedFaqId).toBe('if_i_need_housing_or_emergency_help');
     expect(prep.groundedAnswer).toBe(PERSONAL_HARDSHIP_REPLY);
     expect(prep.groundedAnswer).not.toMatch(/Financial Support/i);
   });
 
   it('still routes genuine contribution questions to Contribute', () => {
-    const prep = prepareNelaTurn(turn('How can I contribute?'));
+    const prep = prepareCiviTurn(turn('How can I contribute?'));
     expect(prep.diagnostics.matchedFaqId).toBe('how_can_i_contribute');
     expect(prep.groundedAnswer).toMatch(/Open Contribute/i);
   });

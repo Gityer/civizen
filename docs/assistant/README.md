@@ -21,7 +21,7 @@ Civi answers from **this Civizen build**, not from general model memory. Visitor
 | `src/lib/assistant/learned-memory.ts` | Checked Gemini-answer memory (does not override identity or capabilities) |
 | `src/pages/settings/AiAgentSettings.tsx` | Founder development review of Civi questions and replies |
 | `src/lib/assistant/generated/knowledge-pack.ts` | Generated searchable index (do not edit by hand) |
-| `supabase/functions/messaging-agent-reply/nela-bundle.js` | Bundled retrieval runtime for the Civi edge function |
+| `supabase/functions/messaging-agent-reply/civi-bundle.js` | Bundled retrieval runtime for the Civi edge function |
 
 ## Refresh
 
@@ -31,7 +31,7 @@ After changing product behavior, registries, public pages, flows, or assistant-a
 npm run assistant:knowledge
 ```
 
-Knowledge regen also indexes live bottom nav, Contribute lanes, and the pages Civi can link (`NELA_PAGE_LINKS`).
+Knowledge regen also indexes live bottom nav, Contribute lanes, and the pages Civi can link (`CIVI_PAGE_LINKS`).
 
 When Civi gives directions, it should match the question: **Can I** starts with Yes or No, then the path; **How** starts with `Open Market > Agreements`. Chat turns those page names into links. Type names in the main answer (General, Partnership / Collaboration, and the rest) also link to New agreement for that type.
 
@@ -45,7 +45,7 @@ When adding a feature members will ask about, add the FAQ card with hand-written
 
 ## Audit process
 
-Run realistic questions through `prepareNelaTurn` (the same path the edge function and the public widget use) and check `diagnostics.matchedFaqId`, `inScope`, `skipLlm`, and the grounded answer. The regression suite in `civi-governance-voting.test.ts` is that question set; an answer that falls back to the generic capability blurb, to “I couldn't verify…”, or to the English scope refusal for an Armenian or Russian question counts as a gap to fix at the source (catalog card, FAQ, `NELA_PAGE_LINKS`, scope terms, lexicon), then `npm run assistant:knowledge`.
+Run realistic questions through `prepareCiviTurn` (the same path the edge function and the public widget use) and check `diagnostics.matchedFaqId`, `inScope`, `skipLlm`, and the grounded answer. The regression suite in `civi-governance-voting.test.ts` is that question set; an answer that falls back to the generic capability blurb, to “I couldn't verify…”, or to the English scope refusal for an Armenian or Russian question counts as a gap to fix at the source (catalog card, FAQ, `CIVI_PAGE_LINKS`, scope terms, lexicon), then `npm run assistant:knowledge`.
 
 ## Internal-first routing
 

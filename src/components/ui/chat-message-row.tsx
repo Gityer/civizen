@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CiviAvatar } from '@/components/ui/civi-avatar';
 import { splitChatPageLinks } from '@/lib/chat-page-links';
-import { NELA_ASSISTANT_PROFILE_ID, resolveMessagingAvatarUrl } from '@/lib/messaging-constants';
+import { CIVI_ASSISTANT_PROFILE_ID, resolveMessagingAvatarUrl } from '@/lib/messaging-constants';
 import { splitAssistantMessageBlocks } from '@/lib/split-assistant-message';
 import { cn } from '@/lib/utils';
 
@@ -93,8 +93,8 @@ export function ChatMessageRow({
 }: ChatMessageRowProps) {
   const pending = message.id.startsWith('local-') || message.id.startsWith('failed-');
   const selectable = !pending;
-  const isNela = message.sender_id === NELA_ASSISTANT_PROFILE_ID;
-  const blocks = isNela
+  const isCivi = message.sender_id === CIVI_ASSISTANT_PROFILE_ID;
+  const blocks = isCivi
     ? splitAssistantMessageBlocks(message.content)
     : { primary: message.content, details: [] as string[] };
 
@@ -122,7 +122,7 @@ export function ChatMessageRow({
       onPointerCancel={onPointerCancel}
       onPointerLeave={onPointerLeave}
     >
-      {message.sender_id === NELA_ASSISTANT_PROFILE_ID ? (
+      {message.sender_id === CIVI_ASSISTANT_PROFILE_ID ? (
         <CiviAvatar className="h-8 w-8" />
       ) : (
         <button

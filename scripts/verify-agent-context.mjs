@@ -238,7 +238,7 @@ if (!existsSync('src/lib/assistant/catalog.ts')) {
 if (!existsSync('src/lib/assistant/generated/knowledge-pack.ts')) {
   fail('missing generated assistant knowledge pack');
 }
-if (!existsSync('supabase/functions/messaging-agent-reply/nela-bundle.js')) {
+if (!existsSync('supabase/functions/messaging-agent-reply/civi-bundle.js')) {
   fail('missing Civi knowledge bundle; run npm run assistant:knowledge');
 }
 if (!agents.includes('assistant:knowledge')) {

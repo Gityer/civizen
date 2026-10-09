@@ -151,7 +151,7 @@ export type ExternalResourceAdapter = {
   search?: (query: string) => Promise<string | null> | string | null;
 };
 
-export type NelaDiagnostics = {
+export type CiviDiagnostics = {
   resolvedQuery: string;
   language: AssistantLanguage;
   isVerification: boolean;
@@ -178,7 +178,7 @@ export type NelaDiagnostics = {
   };
 };
 
-export type NelaTurnPrep = {
+export type CiviTurnPrep = {
   resolvedQuery: string;
   inScope: boolean;
   isGreeting: boolean;
@@ -188,10 +188,10 @@ export type NelaTurnPrep = {
   systemPrompt: string;
   retrievedContext: string;
   resourcePlan: ResourcePlan;
-  diagnostics: NelaDiagnostics;
+  diagnostics: CiviDiagnostics;
 };
 
-export type PrepareNelaTurnOptions = {
+export type PrepareCiviTurnOptions = {
   pack?: KnowledgePack;
   runtimeData?: RuntimeUserContext | null;
   externalAdapter?: ExternalResourceAdapter | null;

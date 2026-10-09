@@ -20,7 +20,7 @@ vi.mock('@/contexts/LanguageContext', () => ({
 
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
-    profile: { id: 'user-1', full_name: 'Nela Member', username: 'nela' },
+    profile: { id: 'user-1', full_name: 'Civi Member', username: 'nela' },
   }),
 }));
 
@@ -43,7 +43,7 @@ function item(overrides: Partial<AgreementListItem>): AgreementListItem {
     endAt: null,
     executionMethod: null,
     needsAction: false,
-    parties: [{ displayName: 'Nela Member' }, { displayName: 'Cedar River University' }],
+    parties: [{ displayName: 'Civi Member' }, { displayName: 'Cedar River University' }],
     bucket: 'draft',
     ...overrides,
   };

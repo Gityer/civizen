@@ -2,7 +2,7 @@ import { isPersonalHardshipAsk } from './hardship';
 import { isPeaceCooperationAsk } from './peace';
 import { classifyAssistantTopic } from './identity';
 import { searchFaq, tokenize } from './retrieval';
-import type { AssistantFaqItem, CiviLearnedMemory, CiviLearnedMemoryKind, NelaTurnPrep, RequestKind } from './types';
+import type { AssistantFaqItem, CiviLearnedMemory, CiviLearnedMemoryKind, CiviTurnPrep, RequestKind } from './types';
 
 export const CIVI_LEARNED_MEMORY_LIMIT = 200;
 export const CIVI_LEARNED_MEMORY_CAP = 400;
@@ -69,7 +69,7 @@ export function pickLearnedMemory(
   return memory;
 }
 
-function evidenceText(prep: Pick<NelaTurnPrep, 'groundedAnswer' | 'retrievedContext'>): string {
+function evidenceText(prep: Pick<CiviTurnPrep, 'groundedAnswer' | 'retrievedContext'>): string {
   return `${prep.groundedAnswer}\n${prep.retrievedContext}`;
 }
 
@@ -82,7 +82,7 @@ export function reviewLlmAnswerForLearning(args: {
   question: string;
   llmAnswer: string;
   prep: Pick<
-    NelaTurnPrep,
+    CiviTurnPrep,
     'inScope' | 'isGreeting' | 'isVerification' | 'skipLlm' | 'groundedAnswer' | 'retrievedContext' | 'resourcePlan' | 'diagnostics'
   >;
 }): LearnDecision {

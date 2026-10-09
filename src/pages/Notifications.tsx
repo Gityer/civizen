@@ -7,7 +7,9 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { PushDeviceToggle } from '@/components/notifications/PushDeviceToggle';
 import {
   listNotifications,
   markAllNotificationsRead,
@@ -87,6 +89,7 @@ export function NotificationList({
 
 export default function Notifications() {
   const { t, language } = useLanguage();
+  const { profile } = useAuth();
   const navigate = useNavigate();
   const [rows, setRows] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -134,12 +137,15 @@ export default function Notifications() {
             leading={<Bell className="h-5 w-5 text-primary" aria-hidden />}
             fallbackPath="/"
             actions={
-              hasUnread ? (
-                <Button type="button" size="sm" variant="outline" onClick={() => void markAll()}>
-                  <CheckCheck className="mr-2 h-4 w-4" aria-hidden />
-                  {t('notificationCenter.markAllRead')}
-                </Button>
-              ) : null
+              <div className="flex flex-wrap items-center gap-2">
+                {profile?.id ? <PushDeviceToggle profileId={profile.id} /> : null}
+                {hasUnread ? (
+                  <Button type="button" size="sm" variant="outline" onClick={() => void markAll()}>
+                    <CheckCheck className="mr-2 h-4 w-4" aria-hidden />
+                    {t('notificationCenter.markAllRead')}
+                  </Button>
+                ) : null}
+              </div>
             }
           />
         </div>

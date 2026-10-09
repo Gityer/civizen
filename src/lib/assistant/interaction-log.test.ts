@@ -8,7 +8,7 @@ import {
   shouldRecordCiviInteraction,
   type CiviInteractionRow,
 } from '@/lib/assistant/interaction-log';
-import { prepareNelaTurn } from '@/lib/assistant/orchestrator';
+import { prepareCiviTurn } from '@/lib/assistant/orchestrator';
 import type { HistoryTurn } from '@/lib/assistant/types';
 
 function turn(content: string): HistoryTurn[] {
@@ -31,7 +31,7 @@ function row(overrides: Partial<CiviInteractionRow> & { id: string; createdAt: s
 
 describe('Civi interaction log helpers', () => {
   it('classifies knowledge, memory, model, and refusal sources', () => {
-    const knowledge = prepareNelaTurn(turn("What's Civizen in one sentence?"));
+    const knowledge = prepareCiviTurn(turn("What's Civizen in one sentence?"));
     expect(classifyCiviInteractionSource({ prep: knowledge, usedModel: false })).toBe('knowledge');
 
     const memoryPrep = {
@@ -40,7 +40,7 @@ describe('Civi interaction log helpers', () => {
     };
     expect(classifyCiviInteractionSource({ prep: memoryPrep, usedModel: false })).toBe('memory');
 
-    const offTopic = prepareNelaTurn(turn('What is the capital of France?'));
+    const offTopic = prepareCiviTurn(turn('What is the capital of France?'));
     expect(classifyCiviInteractionSource({ prep: offTopic, usedModel: false })).toBe('refusal');
 
     expect(classifyCiviInteractionSource({ prep: knowledge, usedModel: true })).toBe('model');
@@ -48,7 +48,7 @@ describe('Civi interaction log helpers', () => {
   });
 
   it('skips greetings and empty questions', () => {
-    const greeting = prepareNelaTurn(turn('Hello'));
+    const greeting = prepareCiviTurn(turn('Hello'));
     const source = classifyCiviInteractionSource({ prep: greeting, usedModel: false });
     expect(source).toBe('greeting');
     expect(shouldRecordCiviInteraction({ question: 'Hello', source })).toBe(false);
