@@ -1,12 +1,12 @@
 {
   "platform": "android",
-  "version": "0.1.223",
-  "versionTag": "v0.1.223",
-  "buildNumber": 225,
-  "releaseId": "20261009-v0.1.223",
-  "downloadPath": "/downloads/civizen-debug-release-20261009-v0.1.223.apk",
-  "downloadUrl": "https://civizen.world/downloads/civizen-debug-release-20261009-v0.1.223.apk?v=20261009-v0.1.223",
-  "publishedAt": "2026-10-09T22:00:42Z",
-  "sha256": "11edd12150acf4385800bcda168015c723b9bf76008a05e9b355feb61db0a1a2",
-  "notes": ["language packs translate through free models with their own quotas; untranslated batches are never stored","bounded browser translation, no English-to-English packs; privacy switches wait for the profile"]
+  "version": "0.1.224",
+  "versionTag": "v0.1.224",
+  "buildNumber": 226,
+  "releaseId": "20261009-v0.1.224",
+  "downloadPath": "/downloads/civizen-debug-release-20261009-v0.1.224.apk",
+  "downloadUrl": "https://civizen.world/downloads/civizen-debug-release-20261009-v0.1.224.apk?v=20261009-v0.1.224",
+  "publishedAt": "2026-10-09T22:18:01Z",
+  "sha256": "c317618396a0a0c307c9ae144b1f7c35d4474738fb55d7cbd7a08b1a7e95dde4",
+  "notes": ["language-pack builder falls back to gemini-3.5-flash and saves progress after every chunk","Home, landing, profile, edit-profile and settings hand-written in Armenian and Russian"]
 }
