@@ -82,10 +82,17 @@ Comments and other ordinary discussion never start the initiator confirmation ti
 
 The Contribute card stays. `/contribute/improvements` is a shortcut into Matter create (`type=Suggestion`, intended recipient = official Civizen org). Area is left unset unless a future mapping is safe.
 
+## Public browse, Community addressee, region and city scope (Phase 2 step 2.1, 2026-10-09)
+
+- `list_public_matters(p_search, p_area_node_id, p_scope_country_code, p_matter_type, p_limit)` returns `matter_row_json` bundles for public, non-draft Matters (newest first, max 100) to signed-in members; guests get `[]`. The Matters page lands on this list (`/contribute/matters`, `?view=` opens the member's own queues) with a search box and Area / country / type filters; cards show type · scope · Area.
+- A Matter can be addressed to the **Civizen community** without naming a person: the form's "Address it to the Civizen community" button resolves the official organization profile (`resolve_civizen_org_profile`), the same actor the Suggest Improvements shortcut uses.
+- Geographic scope offers Global · Country · Region · City; region and city come from the shared geo catalog (`listGeoRegions`, `listGeoCities`) and are stored as `scope_region_code` / `scope_locality_code`, which `create_matter` already validated.
+- SQL test: `supabase/tests/public_matters_browse_test.sql`.
+
 ## Phase 1 surfaces
 
 - Contribute lane **Questions, Issues & Ideas**
-- Queues: Needs Your Action · My Matters · Participating · Organization
+- Queues: Public Matters (landing view) · Needs Your Action · My Matters · Participating · Organization
 - Matter create, detail (current action, description, conversation, formal actions, activity)
 - Formal actions, comments with replies, optional evidence URL/file
 - Reminders, overdue, auto-close, reopen

@@ -9316,6 +9316,9 @@ isOneToOne: false
               "age": string,"city": string,"country_code": string,"created_at": string,"display_name": string,"has_phone": boolean,"id": string,"is_own": boolean,"job_types": (string)[],"mode": string,"pay_amount": string,"pay_period": string,"phone_country_code": string,"region_code": string
             }[]
                            },
+"list_public_matters":
+{ Args: { "p_area_node_id"?: string,"p_limit"?: number,"p_matter_type"?: string,"p_scope_country_code"?: string,"p_search"?: string }; Returns: Json
+                           },
 "list_published_development_stories":
 { Args: Record<PropertyKey, never>; Returns: {
               "area": string,

@@ -9,6 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { listCurrentAreas } from '@/lib/classification';
+import { getCountryName } from '@/lib/countries';
+import { listGeoCountryCodes } from '@/lib/geo-locations';
 import {
   MATTER_QUEUES,
   actionContextHeadline,
@@ -17,27 +20,54 @@ import {
   type MatterListRow,
   type MatterQueue,
 } from '@/lib/matters';
-import { listMatters } from '@/lib/matters-api';
+import { listMatters, listPublicMatters } from '@/lib/matters-api';
 import { listOwnedLinkedProfileIds } from '@/lib/opportunities-api';
+import { PublicMattersFilters } from '@/pages/contribute/matters/PublicMattersFilters';
+import {
+  EMPTY_PUBLIC_MATTERS_FILTER,
+  isEmptyPublicMattersFilter,
+  type PublicMattersFilterValue,
+} from '@/pages/contribute/matters/public-matters-filter';
 
 const QUEUE_PARAM: Record<string, MatterQueue> = {
+  public: 'public',
   needs_action: 'needs_action',
   mine: 'mine',
   participating: 'participating',
   organization: 'organization',
 };
 
+/** Browsing public Matters is the landing view; `?view=` opens one of the member's own queues. */
+const DEFAULT_QUEUE: MatterQueue = 'public';
+
+function scopeLine(row: MatterListRow, areaName: string | null, language: string, t: (key: string) => string): string {
+  const { matter } = row;
+  const parts: string[] = [];
+  if (matter.scopeKind === 'global') parts.push(t('contribute.matters.scope.global'));
+  else if (matter.scopeCountryCode) {
+    parts.push(
+      [getCountryName(matter.scopeCountryCode, language), matter.scopeRegionCode, matter.scopeLocalityCode]
+        .filter(Boolean)
+        .join(' · '),
+    );
+  }
+  if (areaName) parts.push(areaName);
+  return parts.join(' · ');
+}
+
 function MatterCard({
   row,
   typeLabel,
   statusLabel,
   taskLabel,
+  scopeText,
   t,
 }: {
   row: MatterListRow;
   typeLabel: string;
   statusLabel: string;
   taskLabel: string;
+  scopeText?: string;
   t: (key: string) => string;
 }) {
   const progress = workProgressLine(row.workSummary);
@@ -52,7 +82,7 @@ function MatterCard({
           {statusLabel}
         </Badge>
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">{typeLabel}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{scopeText ? `${typeLabel} · ${scopeText}` : typeLabel}</p>
       {row.currentAction ? (
         <div className="mt-2">
           <Badge variant="secondary" className="rounded-full text-xs uppercase tracking-wide">
@@ -81,22 +111,36 @@ function MatterCard({
 }
 
 export default function Matters() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const tRef = useRef(t);
   tRef.current = t;
   const { profile } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const profileId = profile?.id ?? '';
-  const queue = QUEUE_PARAM[searchParams.get('view') || ''] ?? 'needs_action';
+  const queue = QUEUE_PARAM[searchParams.get('view') || ''] ?? DEFAULT_QUEUE;
+  const areas = useMemo(() => listCurrentAreas(), []);
+  const countryOptions = useMemo(() => listGeoCountryCodes(language), [language]);
+  const areaName = useCallback(
+    (areaNodeId: string | null) => areas.find((area) => area.id === areaNodeId)?.displayName ?? null,
+    [areas],
+  );
 
   const [rows, setRows] = useState<MatterListRow[]>([]);
   const [linkedIds, setLinkedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<PublicMattersFilterValue>(EMPTY_PUBLIC_MATTERS_FILTER);
+  // The search box filters as the member types; wait a moment before asking the server again.
+  const [appliedFilter, setAppliedFilter] = useState<PublicMattersFilterValue>(EMPTY_PUBLIC_MATTERS_FILTER);
+
+  useEffect(() => {
+    const handle = window.setTimeout(() => setAppliedFilter(filter), 250);
+    return () => window.clearTimeout(handle);
+  }, [filter]);
 
   const queues = useMemo(() => {
-    const items: MatterQueue[] = ['needs_action', 'mine', 'participating'];
+    const items: MatterQueue[] = ['public', 'needs_action', 'mine', 'participating'];
     if (linkedIds.length > 0) items.push('organization');
     return items;
   }, [linkedIds.length]);
@@ -111,14 +155,16 @@ export default function Matters() {
     try {
       const linked = await listOwnedLinkedProfileIds(profileId);
       setLinkedIds(linked);
-      const list = await listMatters(queue, profileId, linked);
+      const list = queue === 'public'
+        ? await listPublicMatters(appliedFilter, profileId, linked)
+        : await listMatters(queue, profileId, linked);
       setRows(list);
     } catch {
       setError(tRef.current('contribute.matters.loadFailed'));
     } finally {
       setLoading(false);
     }
-  }, [profileId, queue]);
+  }, [appliedFilter, profileId, queue]);
 
   useEffect(() => {
     void load();
@@ -159,19 +205,32 @@ export default function Matters() {
               type="button"
               size="sm"
               variant={queue === item ? 'default' : 'outline'}
-              onClick={() => setSearchParams(item === 'needs_action' ? {} : { view: item })}
+              onClick={() => setSearchParams(item === DEFAULT_QUEUE ? {} : { view: item })}
             >
               {t(`contribute.matters.queues.${item}`)}
             </Button>
           ))}
         </div>
 
+        {queue === 'public' ? (
+          <PublicMattersFilters
+            value={filter}
+            onChange={setFilter}
+            areas={areas}
+            countryOptions={countryOptions}
+            language={language}
+            t={t}
+          />
+        ) : null}
+
         {loading ? <p className="text-sm text-muted-foreground">{t('common.loading')}</p> : null}
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
         {!loading && rows.length === 0 ? (
           <Card className="border-border/70 bg-card/95 p-5 text-sm text-muted-foreground">
-            {t(`contribute.matters.empty.${queue}`)}
+            {queue === 'public' && !isEmptyPublicMattersFilter(appliedFilter)
+              ? t('contribute.matters.empty.publicFiltered')
+              : t(`contribute.matters.empty.${queue}`)}
           </Card>
         ) : (
           <div className="grid gap-3">
@@ -182,6 +241,7 @@ export default function Matters() {
                   typeLabel={t(`contribute.matters.types.${row.matter.matterType}`)}
                   statusLabel={t(`contribute.matters.status.${row.derivedStatus}`)}
                   taskLabel={t('contribute.matters.work.taskLabel')}
+                  scopeText={queue === 'public' ? scopeLine(row, areaName(row.matter.areaNodeId), language, t) : undefined}
                   t={t}
                 />
               </Link>

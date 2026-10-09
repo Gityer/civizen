@@ -1,10 +1,11 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import Matters from '@/pages/contribute/Matters';
 
 const listMatters = vi.fn();
+const listPublicMatters = vi.fn();
 const listOwnedLinkedProfileIds = vi.fn();
 
 vi.mock('@/components/layout/AppLayout', () => ({
@@ -26,6 +27,19 @@ vi.mock('@/contexts/AuthContext', () => ({
 
 vi.mock('@/lib/matters-api', () => ({
   listMatters: (...args: unknown[]) => listMatters(...args),
+  listPublicMatters: (...args: unknown[]) => listPublicMatters(...args),
+}));
+
+vi.mock('@/lib/classification', () => ({
+  listCurrentAreas: () => [{ id: 'area-education', displayName: 'Education' }],
+}));
+
+vi.mock('@/lib/geo-locations', () => ({
+  listGeoCountryCodes: () => ['AM', 'US'],
+}));
+
+vi.mock('@/lib/countries', () => ({
+  getCountryName: (code: string) => (code === 'AM' ? 'Armenia' : code),
 }));
 
 vi.mock('@/lib/opportunities-api', () => ({
@@ -43,6 +57,8 @@ vi.mock('react-router-dom', async () => {
 describe('Matters list', () => {
   beforeEach(() => {
     listMatters.mockReset();
+    listPublicMatters.mockReset();
+    listPublicMatters.mockResolvedValue([]);
     listOwnedLinkedProfileIds.mockReset();
     listOwnedLinkedProfileIds.mockResolvedValue([]);
     listMatters.mockResolvedValue([
@@ -107,14 +123,74 @@ describe('Matters list', () => {
 
   it('shows Needs your action and ball-is-with copy on cards', async () => {
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={['/contribute/matters?view=needs_action']}>
         <Matters />
       </MemoryRouter>,
     );
     await waitFor(() => {
       expect(screen.getByText('How do Areas work?')).toBeInTheDocument();
     });
+    expect(listMatters).toHaveBeenCalledWith('needs_action', 'user-1', []);
+    expect(listPublicMatters).not.toHaveBeenCalled();
     expect(screen.getByText('Waiting on Civizen Product Team')).toBeInTheDocument();
     expect(screen.getByLabelText('contribute.matters.create')).toBeInTheDocument();
+  });
+
+  it('lands on the public list, shows scope and Area on cards, and searches on the server', async () => {
+    const [row] = await listMatters.getMockImplementation()!();
+    listPublicMatters.mockResolvedValue([
+      {
+        ...row,
+        matter: {
+          ...row.matter,
+          id: 'mat-public',
+          title: 'Shade trees for bus stops',
+          visibility: 'public',
+          areaNodeId: 'area-education',
+          scopeKind: 'locality',
+          scopeCountryCode: 'AM',
+          scopeRegionCode: 'ER',
+          scopeLocalityCode: 'Yerevan',
+        },
+        ball: null,
+      },
+    ]);
+    render(
+      <MemoryRouter>
+        <Matters />
+      </MemoryRouter>,
+    );
+    await waitFor(() => {
+      expect(screen.getByText('Shade trees for bus stops')).toBeInTheDocument();
+    });
+    expect(listMatters).not.toHaveBeenCalled();
+    expect(listPublicMatters).toHaveBeenLastCalledWith(
+      { search: '', areaNodeId: '', scopeCountryCode: '', matterType: '' },
+      'user-1',
+      [],
+    );
+    expect(screen.getByText(/Armenia · ER · Yerevan · Education/)).toBeInTheDocument();
+    expect(screen.getByTestId('public-matters-filters')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('contribute.matters.publicSearchPlaceholder'), { target: { value: 'shade' } });
+    await waitFor(() => {
+      expect(listPublicMatters).toHaveBeenLastCalledWith(
+        { search: 'shade', areaNodeId: '', scopeCountryCode: '', matterType: '' },
+        'user-1',
+        [],
+      );
+    });
+  });
+
+  it('explains an empty filtered public list differently from an empty public list', async () => {
+    listPublicMatters.mockResolvedValue([]);
+    render(
+      <MemoryRouter>
+        <Matters />
+      </MemoryRouter>,
+    );
+    expect(await screen.findByText('contribute.matters.empty.public')).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('contribute.matters.publicSearchPlaceholder'), { target: { value: 'zzz' } });
+    expect(await screen.findByText('contribute.matters.empty.publicFiltered')).toBeInTheDocument();
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -47,6 +47,8 @@ vi.mock('@/lib/classification', () => ({
 
 vi.mock('@/lib/geo-locations', () => ({
   listGeoCountryCodes: () => ['US', 'AM'],
+  listGeoRegions: async () => [{ code: 'ER', name: 'Yerevan' }],
+  listGeoCities: async () => ['Yerevan'],
 }));
 
 vi.mock('@/lib/countries', () => ({
@@ -75,6 +77,19 @@ describe('Matter pages', () => {
       </MemoryRouter>,
     );
     expect(await screen.findByText('contribute.matters.missingTitle')).toBeInTheDocument();
+  });
+
+  it('lets a member address the Matter to the Civizen community without naming a person', async () => {
+    render(
+      <MemoryRouter>
+        <MatterForm />
+      </MemoryRouter>,
+    );
+    const button = await screen.findByTestId('matter-recipient-community');
+    expect(screen.getByText('contribute.matters.recipientCommunityHint')).toBeInTheDocument();
+    fireEvent.click(button);
+    expect(await screen.findByText('Civizen')).toBeInTheDocument();
+    expect(screen.queryByTestId('matter-recipient-community')).toBeNull();
   });
 
   it('preselects Suggestion for the Suggest Improvements shortcut', async () => {

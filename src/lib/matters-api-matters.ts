@@ -147,6 +147,34 @@ export async function listMatters(
     .filter((row): row is MatterListRow => Boolean(row));
 }
 
+export type PublicMattersFilter = {
+  search?: string;
+  areaNodeId?: string | null;
+  scopeCountryCode?: string | null;
+  matterType?: MatterType | '' | null;
+  limit?: number;
+};
+
+/** Public, non-draft Matters for browsing (step 2.1); filters are applied on the server. */
+export async function listPublicMatters(
+  filter: PublicMattersFilter,
+  viewerProfileId: string,
+  managedOrganizationIds: readonly string[] = [],
+  client: DbClient = supabase,
+): Promise<MatterListRow[]> {
+  const { data, error } = await db(client).rpc('list_public_matters', {
+    p_search: filter.search?.trim() || null,
+    p_area_node_id: filter.areaNodeId || null,
+    p_scope_country_code: filter.scopeCountryCode || null,
+    p_matter_type: filter.matterType || null,
+    p_limit: filter.limit ?? 60,
+  });
+  if (error) throw new Error(rpcErrorMessage(error));
+  return asRows(data)
+    .map((row) => mapListBundle(row, viewerProfileId, managedOrganizationIds))
+    .filter((row): row is MatterListRow => Boolean(row));
+}
+
 export async function getMatterDetail(
   matterId: string,
   client: DbClient = supabase,

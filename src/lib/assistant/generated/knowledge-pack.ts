@@ -6,9 +6,9 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.207",
     "appReleaseId": "20261009-v0.1.207",
     "androidVersionCode": 209,
-    "gitSha": "76a7a3cfc45a35f2182db1027019b5cbdbab8b5d",
-    "generatedAt": "2026-10-09T17:41:37.345Z",
-    "sourceFingerprint": "7ea96f58f46718982b38407cd2bdb4935d756c79477a0ab46488b4ed580f5575",
+    "gitSha": "159be035cb52f9f9ca056725f0eba09b32c634fe",
+    "generatedAt": "2026-10-09T17:49:52.624Z",
+    "sourceFingerprint": "2a2be13afae5c8fd0b6f24e62c863a8c307298679b23971b6bbc0c48cc084c79",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 394
@@ -3883,27 +3883,27 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     },
     {
       "id": "docs/04-operations/dev/matter-collaboration.md#10",
-      "title": "Phase 1 surfaces",
+      "title": "Public browse, Community addressee, region and city scope (Phase 2 step 2.1, 2026-10-09)",
       "path": "docs/04-operations/dev/matter-collaboration.md",
-      "text": "## Phase 1 surfaces - Contribute lane **Questions, Issues & Ideas** - Queues: Needs Your Action · My Matters · Participating · Organization - Matter create, detail (current action, description, conversation, formal actions, activity) - Formal actions, comments with replies, optional evidence URL/file - Reminders, overdue, auto-close, reopen - **Phase 2 Work:** optional **Start collaborative work**; Work / Decisions sections; Tasks with acceptance, execution, review, dependencies, subtasks; Decision records; Task comments and completion evidence; Contribute queue includes Task and Decision actions",
+      "text": "## Public browse, Community addressee, region and city scope (Phase 2 step 2.1, 2026-10-09)",
       "status": "implemented",
       "priority": 6,
       "kind": "doc"
     },
     {
       "id": "docs/04-operations/dev/matter-collaboration.md#11",
-      "title": "Distinct objects (Phase 2)",
+      "title": "Public browse, Community addressee, region and city scope (Phase 2 step 2.1, 2026-10-09)",
       "path": "docs/04-operations/dev/matter-collaboration.md",
-      "text": "## Distinct objects (Phase 2) Keep these separate: **Matter** · **Matter Responsibility** · **Task** (`collaboration_tasks`) · **Task Assignment** · **Decision** · **Evidence** (matter attachments). `matter_action_requirements` remains the only action clock. Task and Decision actions use `context_kind` + `context_id` so several pending clocks can exist at once. Timeout still runs only in `process_matter_action_timeouts`. Task overdue reminds; it does not auto-close the Matter. Auto-close remains initiator `confirm_resolution` only. Responsible Lead is explicit (`matter_responsibilities`). A Task assignee is not automatically responsible for the Matter. Organizations can hold responsibility or Task assignment through the existing actor model. AI actors are reserved and not activated.",
+      "text": "- `list_public_matters(p_search, p_area_node_id, p_scope_country_code, p_matter_type, p_limit)` returns `matter_row_json` bundles for public, non-draft Matters (newest first, max 100) to signed-in members; guests get `[]`. The Matters page lands on this list (`/contribute/matters`, `?view=` opens the member's own queues) with a search box and Area / country / type filters; cards show type · scope · Area. - A Matter can be addressed to the **Civizen community** without naming a person: the form's \"Address it to the Civizen community\" button resolves the official organization profile (`resolve_civizen_org_profile`), the same actor the Suggest Improvements shortcut uses. - Geographic scope offers Global · Country · Region · City; region and city come from the shared geo catalog (`listGeoRegions`, `listGeoCities`) and are stored as `scope_region_code` / `scope_locality_code`, which `create_matter` already validated. - SQL test: `supabase/tests/public_matters_browse_test.sql`.",
       "status": "implemented",
       "priority": 6,
       "kind": "doc"
     },
     {
       "id": "docs/04-operations/dev/matter-collaboration.md#12",
-      "title": "Distinct objects (Phase 2)",
+      "title": "Phase 1 surfaces",
       "path": "docs/04-operations/dev/matter-collaboration.md",
-      "text": "When work is finished, Responsible Lead calls **Review completed work and provide final response**, which assigns the existing Phase 1 `address` / `mark_addressed` flow, then initiator confirmation. No second resolution system. Ordinary completion is allowed only when every required Task is in a **terminal** state: **Completed** or **Cancelled**. These are unfinished and block ordinary completion: Proposed, Assigned, Awaiting Acceptance, Accepted, In Progress, Blocked, Waiting, Submitted, Under Review. **Declined is not silently terminal.** The Responsible Lead must reassign, cancel, replace, or waive that assignment before ordinary completion.",
+      "text": "## Phase 1 surfaces - Contribute lane **Questions, Issues & Ideas** - Queues: Public Matters (landing view) · Needs Your Action · My Matters · Participating · Organization - Matter create, detail (current action, description, conversation, formal actions, activity) - Formal actions, comments with replies, optional evidence URL/file - Reminders, overdue, auto-close, reopen - **Phase 2 Work:** optional **Start collaborative work**; Work / Decisions sections; Tasks with acceptance, execution, review, dependencies, subtasks; Decision records; Task comments and completion evidence; Contribute queue includes Task and Decision actions",
       "status": "implemented",
       "priority": 6,
       "kind": "doc"
@@ -3912,7 +3912,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "docs/04-operations/dev/matter-collaboration.md#13",
       "title": "Distinct objects (Phase 2)",
       "path": "docs/04-operations/dev/matter-collaboration.md",
-      "text": "**Complete with outstanding work** is an explicit exceptional path. It requires a reason, identifies the outstanding Tasks, is attributed to the Responsible Lead, and writes `collaborative_work_completed_with_outstanding` (not `collaborative_work_completed`). Outstanding Task statuses are not changed to Completed. The Matter waiting condition and final-response copy must be able to say that some work remained outstanding. Reopening keeps completed Tasks, Decisions, and evidence. New work is additive; old Tasks are not silently reset. ### Shared responsibility vs participation Inviting a Contributor, Specialist, Contractor, Observer, or Evaluator is **participation**. It does not create an accepted Responsible Collaborator.",
+      "text": "## Distinct objects (Phase 2) Keep these separate: **Matter** · **Matter Responsibility** · **Task** (`collaboration_tasks`) · **Task Assignment** · **Decision** · **Evidence** (matter attachments). `matter_action_requirements` remains the only action clock. Task and Decision actions use `context_kind` + `context_id` so several pending clocks can exist at once. Timeout still runs only in `process_matter_action_timeouts`. Task overdue reminds; it does not auto-close the Matter. Auto-close remains initiator `confirm_resolution` only. Responsible Lead is explicit (`matter_responsibilities`). A Task assignee is not automatically responsible for the Matter. Organizations can hold responsibility or Task assignment through the existing actor model. AI actors are reserved and not activated.",
       "status": "implemented",
       "priority": 6,
       "kind": "doc"

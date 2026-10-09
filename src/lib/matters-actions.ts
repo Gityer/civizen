@@ -242,7 +242,8 @@ export function commentDoesNotCompleteAction(): true {
   return true;
 }
 
-export const MATTER_QUEUES = ['needs_action', 'mine', 'participating', 'organization'] as const;
+/** `public` is the browsable list of public Matters (step 2.1); the others are the member's own queues. */
+export const MATTER_QUEUES = ['public', 'needs_action', 'mine', 'participating', 'organization'] as const;
 export type MatterQueue = (typeof MATTER_QUEUES)[number];
 
 export type MatterListRow = {

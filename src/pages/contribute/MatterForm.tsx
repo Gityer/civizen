@@ -16,7 +16,6 @@ import {
   MATTER_TYPES,
   MATTER_VISIBILITIES,
   type MatterActorKind,
-  type MatterScopeKind,
   type MatterType,
   type MatterVisibility,
 } from '@/lib/matters';
@@ -29,7 +28,13 @@ import {
   type MatterActorSuggestion,
 } from '@/lib/matters-api';
 import { listGeoCountryCodes } from '@/lib/geo-locations';
-import { getCountryName } from '@/lib/countries';
+import { MatterScopeFields } from '@/pages/contribute/matter-form/MatterScopeFields';
+import {
+  EMPTY_MATTER_SCOPE,
+  matterScopeForSubmit,
+  matterScopeMissingKey,
+  type MatterScopeValue,
+} from '@/pages/contribute/matter-form/matter-scope';
 import { toast } from 'sonner';
 
 type LinkedOrg = { id: string; name: string };
@@ -51,8 +56,7 @@ export default function MatterForm() {
   const [matterType, setMatterType] = useState<MatterType>(improvementIntent ? 'suggestion' : 'question');
   const [visibility, setVisibility] = useState<MatterVisibility>('participants');
   const [areaNodeId, setAreaNodeId] = useState('');
-  const [scopeKind, setScopeKind] = useState<MatterScopeKind>('global');
-  const [scopeCountryCode, setScopeCountryCode] = useState('');
+  const [scope, setScope] = useState<MatterScopeValue>(EMPTY_MATTER_SCOPE);
   const [initiatorKind, setInitiatorKind] = useState<MatterActorKind>('person');
   const [initiatorProfileId, setInitiatorProfileId] = useState(profileId);
   const [addressee, setAddressee] = useState<MatterActorSuggestion | null>(null);
@@ -69,16 +73,22 @@ export default function MatterForm() {
     setInitiatorProfileId(profileId);
   }, [profileId]);
 
+  // The official Civizen organization stands for the community: a member can raise a Matter
+  // without naming a person (step 2.1).
+  const addressCommunity = useCallback(async () => {
+    const actor = await resolveOfficialCivizenMatterActor();
+    if (actor) {
+      setAddressee(actor);
+      setAddresseeQuery('');
+      setSuggestions([]);
+    }
+  }, []);
+
   useEffect(() => {
     if (!improvementIntent) return;
     setMatterType('suggestion');
-    void resolveOfficialCivizenMatterActor().then((actor) => {
-      if (actor) {
-        setAddressee(actor);
-        setAddresseeQuery('');
-      }
-    });
-  }, [improvementIntent]);
+    void addressCommunity();
+  }, [addressCommunity, improvementIntent]);
 
   useEffect(() => {
     if (!profileId) return;
@@ -114,8 +124,9 @@ export default function MatterForm() {
       toast.error(tRef.current('contribute.matters.recipientRequired'));
       return;
     }
-    if (scopeKind !== 'global' && !scopeCountryCode.trim()) {
-      toast.error(tRef.current('contribute.matters.scopeCountryRequired'));
+    const scopeMissing = matterScopeMissingKey(scope);
+    if (scopeMissing) {
+      toast.error(tRef.current(scopeMissing));
       return;
     }
     setBusy(true);
@@ -131,10 +142,7 @@ export default function MatterForm() {
         addresseeUnitLabel: unitLabel.trim() || null,
         visibility,
         areaNodeId: areaNodeId || null,
-        scopeKind,
-        scopeCountryCode: scopeKind === 'global' ? null : scopeCountryCode.trim().toUpperCase(),
-        scopeRegionCode: null,
-        scopeLocalityCode: null,
+        ...matterScopeForSubmit(scope),
         evidenceUrl: evidenceUrl.trim() || null,
         evidenceLabel: evidenceLabel.trim() || null,
       });
@@ -160,8 +168,7 @@ export default function MatterForm() {
     matterType,
     navigate,
     profileId,
-    scopeCountryCode,
-    scopeKind,
+    scope,
     title,
     unitLabel,
     visibility,
@@ -252,6 +259,17 @@ export default function MatterForm() {
                   placeholder={t('contribute.matters.recipientHint')}
                   autoComplete="off"
                 />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => void addressCommunity()}
+                  data-testid="matter-recipient-community"
+                >
+                  {t('contribute.matters.recipientCommunity')}
+                </Button>
+                <p className="mt-1 text-xs text-muted-foreground">{t('contribute.matters.recipientCommunityHint')}</p>
                 {suggestions.length > 0 ? (
                   <ul className="mt-2 space-y-1">
                     {suggestions.map((suggestion) => (
@@ -285,44 +303,7 @@ export default function MatterForm() {
               placeholder={t('contribute.matters.unitHint')}
             />
           </OutlinedField>
-          <OutlinedField label={t('contribute.matters.scopeLabel')}>
-            <Select
-              value={scopeKind === 'global' ? 'global' : 'country'}
-              onValueChange={(value) => {
-                const next = value === 'global' ? 'global' : 'country';
-                setScopeKind(next);
-                if (next === 'global') setScopeCountryCode('');
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="global">{t('contribute.matters.scope.global')}</SelectItem>
-                <SelectItem value="country">{t('contribute.matters.scope.country')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </OutlinedField>
-          {scopeKind !== 'global' ? (
-            <OutlinedField label={t('contribute.matters.scopeCountryLabel')}>
-              <Select
-                value={scopeCountryCode || 'none'}
-                onValueChange={(value) => setScopeCountryCode(value === 'none' ? '' : value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t('contribute.matters.scopeCountryHint')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">{t('contribute.matters.scopeCountryHint')}</SelectItem>
-                  {countryOptions.map((code) => (
-                    <SelectItem key={code} value={code}>
-                      {getCountryName(code, language)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </OutlinedField>
-          ) : null}
+          <MatterScopeFields value={scope} onChange={setScope} countryOptions={countryOptions} language={language} t={t} />
           <OutlinedField label={t('contribute.matters.areaLabel')}>
             <Select value={areaNodeId || 'none'} onValueChange={(value) => setAreaNodeId(value === 'none' ? '' : value)}>
               <SelectTrigger>
