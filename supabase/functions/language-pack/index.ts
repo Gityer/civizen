@@ -5,7 +5,7 @@ import { baseTranslations, supportedLanguageCodes } from './base-bundle.js';
  * language-pack: returns the machine-translated catalog for one language, built on the server in resumable batches
  * and cached in public.language_packs (Phase 8 step 8.2). Translation uses the project's Gemini key (free tier)
  * through the models in LANGUAGE_PACK_MODELS, in order: the free daily quota is counted per model, so the pack
- * builder uses gemini-3.5-flash-lite then the Gemma models, none of them Civi's model (GEMINI_MODEL). 40 strings per model call,
+ * builder uses gemini-3.5-flash-lite then gemini-3.5-flash, neither of them Civi's model (GEMINI_MODEL). 40 strings per model call,
  * placeholders preserved; a batch whose translations come back untranslated is not stored, so a provider outage
  * can never produce an "English" pack. A request translates at most BATCH strings,
  * keeps progress in public.language_pack_builds and answers 202 until the pack is complete; the browser falls back
@@ -34,13 +34,13 @@ function placeholders(text: string): string[] {
 
 const LANGUAGE_NAMES: Record<string, string> = { hy: 'Eastern Armenian', ru: 'Russian', de: 'German', fr: 'French', es: 'Spanish', ar: 'Arabic', zh: 'Simplified Chinese', 'zh-CN': 'Simplified Chinese', 'zh-TW': 'Traditional Chinese', pt: 'Portuguese', 'pt-BR': 'Brazilian Portuguese', it: 'Italian', tr: 'Turkish', fa: 'Persian', hi: 'Hindi', ja: 'Japanese', ko: 'Korean', uk: 'Ukrainian', pl: 'Polish', nl: 'Dutch', ka: 'Georgian', el: 'Greek', he: 'Hebrew', iw: 'Hebrew' };
 
-const DEFAULT_MODELS = 'gemini-3.5-flash-lite,gemma-4-26b-a4b-it';
+const DEFAULT_MODELS = 'gemini-3.5-flash-lite,gemini-3.5-flash';
 /** No new model call starts after this; the worker's wall clock would cancel the whole request and lose the batch. */
-const TIME_BUDGET_MS = 15_000;
+const TIME_BUDGET_MS = 8_000;
 /** One model call may not run longer than this; the request deadline below caps it further. */
 const CALL_TIMEOUT_MS = 30_000;
 /** Everything (chunks, split retries, fallback models) must be answered by now: the worker's wall clock is 60 s. */
-const REQUEST_DEADLINE_MS = 50_000;
+const REQUEST_DEADLINE_MS = 30_000;
 
 /** Strips ```json fences a model may wrap around the array. */
 function unfence(text: string): string {
@@ -159,6 +159,8 @@ Deno.serve(async (request) => {
   let failed = 0;
   let index = 0;
   const started = Date.now();
+  const saveProgress = () =>
+    admin.from('language_pack_builds').upsert({ language: lang, base_version: version, translated, done_count: strings.filter((s) => s in translated).length, total_count: strings.length, updated_at: new Date().toISOString() });
   const deadline = started + REQUEST_DEADLINE_MS;
   await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
     while (index < chunks.length && Date.now() - started < TIME_BUDGET_MS) {
@@ -172,10 +174,12 @@ Deno.serve(async (request) => {
       chunk.forEach((s, i) => {
         translated[s] = out[i];
       });
+      // the worker's wall clock is per isolate: save after every chunk so a cancelled request loses at most one
+      await saveProgress();
     }
   }));
   const done = strings.filter((s) => s in translated).length;
-  await admin.from('language_pack_builds').upsert({ language: lang, base_version: version, translated, done_count: done, total_count: strings.length, updated_at: new Date().toISOString() });
+  await saveProgress();
 
   if (done >= strings.length) {
     const pack = rebuild(baseTranslations, translated) as Tree;
