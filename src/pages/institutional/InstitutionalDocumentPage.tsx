@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import type { InstitutionalDoc } from '@/lib/institutional-docs';
+import { docTextFor, type InstitutionalDoc } from '@/lib/institutional-docs';
 import { cn } from '@/lib/utils';
 
 type InstitutionalDocumentPageProps = {
@@ -26,7 +26,8 @@ function reviewStatusBadgeClass(status: string): string {
 }
 
 export function InstitutionalDocumentPage({ doc, actions }: InstitutionalDocumentPageProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const text = docTextFor(doc, language);
   usePageMeta({
     title: `Civizen — ${doc.title}`,
     description: `${doc.title} (v${doc.version}, ${doc.reviewStatus})`,
@@ -127,10 +128,15 @@ export function InstitutionalDocumentPage({ doc, actions }: InstitutionalDocumen
         </Card>
 
         <Card className="border-border/70 bg-card/95 p-5 shadow-sm">
+          {text.translated ? (
+            <p className="mb-4 text-xs leading-relaxed text-muted-foreground" data-testid="institutional-doc-translation-note">
+              {t('institutionalDocs.translationNote')}
+            </p>
+          ) : null}
           <StudyMarkdownReader
-            title={doc.title}
+            title={text.title}
             badgeLabel={doc.reviewStatus}
-            markdown={doc.markdown}
+            markdown={text.markdown}
             embedded
             showHeader={false}
           />

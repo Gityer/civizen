@@ -320,6 +320,7 @@ export const m_messages_13 = {
     }
   },
   "institutionalDocs": {
+    "translationNote": "Hand-written translation. The English document remains the reference text.",
     "indexTitle": "Public documents",
     "indexDescription": "Interim institutional policies for Mature Humanity and Civizen. Documents marked interim require professional review before they are treated as finally adopted legal text.",
     "pageTitle": "Civizen — Public documents",

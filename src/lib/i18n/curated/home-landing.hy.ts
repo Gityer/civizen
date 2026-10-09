@@ -334,4 +334,7 @@ export const homeLandingHy = {
     categories: 'Միավորի կատեգորիաներ',
     domains: 'Գործունեությունն ըստ ոլորտի',
   },
+  institutionalDocs: {
+    translationNote: 'Ձեռքով կատարված թարգմանություն։ Անգլերեն փաստաթուղթը մնում է հղման տեքստը։',
+  },
 } as const;

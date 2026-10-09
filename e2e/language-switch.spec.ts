@@ -27,4 +27,9 @@ test('a visitor switches to Armenian and the choice survives a reload', async ({
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('lang', 'hy', { timeout: 20_000 });
   await expect(page.getByRole("button", { name: /Հայերեն/ })).toBeVisible();
+
+  // public documents with a hand-written text open in the chosen language, with a note that English stays the reference
+  await page.goto('/about/mission');
+  await expect(page.getByTestId('institutional-doc-translation-note')).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText('Առաքելության և անկախության խարտիա').first()).toBeVisible();
 });

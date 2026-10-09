@@ -1,6 +1,8 @@
 import currentLegalStatus from '../../docs/02-policies/institutional/current-legal-status-notice.md?raw';
 import institutionalIdentity from '../../docs/02-policies/institutional/institutional-identity-and-relationship.md?raw';
 import missionIndependence from '../../docs/02-policies/institutional/mission-and-independence-charter.md?raw';
+import missionIndependenceHy from '../../docs/02-policies/institutional/mission-and-independence-charter.hy.md?raw';
+import missionIndependenceRu from '../../docs/02-policies/institutional/mission-and-independence-charter.ru.md?raw';
 import governanceOversight from '../../docs/02-policies/institutional/governance-and-human-oversight.md?raw';
 import fundingIntegrity from '../../docs/02-policies/institutional/funding-and-financial-integrity.md?raw';
 import investorNotice from '../../docs/02-policies/institutional/investor-interest-non-offering-notice.md?raw';
@@ -10,6 +12,8 @@ import transparencyStandard from '../../docs/02-policies/institutional/transpare
 import partnerships from '../../docs/02-policies/institutional/international-partnerships-and-chapters.md?raw';
 import worldCitizenship from '../../docs/02-policies/institutional/world-citizenship-and-civic-status-notice.md?raw';
 import planetaryCitizenshipPathway from '../../docs/00-foundation/recognized-planetary-citizenship-pathway.md?raw';
+import planetaryCitizenshipPathwayHy from '../../docs/00-foundation/recognized-planetary-citizenship-pathway.hy.md?raw';
+import planetaryCitizenshipPathwayRu from '../../docs/00-foundation/recognized-planetary-citizenship-pathway.ru.md?raw';
 import aiAuthority from '../../docs/02-policies/institutional/ai-advisory-and-human-authority.md?raw';
 import communityCharter from '../../docs/02-policies/governance/civizen-community-governance-charter.md?raw';
 
@@ -41,7 +45,11 @@ export type InstitutionalDoc = {
   professionalReviewRequired: boolean;
   supersededBy?: string;
   archivedDate?: string;
+  /** Hand-written translations of the body, keyed by primary language subtag; English stays the reference text. */
+  translations?: Partial<Record<TranslatedDocLanguage, { title: string; markdown: string }>>;
 };
+
+export type TranslatedDocLanguage = 'hy' | 'ru';
 
 function stripFrontMatter(raw: string): { meta: Record<string, string>; body: string } {
   if (!raw.startsWith('---\n')) {
@@ -80,9 +88,19 @@ function docFrom(
   section: InstitutionalDocSection,
   raw: string,
   fallbackTitle: string,
+  translatedRaw?: Partial<Record<TranslatedDocLanguage, string>>,
 ): InstitutionalDoc {
   const { meta, body } = stripFrontMatter(raw);
+  const translations = translatedRaw
+    ? Object.fromEntries(
+        Object.entries(translatedRaw).map(([language, text]) => {
+          const parsed = stripFrontMatter(text);
+          return [language, { title: parsed.meta.title || meta.title || fallbackTitle, markdown: parsed.body }];
+        }),
+      )
+    : undefined;
   return {
+    translations,
     id,
     path,
     title: meta.title || fallbackTitle,
@@ -101,7 +119,7 @@ function docFrom(
 
 export const INSTITUTIONAL_DOCS: InstitutionalDoc[] = [
   docFrom('institutional-identity', '/about', 'about', institutionalIdentity, 'Mature Humanity and Civizen'),
-  docFrom('mission', '/about/mission', 'mission', missionIndependence, 'Mission and Independence Charter'),
+  docFrom('mission', '/about/mission', 'mission', missionIndependence, 'Mission and Independence Charter', { hy: missionIndependenceHy, ru: missionIndependenceRu }),
   docFrom('legal-status', '/about/legal-status', 'legal', currentLegalStatus, 'Current Legal Status'),
   docFrom('open-source', '/about/open-source', 'openSource', openSourceIp, 'Open Source, Intellectual Property, and Brand Stewardship'),
   docFrom('ai', '/about/ai', 'ai', aiAuthority, 'AI Advisory and Human Authority'),
@@ -112,6 +130,7 @@ export const INSTITUTIONAL_DOCS: InstitutionalDoc[] = [
     'worldCitizenship',
     planetaryCitizenshipPathway,
     'From Voluntary World Citizenship to Recognized Planetary Citizenship',
+    { hy: planetaryCitizenshipPathwayHy, ru: planetaryCitizenshipPathwayRu },
   ),
   docFrom('governance-about', '/governance/about', 'governance', governanceOversight, 'Governance and Human Oversight'),
   docFrom('governance-charter', '/governance/charter', 'communityGovernance', communityCharter, 'Civizen Community Governance Charter'),
@@ -152,6 +171,14 @@ export const DOCUMENTS_INDEX_SECTIONS: InstitutionalDocSection[] = [
 export function getInstitutionalDocByPath(pathname: string): InstitutionalDoc | undefined {
   const normalized = pathname.replace(/\/$/, '') || '/';
   return INSTITUTIONAL_DOCS.find((doc) => doc.path === normalized);
+}
+
+/** The body to show for a language: the hand-written translation when one exists, otherwise the English reference. */
+export function docTextFor(doc: InstitutionalDoc, language: string): { title: string; markdown: string; translated: boolean } {
+  const primary = language.toLowerCase().split(/[-_]/)[0] as TranslatedDocLanguage;
+  const translation = doc.translations?.[primary];
+  if (translation) return { title: translation.title, markdown: translation.markdown, translated: true };
+  return { title: doc.title, markdown: doc.markdown, translated: false };
 }
 
 export function docsForSection(section: InstitutionalDocSection): InstitutionalDoc[] {

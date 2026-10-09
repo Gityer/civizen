@@ -334,4 +334,7 @@ export const homeLandingRu = {
     categories: 'Категории балла',
     domains: 'Активность по направлениям',
   },
+  institutionalDocs: {
+    translationNote: 'Перевод выполнен вручную. Английский документ остаётся эталонным текстом.',
+  },
 } as const;
