@@ -76,5 +76,9 @@ echo "  version: $CURRENT_VERSION -> $NEXT_VERSION"
 echo "  build:   $CURRENT_BUILD -> $NEXT_BUILD"
 echo "  id:      $NEXT_RELEASE_ID"
 echo
+# The Civi knowledge pack and its edge bundle embed the app version; CI fails when they lag behind.
+echo "Regenerating the Civi knowledge pack for ${NEXT_VERSION}..."
+npx tsx scripts/assistant-knowledge.ts
+
 echo "Next step:"
 echo "  npm run update:application"
