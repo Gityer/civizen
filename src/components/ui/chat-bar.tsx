@@ -38,6 +38,15 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  CALL_SIGNAL_EVENT,
+  PRIVATE_CHANNEL_CONFIG,
+  buildRtcConfiguration,
+  callInboxTopic,
+  createCallSignalSender,
+  fetchRtcConfiguration,
+  type CallSignalSender,
+} from '@/lib/call-signalling';
 import type { Json, TablesInsert } from '@/integrations/supabase/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CiviAssistantHeading, CiviAvatar, CiviInboxRow } from '@/components/ui/civi-avatar';
@@ -381,8 +390,6 @@ interface CallSignalPayload {
   candidate?: RTCIceCandidateInit;
 }
 
-const CALL_CHANNEL_NAME = 'messaging-calls';
-const CALL_SIGNAL_EVENT = 'signal';
 const CALL_RING_TIMEOUT_MS = 30_000;
 const GROUP_VIDEO_MAX_PARTICIPANTS = 4;
 const GROUP_VOICE_MAX_PARTICIPANTS = 8;
@@ -394,14 +401,7 @@ const SIGNED_ATTACHMENT_TTL_SECONDS = 60 * 60 * 24 * 30;
 const MESSAGING_EMOJI_PALETTE: string[] = [
   '😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '😉', '😍', '🥰', '😘', '😋', '😛', '🤪', '😝', '🤑', '🤗', '🤭', '🤔', '🤐', '😐', '😑', '😏', '😒', '🙄', '😬', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🔥', '✨', '⭐', '🎉', '🙏', '👍', '👎', '👏', '🙌', '💪', '👋', '🫡', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '💯', '✅', '❌', '⚠️', '📎', '📷', '🎤', '💬',
 ];
-const RTC_CONFIGURATION: RTCConfiguration = {
-  iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
-    { urls: 'stun:stun2.l.google.com:19302' },
-    { urls: 'stun:stun.cloudflare.com:3478' },
-  ],
-};
+const RTC_CONFIGURATION: RTCConfiguration = buildRtcConfiguration([]);
 
 const getRandomId = () =>
   typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
@@ -497,6 +497,8 @@ export function ChatBar({
   const messageRowRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const contactSearchInputRef = useRef<HTMLInputElement>(null);
   const callChannelRef = useRef<RealtimeChannel | null>(null);
+  const callSenderRef = useRef<CallSignalSender | null>(null);
+  const rtcConfigurationRef = useRef<RTCConfiguration>(RTC_CONFIGURATION);
   const localStreamRef = useRef<MediaStream | null>(null);
   const peerConnectionsRef = useRef<Map<string, RTCPeerConnection>>(new Map());
   const pendingIceCandidatesRef = useRef<Map<string, RTCIceCandidateInit[]>>(new Map());
@@ -1891,19 +1893,13 @@ export function ChatBar({
     setIsCameraEnabled(true);
   };
 
+  const refreshRtcConfiguration = async () => {
+    rtcConfigurationRef.current = await fetchRtcConfiguration(supabase);
+  };
+
   const sendCallSignal = async (payload: CallSignalPayload) => {
-    const channel = callChannelRef.current;
-    if (!channel) return;
-
-    const result = await channel.send({
-      type: 'broadcast',
-      event: CALL_SIGNAL_EVENT,
-      payload,
-    });
-
-    if (result !== 'ok') {
-      console.error('ChatBar: call signal send failed:', payload.type, result);
-    }
+    if (!callChannelRef.current) return;
+    await callSenderRef.current?.send(payload);
   };
 
   const queueIceCandidate = (peerId: string, candidate: RTCIceCandidateInit) => {
@@ -1971,7 +1967,7 @@ export function ChatBar({
     const existing = peerConnectionsRef.current.get(peerId);
     if (existing) return existing;
 
-    const peerConnection = new RTCPeerConnection(RTC_CONFIGURATION);
+    const peerConnection = new RTCPeerConnection(rtcConfigurationRef.current);
 
     peerConnection.onicecandidate = (event) => {
       if (!event.candidate || !profile?.id) return;
@@ -2238,8 +2234,10 @@ export function ChatBar({
   const subscribeToCallSignals = () => {
     if (!profile?.id) return () => {};
 
-    const channel = supabase.channel(CALL_CHANNEL_NAME);
+    const channel = supabase.channel(callInboxTopic(profile.id), PRIVATE_CHANNEL_CONFIG);
     callChannelRef.current = channel;
+    callSenderRef.current = createCallSignalSender(supabase);
+    void refreshRtcConfiguration();
 
     channel
       .on('broadcast', { event: CALL_SIGNAL_EVENT }, ({ payload }) => {
@@ -2252,6 +2250,8 @@ export function ChatBar({
         callChannelRef.current = null;
       }
       void supabase.removeChannel(channel);
+      callSenderRef.current?.dispose();
+      callSenderRef.current = null;
     };
   };
 
@@ -2971,6 +2971,7 @@ export function ChatBar({
     };
 
     try {
+      await refreshRtcConfiguration();
       await ensureLocalStream(mode);
     } catch (error) {
       console.error('ChatBar: media permission error while starting call:', error);
@@ -3023,6 +3024,7 @@ export function ChatBar({
     };
 
     try {
+      await refreshRtcConfiguration();
       await ensureLocalStream(invite.mode);
       setIncomingCall(null);
       setCallMode(invite.mode);
@@ -3284,7 +3286,6 @@ export function ChatBar({
           disabled={!profile?.id}
         >
           <option value="direct">{t('chatBar.calls.scopeDirect')}</option>
-          <option value="group">{t('chatBar.calls.scopeGroup')}</option>
         </select>
       </div>
 
@@ -3326,15 +3327,6 @@ export function ChatBar({
         )}
         {callKind === 'voice' ? t('chatBar.calls.startCall') : t('chatBar.calls.startVideo')}
       </Button>
-
-      {selectedCallScope === 'group' && (
-        <p className="text-[11px] text-muted-foreground">
-          {t('chatBar.calls.capHint', {
-            video: GROUP_VIDEO_MAX_PARTICIPANTS,
-            voice: GROUP_VOICE_MAX_PARTICIPANTS,
-          })}
-        </p>
-      )}
 
       <p className="text-[11px] text-muted-foreground leading-snug">{t('chatBar.calls.mediaEncryptionHint')}</p>
     </div>

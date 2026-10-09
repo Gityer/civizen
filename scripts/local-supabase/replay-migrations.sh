@@ -25,6 +25,7 @@ SKIP=" 20260818030000 ${SKIP:-} "
 FIXUPS=("20260424103000 20260428140000")
 
 psqlq() { docker exec -i "$DB" psql -U postgres -q -v ON_ERROR_STOP=1 "$@"; }
+psqlq_admin() { docker exec -i "$DB" psql -U supabase_admin -q -v ON_ERROR_STOP=1 "$@"; }
 mark() {
   psqlq -c "insert into supabase_migrations.civizen_replayed(file) values ('$1') on conflict do nothing; insert into supabase_migrations.schema_migrations(version,name) values ('$2','$3') on conflict do nothing" >/dev/null
 }
@@ -44,7 +45,9 @@ for file in $(ls "$DIR"/*.sql | sort); do
     set -- $fixup
     if [ "$1" = "$version" ]; then psqlq -f - < "$(ls "$DIR"/$2_*.sql)" >/dev/null 2>&1; fi
   done
-  if ! psqlq -f - < "$file" >/tmp/civizen-replay-last.log 2>&1; then
+  # Policies on realtime.messages need its (reserved) owner role; locally only supabase_admin may act for it.
+  runner=psqlq; case "$base" in *_realtime_policies.sql) runner=psqlq_admin;; esac
+  if ! $runner -f - < "$file" >/tmp/civizen-replay-last.log 2>&1; then
     echo "FAILED at $base"; grep -v NOTICE /tmp/civizen-replay-last.log | tail -8; exit 1
   fi
   mark "$base" "$version" "$name" || { echo "could not record $base"; exit 1; }

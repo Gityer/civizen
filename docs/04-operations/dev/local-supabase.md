@@ -24,10 +24,11 @@ The CLI work dir lives outside the repo (`$CIVIZEN_LOCAL_SUPABASE_DIR`, default 
 
 `supabase start` / `db reset` apply each migration in a single transaction. Some migrations use a value added by `ALTER TYPE ... ADD VALUE` in the same file (for example `20260328010000` uses `law.review`), which Postgres rejects inside one transaction. The hosted database applied them statement by statement, so `scripts/local-supabase/replay-migrations.sh` does the same and records progress per file (a few versions have two files).
 
-Two quirks are handled in the script, not by editing migration history:
+Three quirks are handled in the script, not by editing migration history:
 
 - `20260424103000` needs the fix from `20260428140000` (an ambiguous `generate_official_id_candidate()` call), so the later migration is pre-applied (it is idempotent).
 - `20260818030000` is data-only and asserts that production rows exist; it is recorded as applied without running.
+- Files named `*_realtime_policies.sql` (row-level security on `realtime.messages`, owned by the reserved `supabase_realtime_admin` role) run as `supabase_admin`; on the hosted database `postgres` is a member of the owner role and applies them normally.
 
 A fresh replay of all 269 files completes with these two rules.
 
