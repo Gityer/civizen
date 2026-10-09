@@ -63,7 +63,9 @@ export const m_messages_contribute_01 = {
       "areas": "See where Civizen needs help"
     },
     "impact": {
-      "subtitle": "Your applications and completed work across Opportunities and Challenges.",
+      "subtitle": "Your applications and completed work across Opportunities and Challenges, the Matters you raised and the proposals you drafted.",
+      "mattersTitle": "Matters you raised",
+      "proposalsTitle": "Proposals you drafted",
       "empty": "You have not joined a contribution yet. Start from Opportunities, Challenges, or the Learning Commons.",
       "loadFailed": "Could not load your contributions."
     },

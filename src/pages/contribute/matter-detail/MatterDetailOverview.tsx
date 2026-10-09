@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { consultationOptionLabel, describeConsultationOutcome, readConsultationOutcome } from '@/lib/civic-voting/outcome';
 import { REOPEN_REASONS, actorLabel, type ReopenReason } from '@/lib/matters';
+import { createSignedMatterFileUrl } from '@/lib/matters-api';
 import type { useMatterDetail } from '@/pages/contribute/matter-detail/useMatterDetail';
 
 type MatterDetailModel = ReturnType<typeof useMatterDetail>;
@@ -46,7 +47,21 @@ export function MatterDetailOverview({ model }: { model: MatterDetailModel }) {
             .filter((item) => !item.taskId && !item.decisionId)
             .map((item) => (
             <li key={item.id} className="text-muted-foreground">
-              {item.label || item.fileName || item.url || t('contribute.matters.attachment')}
+              {item.url ? (
+                <a href={item.url} target="_blank" rel="noreferrer" className="text-primary underline-offset-4 hover:underline">
+                  {item.label || item.url}
+                </a>
+              ) : item.filePath ? (
+                <button
+                  type="button"
+                  className="text-primary underline-offset-4 hover:underline"
+                  onClick={() => void createSignedMatterFileUrl(item.filePath!).then((url) => url && window.open(url, '_blank', 'noopener'))}
+                >
+                  {item.label || item.fileName || t('contribute.matters.openAttachment')}
+                </button>
+              ) : (
+                item.label || item.fileName || t('contribute.matters.attachment')
+              )}
             </li>
           ))}
         </ul>

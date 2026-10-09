@@ -146,10 +146,17 @@ export default function MatterForm() {
         evidenceUrl: evidenceUrl.trim() || null,
         evidenceLabel: evidenceLabel.trim() || null,
       });
+      // The Matter exists from here on: a failed upload must not send the member back to resubmit a duplicate.
+      let uploadFailed = false;
       if (file) {
-        await uploadMatterFile(id, file);
+        try {
+          await uploadMatterFile(id, file);
+        } catch {
+          uploadFailed = true;
+        }
       }
-      toast.success(tRef.current('contribute.matters.created'));
+      if (uploadFailed) toast.warning(tRef.current('contribute.matters.attachmentUploadFailed'));
+      else toast.success(tRef.current('contribute.matters.created'));
       navigate(`/contribute/matters/${id}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : tRef.current('contribute.matters.actionFailed'));

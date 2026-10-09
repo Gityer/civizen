@@ -122,6 +122,8 @@ export const m_messages_contribute_02 = {
       "mentionLabel": "Mention someone (optional)",
       "mentionHint": "Search to notify another participant",
       "attachment": "Attachment",
+      "openAttachment": "Open attachment",
+      "attachmentUploadFailed": "The Matter was created, but the file could not be uploaded. Add it again from the Matter page.",
       "actions": {
         "respond": "Provide final answer",
         "request_clarification": "Request clarification",

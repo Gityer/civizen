@@ -282,6 +282,17 @@ export async function addMatterAttachmentRecord(
   if (error) throw new Error(rpcErrorMessage(error));
 }
 
+/** Short-lived link to a Matter file (bucket `matter-files`); RLS lets only people on the Matter read it. */
+export async function createSignedMatterFileUrl(filePath: string): Promise<string | null> {
+  try {
+    const { data, error } = await supabase.storage.from('matter-files').createSignedUrl(filePath, 60 * 10);
+    if (error) return null;
+    return data?.signedUrl ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function uploadMatterFile(
   matterId: string,
   file: File,

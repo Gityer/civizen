@@ -172,18 +172,6 @@ Deno.serve(async (req) => {
 
     await serviceClient.from('ai_agent_runs').update({ status: 'running', started_at: new Date().toISOString() }).eq('id', runId);
 
-    // Safe activation-only failure: after authorization, fail the first run only so Retry can succeed.
-    if (String(assignment.instructions ?? '').includes('CIVIZEN_ACTIVATION_FORCE_FAILURE')) {
-      const { count: priorFailures } = await serviceClient
-        .from('ai_agent_runs')
-        .select('id', { count: 'exact', head: true })
-        .eq('assignment_id', assignmentId)
-        .eq('status', 'failed');
-      if (!priorFailures) {
-        throw new Error('CIVIZEN_ACTIVATION_FORCE_FAILURE: deterministic deployed failure for retry verification');
-      }
-    }
-
     const userPrompt = [
       `Matter: ${matter?.title ?? ''}`,
       matter?.description ?? '',

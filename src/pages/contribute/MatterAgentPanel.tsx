@@ -42,13 +42,14 @@ const ROLE_TASK_TITLES: Record<AiAgentRoleType, string> = {
   planning: 'Propose resolution plan and Task structure',
   facilitation: 'Facilitate discussion summary and open questions',
   documentation: 'Prepare structured Matter documentation',
-  coding: 'Fix MatterAgentPanel mobile overflow',
+  coding: 'Implement the agreed code change',
 };
 
-const DEFAULT_CODING_PATHS = [
-  'src/pages/contribute/MatterAgentPanel.tsx',
-  'src/lib/matters-coding-policy.test.ts',
-].join('\n');
+const DEFAULT_CODING_PATHS = '';
+
+/** The coding agent needs a registered runner; until one is configured the role is not offered (step 4.5). */
+const CODING_RUNNER_CONFIGURED = import.meta.env.VITE_MATTER_CODING_RUNNER === '1';
+const OFFERED_ROLE_TYPES = AI_AGENT_ROLE_TYPES.filter((role) => role !== 'coding' || CODING_RUNNER_CONFIGURED);
 
 export function MatterAgentPanel({ bundle, profileId, linkedIds, busy, onBusy, onReload, t }: Props) {
   const canManage = viewerRepresents(profileId, bundle.matter.responsible, linkedIds)
@@ -283,7 +284,7 @@ export function MatterAgentPanel({ bundle, profileId, linkedIds, busy, onBusy, o
           <Select value={roleType} onValueChange={(value) => setRoleType(value as AiAgentRoleType)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
-              {AI_AGENT_ROLE_TYPES.map((role) => (
+              {OFFERED_ROLE_TYPES.map((role) => (
                 <SelectItem key={role} value={role}>{agentRoleLabel(role)}</SelectItem>
               ))}
             </SelectContent>

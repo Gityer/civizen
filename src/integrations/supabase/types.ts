@@ -8235,6 +8235,9 @@ isOneToOne: false
 "approve_matter_coding_scope_expansion":
 { Args: { "p_artifact_id": string,"p_path": string }; Returns: undefined
                            },
+"area_activity":
+{ Args: { "p_area_code": string }; Returns: Json
+                           },
 "assign_identity_verification_case":
 { Args: { "p_case_id": string,"p_reviewer_profile_id"?: string }; Returns: Json
                            },

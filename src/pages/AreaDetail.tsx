@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { PublicPageFooter } from '@/components/public/PublicPageFooter';
@@ -9,6 +10,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { agreementsCreatePath } from '@/lib/agreements-model';
+import { EMPTY_AREA_ACTIVITY, hasAreaActivity, loadAreaActivity, type AreaActivity } from '@/lib/areas/area-activity';
+import { AreaActivitySection } from '@/pages/areas/AreaActivitySection';
 import {
   getPublicAreaPage,
   initiativePartnerHref,
@@ -107,6 +110,18 @@ export default function AreaDetail() {
   const { slug = '' } = useParams<{ slug: string }>();
   const page = getPublicAreaPage(slug);
   const areasLabel = t('areas.title');
+  // Step 4.4: what is really happening in this Area (public programs, challenges, Matters).
+  const [activity, setActivity] = useState<AreaActivity>(EMPTY_AREA_ACTIVITY);
+  useEffect(() => {
+    if (!slug) return;
+    let active = true;
+    void loadAreaActivity(slug).then((result) => {
+      if (active) setActivity(result);
+    });
+    return () => {
+      active = false;
+    };
+  }, [slug]);
 
   usePageMeta({
     title: page ? `${page.name} — Civizen` : t('areas.metaTitle'),
@@ -132,7 +147,7 @@ export default function AreaDetail() {
     );
   }
 
-  const hasWork = page.systems.length > 0 || page.initiatives.length > 0;
+  const hasWork = page.systems.length > 0 || page.initiatives.length > 0 || hasAreaActivity(activity);
 
   return (
     <PublicPageShell
@@ -150,6 +165,8 @@ export default function AreaDetail() {
           <h2 id="areas-happening" className="text-base font-semibold text-foreground">
             {t('areas.happeningTitle')}
           </h2>
+
+          <AreaActivitySection activity={activity} memberLink={memberLink} />
 
           {page.initiatives.length > 0 ? (
             <div className="space-y-3">
