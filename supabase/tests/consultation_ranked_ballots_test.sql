@@ -3,12 +3,12 @@
 
 BEGIN;
 
-SELECT set_config('test.author_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'member' AND deleted_at IS NULL LIMIT 1), true);
-SELECT set_config('test.author_pid', (SELECT id::text FROM public.profiles WHERE username = 'member' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('test.author_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'verified_member' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('test.author_pid', (SELECT id::text FROM public.profiles WHERE username = 'verified_member' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('test.voter_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'citizen' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('test.voter_pid', (SELECT id::text FROM public.profiles WHERE username = 'citizen' AND deleted_at IS NULL LIMIT 1), true);
 -- a third voter: any other live profile with an auth user
-SELECT set_config('test.third_uid', (SELECT user_id::text FROM public.profiles WHERE deleted_at IS NULL AND user_id IS NOT NULL AND username NOT IN ('member', 'citizen') AND role NOT IN ('founder', 'admin') ORDER BY created_at LIMIT 1), true);
+SELECT set_config('test.third_uid', (SELECT user_id::text FROM public.profiles WHERE deleted_at IS NULL AND user_id IS NOT NULL AND username NOT IN ('member', 'citizen', 'verified_member') AND is_verified AND role NOT IN ('founder', 'admin') ORDER BY created_at LIMIT 1), true);
 SELECT set_config('test.third_pid', (SELECT id::text FROM public.profiles WHERE user_id::text = current_setting('test.third_uid') LIMIT 1), true);
 
 INSERT INTO public.matters (

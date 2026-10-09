@@ -83,6 +83,21 @@ describe('CivicVotingConsultationVote', () => {
     expect(castConsultation).not.toHaveBeenCalled();
   });
 
+  it('tells an unverified member the ballot is advisory and keeps the receipt off the counted-list check', () => {
+    const verifyReceipt = vi.fn();
+    renderAt(makeModel({ user: { id: 'u1' }, advisoryVoter: true, myBallotAdvisory: true, myOption: 'support', myReceipt: 'abcd1234abcd1234abcd1234', verifyReceipt }));
+    expect(screen.getByTestId('consultation-advisory')).toBeTruthy();
+    expect(screen.getByText('civicBallot.advisoryReceiptTitle')).toBeTruthy();
+    expect(screen.queryByText('civicBallot.verifyReceipt')).toBeNull();
+    expect(screen.getByText('civicBallot.advisoryVerifyLink').closest('a')?.getAttribute('href')).toBe('/settings/profile');
+  });
+
+  it('warns an unverified member before casting that the ballot will be advisory', () => {
+    renderAt(makeModel({ user: { id: 'u1' }, advisoryVoter: true }));
+    expect(screen.getByTestId('consultation-advisory')).toBeTruthy();
+    expect(screen.getByText('civicVoting.proposals.castSupport').closest('button')?.disabled).toBe(false);
+  });
+
   it('shows the receipt after voting and lets the member check it', () => {
     const verifyReceipt = vi.fn();
     renderAt(makeModel({ user: { id: 'u1' }, myOption: 'support', myReceipt: 'abcd1234abcd1234abcd1234', verifyReceipt }));

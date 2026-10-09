@@ -216,19 +216,22 @@ export type MyConsultationBallot = {
   optionKeys: string[];
   receipt: string | null;
   castAt: string | null;
+  /** Cast by an account without a verified identity: recorded and visible to the voter, not counted (D2). */
+  advisory: boolean;
 };
 
-/** The member's own counted ballot (choice unsealed server-side for the owner only). */
+/** The member's own ballot (choice unsealed server-side for the owner only), countable or advisory. */
 export async function myConsultationBallot(electionId: string): Promise<MyConsultationBallot | null> {
   const { data, error } = await db.rpc('my_consultation_ballot', { p_election_id: electionId });
   if (error || !data) return null;
-  const row = data as { option_key?: string | null; option_keys?: unknown; receipt?: string | null; cast_at?: string | null };
+  const row = data as { option_key?: string | null; option_keys?: unknown; receipt?: string | null; cast_at?: string | null; advisory?: boolean };
   const optionKeys = Array.isArray(row.option_keys) ? row.option_keys.map(String) : row.option_key ? [String(row.option_key)] : [];
   return {
     optionKey: optionKeys[0] ?? null,
     optionKeys,
     receipt: row.receipt ? String(row.receipt) : null,
     castAt: row.cast_at ? String(row.cast_at) : null,
+    advisory: row.advisory === true,
   };
 }
 
@@ -237,14 +240,19 @@ export async function myConsultationBallotOption(electionId: string): Promise<st
   return ballot?.optionKey ?? null;
 }
 
-export type ConsultationEligibility = { eligible: boolean; reason: string | null };
+export type ConsultationEligibility = {
+  eligible: boolean;
+  reason: string | null;
+  /** Eligible, but the ballot will be advisory until the member's identity is verified (D2). */
+  advisory: boolean;
+};
 
 /** Server-side eligibility for the signed-in member (null reason means eligible). */
 export async function myConsultationEligibility(electionId: string): Promise<ConsultationEligibility | null> {
   const { data, error } = await db.rpc('my_consultation_eligibility', { p_election_id: electionId });
   if (error || !data) return null;
-  const row = data as { eligible?: boolean; reason?: string | null };
-  return { eligible: Boolean(row.eligible), reason: row.reason ? String(row.reason) : null };
+  const row = data as { eligible?: boolean; reason?: string | null; advisory?: boolean };
+  return { eligible: Boolean(row.eligible), reason: row.reason ? String(row.reason) : null, advisory: row.advisory === true };
 }
 
 /** Public inclusion check: is this receipt among the counted ballots? */
@@ -263,6 +271,8 @@ export type VotingProposalSupport = {
   openForSupport: boolean;
   supported: boolean;
   ready: boolean;
+  /** The signed-in member wrote this proposal; their own support never counts (D2). */
+  isAuthor: boolean;
 };
 
 function mapSupport(data: unknown): VotingProposalSupport {
@@ -273,6 +283,7 @@ function mapSupport(data: unknown): VotingProposalSupport {
     openForSupport: Boolean(row.open_for_support),
     supported: Boolean(row.supported),
     ready: Boolean(row.ready),
+    isAuthor: Boolean(row.is_author),
   };
 }
 

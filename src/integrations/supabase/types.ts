@@ -9680,6 +9680,9 @@ isOneToOne: false
 "publish_voting_proposal":
 { Args: { "p_proposal_id": string }; Returns: string
                            },
+"publish_voting_proposal_core":
+{ Args: { "p_proposal_id": string }; Returns: string
+                           },
 "queue_matter_agent_run":
 { Args: { "p_assignment_id": string }; Returns: string
                            },

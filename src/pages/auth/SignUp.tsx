@@ -1,19 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { PhoneCountryPicker } from '@/components/auth/PhoneCountryPicker';
 import { SignUpSuccessState } from '@/components/auth/SignUpSuccessState';
 import { detectLocalePreferences, loadLanguageOptions, type LanguageOption } from '@/lib/i18n.runtime';
-import { getCountryFlag, getCountryName } from '@/lib/countries';
-import { getPhoneCountryOptions, getPhoneCountrySummary, type PhoneCountryOption } from '@/lib/phone';
+import { getCountryName } from '@/lib/countries';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mail, Lock, User, ArrowRight, Globe, Phone } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Globe } from 'lucide-react';
 import { PublicAuthHeader } from '@/components/public/PublicAuthHeader';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
 import { TERMS_ACCEPTANCE_VERSION } from '@/lib/terms-version';
@@ -30,23 +28,18 @@ export default function SignUp() {
   const { t, language } = useLanguage();
   const detected = detectLocalePreferences();
   const [languageOptions, setLanguageOptions] = useState<readonly LanguageOption[]>([]);
-  const [countryPickerOpen, setCountryPickerOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
-  const [selectedCountryCode, setSelectedCountryCode] = useState(detected.countryCode);
+  const selectedCountryCode = detected.countryCode;
   const [country, setCountry] = useState(detected.country);
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [preferredLanguage, setPreferredLanguage] = useState(detected.languageCode);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [successContactLabel, setSuccessContactLabel] = useState('');
-  const [successWasPhone, setSuccessWasPhone] = useState(false);
-  const [selectedPhoneCountry, setSelectedPhoneCountry] = useState<PhoneCountryOption>({ code: detected.countryCode, label: detected.country, flag: getCountryFlag(detected.countryCode), dialCode: '' });
-  const countryOptions = useMemo(() => getPhoneCountryOptions(language), [language]);
 
   useEffect(() => {
     let active = true;
@@ -64,7 +57,6 @@ export default function SignUp() {
   }, []);
 
   useEffect(() => {
-    setSelectedPhoneCountry(getPhoneCountrySummary(selectedCountryCode, language));
     setCountry(getCountryName(selectedCountryCode, language));
   }, [language, selectedCountryCode]);
 
@@ -82,23 +74,10 @@ export default function SignUp() {
       return;
     }
 
+    // Decision D8 (2026-10-09): sign-up is e-mail only until SMS one-time codes exist.
     const trimmedEmail = email.trim();
-    const trimmedPhone = phoneNumber.trim();
-    const normalizedPhoneDigits = trimmedPhone.replace(/\D/g, '');
-    const latestPhoneCountry = getPhoneCountrySummary(selectedCountryCode, language);
-
-    if (!trimmedEmail && !trimmedPhone) {
-      setError(t('auth.contactMethodRequired'));
-      return;
-    }
-
-    if (trimmedEmail && trimmedPhone) {
-      setError(t('auth.contactMethodExclusive'));
-      return;
-    }
-
-    if (trimmedPhone && !normalizedPhoneDigits) {
-      setError(t('auth.phoneInvalid'));
+    if (!trimmedEmail) {
+      setError(t('auth.emailRequired'));
       return;
     }
 
@@ -106,18 +85,12 @@ export default function SignUp() {
 
     try {
       if (quickMode) savePendingAuthReturn(location.state);
-      const { error } = await signUp({
-        email: trimmedEmail || undefined,
-        phoneNumber: trimmedPhone || undefined,
-        phoneCountryCode: latestPhoneCountry.dialCode || undefined,
-      }, password, {
+      const { error } = await signUp({ email: trimmedEmail }, password, {
         full_name: fullName || undefined,
         date_of_birth: dateOfBirth || undefined,
         country: country || undefined,
         country_code: selectedCountryCode || undefined,
         language_code: preferredLanguage,
-        phone_country_code: latestPhoneCountry.dialCode || undefined,
-        phone_number: trimmedPhone || undefined,
         terms_accepted_at: new Date().toISOString(),
         terms_version: TERMS_ACCEPTANCE_VERSION,
         terms_acceptance_method: 'signup',
@@ -128,8 +101,7 @@ export default function SignUp() {
         return;
       }
 
-      setSuccessContactLabel(trimmedEmail || `${latestPhoneCountry.dialCode}${normalizedPhoneDigits}` || trimmedPhone);
-      setSuccessWasPhone(!trimmedEmail);
+      setSuccessContactLabel(trimmedEmail);
       setSuccess(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not create account');
@@ -139,8 +111,8 @@ export default function SignUp() {
   };
 
   if (success) {
-    const successTitle = successWasPhone ? t('auth.accountReadyTitle') : t('auth.checkEmailTitle');
-    const successMessage = successWasPhone ? t('auth.accountReadyMessage', { phone: successContactLabel }) : t('auth.checkEmailMessage', { email: successContactLabel });
+    const successTitle = t('auth.checkEmailTitle');
+    const successMessage = t('auth.checkEmailMessage', { email: successContactLabel });
 
     return (
       <PublicPageShell
@@ -207,54 +179,20 @@ export default function SignUp() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="phone">{t('auth.phone')}</Label>
-              <div className="flex gap-2">
-                <PhoneCountryPicker
-                  countryOptions={countryOptions}
-                  countryPickerOpen={countryPickerOpen}
-                  emptyLabel={t('editProfile.countryNotFound')}
-                  searchPlaceholder={t('auth.searchCountryCode')}
-                  selectedCountryCode={selectedCountryCode}
-                  selectedPhoneCountry={selectedPhoneCountry}
-                  setCountryPickerOpen={setCountryPickerOpen}
-                  onCountrySelect={(option) => {
-                    setSelectedCountryCode(option.code);
-                    setCountry(option.label);
-                    setCountryPickerOpen(false);
-                  }}
-                />
-
-                <div className="relative flex-1">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder={t('auth.phonePlaceholder')}
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {t('auth.phoneDetected', { country: country, code: selectedPhoneCountry.dialCode })}
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">{t('auth.emailOptional')}</Label>
+              <Label htmlFor="email">{t('auth.email')}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder={t('auth.emailOptionalPlaceholder')}
+                  placeholder={t('auth.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
+                  required
+                  autoComplete="email"
                 />
               </div>
-              <p className="text-xs text-muted-foreground">{t('auth.contactMethodHint')}</p>
             </div>
 
             {!quickMode ? (

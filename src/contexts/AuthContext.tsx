@@ -83,10 +83,9 @@ type SignInOptions = {
   preserveCurrentSession?: boolean;
 };
 
+/** Sign-up is e-mail only (decision D8, 2026-10-09): phone-only accounts return once SMS codes exist. */
 export interface SignUpCredentials {
   email?: string;
-  phoneNumber?: string;
-  phoneCountryCode?: string;
 }
 
 export interface SignUpMetadata {
@@ -599,14 +598,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     options?: SignUpOptions,
   ) => {
     const normalizedEmail = credentials.email?.trim().toLowerCase();
-    const normalizedPhoneDigits = credentials.phoneNumber?.replace(/\D/g, '') || '';
-    const syntheticEmail = normalizedPhoneDigits
-      ? `phone-${normalizedPhoneDigits}@phone.civizen.local`
-      : undefined;
+    // Decision D8 (2026-10-09): no phone-only accounts until SMS one-time codes exist; the old
+    // synthetic phone-…@phone.civizen.local path created accounts nobody could recover.
+    if (!normalizedEmail) {
+      return { error: new Error('email_required') };
+    }
     const supabase = await getSupabase();
 
     const { error } = await supabase.auth.signUp({
-      email: normalizedEmail || syntheticEmail,
+      email: normalizedEmail,
       password,
       options: {
         // Falls back to the site URL if the hosted allow-list lacks this path; the remembered
@@ -614,9 +614,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         emailRedirectTo: `${window.location.origin}${options?.redirectPath ?? ''}`,
         data: {
           ...metadata,
-          phone_country_code: metadata?.phone_country_code ?? credentials.phoneCountryCode,
-          phone_number: metadata?.phone_number ?? credentials.phoneNumber,
-          contact_method: normalizedEmail ? 'email' : 'phone',
+          contact_method: 'email',
         },
       },
     });

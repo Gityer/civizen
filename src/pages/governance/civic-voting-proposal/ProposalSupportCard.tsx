@@ -11,7 +11,8 @@ type Translate = (key: string, params?: Record<string, string>) => string;
 
 /**
  * Support progress for a draft proposal. Authors open it for support (with a threshold); every
- * signed-in member can then add or withdraw their support until it is published.
+ * other signed-in member can then add or withdraw their support until it is published. The
+ * author's own support never counts (decision D2), so the toggle is not offered to them.
  */
 export function ProposalSupportCard({
   t,
@@ -61,7 +62,11 @@ export function ProposalSupportCard({
             </div>
             <Progress value={pct} className="h-1.5" />
           </div>
-          {signedIn ? (
+          {support?.isAuthor ? (
+            <p className="text-xs text-muted-foreground" data-testid="proposal-support-author-note">
+              {t('proposalSupport.authorCannotSupport')}
+            </p>
+          ) : signedIn ? (
             <Button
               type="button"
               size="sm"

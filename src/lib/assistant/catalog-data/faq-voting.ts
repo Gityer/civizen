@@ -20,7 +20,7 @@ export const ASSISTANT_FAQ_VOTING: AssistantFaqItem[] = [
     id: 'how_do_i_vote',
     question: 'How do I vote?',
     answer:
-      'Open Home > Governance > Civic voting (or the Open votes card on Study, or the Votes tab on your Governance page) and open the consultation. Sign in if you have not, choose an option — Support, Oppose, or Abstain, or the options that consultation lists — and confirm. The page then shows Your receipt: keep that code.\n\nOrdinary consultations need only a free account. Until voting closes you can withdraw your ballot and vote again. Your choice is sealed; only totals are public.',
+      'Open Home > Governance > Civic voting (or the Open votes card on Study, or the Votes tab on your Governance page) and open the consultation. Sign in if you have not, choose an option — Support, Oppose, or Abstain, or the options that consultation lists — and confirm. The page then shows Your receipt: keep that code.\n\nOrdinary consultations need only a free account, but only ballots from members with a verified identity are counted; a ballot from an unverified member is recorded as advisory, shown separately in the public split, and counted automatically once their verification is approved while voting is open (Settings > Edit Profile > Identity verification). Until voting closes you can withdraw your ballot and vote again. Your choice is sealed; only totals are public.',
     localizedAnswers: localized('how_do_i_vote'),
     aliases: ['how to vote', 'how do I cast a ballot', 'how do I vote on a consultation', 'where do I vote', 'cast my vote'],
     capabilityIds: ['civic_voting', 'governance'],
@@ -50,7 +50,7 @@ export const ASSISTANT_FAQ_VOTING: AssistantFaqItem[] = [
     id: 'why_cant_i_vote',
     question: "Why can't I vote?",
     answer:
-      'Open the consultation page: when you cannot vote, the reason is shown under the voting buttons. The usual reasons are: you are not signed in; voting has not opened yet or has already closed; a governance sanction blocks voting; the vote needs a verified identity (Settings > Edit Profile > Identity verification); the vote has a minimum age and your profile has no date of birth, or you are under that age; the vote is limited to residents of one country and your profile shows another; it is a sample election; or it is a high-security election that takes ballots only in the native app.\n\nThese checks run on the server, so the same rule applies to everyone. Ordinary consultations need only a free account.',
+      'Open the consultation page: when you cannot vote, the reason is shown under the voting buttons. The usual reasons are: you are not signed in; voting has not opened yet or has already closed; a governance sanction blocks voting; the vote needs a verified identity (Settings > Edit Profile > Identity verification); the vote has a minimum age and your profile has no date of birth, or you are under that age; the vote is limited to residents of one country and your profile shows another; it is a sample election; or it is a high-security election that takes ballots only in the native app.\n\nThese checks run on the server, so the same rule applies to everyone. Ordinary consultations need only a free account, but only ballots from members with a verified identity are counted; a ballot from an unverified member is recorded as advisory, shown separately in the public split, and counted automatically once their verification is approved while voting is open (Settings > Edit Profile > Identity verification).',
     localizedAnswers: localized('why_cant_i_vote'),
     aliases: ['why cannot I vote', 'I cannot vote', 'voting buttons are disabled', 'not eligible to vote', 'why am I not eligible', 'eligibility reason'],
     capabilityIds: ['civic_voting', 'profile'],
@@ -60,7 +60,7 @@ export const ASSISTANT_FAQ_VOTING: AssistantFaqItem[] = [
     id: 'do_i_need_verification_to_vote',
     question: 'Do I need to be verified to vote?',
     answer:
-      'No — not for ordinary consultations: a free Civizen account is enough. Only when a consultation declares that it requires a verified identity, a minimum age, or residence in one country does the server check that, and the ballot page shows the reason if you do not meet it. Identity verification is at Settings > Edit Profile.',
+      'You can vote with a free Civizen account, but only ballots from verified members are counted. Until your identity is verified your ballot is recorded as advisory: you see your choice and receipt, it appears in the public split as advisory, and it is counted automatically when your verification is approved while voting is still open. Identity verification is at Settings > Edit Profile. A consultation may additionally require a minimum age or residence in one country; the ballot page shows the reason when you cannot vote.',
     localizedAnswers: localized('do_i_need_verification_to_vote'),
     aliases: ['verified to vote', 'identity verification for voting', 'do I need verification to vote'],
     capabilityIds: ['civic_voting', 'profile'],
@@ -130,7 +130,7 @@ export const ASSISTANT_FAQ_VOTING: AssistantFaqItem[] = [
     id: 'how_do_i_submit_a_proposal',
     question: 'How do I submit a proposal?',
     answer:
-      'A consultation starts as a Matter. Open Contribute > Questions, Issues & Ideas, open or create your Matter, and choose Create voting proposal. On the proposal page set the scope (global or one country), when voting opens and closes, the ballot options (Support / Oppose / Abstain, or 2 to 12 of your own), and optionally a quorum and pass threshold. Then tap Open for support and set how many supporters are needed.\n\nMembers add their support on the proposal page. Once the threshold is reached you can publish the ballot yourself; founders and admins can publish at any time. Your drafts, open proposals, and published ones are listed on the Proposals tab of your Governance page.',
+      'A consultation starts as a Matter. Open Contribute > Questions, Issues & Ideas, open or create your Matter, and choose Create voting proposal. On the proposal page set the scope (global or one country), when voting opens and closes, the ballot options (Support / Oppose / Abstain, or 2 to 12 of your own), and optionally a quorum and pass threshold. Then tap Open for support and set how many supporters are needed.\n\nOther members add their support on the proposal page; your own support does not count toward the threshold. Once the threshold is reached and your identity is verified you can publish the ballot yourself; founders and admins can publish at any time. Your drafts, open proposals, and published ones are listed on the Proposals tab of your Governance page.',
     localizedAnswers: localized('how_do_i_submit_a_proposal'),
     aliases: ['how do I create a proposal', 'how do I create a consultation', 'how do I start a vote', 'propose a vote', 'start a consultation', 'create voting proposal', 'when can I publish my proposal'],
     capabilityIds: ['governance', 'matters'],
@@ -140,7 +140,7 @@ export const ASSISTANT_FAQ_VOTING: AssistantFaqItem[] = [
     id: 'how_does_proposal_support_work',
     question: 'How does member support for a proposal work?',
     answer:
-      'The author opens a draft for member support and sets the number of supporters needed. Any signed-in member can then tap Support this proposal on the proposal page, or Withdraw my support later. The page shows the progress, for example 3 of 10 supporters, and Threshold reached when the goal is met. From that moment the author can publish the ballot; founders and admins can publish at any time.\n\nDrafts open for support are listed on the Proposals tab of your Governance page.',
+      'The author opens a draft for member support and sets the number of supporters needed. Any other signed-in member can then tap Support this proposal on the proposal page, or Withdraw my support later; support from the author never counts. The page shows the progress, for example 3 of 10 supporters, and Threshold reached when the goal is met. From that moment the author can publish the ballot if their identity is verified; founders and admins can publish at any time.\n\nDrafts open for support are listed on the Proposals tab of your Governance page.',
     localizedAnswers: localized('how_does_proposal_support_work'),
     aliases: ['support a proposal', 'support threshold', 'how do I support a proposal', 'open for support', 'supporters needed'],
     capabilityIds: ['governance'],

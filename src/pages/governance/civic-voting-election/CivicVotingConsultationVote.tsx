@@ -28,7 +28,7 @@ function formatDate(date: Date | undefined, language: string): string {
  */
 export function CivicVotingConsultationVote({ model }: { model: CivicVotingElectionModel }) {
   const {
-    myOption, myOptions, myReceipt, eligibilityReason, votingWindow, casting, withdrawing, t, language, user,
+    myOption, myOptions, myReceipt, myBallotAdvisory, advisoryVoter, eligibilityReason, votingWindow, casting, withdrawing, t, language, user,
     votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt,
     directoryVisible, directoryBusy, toggleDirectoryPresence, detail,
   } = model;
@@ -78,17 +78,32 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
     </div>
   ) : null;
 
+  // D2: an advisory ballot (unverified voter) has a receipt but is not on the counted list.
   const receiptBlock = myOption && myReceipt ? (
     <div className="space-y-1 rounded-xl border border-border/50 p-3" data-testid="consultation-receipt">
       <div className="flex items-center gap-2 text-sm font-medium text-foreground">
         <ShieldCheck className="h-4 w-4 text-primary" aria-hidden />
-        {t('civicBallot.receiptTitle')}
+        {t(myBallotAdvisory ? 'civicBallot.advisoryReceiptTitle' : 'civicBallot.receiptTitle')}
       </div>
       <p className="font-mono text-sm tracking-wide text-foreground">{formatReceipt(myReceipt)}</p>
-      <p className="text-xs text-muted-foreground">{t('civicBallot.receiptHint')}</p>
-      <Button type="button" size="sm" variant="outline" onClick={() => void verifyReceipt()}>
-        {t('civicBallot.verifyReceipt')}
-      </Button>
+      <p className="text-xs text-muted-foreground">{t(myBallotAdvisory ? 'civicBallot.advisoryReceiptHint' : 'civicBallot.receiptHint')}</p>
+      {myBallotAdvisory ? null : (
+        <Button type="button" size="sm" variant="outline" onClick={() => void verifyReceipt()}>
+          {t('civicBallot.verifyReceipt')}
+        </Button>
+      )}
+    </div>
+  ) : null;
+
+  const advisoryNote = user && (myBallotAdvisory || (advisoryVoter && !eligibilityReason)) ? (
+    <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3" data-testid="consultation-advisory">
+      <p className="text-sm font-medium text-foreground">{t('civicBallot.advisoryTitle')}</p>
+      <p className="text-xs text-muted-foreground">
+        {t('civicBallot.advisoryBody')}{' '}
+        <Link to="/settings/profile" className="font-medium text-primary hover:underline">
+          {t('civicBallot.advisoryVerifyLink')}
+        </Link>
+      </p>
     </div>
   ) : null;
 
@@ -101,6 +116,7 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
             : t('civicVoting.proposals.votingClosed')}
         </p>
         {outcomeBlock}
+        {advisoryNote}
         {receiptBlock}
         {directoryToggle}
       </div>
@@ -148,6 +164,7 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
           <p className="text-xs text-muted-foreground">{t(`civicBallot.reason.${eligibilityReason}`)}</p>
         </div>
       ) : null}
+      {advisoryNote}
       {myOption ? (
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-xs text-muted-foreground">

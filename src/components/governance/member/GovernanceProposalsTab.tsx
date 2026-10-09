@@ -44,7 +44,7 @@ function ProposalRow({
           {t('civicVoting.proposals.openProposal')}
           <ArrowRight className="h-4 w-4" aria-hidden />
         </Button>
-        {onSupport && support && proposal.status === 'draft' ? (
+        {onSupport && support && !support.isAuthor && proposal.status === 'draft' ? (
           <Button
             type="button"
             size="sm"

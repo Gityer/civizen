@@ -489,7 +489,9 @@ Typed client in the remaining civic-voting files and Wellbeing types; delete dea
 | 1.6 Demo content (D5) | shipped (v0.1.206) — seeded programs and their items flagged `is_demo`, hidden from browse lists, badged on detail pages | migration `20261009110000_demo_content_flag.sql`; SQL test `demo_content_flag_test.sql` | 2026-10-09 |
 | 1.7 Legacy governance tools (D6) | shipped — removed from member navigation; routes need `role.assign`/`settings.manage`; phantom `governance.manage` removed | same commit as 1.1 | 2026-10-09 |
 | 1.8 Docs drift | shipped — design-doc feature table, funding READMEs, integration guide routes, pilot doc, Civi cheat sheet and catalog | this commit | 2026-10-09 |
-| 2.1–2.9 | planned | | |
+| 2.4 Eligibility policy (D2) | shipped (v0.1.207) — unverified ballots stored as advisory (voter sees choice + receipt, public split shows them, promoted to countable on verification approval while open); author support excluded from proposal thresholds; member publish requires verified identity; one-account-per-identity duplicate check deferred to 3.3 | migration `20261009120000_consultation_verified_countable.sql`; SQL test `consultation_verified_countable_test.sql`; e2e `consultation-ballot.spec.ts` verified + advisory cases | 2026-10-09 |
+| 2.6 (part) Phone sign-up (D8) | shipped (v0.1.207) — sign-up is email only; `signUp` rejects phone-only credentials; return path and resend-confirmation parts of 2.6 still open | `SignUp.tsx`, `AuthContext.signUp` | 2026-10-09 |
+| 2.1–2.3, 2.5, 2.6 (rest), 2.7–2.9 | planned | | |
 | 3.x–11 | planned | | |
 
 Already shipped before this plan (for reference): sealed ballots with receipts and hash-chained events, approval and ranked ballots, server eligibility (sanctions, age, scope), hourly lifecycle tick with outcome, member-supported proposals, one member Governance workspace page, notification center, hand-written HY/RU for voting, error reporting hook, skip link, axe tests, Playwright ballot spec, typed client regeneration, landing consultation banner, production-by-default releases (voting audit §6).

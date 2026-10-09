@@ -26,6 +26,9 @@ export function useCivicVotingElection() {
   const [myOption, setMyOption] = useState<string | null>(null);
   const [myOptions, setMyOptions] = useState<string[]>([]);
   const [myReceipt, setMyReceipt] = useState<string | null>(null);
+  // D2: an unverified member's ballot is recorded as advisory; the eligibility call announces it up front.
+  const [myBallotAdvisory, setMyBallotAdvisory] = useState(false);
+  const [advisoryVoter, setAdvisoryVoter] = useState(false);
   const [eligibilityReason, setEligibilityReason] = useState<string | null>(null);
   const [casting, setCasting] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
@@ -52,12 +55,16 @@ export function useCivicVotingElection() {
       setMyOption(ballot?.optionKey ?? null);
       setMyOptions(ballot?.optionKeys ?? []);
       setMyReceipt(ballot?.receipt ?? null);
+      setMyBallotAdvisory(ballot?.advisory ?? false);
+      setAdvisoryVoter(eligibility?.advisory ?? false);
       setDirectoryVisible(visible);
       setEligibilityReason(eligibility?.reason ?? null);
     } else {
       setMyOption(null);
       setMyOptions([]);
       setMyReceipt(null);
+      setMyBallotAdvisory(false);
+      setAdvisoryVoter(false);
       setDirectoryVisible(false);
       setEligibilityReason(null);
     }
@@ -107,7 +114,8 @@ export function useCivicVotingElection() {
       setMyOption(keys[0] ?? null);
       setMyOptions(keys);
       setMyReceipt(result.receipt || null);
-      toast.success(t('civicVoting.proposals.castSaved'));
+      setMyBallotAdvisory(advisoryVoter);
+      toast.success(t(advisoryVoter ? 'civicBallot.advisorySaved' : 'civicVoting.proposals.castSaved'));
       await refreshPublicParticipation(electionId, true);
     } catch (error) {
       toast.error(explainError(error, 'civicVoting.proposals.castFailed'));
@@ -124,6 +132,7 @@ export function useCivicVotingElection() {
       setMyOption(null);
       setMyOptions([]);
       setMyReceipt(null);
+      setMyBallotAdvisory(false);
       setDirectoryVisible(false);
       toast.success(t('civicVoting.proposals.withdrawn'));
       await refreshPublicParticipation(electionId, true);
@@ -322,7 +331,7 @@ export function useCivicVotingElection() {
   return {
     detail, detailLoading, detailError, electionId, t, language, user, isConsultation, title,
     displayTitle, verificationSplit, tallies, tallyTotal, tallyError, countryStats, directory, directoryVisible,
-    directoryBusy, myOption, myOptions, myReceipt, eligibilityReason, votingWindow, casting, withdrawing,
+    directoryBusy, myOption, myOptions, myReceipt, myBallotAdvisory, advisoryVoter, eligibilityReason, votingWindow, casting, withdrawing,
     votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
     pinInput, setPinInput, assistedStatus, pinMessage, canOpenBooth, failed, policy,
     coolingOffUntil, coolingOffActive, attestation, challengeOpen, eligibility, secondsLeft,

@@ -7,10 +7,13 @@ BEGIN;
 SELECT set_config('test.election_id', (
   SELECT id::text FROM public.civic_elections
   WHERE metadata->>'consultation_key' = 'single-world-citizenship' LIMIT 1), true);
+-- The countable flow needs a verified voter (decision D2); "member" below is the verified fixture citizen.
 SELECT set_config('test.member_uid', (
-  SELECT p.user_id::text FROM public.profiles p WHERE p.username = 'member' AND p.deleted_at IS NULL LIMIT 1), true);
+  SELECT p.user_id::text FROM public.profiles p WHERE p.username = 'citizen' AND p.deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('test.member_pid', (
-  SELECT p.id::text FROM public.profiles p WHERE p.username = 'member' AND p.deleted_at IS NULL LIMIT 1), true);
+  SELECT p.id::text FROM public.profiles p WHERE p.username = 'citizen' AND p.deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('test.unverified_uid', (
+  SELECT p.user_id::text FROM public.profiles p WHERE p.username = 'member' AND p.deleted_at IS NULL LIMIT 1), true);
 
 DO $$
 BEGIN
@@ -18,7 +21,7 @@ BEGIN
     RAISE EXCEPTION 'single-world-citizenship election missing in the local database';
   END IF;
   IF coalesce(current_setting('test.member_uid', true), '') = '' THEN
-    RAISE EXCEPTION 'test profile "member" missing in the local database';
+    RAISE EXCEPTION 'test profiles "citizen"/"member" missing in the local database';
   END IF;
 END $$;
 
@@ -186,7 +189,7 @@ END $$;
 RESET ROLE;
 UPDATE public.civic_elections SET metadata = (metadata - 'min_age') || '{"requires_verified": true}'::jsonb WHERE id = current_setting('test.election_id')::uuid;
 SET LOCAL ROLE authenticated;
-SELECT set_config('request.jwt.claims', json_build_object('sub', current_setting('test.member_uid'))::text, true);
+SELECT set_config('request.jwt.claims', json_build_object('sub', current_setting('test.unverified_uid'))::text, true);
 DO $$
 DECLARE e jsonb := public.my_consultation_eligibility(current_setting('test.election_id')::uuid);
 BEGIN

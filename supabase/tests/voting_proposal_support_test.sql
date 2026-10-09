@@ -4,15 +4,16 @@
 
 BEGIN;
 
-SELECT set_config('test.author_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'member' AND deleted_at IS NULL LIMIT 1), true);
-SELECT set_config('test.author_pid', (SELECT id::text FROM public.profiles WHERE username = 'member' AND deleted_at IS NULL LIMIT 1), true);
-SELECT set_config('test.supporter_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'citizen' AND deleted_at IS NULL LIMIT 1), true);
-SELECT set_config('test.supporter_pid', (SELECT id::text FROM public.profiles WHERE username = 'citizen' AND deleted_at IS NULL LIMIT 1), true);
+-- Author and supporter are verified fixtures: a member publishes only with a verified identity (D2).
+SELECT set_config('test.author_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'citizen' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('test.author_pid', (SELECT id::text FROM public.profiles WHERE username = 'citizen' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('test.supporter_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'verified_member' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('test.supporter_pid', (SELECT id::text FROM public.profiles WHERE username = 'verified_member' AND deleted_at IS NULL LIMIT 1), true);
 
 DO $$
 BEGIN
   IF coalesce(current_setting('test.author_uid', true), '') = '' OR coalesce(current_setting('test.supporter_uid', true), '') = '' THEN
-    RAISE EXCEPTION 'test profiles member/citizen missing in the local database';
+    RAISE EXCEPTION 'test profiles citizen/verified_member missing in the local database';
   END IF;
 END $$;
 

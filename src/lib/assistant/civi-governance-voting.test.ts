@@ -27,7 +27,7 @@ const ENGLISH_CASES: Array<[string, string, RegExp]> = [
   ['What is a receipt?', 'what_is_a_voting_receipt', /random code/],
   ['Where do I check my receipt?', 'how_do_i_know_my_vote_was_counted', /public list of counted receipts/],
   ["Why can't I vote?", 'why_cant_i_vote', /reason is shown under the voting buttons/],
-  ['Do I need to be verified to vote?', 'do_i_need_verification_to_vote', /^No/],
+  ['Do I need to be verified to vote?', 'do_i_need_verification_to_vote', /only ballots from verified members are counted/],
   ['Can I vote without an account?', 'can_i_vote_without_account', /^No\./],
   ['Can I change my vote?', 'can_i_change_my_vote', /^Yes, while voting is open/],
   ['Can I withdraw my ballot?', 'can_i_change_my_vote', /Withdraw ballot/],

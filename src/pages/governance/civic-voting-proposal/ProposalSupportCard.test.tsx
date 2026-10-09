@@ -43,7 +43,7 @@ describe('ProposalSupportCard', () => {
       <ProposalSupportCard
         t={(k, p) => (p ? `${k} ${p.count}/${p.threshold}` : k)}
         proposal={{ ...draft, openForSupport: true }}
-        support={{ count: 3, threshold: 10, openForSupport: true, supported: false, ready: false }}
+        support={{ count: 3, threshold: 10, openForSupport: true, supported: false, ready: false, isAuthor: false }}
         isAuthorOrManager={false}
         signedIn
         busy={false}
@@ -54,6 +54,23 @@ describe('ProposalSupportCard', () => {
     expect(screen.getByText('proposalSupport.progress 3/10')).toBeTruthy();
     fireEvent.click(screen.getByText('proposalSupport.support'));
     expect(onToggleSupport).toHaveBeenCalled();
+  });
+
+  it('does not offer the support toggle to the author (their support never counts)', () => {
+    render(
+      <ProposalSupportCard
+        t={(k) => k}
+        proposal={{ ...draft, openForSupport: true }}
+        support={{ count: 0, threshold: 10, openForSupport: true, supported: false, ready: false, isAuthor: true }}
+        isAuthorOrManager
+        signedIn
+        busy={false}
+        onOpenForSupport={vi.fn()}
+        onToggleSupport={vi.fn()}
+      />,
+    );
+    expect(screen.queryByText('proposalSupport.support')).toBeNull();
+    expect(screen.getByTestId('proposal-support-author-note')).toBeTruthy();
   });
 
   it('renders nothing once the proposal is published', () => {

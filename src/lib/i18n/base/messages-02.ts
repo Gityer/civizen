@@ -25,6 +25,7 @@ export const m_messages_02 = {
     "emailOptionalPlaceholder": "jane@example.com",
     "contactMethodHint": "Add either an email or a phone number. Use only one here.",
     "contactMethodRequired": "Add either your email or your phone number.",
+    "emailRequired": "Add your email address.",
     "contactMethodExclusive": "Use either email or phone during sign up, not both.",
     "loginIdentifier": "Email, username, or phone",
     "loginIdentifierPlaceholder": "jane@example.com, janesmith, or +12015550123",
