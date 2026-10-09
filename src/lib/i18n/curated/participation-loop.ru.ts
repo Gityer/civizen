@@ -164,9 +164,9 @@ export const participationLoopRu = {
     loadFailed: 'Не удалось загрузить уведомления.',
   },
   notificationTypes: {
-    knowledge_resource_proposed: { title: 'Предложен ресурс: {title}', body: 'Участник предложил ресурс для вашего пространства знаний. Проверьте его в разделе «Ресурсы».' },
-    knowledge_gap_reported: { title: 'Сообщили о пробеле: {title}', body: 'Участник сообщил о пробеле в знаниях в вашем пространстве.' },
-    knowledge_resource_published: { title: 'Ваш ресурс опубликован: {title}', body: 'Координаторы опубликовали предложенный вами ресурс.' },
+    knowledge_resource_proposed: { title: 'Предложен ресурс в пространстве «{title}»', body: 'Участник предложил ресурс для вашего пространства знаний. Проверьте его в разделе «Ресурсы».' },
+    knowledge_gap_reported: { title: 'Сообщили о пробеле в пространстве «{title}»', body: 'Участник сообщил о пробеле в знаниях в вашем пространстве.' },
+    knowledge_resource_published: { title: 'Ваш ресурс опубликован в пространстве «{title}»', body: 'Координаторы опубликовали предложенный вами ресурс.' },
     fund_inquiry_received: { title: 'Новый запрос в Fund ({lane})', body: 'Кто-то отправил запрос через страницы Fund. Откройте «Финансирование › Интерес», чтобы ответить.' },
   },
   studyPaths: {

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { fetchMerkleRoot, fetchReceiptProof, verifyReceiptProof } from '@/lib/civic-voting/merkle';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { loadMyEligibility } from '@/lib/civic-status-service';
@@ -144,12 +145,32 @@ export function useCivicVotingElection() {
     }
   };
 
+  // Phase 10.1: the ballot box commitment (Merkle root over counted receipts) and a locally verified inclusion proof.
+  const [merkleRoot, setMerkleRoot] = useState<string | null>(null);
+  useEffect(() => {
+    if (!electionId) return;
+    let active = true;
+    void fetchMerkleRoot(electionId).then((value) => {
+      if (active) setMerkleRoot(value);
+    });
+    return () => {
+      active = false;
+    };
+  }, [electionId, myReceipt, tallyTotal]);
+
   const verifyReceipt = async () => {
     if (!electionId || !myReceipt) return;
     try {
       const included = await checkConsultationReceipt(electionId, myReceipt);
-      if (included) toast.success(t('civicBallot.receiptIncluded'));
-      else toast.error(t('civicBallot.receiptMissing'));
+      if (!included) {
+        toast.error(t('civicBallot.receiptMissing'));
+        return;
+      }
+      const proof = await fetchReceiptProof(electionId, myReceipt);
+      const verified = proof ? await verifyReceiptProof(myReceipt, proof) : false;
+      if (proof?.root) setMerkleRoot(proof.root);
+      if (verified && proof) toast.success(t('civicBallot.proofVerified', { index: (proof.index ?? 0) + 1, count: proof.count ?? 0 }));
+      else toast.message(t('civicBallot.receiptIncluded'));
     } catch {
       toast.error(t('civicBallot.receiptCheckFailed'));
     }
@@ -349,7 +370,7 @@ export function useCivicVotingElection() {
     detail, detailLoading, detailError, electionId, t, language, user, isConsultation, title,
     displayTitle, verificationSplit, tallies, tallyTotal, tallyError, countryStats, directory, directoryVisible,
     directoryBusy, myOption, myOptions, myReceipt, myBallotAdvisory, advisoryVoter, eligibilityReason, votingWindow, casting, withdrawing,
-    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
+    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, merkleRoot, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
     pinInput, setPinInput, assistedStatus, pinMessage, canOpenBooth, failed, policy,
     coolingOffUntil, coolingOffActive, attestation, challengeOpen, eligibility, secondsLeft,
     startSimulatedWindow, toggleGate, tryOpenBooth, enrollPins, unlockWithPin, castSimulatedBallot,

@@ -6,6 +6,8 @@ export const m_messages_16 = {
     "receiptIncluded": "Your receipt is on the list of counted ballots.",
     "receiptMissing": "Your receipt is not on the list of counted ballots.",
     "receiptCheckFailed": "Could not check the receipt right now.",
+    "merkleRoot": "Ballot box commitment (Merkle root over the counted receipts):",
+    "proofVerified": "Your receipt is counted: leaf {index} of {count}, and the inclusion proof recomputed on this device matches the published root.",
     "advisoryTitle": "Your ballot is advisory until your identity is verified",
     "advisoryBody": "Anyone with an account can vote. Only ballots from verified members are counted; yours is recorded and will be counted automatically once your verification is approved while voting is open.",
     "advisoryVerifyLink": "Verify your identity in profile settings.",
@@ -178,9 +180,9 @@ export const m_messages_16 = {
     "verification_approved": { "title": "Your identity is verified", "body": "Reviewers approved your identity verification." },
     "verification_rejected": { "title": "Your verification needs another look", "body": "Reviewers could not approve your verification yet. Open profile settings to see what to redo." },
     "verification_revoked": { "title": "Your identity verification was revoked", "body": "A reviewer revoked your verification. Open profile settings to see the reason and verify again." },
-    "knowledge_resource_proposed": { "title": "Resource proposed: {title}", "body": "A member proposed a resource for your knowledge space. Review it under Resources." },
-    "knowledge_gap_reported": { "title": "Gap reported: {title}", "body": "A member reported a knowledge gap in your space." },
-    "knowledge_resource_published": { "title": "Your resource is live: {title}", "body": "Coordinators shared the resource you proposed." },
+    "knowledge_resource_proposed": { "title": "Resource proposed in {title}", "body": "A member proposed a resource for your knowledge space. Review it under Resources." },
+    "knowledge_gap_reported": { "title": "Gap reported in {title}", "body": "A member reported a knowledge gap in your space." },
+    "knowledge_resource_published": { "title": "Your resource is live in {title}", "body": "Coordinators shared the resource you proposed." },
     "fund_inquiry_received": { "title": "New Fund inquiry ({lane})", "body": "Someone sent an inquiry through the Fund pages. Open Funding › Interest to answer it." }
   },
 } as const;

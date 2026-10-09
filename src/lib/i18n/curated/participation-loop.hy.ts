@@ -164,9 +164,9 @@ export const participationLoopHy = {
     loadFailed: 'Ծանուցումները հնարավոր չէ բեռնել։',
   },
   notificationTypes: {
-    knowledge_resource_proposed: { title: 'Առաջարկվել է ռեսուրս՝ {title}', body: 'Անդամը ռեսուրս է առաջարկել ձեր գիտելիքի տարածքի համար։ Վերանայեք այն «Ռեսուրսներ» բաժնում։' },
-    knowledge_gap_reported: { title: 'Հաղորդվել է բաց՝ {title}', body: 'Անդամը հաղորդել է գիտելիքի բաց ձեր տարածքում։' },
-    knowledge_resource_published: { title: 'Ձեր ռեսուրսը հրապարակված է՝ {title}', body: 'Համակարգողները հրապարակեցին ձեր առաջարկած ռեսուրսը։' },
+    knowledge_resource_proposed: { title: 'Ռեսուրս է առաջարկվել «{title}» տարածքում', body: 'Անդամը ռեսուրս է առաջարկել ձեր գիտելիքի տարածքի համար։ Վերանայեք այն «Ռեսուրսներ» բաժնում։' },
+    knowledge_gap_reported: { title: 'Բաց է հաղորդվել «{title}» տարածքում', body: 'Անդամը հաղորդել է գիտելիքի բաց ձեր տարածքում։' },
+    knowledge_resource_published: { title: 'Ձեր ռեսուրսը հրապարակված է «{title}» տարածքում', body: 'Համակարգողները հրապարակեցին ձեր առաջարկած ռեսուրսը։' },
     fund_inquiry_received: { title: 'Նոր հարցում Fund-ին ({lane})', body: 'Ինչ-որ մեկը հարցում է ուղարկել Fund էջերից։ Պատասխանելու համար բացեք «Ֆինանսավորում › Հետաքրքրություն»։' },
   },
   studyPaths: {

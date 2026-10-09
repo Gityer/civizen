@@ -8475,6 +8475,12 @@ isOneToOne: false
               "country_code": string,"participant_count": number
             }[]
                            },
+"civic_election_merkle_leaves_count_helper":
+{ Args: { "p_receipts": (string)[] }; Returns: (string)[]
+                           },
+"civic_election_merkle_root":
+{ Args: { "p_election_id": string }; Returns: string
+                           },
 "civic_election_observer_metrics":
 { Args: { "p_election_id": string }; Returns: Json
                            },
@@ -8497,6 +8503,9 @@ isOneToOne: false
 "civic_election_receipt_included":
 { Args: { "p_election_id": string,"p_receipt": string }; Returns: boolean
                            },
+"civic_election_receipt_proof":
+{ Args: { "p_election_id": string,"p_receipt": string }; Returns: Json
+                           },
 "civic_election_receipts":
 { Args: { "p_election_id": string }; Returns: {
               "receipt": string
@@ -8512,6 +8521,12 @@ isOneToOne: false
 { Args: { "p_election_id": string }; Returns: {
               "unverified_count": number,"verified_count": number
             }[]
+                           },
+"civic_merkle_proof_for":
+{ Args: { "p_receipt": string,"p_receipts": (string)[] }; Returns: Json
+                           },
+"civic_merkle_root_for":
+{ Args: { "p_receipts": (string)[] }; Returns: string
                            },
 "civic_normalize_options":
 { Args: { "p_options": Json }; Returns: Json

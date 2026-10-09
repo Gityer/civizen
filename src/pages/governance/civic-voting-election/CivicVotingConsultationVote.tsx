@@ -7,6 +7,7 @@ import { readBallotMethod, readMaxSelections } from '@/lib/civic-voting/voting-p
 import { ConsultationApprovalPicker } from '@/pages/governance/civic-voting-election/ConsultationApprovalPicker';
 import { ConsultationRankedPicker } from '@/pages/governance/civic-voting-election/ConsultationRankedPicker';
 import { formatReceipt } from '@/pages/governance/civic-voting-election/consultation-receipt';
+import { shortHash } from '@/lib/civic-voting/merkle';
 import type { useCivicVotingElection } from '@/pages/governance/civic-voting-election/useCivicVotingElection';
 
 type CivicVotingElectionModel = ReturnType<typeof useCivicVotingElection>;
@@ -29,7 +30,7 @@ function formatDate(date: Date | undefined, language: string): string {
 export function CivicVotingConsultationVote({ model }: { model: CivicVotingElectionModel }) {
   const {
     myOption, myOptions, myReceipt, myBallotAdvisory, advisoryVoter, eligibilityReason, votingWindow, casting, withdrawing, t, language, user,
-    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt,
+    votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, merkleRoot,
     directoryVisible, directoryBusy, toggleDirectoryPresence, detail,
   } = model;
   const location = useLocation();
@@ -87,6 +88,11 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
       </div>
       <p className="font-mono text-sm tracking-wide text-foreground">{formatReceipt(myReceipt)}</p>
       <p className="text-xs text-muted-foreground">{t(myBallotAdvisory ? 'civicBallot.advisoryReceiptHint' : 'civicBallot.receiptHint')}</p>
+      {merkleRoot ? (
+        <p className="text-xs text-muted-foreground" data-testid="consultation-merkle-root" title={merkleRoot}>
+          {t('civicBallot.merkleRoot')} <span className="font-mono">{shortHash(merkleRoot)}</span>
+        </p>
+      ) : null}
       {myBallotAdvisory ? null : (
         <Button type="button" size="sm" variant="outline" onClick={() => void verifyReceipt()}>
           {t('civicBallot.verifyReceipt')}
