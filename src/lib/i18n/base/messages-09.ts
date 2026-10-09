@@ -10,10 +10,6 @@ export const m_messages_09 = {
         "label": "Civic Learning Center",
         "description": "Constitution, law, citizenship, and economy foundations."
       },
-      "specialists": {
-        "label": "Specialists",
-        "description": "Domain experts for Study, Improve, and Resolve Issues."
-      },
       "courses": {
         "label": "Courses",
         "description": "Tracks for school, university, and self-paced citizens."
@@ -119,6 +115,8 @@ export const m_messages_09 = {
     "badge": "Civic Learning Center",
     "title": "Study",
     "subtitle": "Access foundational civic materials in a structured learning path.",
+    "constitutionStatus": "Research draft from Civizen's constitutional studies, kept here for study. It is not in force: Civizen's current rules are the Community Governance Charter.",
+    "constitutionCharterLink": "Open the Charter",
     "localMode": "Study progress is currently stored on this device because backend study tables are not available.",
     "availableNow": "Available now",
     "comingSoon": "Planned",

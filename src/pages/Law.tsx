@@ -17,8 +17,8 @@ import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
 import { permissionListHasAny } from '@/lib/access-control';
 import { lawCatalog } from '@/lib/law-catalog';
+import { lawSourceUrl } from '@/lib/law-catalog-sources';
 import { toast } from 'sonner';
-
 type LawTrack = Database['public']['Enums']['law_track'];
 type LawContributionType = Database['public']['Enums']['law_contribution_type'];
 type LawContributionStatus = Database['public']['Enums']['law_contribution_status'];
@@ -79,7 +79,7 @@ function toFallbackEntries(): LawEntry[] {
     instrument: entry.instrument,
     title: entry.title,
     summary: entry.summary,
-    sourceUrl: null,
+    sourceUrl: lawSourceUrl(entry.id),
     sections: entry.sections.map((section) => ({
       id: section.id,
       title: section.title,
@@ -124,7 +124,7 @@ function buildLawEntries(
       instrument: source.instrument,
       title: source.title,
       summary: source.summary,
-      sourceUrl: source.source_url,
+      sourceUrl: source.source_url ?? lawSourceUrl(source.slug),
       sections: [...(sectionsBySource.get(source.id) || [])]
         .sort((a, b) => a.sort_order - b.sort_order || a.title.localeCompare(b.title))
         .map((section) => ({

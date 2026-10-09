@@ -124,7 +124,6 @@ export type FeatureId =
   | 'userVerification'
   | 'termsUse'
   | 'studyLearningCenter'
-  | 'specialistGuidanceHub'
   | 'governancePolicies'
   | 'adminSystemModules';
 
@@ -413,16 +412,6 @@ export const featureRegistry: FeatureEntry[] = [
     summaryKey: 'features.catalog.studyLearningCenter.summary',
     workflowKey: 'features.catalog.studyLearningCenter.workflow',
     detailsKey: 'features.catalog.studyLearningCenter.details',
-    section: 'knowledge',
-    page: 'study',
-  },
-  {
-    id: 'specialistGuidanceHub',
-    icon: GraduationCap,
-    titleKey: 'features.catalog.specialistGuidanceHub.title',
-    summaryKey: 'features.catalog.specialistGuidanceHub.summary',
-    workflowKey: 'features.catalog.specialistGuidanceHub.workflow',
-    detailsKey: 'features.catalog.specialistGuidanceHub.details',
     section: 'knowledge',
     page: 'study',
   },

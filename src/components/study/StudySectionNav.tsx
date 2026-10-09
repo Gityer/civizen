@@ -27,7 +27,7 @@ export function StudySectionNav() {
       }}
     >
       {studySectionRegistry
-        .filter((section) => section.id !== 'civicLearning' && section.id !== 'specialists')
+        .filter((section) => section.id !== 'civicLearning')
         .map((section) => {
         const isActive =
           section.path === '/study'

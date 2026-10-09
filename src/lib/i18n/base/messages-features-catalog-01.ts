@@ -302,11 +302,11 @@ export const m_messages_features_catalog_01 = {
       },
       "studyNestedHub": {
         "title": "Study hub with nested sections",
-        "summary": "Study is organized into dedicated routes under `/study` so civic learning, specialists, courses, schedules, materials, and tests stay separated.",
+        "summary": "Study is organized into dedicated routes under `/study`: the Civic Learning Center, the learning paths and the materials.",
         "workflow": [
           "Open Study from the bottom navigation.",
-          "Use the section tabs to switch between Civic Learning Center, Specialists, Courses, Schedules, Materials, and Tests.",
-          "Deep links such as `/study/courses` keep bookmarks and support links stable."
+          "Use the section tabs to switch between Civic Learning Center, Learning paths and Materials.",
+          "Deep links such as `/study/paths` keep bookmarks and support links stable."
         ],
         "details": [
           "The default Study index remains the Civic Learning Center experience.",
@@ -333,7 +333,7 @@ export const m_messages_features_catalog_01 = {
         "summary": "Use Study as the citizen-facing knowledge hub for constitutional, legal, civic, and economic learning paths.",
         "workflow": [
           "Open Study from the bottom navigation (Civic Learning Center is the default index).",
-          "Use section tabs when you need specialists, courses, schedules, materials, or tests.",
+          "Use the Learning paths tab for the three guided paths with saved progress, and Materials for the reading packs.",
           "Select a foundation domain such as Constitution, Laws, Citizenship, or Economy.",
           "Track progress and continue through recommended materials."
         ],
@@ -341,20 +341,6 @@ export const m_messages_features_catalog_01 = {
           "Study is structured for civic learning rather than internal system tooling.",
           "The first phase focuses on four foundational domains, with additional domains staged next.",
           "Progress indicators make long-form civic reading easier to sustain."
-        ]
-      },
-      "specialistGuidanceHub": {
-        "title": "Route specialists between Study and Market",
-        "summary": "Specialists are anchored in Study for trusted guidance and routed to Market when help becomes transactional.",
-        "workflow": [
-          "Open Study and go to `/study/specialists` for mode-based guidance (Study, Improve, Resolve Issues).",
-          "Review domain-focused specialists and identify the right guidance path.",
-          "Use the Market handoff when you need paid specialist sessions or service delivery."
-        ],
-        "details": [
-          "Study is the default trust and knowledge entry point for specialist support.",
-          "Market handles transactional specialist work such as paid consultations and services.",
-          "This split keeps governance-sensitive guidance separate from commerce while preserving a clear handoff."
         ]
       },
       "identifierLogin": {

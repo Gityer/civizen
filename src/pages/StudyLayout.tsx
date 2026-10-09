@@ -10,8 +10,8 @@ import { usePageSecondaryNav } from '@/hooks/usePageSecondaryNav';
 import { APP_DIRECTORY_MAX_CLASS } from '@/lib/responsive-layout';
 import { studySectionRegistry } from '@/lib/study-sections';
 
-/** Placeholders are not offered as features: tests and schedules have no content yet; specialists were canned personas (decision D4). */
-const HIDDEN_STUDY_SECTIONS = new Set<string>(['specialists', 'courses', 'schedules', 'tests']);
+/** Placeholders are not offered as features: tests and schedules have no content yet; courses redirect to the learning paths (decision D4). */
+const HIDDEN_STUDY_SECTIONS = new Set<string>(['courses', 'schedules', 'tests']);
 import { cn } from '@/lib/utils';
 
 export type StudyLayoutOutletContext = {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, BadgeCheck, Bookmark, BookmarkCheck, BookOpen, Check, ChevronDown, ChevronRight, ChevronUp, Coins, Clock3, FileText, Gavel, Landmark, Scale, X } from 'lucide-react';
-import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ConstitutionReader } from '@/components/study/ConstitutionReader';
 import { StudyMarkdownReader } from '@/components/study/StudyMarkdownReader';
@@ -845,6 +845,11 @@ export default function StudyCivicLearning() {
                 </Card>
 
                 {domain.id === 'constitution' && selectedDomain === 'constitution' && (
+                  <>
+                  <p className="rounded-lg border border-border/60 bg-muted/40 px-3 py-2 text-xs text-muted-foreground" data-testid="constitution-status">
+                    {t('study.constitutionStatus')}{' '}
+                    <Link to="/governance/charter" className="font-medium text-primary underline-offset-2 hover:underline">{t('study.constitutionCharterLink')}</Link>
+                  </p>
                   <ConstitutionReader
                     mode="articles"
                     searchQuery={searchQuery}
@@ -856,6 +861,7 @@ export default function StudyCivicLearning() {
                       });
                     }}
                   />
+                  </>
                 )}
 
                 {domain.id === 'economy' && selectedDomain === 'economy' && (

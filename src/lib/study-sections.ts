@@ -1,10 +1,9 @@
 import type { LucideIcon } from 'lucide-react';
-import { BookOpen, CalendarDays, ClipboardCheck, FileText, GraduationCap, Users } from 'lucide-react';
+import { BookOpen, CalendarDays, ClipboardCheck, FileText, GraduationCap } from 'lucide-react';
 
 export type StudySectionId =
   | 'civicLearning'
   | 'paths'
-  | 'specialists'
   | 'courses'
   | 'schedules'
   | 'materials'
@@ -32,13 +31,6 @@ export const studySectionRegistry: StudySectionMeta[] = [
     labelKey: 'study.sections.paths.label',
     descriptionKey: 'study.sections.paths.description',
     icon: GraduationCap,
-  },
-  {
-    id: 'specialists',
-    path: '/study/specialists',
-    labelKey: 'study.sections.specialists.label',
-    descriptionKey: 'study.sections.specialists.description',
-    icon: Users,
   },
   {
     id: 'courses',
