@@ -1,10 +1,10 @@
 export const m_messages_09 = {
   "study": {
     "layoutTitle": "Study",
-    "layoutSubtitle": "Civic learning, structured courses, specialists, schedules, materials, and tests in one organized hub.",
+    "layoutSubtitle": "Civic learning, three learning paths with saved progress, and the reading materials behind them.",
     "sectionNavAria": "Study sections",
     "civicLearningMoreTitle": "More in Study",
-    "civicLearningMoreDescription": "Foundations live here. Open other sections for specialists, courses, weekly plans, curated materials, and assessments.",
+    "civicLearningMoreDescription": "Foundations live here. Learning paths take you through the Charter, how Civizen decides and your rights; Materials holds the reading packs.",
     "sections": {
       "civicLearning": {
         "label": "Civic Learning Center",
@@ -21,6 +21,10 @@ export const m_messages_09 = {
       "schedules": {
         "label": "Schedules",
         "description": "Weekly rhythm and pacing for your courses."
+      },
+      "paths": {
+        "label": "Learning paths",
+        "description": "Three short paths written from Civizen's public documents, with your progress saved."
       },
       "materials": {
         "label": "Materials",

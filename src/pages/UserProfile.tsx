@@ -34,6 +34,7 @@ import { PerformanceDetailsPanel } from '@/components/profile/PerformanceDetails
 import { UserProfileActions } from '@/components/profile/UserProfileActions';
 import { useAuth } from '@/contexts/AuthContext';
 import { EndorsementPillarGrid } from '@/pages/user-profile/EndorsementPillarGrid';
+import { StudyCompletionBadges } from '@/pages/user-profile/StudyCompletionBadges';
 import { usePublicProfileVisibility } from '@/pages/user-profile/public-profile-visibility';
 import { CheckCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -377,6 +378,7 @@ export default function UserProfile() {
         ) : null}
 
         {visibility.showEndorsements ? <EndorsementPillarGrid title={t('userProfile.domains')} pillarScore={pillarScore} /> : null}
+        <StudyCompletionBadges profileId={profile.id} />
       </div>
     </AppLayout>
   );

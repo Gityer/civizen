@@ -73,6 +73,8 @@ import {
   SolutionProblemDetail,
   SolutionsHub,
   StudyCivicLearning,
+  StudyLearningPathDetail,
+  StudyLearningPaths,
   StudyLayout,
   StudyMaterials,
   TermsOfUse,
@@ -220,7 +222,9 @@ export const appRoutes1 = (
       <Route path="/study" element={<ProtectedRoute><StudyLayout /></ProtectedRoute>}>
         <Route index element={<StudyCivicLearning />} />
         <Route path="specialists" element={<Navigate to="/study" replace />} />
-        <Route path="courses" element={<Navigate to="/study" replace />} />
+        <Route path="courses" element={<Navigate to="/study/paths" replace />} />
+        <Route path="paths" element={<StudyLearningPaths />} />
+        <Route path="paths/:pathId/:lessonId?" element={<StudyLearningPathDetail />} />
         <Route path="schedules" element={<Navigate to="/study" replace />} />
         <Route path="materials" element={<StudyMaterials />} />
         <Route path="tests" element={<Navigate to="/study" replace />} />

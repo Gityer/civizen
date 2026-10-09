@@ -9513,6 +9513,9 @@ isOneToOne: false
 "mark_funding_commitment_status":
 { Args: { "p_amount_usd"?: number,"p_bank_reference"?: string,"p_commitment_id": string,"p_date_received"?: string,"p_debit_account"?: string,"p_status": string,"p_transaction_hash"?: string }; Returns: Json
                            },
+"mark_study_lesson_complete":
+{ Args: { "p_lesson_key": string,"p_path_key": string,"p_path_lesson_keys": (string)[] }; Returns: Json
+                           },
 "market_job_seeker_public_name":
 { Args: { "full_name": string }; Returns: string
                            },
@@ -9839,6 +9842,9 @@ isOneToOne: false
 { Args: { "payload": Json }; Returns: string
                            },
 "public_profile":
+{ Args: { "p_profile_id": string }; Returns: Json
+                           },
+"public_study_completions":
 { Args: { "p_profile_id": string }; Returns: Json
                            },
 "publish_governance_public_audit_verifier_mirror_directory":

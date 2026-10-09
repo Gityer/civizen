@@ -3,6 +3,7 @@ import { BookOpen, CalendarDays, ClipboardCheck, FileText, GraduationCap, Users 
 
 export type StudySectionId =
   | 'civicLearning'
+  | 'paths'
   | 'specialists'
   | 'courses'
   | 'schedules'
@@ -24,6 +25,13 @@ export const studySectionRegistry: StudySectionMeta[] = [
     labelKey: 'study.sections.civicLearning.label',
     descriptionKey: 'study.sections.civicLearning.description',
     icon: BookOpen,
+  },
+  {
+    id: 'paths',
+    path: '/study/paths',
+    labelKey: 'study.sections.paths.label',
+    descriptionKey: 'study.sections.paths.description',
+    icon: GraduationCap,
   },
   {
     id: 'specialists',
