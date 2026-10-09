@@ -59,6 +59,7 @@ import {
   OpportunityForm,
   Pillars,
   PrivacySettings,
+  AccountSettings,
   ProfessionalOpportunities,
   Professions,
   Profile,
@@ -305,6 +306,7 @@ export const appRoutes1 = (
       />
       <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route path="/settings/privacy" element={<ProtectedRoute><PrivacySettings /></ProtectedRoute>} />
+      <Route path="/settings/account" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
       <Route
         path="/settings/ai-agent"
         element={

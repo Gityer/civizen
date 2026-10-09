@@ -27,7 +27,7 @@ import {
 /** Self-service account removal with a typed confirmation. */
 export function DeleteAccountCard() {
   const { t } = useLanguage();
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [confirmation, setConfirmation] = useState('');
@@ -37,7 +37,7 @@ export function DeleteAccountCard() {
     if (busy || !isAccountDeletionConfirmed(confirmation)) return;
     setBusy(true);
     try {
-      await deleteMyAccount(ACCOUNT_DELETION_CONFIRM_WORD);
+      await deleteMyAccount(ACCOUNT_DELETION_CONFIRM_WORD, profile?.id);
       toast.success(t('settings.deleteAccountDone'));
       setOpen(false);
       await signOut();

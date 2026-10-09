@@ -100,6 +100,7 @@ export const allPages: PageEntry[] = [
   { name: 'MessagingSettings', path: '/settings/messaging', load: () => import('@/pages/settings/MessagingSettings') },
   { name: 'MessagingSecurity', path: '/settings/messaging-security', load: () => import('@/pages/settings/MessagingSecurity') },
   { name: 'PrivacySettings', path: '/settings/privacy', load: () => import('@/pages/settings/PrivacySettings') },
+  { name: 'AccountSettings', path: '/settings/account', load: () => import('@/pages/settings/AccountSettings') },
   { name: 'AiAgentSettings', path: '/settings/ai-agent', load: () => import('@/pages/settings/AiAgentSettings') },
   { name: 'SocialAccountsSettings', path: '/settings/social-accounts', load: () => import('@/pages/settings/SocialAccountsSettings') },
 ];

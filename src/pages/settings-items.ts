@@ -1,5 +1,5 @@
 import { type AppPermission } from '@/lib/access-control';
-import { User, Bell, HelpCircle, FileText, Lock, Settings as SettingsIcon, Award, MessageCircle, Share2 } from 'lucide-react';
+import { User, Bell, HelpCircle, FileText, Lock, Settings as SettingsIcon, Award, MessageCircle, Share2, KeyRound } from 'lucide-react';
 
 export type SettingsNavItem = {
   icon: typeof User;
@@ -49,6 +49,12 @@ export const settingsItems: SettingsNavItem[] = [
     labelKey: 'settings.privacy',
     descriptionKey: 'settings.privacyDescription',
     path: '/settings/privacy',
+  },
+  {
+    icon: KeyRound,
+    labelKey: 'settings.accountTitle',
+    descriptionKey: 'settings.accountDescription',
+    path: '/settings/account',
   },
   {
     icon: Share2,

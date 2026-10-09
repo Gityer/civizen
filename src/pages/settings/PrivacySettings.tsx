@@ -95,6 +95,29 @@ export default function PrivacySettings() {
     }
   };
 
+  // Step 3.7: what other members may see on the public profile card.
+  const PRIVACY_KEYS = ['show_country', 'show_city', 'show_score', 'show_endorsements'] as const;
+  const [privacy, setPrivacy] = useState<Record<string, boolean>>({});
+  const [privacyBusy, setPrivacyBusy] = useState<string | null>(null);
+  useEffect(() => {
+    const stored = (profile as { privacy_settings?: Record<string, unknown> } | null)?.privacy_settings ?? {};
+    setPrivacy(Object.fromEntries(PRIVACY_KEYS.map((key) => [key, stored[key] !== false])));
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- PRIVACY_KEYS is a constant
+  }, [profile]);
+  const handlePrivacy = async (key: string, next: boolean) => {
+    if (privacyBusy) return;
+    setPrivacyBusy(key);
+    try {
+      const { error } = await supabase.rpc('set_my_privacy_settings', { p_settings: { [key]: next } });
+      if (error) throw new Error(error.message);
+      setPrivacy((prev) => ({ ...prev, [key]: next }));
+    } catch {
+      toast.error(t('settings.visibility.failed'));
+    } finally {
+      setPrivacyBusy(null);
+    }
+  };
+
   const availabilityHint = (() => {
     if (!nativeSupported) return t('settings.biometricAndroidOnly');
     if (status === 'none_enrolled') return t('settings.biometricNoneEnrolled');
@@ -157,6 +180,24 @@ export default function PrivacySettings() {
           <Button type="button" variant="outline" size="sm" asChild>
             <Link to="/happiness/privacy">{t('happiness.openPrivacy')}</Link>
           </Button>
+        </Card>
+
+        <Card className="space-y-3 border-border/80 p-4" data-testid="profile-visibility-card">
+          <div className="space-y-1">
+            <h2 className="text-sm font-semibold text-foreground">{t('settings.visibility.title')}</h2>
+            <p className="text-xs leading-relaxed text-muted-foreground">{t('settings.visibility.description')}</p>
+          </div>
+          {PRIVACY_KEYS.map((key) => (
+            <div key={key} className="flex items-center justify-between gap-3">
+              <span className="text-sm text-foreground">{t(`settings.visibility.${key}`)}</span>
+              <Switch
+                checked={privacy[key] !== false}
+                disabled={privacyBusy !== null || !session?.user}
+                onCheckedChange={(checked) => void handlePrivacy(key, checked)}
+                aria-label={t(`settings.visibility.${key}`)}
+              />
+            </div>
+          ))}
         </Card>
 
         <DeleteAccountCard />

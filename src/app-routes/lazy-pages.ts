@@ -84,6 +84,7 @@ export const Notifications = lazyWithChunkReload(() => import('@/pages/Notificat
 export const MessagingSettingsPage = lazyWithChunkReload(() => import('@/pages/settings/MessagingSettings'));
 export const MessagingSecurity = lazyWithChunkReload(() => import('@/pages/settings/MessagingSecurity'));
 export const PrivacySettings = lazyWithChunkReload(() => import('@/pages/settings/PrivacySettings'));
+export const AccountSettings = lazyWithChunkReload(() => import('@/pages/settings/AccountSettings'));
 export const AiAgentSettings = lazyWithChunkReload(() => import('@/pages/settings/AiAgentSettings'));
 export const SocialAccountsSettings = lazyWithChunkReload(() => import('@/pages/settings/SocialAccountsSettings'));
 export const NotFound = lazyWithChunkReload(() => import('@/pages/NotFound'));

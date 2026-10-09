@@ -4,12 +4,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { CivizenScore } from '@/components/ui/CivizenScore';
-import { PillarBadge } from '@/components/ui/PillarBadge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
-import { PILLARS, type PillarId } from '@/lib/constants';
+import { type PillarId } from '@/lib/constants';
 import { calculateCivizenScore, type Endorsement } from '@/lib/scoring';
 import { buildScoreFromProfileActivity, formatScoreValue, type CategoryScoreInput } from '@/lib/civizen-score';
 import { scorePublicSubtitle } from '@/lib/civizen-score-caption';
@@ -34,6 +33,8 @@ import {
 import { PerformanceDetailsPanel } from '@/components/profile/PerformanceDetailsPanel';
 import { UserProfileActions } from '@/components/profile/UserProfileActions';
 import { useAuth } from '@/contexts/AuthContext';
+import { EndorsementPillarGrid } from '@/pages/user-profile/EndorsementPillarGrid';
+import { usePublicProfileVisibility } from '@/pages/user-profile/public-profile-visibility';
 import { CheckCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -230,6 +231,8 @@ export default function UserProfile() {
       performanceInput,
     ],
   );
+  const visibility = usePublicProfileVisibility({ userId, isOwn: currentProfile?.id === userId, score, ready: !loading });
+  const displayScore = visibility.score ?? score;
 
   const getInitials = (name?: string | null) => {
     if (!name) return '?';
@@ -262,7 +265,7 @@ export default function UserProfile() {
     );
   }
 
-  const ownRing = currentProfile?.id === profile.id ? ownProfileRingDisplay(score) : null;
+  const ownRing = currentProfile?.id === profile.id ? ownProfileRingDisplay(displayScore) : null;
 
   return (
     <AppLayout>
@@ -305,6 +308,7 @@ export default function UserProfile() {
           )}
         </motion.div>
 
+        {visibility.showScore ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -313,28 +317,28 @@ export default function UserProfile() {
         >
           <Card className="border-border/50 bg-card p-6 shadow-soft">
             <CivizenScore
-              score={ownRing ? ownRing.value : score.overall.score}
+              score={ownRing ? ownRing.value : displayScore.overall.score}
               size="lg"
-              tier={score.tier.finalTier}
+              tier={displayScore.tier.finalTier}
               emptyLabel="—"
               presentation={ownRing?.presentation === 'provisional' ? 'provisional' : 'established'}
               centerCaption={ownRing?.presentation === 'provisional' ? t('score.estimateLabel') : null}
             />
-            {score.tier.finalTier ? (
+            {displayScore.tier.finalTier ? (
               <p className="mt-2 text-center text-sm font-semibold uppercase tracking-wide text-primary">
-                {t(`score.tier.${score.tier.finalTier}`)}
+                {t(`displayScore.tier.${displayScore.tier.finalTier}`)}
               </p>
             ) : null}
-            <p className="mt-2 text-center text-sm text-muted-foreground">{scorePublicSubtitle(score, t)}</p>
+            <p className="mt-2 text-center text-sm text-muted-foreground">{scorePublicSubtitle(displayScore, t)}</p>
             <p className="mt-2 text-center text-sm text-muted-foreground">
-              {score.validation.verifiedEvidenceCount > 0
+              {displayScore.validation.verifiedEvidenceCount > 0
                 ? t('userProfile.basedOnVerified', {
-                    count: score.validation.verifiedEvidenceCount,
+                    count: displayScore.validation.verifiedEvidenceCount,
                   })
                 : t('score.addActivityHint')}
             </p>
             <div className="mt-4 grid grid-cols-2 gap-2 text-xs sm:grid-cols-3">
-              {score.categories.map((category) => (
+              {displayScore.categories.map((category) => (
                 <button
                   key={category.id}
                   type="button"
@@ -355,8 +359,9 @@ export default function UserProfile() {
             </div>
           </Card>
         </motion.div>
+        ) : null}
 
-        {profile ? (
+        {profile && visibility.showScore ? (
           <PerformanceDetailsPanel
             open={performancePanelOpen}
             onOpenChange={setPerformancePanelOpen}
@@ -371,33 +376,7 @@ export default function UserProfile() {
           />
         ) : null}
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <h2 className="mb-4 text-lg font-semibold text-foreground">{t('userProfile.domains')}</h2>
-          <div className="grid grid-cols-3 gap-3">
-            {PILLARS.map((pillar, index) => {
-              const match = pillarScore.pillars.find((p) => p.pillar === pillar.id);
-              return (
-                <motion.div
-                  key={pillar.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + index * 0.05 }}
-                >
-                  <PillarBadge
-                    pillarId={pillar.id}
-                    score={match?.score}
-                    endorsementCount={match?.endorsementCount}
-                    size="sm"
-                  />
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.div>
+        {visibility.showEndorsements ? <EndorsementPillarGrid title={t('userProfile.domains')} pillarScore={pillarScore} /> : null}
       </div>
     </AppLayout>
   );

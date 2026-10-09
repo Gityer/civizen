@@ -47,6 +47,9 @@ interface Profile {
   phone_number?: string | null;
   phone_e164?: string | null;
   official_id?: string | null;
+  privacy_settings?: Record<string, unknown> | null;
+  notification_email_digest?: boolean | null;
+  civic_framework_accepted_at?: string | null;
   social_security_number?: string | null;
   citizen_signing_public_key?: string | null;
   citizen_signing_key_algorithm?: string | null;

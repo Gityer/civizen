@@ -45,7 +45,7 @@ describe('DeleteAccountCard', () => {
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'delete' } });
     fireEvent.click(screen.getByText('settings.deleteAccountSubmit'));
     await waitFor(() => expect(signOut).toHaveBeenCalled());
-    expect(deleteMyAccount).toHaveBeenCalledWith('DELETE');
+    expect(deleteMyAccount.mock.calls[0]?.[0]).toBe('DELETE');
   });
 
   it('stays signed in when the server refuses', async () => {
