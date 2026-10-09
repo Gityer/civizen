@@ -48,3 +48,6 @@ playwright-report/
 
 # Machine-local multi-agent check-in board
 AGENT_CHECKIN.md
+
+# web OTA bundles are built artifacts (deployed with dist/, never committed)
+public/updates/bundles/

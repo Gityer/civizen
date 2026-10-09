@@ -16,6 +16,7 @@ import { permissionListHas, permissionListHasAny } from '@/lib/access-control';
 import { canViewCiviAgentSettings } from '@/lib/assistant/interaction-log';
 import { isOfficialCivizenOrgProfile } from '@/lib/civizen-org-account';
 import { APP_VERSION_TAG, ANDROID_VERSION_CODE } from '@/lib/app-release';
+import { WebOtaStatusLine } from '@/components/settings/WebOtaStatusLine';
 import { ensureAuthorizedAppUpdateChannel, getAppUpdateChannel, getAppUpdateChannelExpiresAt, onAppUpdateChannelChange, setAppUpdateChannel, type AppUpdateChannel } from '@/lib/update-channel';
 import { cn } from '@/lib/utils';
 import { LogOut, ChevronRight, Globe, Palette, Users, KeyRound, ShieldCheck, Fingerprint, Bot, Landmark, LayoutGrid, Lightbulb, Coins, Vote, FlaskConical, Briefcase } from 'lucide-react';
@@ -542,7 +543,7 @@ export default function Settings() {
               </div>
               <div className="flex-1 min-w-0 space-y-2">
                 <h3 className="font-semibold text-foreground">{t('settings.appInfoTitle')}</h3>
-                <p className="text-sm font-medium text-foreground">{installedReleaseLabel}</p>
+                <WebOtaStatusLine installedReleaseLabel={installedReleaseLabel} />
               </div>
               {canUseTestingUpdateChannel && (
                 <Popover

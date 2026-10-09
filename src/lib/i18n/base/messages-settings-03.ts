@@ -50,6 +50,13 @@ export const m_messages_settings_03 = {
       "deleted": "Backup deleted.",
       "deleteFailed": "Could not delete the backup."
     },
+    "webOta": {
+      "current": "Web layer {version} is the published one.",
+      "newer_published": "A newer web layer ({version}) is published; it arrives with the next app update.",
+      "ahead_of_manifest": "This build runs a newer web layer than the published {version}.",
+      "nativeTooOld": "The installed app is older than that web layer needs.",
+      "checkedAt": "Checked {time}."
+    },
     "visibility": {
       "title": "What other members see",
       "description": "Your name, photo and verification badge are always shown to signed-in members. Choose what else appears on your public profile.",

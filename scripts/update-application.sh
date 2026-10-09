@@ -168,6 +168,8 @@ write_legacy_manifest() {
     return
   fi
   cp "$UPDATE_MANIFEST_DIR/android-release.json" "$UPDATE_MANIFEST_DIR/android.json"
+  # Phase 9.3: web OTA bundle + manifest for the sideload channel
+  if [ -f "$ROOT_DIR/dist/index.html" ]; then bash "$ROOT_DIR/scripts/publish-web-ota.sh"; fi
   cp "$UPDATE_MANIFEST_DIR/android-release.js" "$UPDATE_MANIFEST_DIR/android.js"
 }
 
