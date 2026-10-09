@@ -1,18 +1,21 @@
-name: Migrations replay
+name: Migrations replay and SQL tests
 
 # Replays every file in supabase/migrations into an empty local Supabase, so a migration that cannot
 # be applied from scratch (e.g. one that needs data the hosted database already had) fails the PR
-# instead of the next developer's machine. Only runs when migrations or the replay tooling change.
+# instead of the next developer's machine, then runs the SQL tests in supabase/tests (RLS, RPC and
+# trigger contracts; each file is BEGIN ... ROLLBACK). Runs when migrations, tests or the tooling change.
 on:
   pull_request:
     paths:
       - 'supabase/migrations/**'
+      - 'supabase/tests/**'
       - 'scripts/local-supabase/**'
   push:
     branches:
       - main
     paths:
       - 'supabase/migrations/**'
+      - 'supabase/tests/**'
       - 'scripts/local-supabase/**'
 
 permissions:
@@ -20,7 +23,7 @@ permissions:
 
 jobs:
   replay:
-    name: replay migrations
+    name: replay migrations and run SQL tests
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -34,3 +37,6 @@ jobs:
 
       - name: Start local Supabase and replay migrations
         run: scripts/local-supabase/up.sh
+
+      - name: Run SQL tests
+        run: scripts/local-supabase/run-sql-tests.sh
