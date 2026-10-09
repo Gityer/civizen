@@ -107,6 +107,12 @@ export const m_messages_contribute_02 = {
       },
       "currentAction": "Current action",
       "descriptionHeading": "Description",
+      "links": {
+        "title": "Where this went next",
+        "aiCouncil": "AI council discussion",
+        "communityProject": "Community project: {title}",
+        "startChallenge": "Start a community challenge from this Matter"
+      },
       "fromLabel": "From",
       "toLabel": "To",
       "formalActions": "Formal actions",

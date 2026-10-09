@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
@@ -20,6 +20,7 @@ import {
   setCommunityChallengeStatus,
   updateCommunityChallenge,
 } from '@/lib/challenges-api';
+import { linkChallengeSourceMatter } from '@/lib/matter-links';
 import type { ChallengePayload, CommunityChallenge, ContributionProgram } from '@/lib/challenges';
 import { emptyChallengeForm, formFromChallenge, type ChallengeFormState } from '@/lib/challenges-form';
 import { takeWellbeingHandoff } from '@/lib/happiness/insights/handoff';
@@ -39,7 +40,14 @@ export default function ChallengeForm() {
   const editing = Boolean(challengeId);
   const areas = useMemo(() => listCurrentAreas(), []);
 
-  const [form, setForm] = useState(emptyChallengeForm);
+  const [searchParams] = useSearchParams();
+  // A challenge started from a Matter (step 4.1): title and problem prefilled, the Matter linked after creation.
+  const sourceMatterId = searchParams.get('matter') || '';
+  const [form, setForm] = useState(() => ({
+    ...emptyChallengeForm,
+    title: searchParams.get('title') ?? '',
+    problemStatement: searchParams.get('problem') ?? '',
+  }));
   const [programs, setPrograms] = useState<ContributionProgram[]>([]);
   const [existing, setExisting] = useState<CommunityChallenge | null>(null);
   const [loading, setLoading] = useState(true);
@@ -175,6 +183,9 @@ export default function ChallengeForm() {
         return;
       }
       const id = await createCommunityChallenge(payload);
+      if (sourceMatterId) {
+        await linkChallengeSourceMatter(id, sourceMatterId).catch(() => undefined);
+      }
       toast.success(status === 'active' ? t('contribute.challenges.published') : t('contribute.challenges.saved'));
       navigate(`/contribute/challenges/${id}`);
     } catch (error) {

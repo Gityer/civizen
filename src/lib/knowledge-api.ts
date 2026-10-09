@@ -233,6 +233,26 @@ export async function setKnowledgeResourceStatus(
   await rpcVoid('set_knowledge_resource_status', { p_resource_id: resourceId, p_status: status }, client);
 }
 
+/** A member proposes a resource for the space's coordinators to review (lands as a draft). */
+export async function proposeKnowledgeResource(
+  input: { spaceId: string; title: string; summary: string; externalUrl?: string | null; resourceType?: string },
+  client: DbClient = supabase,
+): Promise<string> {
+  return rpcId('propose_knowledge_resource', {
+    payload: { space_id: input.spaceId, title: input.title, summary: input.summary, external_url: input.externalUrl ?? null, resource_type: input.resourceType ?? 'other' },
+  }, client);
+}
+
+/** A member reports a gap in a space they can read. */
+export async function proposeKnowledgeGap(
+  input: { spaceId: string; title: string; description: string; gapKind?: string },
+  client: DbClient = supabase,
+): Promise<string> {
+  return rpcId('propose_knowledge_gap', {
+    payload: { space_id: input.spaceId, title: input.title, description: input.description, gap_kind: input.gapKind ?? 'missing' },
+  }, client);
+}
+
 export async function createKnowledgeGap(
   payload: KnowledgeGapPayload,
   client: DbClient = supabase,

@@ -1705,14 +1705,14 @@ isOneToOne: false
                   ]
                 },"community_challenges": {
                   Row: {
-                    "affected": string | null,"area_node_id": string | null,"completed_at": string | null,"completed_by": string | null,"constraints": string | null,"context_detail": string | null,"created_at": string,"evidence_links": string | null,"id": string,"is_demo": boolean,"lessons_learned": string | null,"outcome_evidence": string | null,"outcome_summary": string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources": string | null,"scope_text": string | null,"selected_proposal_id": string | null,"status": string,"success_criteria": string,"success_criteria_result": string | null,"title": string,"updated_at": string,"why_it_matters": string
+                    "affected": string | null,"area_node_id": string | null,"completed_at": string | null,"completed_by": string | null,"constraints": string | null,"context_detail": string | null,"created_at": string,"evidence_links": string | null,"id": string,"is_demo": boolean,"lessons_learned": string | null,"outcome_evidence": string | null,"outcome_summary": string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources": string | null,"scope_text": string | null,"selected_proposal_id": string | null,"source_matter_id": string | null,"status": string,"success_criteria": string,"success_criteria_result": string | null,"title": string,"updated_at": string,"why_it_matters": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"is_demo"?: boolean,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"status"?: string,"success_criteria": string,"success_criteria_result"?: string | null,"title": string,"updated_at"?: string,"why_it_matters": string
+                    "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"is_demo"?: boolean,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement": string,"program_id": string,"publisher_profile_id": string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"source_matter_id"?: string | null,"status"?: string,"success_criteria": string,"success_criteria_result"?: string | null,"title": string,"updated_at"?: string,"why_it_matters": string
                   }
                   Update: {
-                    "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"is_demo"?: boolean,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement"?: string,"program_id"?: string,"publisher_profile_id"?: string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"status"?: string,"success_criteria"?: string,"success_criteria_result"?: string | null,"title"?: string,"updated_at"?: string,"why_it_matters"?: string
+                    "affected"?: string | null,"area_node_id"?: string | null,"completed_at"?: string | null,"completed_by"?: string | null,"constraints"?: string | null,"context_detail"?: string | null,"created_at"?: string,"evidence_links"?: string | null,"id"?: string,"is_demo"?: boolean,"lessons_learned"?: string | null,"outcome_evidence"?: string | null,"outcome_summary"?: string | null,"problem_statement"?: string,"program_id"?: string,"publisher_profile_id"?: string,"resources"?: string | null,"scope_text"?: string | null,"selected_proposal_id"?: string | null,"source_matter_id"?: string | null,"status"?: string,"success_criteria"?: string,"success_criteria_result"?: string | null,"title"?: string,"updated_at"?: string,"why_it_matters"?: string
                   }
                   Relationships: [
                     {
@@ -1744,6 +1744,12 @@ isOneToOne: false
       columns: ["selected_proposal_id"]
 isOneToOne: false
       referencedRelation: "challenge_proposals"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "community_challenges_source_matter_id_fkey"
+      columns: ["source_matter_id"]
+isOneToOne: false
+      referencedRelation: "matters"
       referencedColumns: ["id"]
     }
                   ]
@@ -5031,14 +5037,14 @@ isOneToOne: true
                   ]
                 },"knowledge_gaps": {
                   Row: {
-                    "challenge_id": string | null,"created_at": string,"description": string,"gap_kind": string,"id": string,"opportunity_id": string | null,"program_id": string,"publisher_profile_id": string,"resolution_notes": string | null,"result_resource_id": string | null,"result_solution_record_id": string | null,"space_id": string,"status": string,"title": string,"updated_at": string
+                    "challenge_id": string | null,"created_at": string,"description": string,"gap_kind": string,"id": string,"opportunity_id": string | null,"program_id": string,"proposed_by_profile_id": string | null,"publisher_profile_id": string,"resolution_notes": string | null,"result_resource_id": string | null,"result_solution_record_id": string | null,"space_id": string,"status": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "challenge_id"?: string | null,"created_at"?: string,"description": string,"gap_kind"?: string,"id"?: string,"opportunity_id"?: string | null,"program_id": string,"publisher_profile_id": string,"resolution_notes"?: string | null,"result_resource_id"?: string | null,"result_solution_record_id"?: string | null,"space_id": string,"status"?: string,"title": string,"updated_at"?: string
+                    "challenge_id"?: string | null,"created_at"?: string,"description": string,"gap_kind"?: string,"id"?: string,"opportunity_id"?: string | null,"program_id": string,"proposed_by_profile_id"?: string | null,"publisher_profile_id": string,"resolution_notes"?: string | null,"result_resource_id"?: string | null,"result_solution_record_id"?: string | null,"space_id": string,"status"?: string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "challenge_id"?: string | null,"created_at"?: string,"description"?: string,"gap_kind"?: string,"id"?: string,"opportunity_id"?: string | null,"program_id"?: string,"publisher_profile_id"?: string,"resolution_notes"?: string | null,"result_resource_id"?: string | null,"result_solution_record_id"?: string | null,"space_id"?: string,"status"?: string,"title"?: string,"updated_at"?: string
+                    "challenge_id"?: string | null,"created_at"?: string,"description"?: string,"gap_kind"?: string,"id"?: string,"opportunity_id"?: string | null,"program_id"?: string,"proposed_by_profile_id"?: string | null,"publisher_profile_id"?: string,"resolution_notes"?: string | null,"result_resource_id"?: string | null,"result_solution_record_id"?: string | null,"space_id"?: string,"status"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -5058,6 +5064,12 @@ isOneToOne: false
       columns: ["program_id"]
 isOneToOne: false
       referencedRelation: "contribution_programs"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "knowledge_gaps_proposed_by_profile_id_fkey"
+      columns: ["proposed_by_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "knowledge_gaps_publisher_profile_id_fkey"
@@ -5113,14 +5125,14 @@ isOneToOne: false
                   ]
                 },"knowledge_resources": {
                   Row: {
-                    "body_text": string | null,"challenge_id": string | null,"created_at": string,"external_url": string | null,"id": string,"opportunity_id": string | null,"pathway_order": number | null,"program_id": string,"publisher_profile_id": string,"related_skills": (string)[],"resource_type": string,"reviewer_notes": string | null,"solution_record_id": string | null,"source_evidence": string | null,"space_id": string,"status": string,"summary": string,"title": string,"uncertainty_notes": string | null,"updated_at": string
+                    "body_text": string | null,"challenge_id": string | null,"created_at": string,"external_url": string | null,"id": string,"opportunity_id": string | null,"pathway_order": number | null,"program_id": string,"proposed_by_profile_id": string | null,"publisher_profile_id": string,"related_skills": (string)[],"resource_type": string,"reviewer_notes": string | null,"solution_record_id": string | null,"source_evidence": string | null,"space_id": string,"status": string,"summary": string,"title": string,"uncertainty_notes": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "body_text"?: string | null,"challenge_id"?: string | null,"created_at"?: string,"external_url"?: string | null,"id"?: string,"opportunity_id"?: string | null,"pathway_order"?: number | null,"program_id": string,"publisher_profile_id": string,"related_skills"?: (string)[],"resource_type"?: string,"reviewer_notes"?: string | null,"solution_record_id"?: string | null,"source_evidence"?: string | null,"space_id": string,"status"?: string,"summary": string,"title": string,"uncertainty_notes"?: string | null,"updated_at"?: string
+                    "body_text"?: string | null,"challenge_id"?: string | null,"created_at"?: string,"external_url"?: string | null,"id"?: string,"opportunity_id"?: string | null,"pathway_order"?: number | null,"program_id": string,"proposed_by_profile_id"?: string | null,"publisher_profile_id": string,"related_skills"?: (string)[],"resource_type"?: string,"reviewer_notes"?: string | null,"solution_record_id"?: string | null,"source_evidence"?: string | null,"space_id": string,"status"?: string,"summary": string,"title": string,"uncertainty_notes"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "body_text"?: string | null,"challenge_id"?: string | null,"created_at"?: string,"external_url"?: string | null,"id"?: string,"opportunity_id"?: string | null,"pathway_order"?: number | null,"program_id"?: string,"publisher_profile_id"?: string,"related_skills"?: (string)[],"resource_type"?: string,"reviewer_notes"?: string | null,"solution_record_id"?: string | null,"source_evidence"?: string | null,"space_id"?: string,"status"?: string,"summary"?: string,"title"?: string,"uncertainty_notes"?: string | null,"updated_at"?: string
+                    "body_text"?: string | null,"challenge_id"?: string | null,"created_at"?: string,"external_url"?: string | null,"id"?: string,"opportunity_id"?: string | null,"pathway_order"?: number | null,"program_id"?: string,"proposed_by_profile_id"?: string | null,"publisher_profile_id"?: string,"related_skills"?: (string)[],"resource_type"?: string,"reviewer_notes"?: string | null,"solution_record_id"?: string | null,"source_evidence"?: string | null,"space_id"?: string,"status"?: string,"summary"?: string,"title"?: string,"uncertainty_notes"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -5140,6 +5152,12 @@ isOneToOne: false
       columns: ["program_id"]
 isOneToOne: false
       referencedRelation: "contribution_programs"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "knowledge_resources_proposed_by_profile_id_fkey"
+      columns: ["proposed_by_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "knowledge_resources_publisher_profile_id_fkey"
@@ -7187,14 +7205,14 @@ isOneToOne: false
                   ]
                 },"solution_problems": {
                   Row: {
-                    "agreed_proposal_id": string | null,"assignee_profile_id": string | null,"author_id": string,"authority_id": string | null,"body": string,"category_confidence": number | null,"category_keywords": (string)[],"created_at": string,"current_round": number,"id": string,"max_rounds": number,"mode": string,"routing_note": string | null,"status": string,"title": string,"updated_at": string
+                    "agreed_proposal_id": string | null,"assignee_profile_id": string | null,"author_id": string,"authority_id": string | null,"body": string,"category_confidence": number | null,"category_keywords": (string)[],"created_at": string,"current_round": number,"id": string,"matter_id": string | null,"max_rounds": number,"mode": string,"routing_note": string | null,"status": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "agreed_proposal_id"?: string | null,"assignee_profile_id"?: string | null,"author_id": string,"authority_id"?: string | null,"body": string,"category_confidence"?: number | null,"category_keywords"?: (string)[],"created_at"?: string,"current_round"?: number,"id"?: string,"max_rounds"?: number,"mode"?: string,"routing_note"?: string | null,"status"?: string,"title": string,"updated_at"?: string
+                    "agreed_proposal_id"?: string | null,"assignee_profile_id"?: string | null,"author_id": string,"authority_id"?: string | null,"body": string,"category_confidence"?: number | null,"category_keywords"?: (string)[],"created_at"?: string,"current_round"?: number,"id"?: string,"matter_id"?: string | null,"max_rounds"?: number,"mode"?: string,"routing_note"?: string | null,"status"?: string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "agreed_proposal_id"?: string | null,"assignee_profile_id"?: string | null,"author_id"?: string,"authority_id"?: string | null,"body"?: string,"category_confidence"?: number | null,"category_keywords"?: (string)[],"created_at"?: string,"current_round"?: number,"id"?: string,"max_rounds"?: number,"mode"?: string,"routing_note"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
+                    "agreed_proposal_id"?: string | null,"assignee_profile_id"?: string | null,"author_id"?: string,"authority_id"?: string | null,"body"?: string,"category_confidence"?: number | null,"category_keywords"?: (string)[],"created_at"?: string,"current_round"?: number,"id"?: string,"matter_id"?: string | null,"max_rounds"?: number,"mode"?: string,"routing_note"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -7220,6 +7238,12 @@ isOneToOne: false
       columns: ["authority_id"]
 isOneToOne: false
       referencedRelation: "solution_authorities"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "solution_problems_matter_id_fkey"
+      columns: ["matter_id"]
+isOneToOne: false
+      referencedRelation: "matters"
       referencedColumns: ["id"]
     }
                   ]
@@ -9374,8 +9398,14 @@ isOneToOne: false
 "is_established_business_profile":
 { Args: { "p_profile_id": string }; Returns: boolean
                            },
+"link_challenge_source_matter":
+{ Args: { "p_challenge_id": string,"p_matter_id": string }; Returns: undefined
+                           },
 "link_implementation_opportunity":
 { Args: { "p_opportunity_id": string,"p_project_id": string }; Returns: undefined
+                           },
+"link_solution_problem_matter":
+{ Args: { "p_matter_id": string,"p_problem_id": string }; Returns: undefined
                            },
 "linked_account_owner_ids_for_viewer":
 { Args: Record<PropertyKey, never>; Returns: (string)[]
@@ -9562,6 +9592,9 @@ isOneToOne: false
                            },
 "matter_is_responsible_lead":
 { Args: { "p_matter_id": string }; Returns: boolean
+                           },
+"matter_links":
+{ Args: { "p_matter_id": string }; Returns: Json
                            },
 "matter_log_event":
 { Args: { "p_actor_agent_id"?: string,"p_actor_kind": string,"p_actor_profile_id": string,"p_event_type": string,"p_is_system": boolean,"p_matter_id": string,"p_payload"?: Json,"p_summary": string }; Returns: undefined
@@ -9790,6 +9823,12 @@ isOneToOne: false
 "propose_agreement_version":
 { Args: { "p_agreement_id": string }; Returns: undefined
                            },
+"propose_knowledge_gap":
+{ Args: { "payload": Json }; Returns: string
+                           },
+"propose_knowledge_resource":
+{ Args: { "payload": Json }; Returns: string
+                           },
 "propose_matter_agent_plan":
 { Args: { "p_assignment_id": string,"p_plan": Json }; Returns: string
                            },
@@ -9813,6 +9852,9 @@ isOneToOne: false
                            },
 "publish_voting_proposal_core":
 { Args: { "p_proposal_id": string }; Returns: string
+                           },
+"publisher_notification_recipients":
+{ Args: { "p_publisher_profile_id": string }; Returns: (string)[]
                            },
 "queue_matter_agent_run":
 { Args: { "p_assignment_id": string }; Returns: string

@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { canManageVotingProposals, createVotingProposalFromMatter, listVotingProposalsForMatter, type VotingProposal } from '@/lib/civic-voting';
 import { listCurrentAreas } from '@/lib/classification';
+import { EMPTY_MATTER_LINKS, loadMatterLinks, type MatterLinks } from '@/lib/matter-links';
 import { buildBallIsWithCopy, deriveMatterStatus, formalActionsForContext, viewerRepresents, workProgressLine, type FormalActionType, type MatterActorKind, type ReopenReason } from '@/lib/matters';
 import { addMatterComment, getMatterDetail, performCollaborationAction, performMatterFormalAction, searchMatterActors, uploadMatterFile, type MatterActorSuggestion, type MatterDetailBundle } from '@/lib/matters-api';
 import { listOwnedLinkedProfileIds } from '@/lib/opportunities-api';
@@ -39,6 +40,7 @@ export function useMatterDetail() {
   const [outstandingReason, setOutstandingReason] = useState('');
   const [votingProposals, setVotingProposals] = useState<VotingProposal[]>([]);
   const [creatingProposal, setCreatingProposal] = useState(false);
+  const [links, setLinks] = useState<MatterLinks>(EMPTY_MATTER_LINKS);
 
   const load = useCallback(async () => {
     if (!matterId) {
@@ -51,6 +53,7 @@ export function useMatterDetail() {
       setLinkedIds(linked);
       const row = await getMatterDetail(matterId);
       setBundle(row);
+      setLinks(await loadMatterLinks(matterId));
       try {
         const proposals = await listVotingProposalsForMatter(matterId);
         setVotingProposals(proposals);
@@ -252,7 +255,7 @@ export function useMatterDetail() {
     ball, pendingActions, runCollabAction, setBusy, section, setSection, outstandingReason,
     setOutstandingReason, tRef, load, viewerIsResponsible, hasWork, outstandingTasks,
     hasOutstanding, progress, sectionItems, bundle, selectedAction, setSelectedAction, reopenReason,
-    setReopenReason, votingProposals, creatingProposal, canDraftVotingProposal, openVotingDraft,
+    setReopenReason, votingProposals, creatingProposal, canDraftVotingProposal, openVotingDraft, links,
     options, selectedOption, createVotingProposal, runAction, comment, setComment, replyTo,
     setReplyTo, mentionQuery, setMentionQuery, mentions, setMentions, mentionHits, setMentionHits,
     file, setFile, hasResolution, hasOutcome, hasAi, rootComments, postComment,

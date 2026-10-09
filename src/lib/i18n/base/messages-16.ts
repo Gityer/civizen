@@ -171,6 +171,9 @@ export const m_messages_16 = {
     "citizenship_granted": { "title": "You are now a Civizen citizen", "body": "Your verified membership has matured into citizenship." },
     "verification_approved": { "title": "Your identity is verified", "body": "Reviewers approved your identity verification." },
     "verification_rejected": { "title": "Your verification needs another look", "body": "Reviewers could not approve your verification yet. Open profile settings to see what to redo." },
-    "verification_revoked": { "title": "Your identity verification was revoked", "body": "A reviewer revoked your verification. Open profile settings to see the reason and verify again." }
+    "verification_revoked": { "title": "Your identity verification was revoked", "body": "A reviewer revoked your verification. Open profile settings to see the reason and verify again." },
+    "knowledge_resource_proposed": { "title": "Resource proposed: {title}", "body": "A member proposed a resource for your knowledge space. Review it under Resources." },
+    "knowledge_gap_reported": { "title": "Gap reported: {title}", "body": "A member reported a knowledge gap in your space." },
+    "knowledge_resource_published": { "title": "Your resource is live: {title}", "body": "Coordinators shared the resource you proposed." }
   },
 } as const;

@@ -18,10 +18,7 @@ type SolutionsClient = {
   channel: SupabaseDbClient['channel'];
   removeChannel: (channel: unknown) => Promise<unknown>;
   functions: {
-    invoke: (
-      name: string,
-      options?: { body?: Record<string, unknown> },
-    ) => Promise<{ data: unknown; error: SupabaseErrorLike }>;
+    invoke: (name: string, options?: { body?: Record<string, unknown> }) => Promise<{ data: unknown; error: SupabaseErrorLike }>;
   };
 };
 
@@ -56,6 +53,7 @@ export type SolutionProblem = {
   createdAt: string;
   updatedAt: string;
   authorName?: string | null;
+  matterId: string | null;
 };
 
 export type SolutionTurn = {
@@ -126,6 +124,7 @@ function mapProblem(row: Record<string, unknown>): SolutionProblem {
   const authority = getSolutionAuthority(authorityId);
   return {
     id: asString(row.id),
+    matterId: row.matter_id ? asString(row.matter_id) : null,
     authorId: asString(row.author_id),
     title: asString(row.title),
     body: asString(row.body),

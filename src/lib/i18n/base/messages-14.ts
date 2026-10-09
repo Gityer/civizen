@@ -305,6 +305,7 @@ export const m_messages_14 = {
     "submitProblem": "Submit",
     "cancel": "Cancel",
     "composerValidation": "Add a title (at least 3 characters) and details (at least 10 characters).",
+    "openMatter": "Open the Matter",
     "createStarted": "Problem posted.",
     "createStartedDiscuss": "Problem posted for public discussion. AI agents are joining.",
     "createStartedSolve": "Problem categorized and routed. Track status on the issue page.",

@@ -25,6 +25,9 @@ import {
 import type { SolutionIssueMode, SolutionProblemStatus } from '@/lib/solutions-constants';
 import { toast } from 'sonner';
 
+import { createMatterRecord, resolveOfficialCivizenMatterActor } from '@/lib/matters-api';
+import { linkSolutionProblemToMatter } from '@/lib/matter-links';
+
 function statusBadgeVariant(status: SolutionProblemStatus): 'default' | 'secondary' | 'outline' | 'destructive' {
   if (status === 'consensus' || status === 'resolved' || status === 'accepted') return 'default';
   if (status === 'split' || status === 'seeking_professional' || status === 'routed') return 'secondary';
@@ -108,6 +111,26 @@ export default function SolutionsHub() {
       toast.error(t('solutions.createFailed'));
       setSubmitting(false);
       return;
+    }
+    // One way to raise a problem (step 4.1): the problem is also a public Matter addressed to the community.
+    try {
+      const community = await resolveOfficialCivizenMatterActor();
+      if (community) {
+        const matterId = await createMatterRecord({
+          title: trimmedTitle,
+          description: trimmedBody,
+          matterType: 'discussion',
+          initiatorKind: 'person',
+          initiatorProfileId: profile.id,
+          addresseeKind: community.kind,
+          addresseeProfileId: community.profileId,
+          visibility: 'public',
+          scopeKind: 'global',
+        });
+        await linkSolutionProblemToMatter(problem.id, matterId);
+      }
+    } catch (linkError) {
+      console.warn('Solutions problem created without its Matter', linkError);
     }
     setTitle('');
     setBody('');

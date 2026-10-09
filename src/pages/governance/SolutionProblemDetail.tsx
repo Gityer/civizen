@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Loader2, ThumbsUp } from 'lucide-react';
 
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -207,10 +207,15 @@ export default function SolutionProblemDetail() {
         {problem ? (
           <>
             <div className="space-y-2">
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap items-center gap-1">
                 <Badge variant="outline">{t(`solutions.mode.${problem.mode}`)}</Badge>
                 {problem.authorityName ? (
                   <Badge variant="secondary">{problem.authorityName}</Badge>
+                ) : null}
+                {problem.matterId ? (
+                  <Button type="button" size="sm" variant="link" className="h-auto px-1 py-0 text-xs" asChild>
+                    <Link to={`/contribute/matters/${problem.matterId}`}>{t('solutions.openMatter')}</Link>
+                  </Button>
                 ) : null}
               </div>
               <p className="whitespace-pre-wrap text-sm text-foreground/90">{problem.body}</p>

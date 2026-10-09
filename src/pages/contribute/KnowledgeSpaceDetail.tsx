@@ -17,6 +17,7 @@ import { getContributionProgram } from '@/lib/challenges-api';
 import type { ContributionProgram } from '@/lib/challenges';
 import { listCurrentAreas } from '@/lib/classification';
 import { RelatedAgreementsCard } from '@/components/agreements/RelatedAgreementsCard';
+import { KnowledgeProposalPanel } from '@/components/contribute/KnowledgeProposalPanel';
 import {
   KNOWLEDGE_GAP_KINDS,
   canConvertGapToChallenge,
@@ -237,11 +238,10 @@ export default function KnowledgeSpaceDetail() {
               {t('contribute.knowledge.resourcesTitle')}
             </h2>
             {manages ? (
-              <Button size="sm" onClick={() => navigate(`/contribute/knowledge/${space.id}/resources/new`)}>
-                {t('contribute.knowledge.addResource')}
-              </Button>
+              <Button size="sm" onClick={() => navigate(`/contribute/knowledge/${space.id}/resources/new`)}>{t('contribute.knowledge.addResource')}</Button>
             ) : null}
           </div>
+          {!manages && profileId ? <KnowledgeProposalPanel spaceId={space.id} onSubmitted={() => void load()} /> : null}
           {visibleResources.length === 0 ? (
             <Card className="border-border/70 p-4 text-sm text-muted-foreground">
               {t('contribute.knowledge.noResources')}

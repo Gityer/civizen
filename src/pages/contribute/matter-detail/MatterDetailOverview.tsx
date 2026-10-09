@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { consultationOptionLabel, describeConsultationOutcome, readConsultationOutcome } from '@/lib/civic-voting/outcome';
 import { REOPEN_REASONS, actorLabel, type ReopenReason } from '@/lib/matters';
 import { createSignedMatterFileUrl } from '@/lib/matters-api';
+import { challengeFromMatterHref } from '@/lib/matter-links';
 import type { useMatterDetail } from '@/pages/contribute/matter-detail/useMatterDetail';
 
 type MatterDetailModel = ReturnType<typeof useMatterDetail>;
@@ -19,7 +20,7 @@ export function MatterDetailOverview({ model }: { model: MatterDetailModel }) {
     bundle, busy, selectedAction, setSelectedAction, actionMessage, setActionMessage, reopenReason,
     setReopenReason, targetQuery, setTargetQuery, target, setTarget, targetHits, setTargetHits,
     section, votingProposals, creatingProposal, t, matter, action, canDraftVotingProposal,
-    openVotingDraft, hasWork, options, selectedOption, createVotingProposal, runAction,
+    openVotingDraft, hasWork, options, selectedOption, createVotingProposal, runAction, links,
   } = model;
   // Step 2.2: the close tick writes the consultation outcome onto the Matter as a system event.
   const outcomeFor = (proposalId: string) => {
@@ -67,6 +68,29 @@ export function MatterDetailOverview({ model }: { model: MatterDetailModel }) {
         </ul>
       ) : null}
     </section>
+    ) : null}
+
+    {(!hasWork || section === 'overview') && (links.solutionProblem || links.challenges.length > 0 || canDraftVotingProposal) ? (
+      <section className="space-y-2" data-testid="matter-links">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">{t('contribute.matters.links.title')}</h2>
+        <div className="flex flex-wrap gap-2">
+          {links.solutionProblem ? (
+            <Button type="button" size="sm" variant="outline" asChild>
+              <Link to={`/governance/solutions/${links.solutionProblem.id}`}>{t('contribute.matters.links.aiCouncil')}</Link>
+            </Button>
+          ) : null}
+          {links.challenges.map((challenge) => (
+            <Button key={challenge.id} type="button" size="sm" variant="outline" asChild>
+              <Link to={`/contribute/challenges/${challenge.id}`}>{t('contribute.matters.links.communityProject', { title: challenge.title })}</Link>
+            </Button>
+          ))}
+          {canDraftVotingProposal ? (
+            <Button type="button" size="sm" variant="ghost" asChild>
+              <Link to={challengeFromMatterHref(matter)}>{t('contribute.matters.links.startChallenge')}</Link>
+            </Button>
+          ) : null}
+        </div>
+      </section>
     ) : null}
 
     {(!hasWork || section === 'overview') && (canDraftVotingProposal || votingProposals.length > 0) ? (
