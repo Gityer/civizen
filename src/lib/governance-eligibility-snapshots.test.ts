@@ -7,6 +7,7 @@ import type { Database } from '@/integrations/supabase/types';
 import {
   buildGovernanceEligibilityProfilePatch,
   buildGovernanceEligibilitySnapshot,
+  canPersistGovernanceEligibilitySnapshot,
   persistGovernanceEligibilitySnapshot,
   sameGovernanceEligibilitySnapshot,
 } from './governance-eligibility-snapshots';
@@ -188,5 +189,31 @@ describe('governance-eligibility-snapshots', () => {
     expect(result.error).toBe(profileErr);
     expect(upsert).toHaveBeenCalledTimes(1);
     expect(update).toHaveBeenCalledTimes(1);
+  });
+
+  it('skips persistence for members without staff permissions (database rejects those writes)', async () => {
+    const { client, upsert, update } = createSnapshotClient({});
+
+    const result = await persistGovernanceEligibilitySnapshot(client, payload, {
+      effectivePermissions: ['profile.read', 'post.create'],
+    });
+
+    expect(result).toEqual({ error: null, skipped: true });
+    expect(upsert).not.toHaveBeenCalled();
+    expect(update).not.toHaveBeenCalled();
+  });
+
+  it('persists for staff holding role.assign or settings.manage', async () => {
+    const { client, upsert, update } = createSnapshotClient({});
+
+    const result = await persistGovernanceEligibilitySnapshot(client, payload, {
+      effectivePermissions: ['settings.manage'],
+    });
+
+    expect(result.error).toBeNull();
+    expect(upsert).toHaveBeenCalledTimes(1);
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(canPersistGovernanceEligibilitySnapshot(['role.assign'])).toBe(true);
+    expect(canPersistGovernanceEligibilitySnapshot(['profile.read'])).toBe(false);
   });
 });

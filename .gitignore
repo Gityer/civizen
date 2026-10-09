@@ -45,3 +45,6 @@ docs/civizen_institutional_correction_specification*.md
 docs/civizen_remaining_remediation*.md
 docs/civizen_project_purpose_alignment*.md
 playwright-report/
+
+# Machine-local multi-agent check-in board
+AGENT_CHECKIN.md

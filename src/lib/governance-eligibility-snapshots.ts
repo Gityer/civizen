@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '@/integrations/supabase/types';
+import { permissionListHasAny, type AppPermission } from '@/lib/access-control';
 import type { GovernanceEligibilityReason } from '@/lib/governance-eligibility';
 
 type GovernanceEligibilitySnapshotInsert = Database['public']['Tables']['governance_eligibility_snapshots']['Insert'];
@@ -25,6 +26,13 @@ export type GovernanceEligibilitySnapshotPayload = {
 function normalizeScore(value: number | null | undefined) {
   if (!Number.isFinite(value)) return 0;
   return Math.round((value ?? 0) * 100) / 100;
+}
+
+/** A fresh copy of a computed snapshot, timestamped now, ready to persist. */
+export function stampGovernanceEligibilitySnapshot(
+  snapshot: GovernanceEligibilitySnapshotPayload,
+): GovernanceEligibilitySnapshotPayload {
+  return { ...snapshot, calculatedAt: new Date().toISOString() };
 }
 
 export function buildGovernanceEligibilitySnapshot(
@@ -55,10 +63,30 @@ export function buildGovernanceEligibilityProfilePatch(
   };
 }
 
+export type PersistGovernanceEligibilityOptions = {
+  /**
+   * Effective permissions of the signed-in member. Snapshots and the profile eligibility flag are
+   * written only by staff (role.assign / settings.manage) or server functions; for anyone else the
+   * call is skipped so the client never attempts a write the database rejects.
+   */
+  effectivePermissions?: readonly AppPermission[];
+};
+
+const SNAPSHOT_WRITER_PERMISSIONS: AppPermission[] = ['role.assign', 'settings.manage'];
+
+export function canPersistGovernanceEligibilitySnapshot(effectivePermissions: readonly AppPermission[]) {
+  return permissionListHasAny(effectivePermissions, SNAPSHOT_WRITER_PERMISSIONS);
+}
+
 export async function persistGovernanceEligibilitySnapshot(
   client: GovernanceSnapshotClient,
   payload: GovernanceEligibilitySnapshotPayload,
+  options: PersistGovernanceEligibilityOptions = {},
 ) {
+  if (options.effectivePermissions && !canPersistGovernanceEligibilitySnapshot(options.effectivePermissions)) {
+    return { error: null, skipped: true as const };
+  }
+
   const snapshot = buildGovernanceEligibilitySnapshot(payload);
   const profilePatch = buildGovernanceEligibilityProfilePatch(payload);
 

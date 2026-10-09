@@ -25,6 +25,7 @@ import {
 } from '@/lib/governance-eligibility';
 import {
   persistGovernanceEligibilitySnapshot,
+  stampGovernanceEligibilitySnapshot,
   sameGovernanceEligibilitySnapshot,
   type GovernanceEligibilitySnapshotPayload,
 } from '@/lib/governance-eligibility-snapshots';
@@ -282,12 +283,9 @@ export default function GovernanceAdmin() {
     let cancelled = false;
 
     const syncGovernanceEligibilitySnapshot = async () => {
-      const payload = {
-        ...governanceEligibilitySnapshot,
-        calculatedAt: new Date().toISOString(),
-      };
+      const payload = stampGovernanceEligibilitySnapshot(governanceEligibilitySnapshot);
 
-      const { error } = await persistGovernanceEligibilitySnapshot(supabase, payload);
+      const { error } = await persistGovernanceEligibilitySnapshot(supabase, payload, { effectivePermissions: profile?.effective_permissions ?? [] });
 
       if (cancelled) return;
 

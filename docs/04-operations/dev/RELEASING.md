@@ -34,6 +34,23 @@ Then deploy `dist/`. Do not leave a build on the Testing track without a plan to
 
 On native Android sideload builds, the app loads **only the manifest for the track** the user chose in **Settings** (Production vs Testing). Switching tracks triggers an immediate check against the server for that track's latest version.
 
+## Database migrations
+
+The hosted database receives `supabase/migrations/` only at release time, by hand, by someone with database
+access (`REMOTE_DB_ACCESS.md`). The web bundle must never ship before the functions and policies it calls exist
+on production, so the order is always:
+
+1. Full backup first (`pg_dump` custom format, kept on the host under `~/civizen-db-backups/`).
+2. Apply each new migration file in timestamp order, statement by statement (the same way
+   `scripts/local-supabase/replay-migrations.sh` does locally), each file in its own transaction.
+3. Run the matching `supabase/tests/*_test.sql` checks against the local stack beforehand; after the apply,
+   run the read-only post-check (object presence, policies, grants) on production.
+4. Copy changed edge functions into the functions volume and restart the functions container.
+5. Only then build and deploy the web bundle.
+
+Record the applied range and the backup file name in the plan tracker
+(`docs/03-platform/product-design/product-inventory-and-implementation-plan-2026-10-07.md`, Section 10).
+
 ## Release Flow
 
 1. Bump the release version.

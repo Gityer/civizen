@@ -65,43 +65,6 @@ export function useDevelopmentStories(options: UseDevelopmentStoriesOptions = {}
 
   const seedStories = useMemo(() => getSeedDevelopmentStories(), []);
 
-  // Seed upserts must not share try/catch with list fetch — a thrown ingest error
-  // would previously wipe the full list back to the four local seeds.
-  useEffect(() => {
-    if (!enabled || !profile?.id) return;
-
-    let cancelled = false;
-    (async () => {
-      for (const story of seedStories) {
-        if (cancelled) return;
-        const { error } = await supabase.rpc('ingest_development_story', {
-          p_source_story_key: story.id,
-          p_title: story.title,
-          p_original_instruction: story.originalInstruction,
-          p_rephrased_description: story.rephrasedDescription,
-          p_section: story.section,
-          p_area: story.area,
-          p_created_features: story.createdFeatures,
-          p_expected_behavior: story.expectedBehavior,
-          p_source: 'cursor-seed',
-          p_requested_at: story.requestedAt,
-          p_story_kind: story.storyKind,
-          p_status: 'published',
-          p_visibility: 'public',
-        });
-        if (error) {
-          console.warn('ingest_development_story (seed):', error.message);
-        }
-      }
-    })().catch((err) => {
-      console.warn('development story seed ingest failed:', err);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [enabled, profile?.id, seedStories]);
-
   useEffect(() => {
     if (!enabled) {
       setLoading(false);
