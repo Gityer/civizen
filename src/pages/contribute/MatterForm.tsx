@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MatterHandlingField } from '@/pages/contribute/matter-form/MatterHandlingField';
+import { applyMatterHandling, type MatterHandling } from '@/pages/contribute/matter-form/matter-handling';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -55,6 +57,7 @@ export default function MatterForm() {
   const [description, setDescription] = useState('');
   const [matterType, setMatterType] = useState<MatterType>(improvementIntent ? 'suggestion' : 'question');
   const [visibility, setVisibility] = useState<MatterVisibility>('participants');
+  const [handling, setHandling] = useState<MatterHandling>('discussion');
   const [areaNodeId, setAreaNodeId] = useState('');
   const [scope, setScope] = useState<MatterScopeValue>(EMPTY_MATTER_SCOPE);
   const [initiatorKind, setInitiatorKind] = useState<MatterActorKind>('person');
@@ -157,7 +160,10 @@ export default function MatterForm() {
       }
       if (uploadFailed) toast.warning(tRef.current('contribute.matters.attachmentUploadFailed'));
       else toast.success(tRef.current('contribute.matters.created'));
-      navigate(`/contribute/matters/${id}`);
+      // Phase 4.1: the Matter is the entry; the chosen handling adds the AI council problem or continues to the challenge form.
+      const handled = await applyMatterHandling({ handling, matterId: id, title: title.trim(), description: description.trim(), authorId: profileId });
+      if (handled.warning === 'ai_council_failed') toast.warning(tRef.current('contribute.matters.handling.aiCouncilFailed'));
+      navigate(handled.nextPath);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : tRef.current('contribute.matters.actionFailed'));
     } finally {
@@ -170,6 +176,7 @@ export default function MatterForm() {
     evidenceLabel,
     evidenceUrl,
     file,
+    handling,
     initiatorKind,
     initiatorProfileId,
     matterType,
@@ -221,6 +228,8 @@ export default function MatterForm() {
               </SelectContent>
             </Select>
           </OutlinedField>
+
+          <MatterHandlingField value={handling} onChange={setHandling} disabled={busy} />
           {orgs.length > 0 ? (
             <OutlinedField label={t('contribute.matters.initiatorLabel')}>
               <Select

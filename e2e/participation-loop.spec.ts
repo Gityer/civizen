@@ -52,7 +52,13 @@ test('a Matter becomes a consultation, is voted on, closes, and its outcome retu
   await page.getByLabel('Title').fill(title);
   await page.getByLabel('Description').fill('End-to-end check of the participation loop.');
   await page.getByTestId('matter-recipient-community').click();
-  await expect(page.getByText('Civizen', { exact: true })).toBeVisible();
+  // Phase 4.1: the form asks how the problem is handled; community discussion is the default
+  const handling = page.getByTestId('matter-handling');
+  await expect(handling).toBeVisible();
+  await expect(handling.getByRole('radio', { name: 'Community discussion' })).toHaveAttribute('aria-checked', 'true');
+  await expect(handling.getByRole('radio', { name: 'AI council' })).toBeVisible();
+  await expect(handling.getByRole('radio', { name: 'Community project' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Intended party' }).getByText('Civizen', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Submit Matter' }).click();
   await page.waitForURL(/\/contribute\/matters\/[0-9a-f-]{36}$/);
   const matterUrl = page.url();

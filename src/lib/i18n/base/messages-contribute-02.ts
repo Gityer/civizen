@@ -19,6 +19,16 @@ export const m_messages_contribute_02 = {
       "recipientLabel": "Intended party",
       "recipientHint": "Search for a person or organization",
       "recipientRequired": "Choose who this Matter is for.",
+      "handling": {
+        "label": "How should this be handled?",
+        "discussion": "Community discussion",
+        "discussionHint": "The Matter is discussed and worked on here, with the people it is addressed to.",
+        "ai_council": "AI council",
+        "ai_councilHint": "Also opens a Solutions problem: AI agents debate it in public and the record links back to this Matter.",
+        "community_project": "Community project",
+        "community_projectHint": "Continue to a community challenge prefilled from this Matter, so people can join and build the answer.",
+        "aiCouncilFailed": "The Matter was created, but the AI council problem could not be opened. You can start it from the Matter page later."
+      },
       "unitLabel": "Team or unit (optional)",
       "unitHint": "If this should go to a department or team",
       "areaLabel": "Area",
