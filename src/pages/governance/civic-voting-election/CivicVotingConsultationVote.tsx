@@ -86,7 +86,7 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
         <ShieldCheck className="h-4 w-4 text-primary" aria-hidden />
         {t(myBallotAdvisory ? 'civicBallot.advisoryReceiptTitle' : 'civicBallot.receiptTitle')}
       </div>
-      <p className="font-mono text-sm tracking-wide text-foreground">{formatReceipt(myReceipt)}</p>
+      <p className="font-mono text-sm tracking-wide text-foreground" data-testid="consultation-receipt-code">{formatReceipt(myReceipt)}</p>
       <p className="text-xs text-muted-foreground">{t(myBallotAdvisory ? 'civicBallot.advisoryReceiptHint' : 'civicBallot.receiptHint')}</p>
       {merkleRoot ? (
         <p className="text-xs text-muted-foreground" data-testid="consultation-merkle-root" title={merkleRoot}>

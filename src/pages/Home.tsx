@@ -127,7 +127,7 @@ export default function Home() {
           {feedItems.length === 0 ? (
             <Card className="mb-4 border-2 border-dashed border-border/70 bg-card/70 p-6 shadow-sm">
               {loading ? (
-                <div className="space-y-3" aria-busy="true" aria-label={t('common.loading')}>
+                <div className="space-y-3" role="status" aria-busy="true" aria-label={t("common.loading")}>
                   <div className="h-4 w-2/3 animate-pulse rounded bg-muted/50" />
                   <div className="h-4 w-full animate-pulse rounded bg-muted/40" />
                   <div className="h-4 w-5/6 animate-pulse rounded bg-muted/40" />

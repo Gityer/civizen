@@ -60,10 +60,10 @@ test('verified member casts, gets a receipt, checks it, and withdraws', async ({
   await vote.getByRole('button', { name: 'Support', exact: true }).click();
   const receipt = page.getByTestId('consultation-receipt');
   await expect(receipt).toBeVisible();
-  await expect(receipt.locator('.font-mono')).toHaveText(/^[0-9A-F]{4}(-[0-9A-F]{4}){5}$/);
+  await expect(receipt.getByTestId('consultation-receipt-code')).toHaveText(/^[0-9A-F]{4}(-[0-9A-F]{4}){5}$/);
 
   await receipt.getByRole('button', { name: /Check that my receipt is counted/ }).click();
-  await expect(page.getByText('Your receipt is on the list of counted ballots.')).toBeVisible();
+  await expect(page.getByText(/Your receipt is counted: leaf 1 of 1/)).toBeVisible();
 
   await vote.getByRole('button', { name: 'Withdraw ballot' }).click();
   await expect(page.getByTestId('consultation-receipt')).toHaveCount(0);

@@ -1,4 +1,5 @@
 import { getCountryName } from './countries';
+import { translateTree } from './i18n.browser-translate';
 import type { BaseTranslations } from './i18n.base';
 import { applyCuratedTranslations } from './i18n/curated';
 import { fetchServerLanguagePack } from './i18n.server-pack';
@@ -294,59 +295,10 @@ function persistPackedLanguage(language: LanguageCode, messages: TranslationTree
   }
 }
 
-function translateText(input: string, targetLanguage: LanguageCode, cache: Map<string, string>): Promise<string> {
-  if (targetLanguage === FALLBACK_LANGUAGE) return Promise.resolve(input);
-  if (cache.has(input)) return Promise.resolve(cache.get(input) as string);
-
-  const placeholders: string[] = [];
-  const protectedText = input.replace(/\{([^}]+)\}/g, (_match, token) => {
-    const placeholder = `__PH_${placeholders.length}__`;
-    placeholders.push(`{${token}}`);
-    return placeholder;
-  });
-
-  const url = new URL('https://translate.googleapis.com/translate_a/single');
-  url.searchParams.set('client', 'gtx');
-  url.searchParams.set('sl', 'en');
-  url.searchParams.set('tl', targetLanguage);
-  url.searchParams.set('dt', 't');
-  url.searchParams.set('q', protectedText);
-
-  return fetch(url)
-    .then((response) => response.json())
-    .then((payload) => {
-      const translated = Array.isArray(payload?.[0])
-        ? payload[0].map((part: [string] | undefined) => part?.[0] ?? '').join('')
-        : '';
-      const restored = (translated || input).replace(/__PH_(\d+)__/g, (_match, index) => placeholders[Number(index)] ?? _match);
-      cache.set(input, restored);
-      return restored;
-    })
-    .catch(() => input);
-}
-
-async function translateTree(node: unknown, targetLanguage: LanguageCode, cache: Map<string, string>): Promise<unknown> {
-  if (typeof node === 'string') {
-    return translateText(node, targetLanguage, cache);
-  }
-
-  if (Array.isArray(node)) {
-    return Promise.all(node.map((item) => translateTree(item, targetLanguage, cache)));
-  }
-
-  if (isObject(node)) {
-    const entries = await Promise.all(
-      Object.entries(node).map(async ([key, value]) => [key, await translateTree(value, targetLanguage, cache)] as const),
-    );
-    return Object.fromEntries(entries);
-  }
-
-  return node;
-}
-
 export async function loadLanguagePack(language: LanguageCode): Promise<TranslationTree> {
   const baseTranslations = await loadBaseTranslations();
-  if (language === FALLBACK_LANGUAGE) return baseTranslations;
+  // English variants (en-GB, en-CA, ...) read the base catalog: nothing to translate.
+  if (language === FALLBACK_LANGUAGE || language.startsWith(`${FALLBACK_LANGUAGE}-`)) return baseTranslations;
 
   const cached = cachedLanguagePacks.get(language) || readPackedLanguage(language);
   if (cached) {
@@ -360,7 +312,7 @@ export async function loadLanguagePack(language: LanguageCode): Promise<Translat
 
   // One server-built pack first (step 8.2); the per-string browser translation stays as the fallback.
   const promise = fetchServerLanguagePack(language)
-    .then((server) => (server ? (server.pack as TranslationTree) : translateTree(baseTranslations, language, new Map())))
+    .then((server) => (server ? (server.pack as TranslationTree) : translateTree(baseTranslations, language, new Map(), applyCuratedTranslations(language, baseTranslations))))
     .then((messages) => {
       const tree = applyCuratedTranslations(language, scrubLegacyBrandTree(messages) as TranslationTree);
       cachedLanguagePacks.set(language, tree);

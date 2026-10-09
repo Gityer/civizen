@@ -187,7 +187,8 @@ export default function PrivacySettings() {
             <h2 className="text-sm font-semibold text-foreground">{t('settings.visibility.title')}</h2>
             <p className="text-xs leading-relaxed text-muted-foreground">{t('settings.visibility.description')}</p>
           </div>
-          {PRIVACY_KEYS.map((key) => (
+          {!profile ? <p className="text-sm text-muted-foreground">{t('common.loading')}</p> : null}
+          {profile ? PRIVACY_KEYS.map((key) => (
             <div key={key} className="flex items-center justify-between gap-3">
               <span className="text-sm text-foreground">{t(`settings.visibility.${key}`)}</span>
               <Switch
@@ -197,7 +198,7 @@ export default function PrivacySettings() {
                 aria-label={t(`settings.visibility.${key}`)}
               />
             </div>
-          ))}
+          )) : null}
         </Card>
 
         <DeleteAccountCard />
