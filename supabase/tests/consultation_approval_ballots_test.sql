@@ -130,7 +130,7 @@ EXCEPTION WHEN OTHERS THEN
   RAISE NOTICE 'ok: single-choice ballot rejects several picks';
 END $$;
 
--- ---- outcome: ballots are counted once, the most approved option leads, no pass verdict ----------
+-- ---- outcome: ballots are counted once, the most approved option leads, a reached decision passes ----------
 RESET ROLE;
 UPDATE public.civic_elections SET voting_opens_at = now() - interval '2 minutes', voting_closes_at = now() - interval '1 minute'
   WHERE id = current_setting('test.election_id')::uuid;
@@ -145,7 +145,7 @@ BEGIN
   IF (o->>'approvals_total')::int <> 3 THEN RAISE EXCEPTION 'approvals_total wrong: %', o; END IF;
   IF o->>'leading_option_key' <> 'library' THEN RAISE EXCEPTION 'leading option wrong: %', o; END IF;
   IF o->>'ballot_method' <> 'approval' THEN RAISE EXCEPTION 'ballot_method missing from outcome: %', o; END IF;
-  IF jsonb_typeof(o->'passed') <> 'null' THEN RAISE EXCEPTION 'approval outcome has no pass verdict: %', o; END IF;
+  IF (o->>'passed')::boolean IS DISTINCT FROM true THEN RAISE EXCEPTION 'approval outcome with a leading option should pass (step 2.7): %', o; END IF;
   IF (o->>'quorum_met')::boolean IS NOT TRUE THEN RAISE EXCEPTION 'quorum 1 should be met: %', o; END IF;
   RAISE NOTICE 'ok: approval outcome';
 END $$;

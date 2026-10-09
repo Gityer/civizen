@@ -46,6 +46,10 @@ A governance-eligible citizen is an active, verified citizen who also satisfies 
 
 A minimum score, if used, is an **eligibility** condition in this draft model. It must not be treated as a rule that a single numeric contribution or Civizen score determines voting power. See the [Working Governance Framework](../../institutional/governance-framework.md) §§25–26.
 
+## 6a. Implementation (2026-10-09)
+
+`profiles.citizenship_status` carries the layer (`registered_member` → `verified_member` → `citizen`), separate from `profiles.role`. The daily job `citizenship_promotion_tick` promotes a verified member to citizen 30 days after `citizenship_review_cleared_at`, or 14 days after it when `civic_framework_accepted_at` is set (the member accepts the framework under Settings > Edit Profile > Civic status; `accept_civic_framework`). `my_civic_status` returns the layers and the due date; `is_eligible(profile, scope)` is the one eligibility service (scopes participate, vote_countable, propose, publish, governance). Active citizen and governance-eligible remain separate flags.
+
 ## 7. Badge Principle
 
 Verified, Citizen, Active, and Governance Eligible should remain separate badges so that users and institutions can understand status clearly. Founder, where shown, should be a distinct office badge rather than a replacement for these civic states.

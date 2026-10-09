@@ -226,6 +226,9 @@ export const m_messages_13 = {
       "verificationCaseUpdateFailed": "Could not update the verification case.",
       "verificationReviewFailed": "Could not record the verification review.",
       "verificationApprovedNote": "Approved through the admin verification workflow.",
+      "verificationOverrideReason": "Emergency override: why are you changing this member's verification outside the review queue? (logged)",
+      "verificationOverrideReasonRequired": "A reason of at least five characters is required; the override was not applied.",
+      "verificationDuplicateIdentity": "Not applied: this member's ID document matches an already verified account.",
       "verificationRevokedNote": "Revoked through the admin verification workflow.",
       "citizenshipStatuses": {
         "registered_member": "Registered member",

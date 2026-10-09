@@ -161,9 +161,8 @@ END $$;
 
 -- reviewer path still works: staff moves to in_review and records an approval
 SELECT set_config('request.jwt.claims', json_build_object('sub', current_setting('test.staff_uid'), 'role', 'authenticated')::text, true);
-UPDATE public.identity_verification_cases SET status = 'in_review' WHERE id = current_setting('test.case_id')::uuid;
-INSERT INTO public.identity_verification_reviews (case_id, reviewer_id, decision, notes)
-VALUES (current_setting('test.case_id')::uuid, current_setting('test.staff_pid')::uuid, 'approved', 'phase0 test approval');
+-- Since Phase 3 step 3.3 decisions go through the RPC (assignment, duplicate check, notifications).
+SELECT public.decide_identity_verification_case(current_setting('test.case_id')::uuid, 'approved', 'phase0 test approval');
 DO $$
 BEGIN
   IF (SELECT status FROM public.identity_verification_cases WHERE id = current_setting('test.case_id')::uuid) <> 'approved' THEN

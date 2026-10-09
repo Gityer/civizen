@@ -72,34 +72,41 @@ export async function listPendingIdentityVerificationCases(): Promise<PendingIde
   });
 }
 
+/** Decide a submitted case (Phase 3 step 3.3): the server assigns it, runs the duplicate-identity check, records the review and notifies the member. */
 export async function reviewIdentityVerificationCase(args: {
   caseId: string;
   reviewerId: string;
   decision: Extract<IdentityVerificationDecision, 'approved' | 'rejected'>;
   notes?: string | null;
 }): Promise<void> {
-  if (args.decision === 'approved' || args.decision === 'rejected') {
-    const { error: statusError } = await supabase
-      .from('identity_verification_cases')
-      .update({ status: 'in_review' })
-      .eq('id', args.caseId)
-      .in('status', ['submitted', 'in_review']);
-
-    if (statusError) {
-      throw statusError;
-    }
-  }
-
-  const { error } = await supabase.from('identity_verification_reviews').insert({
-    case_id: args.caseId,
-    reviewer_id: args.reviewerId,
-    decision: args.decision,
-    notes: args.notes ?? null,
+  const { data, error } = await supabase.rpc('decide_identity_verification_case', {
+    p_case_id: args.caseId,
+    p_decision: args.decision,
+    p_notes: args.notes ?? null,
   });
-
   if (error) {
-    throw error;
+    throw new Error(error.message);
   }
+  const status = (data as { status?: string } | null)?.status;
+  if (status === 'duplicate_identity') {
+    throw new Error('duplicate_identity');
+  }
+}
+
+/** Reviewer takes a case (status in_review, assignment recorded). */
+export async function assignIdentityVerificationCase(caseId: string): Promise<void> {
+  const { error } = await supabase.rpc('assign_identity_verification_case', { p_case_id: caseId });
+  if (error) throw new Error(error.message);
+}
+
+/** Users admin emergency override: always with a reason, always logged server-side. */
+export async function setProfileVerifiedOverride(profileId: string, verified: boolean, reason: string): Promise<void> {
+  const { error } = await supabase.rpc('set_profile_verified_override', {
+    p_profile_id: profileId,
+    p_verified: verified,
+    p_reason: reason,
+  });
+  if (error) throw new Error(error.message);
 }
 
 export function latestArtifactOfKind(

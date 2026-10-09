@@ -101,7 +101,7 @@ BEGIN
   IF o IS NULL THEN RAISE EXCEPTION 'final_outcome missing'; END IF;
   IF o->>'leading_option_key' <> 'change_it' THEN RAISE EXCEPTION 'leading option wrong: %', o; END IF;
   IF (o->>'quorum_met')::boolean IS NOT TRUE THEN RAISE EXCEPTION 'quorum should be met: %', o; END IF;
-  IF jsonb_typeof(o->'passed') <> 'null' THEN RAISE EXCEPTION 'passed must be null without support/oppose: %', o; END IF;
+  IF (o->>'passed')::boolean IS DISTINCT FROM true THEN RAISE EXCEPTION 'a reached decision on custom options should pass (step 2.7): %', o; END IF;
   RAISE NOTICE 'ok: outcome for custom options';
 END $$;
 

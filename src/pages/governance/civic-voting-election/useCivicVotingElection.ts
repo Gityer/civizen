@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { loadMyEligibility } from '@/lib/civic-status-service';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { APP_RELEASE_ID, APP_VERSION, ANDROID_VERSION_CODE } from '@/lib/app-release';
 import { advanceAssistedBallot, assertDistinctAssistedRoles, attestVotingClient, buildDuressVoidBallot, canSubmitChallenge, castConsultationBallot, checkBoothUnlockPin, checkConsultationReceipt, computeCoolingOffUntil, deriveDefaultChallengeWindow, electionTitleWithoutCountryLabel, enrollDuressPin, evaluateCivicVotingEligibility, evaluateSessionGates, isCoolingOffActive, isOrdinaryConsultationElection, loadCivicElectionCountryStats, loadCivicElectionDetail, loadCivicElectionPublicDirectory, loadCivicElectionPublicTallies, loadCivicElectionVerificationSplit, myConsultationBallot, myConsultationEligibility, myConsultationPublicPresence, openVoteWindow, remainingWindowSeconds, resolveVotingWindow, securityClassGatePolicy, setConsultationPublicPresence, toConsultationReasonCode, withdrawConsultationBallot, type CivicCountryStatRow, type CivicElectionSecurityClass, type CivicPublicDirectoryRow, type CivicPublicTallyRow, type CivicVerificationSplit, type CivicVerificationCheckKind, type CivicElectionDetail } from '@/lib/civic-voting';
@@ -205,13 +206,29 @@ export function useCivicVotingElection() {
   });
   const challengeOpen = canSubmitChallenge(new Date(), challengePeriod);
 
+  // Phase 3 step 3.2: the server decides governance eligibility (verified citizen, no sanction, not a
+  // business account); the browser only reflects it. The score constant is kept for the simulated gates.
+  const [serverGovernanceEligible, setServerGovernanceEligible] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!user) {
+      setServerGovernanceEligible(null);
+      return;
+    }
+    let active = true;
+    void loadMyEligibility('governance').then((result) => {
+      if (active) setServerGovernanceEligible(result ? result.eligible : null);
+    });
+    return () => {
+      active = false;
+    };
+  }, [user]);
+
   const eligibility = useMemo(
     () =>
       evaluateCivicVotingEligibility({
         isVerified: Boolean(profile?.is_verified),
         role: profile?.role,
-        score:
-          profile?.is_governance_eligible || profile?.is_verified ? MIN_GOVERNANCE_SCORE : null,
+        score: serverGovernanceEligible ? MIN_GOVERNANCE_SCORE : null,
         isNativeMobileApp: isNativeGovernanceApp(),
         isOnEligibilityRoster: true,
         alreadyVoted: false,
@@ -219,7 +236,7 @@ export function useCivicVotingElection() {
         clientAttestationFailed: !attestation.ok,
         securityClass,
       }),
-    [attestation.ok, securityClass, profile?.is_governance_eligible, profile?.is_verified, profile?.role],
+    [attestation.ok, securityClass, serverGovernanceEligible, profile?.is_verified, profile?.role],
   );
 
   const [gates, setGates] = useState<DemoGateState>(() => {

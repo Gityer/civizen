@@ -23,7 +23,7 @@ import { type CardCategory, getDefaultCardCategoryCode, getStoredCardCategories,
 import { buildCivizenDid, buildCivizenLsiQrValue, buildWorldCitizenMrz, getWorldCitizenIdParts, getWorldCitizenStatusPrefix, normalizeCivizenSocialId } from '@/lib/world-citizen-id';
 import { BUILD_STORAGE_EVENT, EDIT_PROFILE_LAYOUT_SCHEMA_KEY_PREFIX, EDIT_PROFILE_LAYOUT_SCHEMA_VERSION, LAYOUT_REGION_LABELS, LEGACY_LAYOUT_STORAGE_PREFIX, areDraftsEqual, getFullNameChangeState, getUsernameChangeState, normalizeProfileDraft, resetEditProfileBuildStorage, type ProfileDraft } from '@/lib/edit-profile-helpers';
 import { WorldCitizenshipStatusNotice } from '@/components/institutional/WorldCitizenshipStatusNotice';
-import { IdentityVerificationSettingsSection } from '@/components/profile/IdentityVerificationSettingsSection';
+import { IdentityAndCivicStatusSection } from '@/components/profile/IdentityAndCivicStatusSection';
 import { EditProfileSocialCard, EditProfileWorldCitizenCard } from '@/components/profile/edit-profile-lazy-cards';
 
 
@@ -708,7 +708,7 @@ export default function EditProfile() {
             </TooltipProvider>
             <WorldCitizenshipStatusNotice variant="credential" className="mt-3" />
             <div className="mt-4">
-              <IdentityVerificationSettingsSection />
+              <IdentityAndCivicStatusSection />
             </div>
           </div>
 

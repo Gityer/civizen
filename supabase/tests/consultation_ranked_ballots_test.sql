@@ -120,7 +120,7 @@ BEGIN
   IF o->>'ballot_method' <> 'ranked' THEN RAISE EXCEPTION 'ballot_method missing: %', o; END IF;
   IF o->'ranked_rounds' IS NULL OR jsonb_array_length(o->'ranked_rounds') < 1 THEN RAISE EXCEPTION 'rounds missing: %', o; END IF;
   IF o->>'leading_option_key' IS NULL THEN RAISE EXCEPTION 'winner missing: %', o; END IF;
-  IF jsonb_typeof(o->'passed') <> 'null' THEN RAISE EXCEPTION 'ranked outcome has no pass verdict: %', o; END IF;
+  IF (o->>'passed')::boolean IS DISTINCT FROM true THEN RAISE EXCEPTION 'ranked outcome with a winner should pass (step 2.7): %', o; END IF;
   RAISE NOTICE 'ok: ranked outcome stored';
 END $$;
 

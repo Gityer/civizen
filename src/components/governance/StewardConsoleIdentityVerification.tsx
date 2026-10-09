@@ -104,7 +104,12 @@ export function StewardConsoleIdentityVerification() {
       await loadData();
     } catch (error) {
       console.error(`Error ${decision} verification:`, error);
-      toast.error(t('governanceHub.stewardIdentity.reviewFailed'));
+      const message = error instanceof Error ? error.message : '';
+      toast.error(
+        message.includes('duplicate_identity')
+          ? t('governanceHub.stewardIdentity.duplicateIdentity')
+          : t('governanceHub.stewardIdentity.reviewFailed'),
+      );
     } finally {
       setProcessingId(null);
     }

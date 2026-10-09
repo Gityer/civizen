@@ -51,7 +51,9 @@ export const m_messages_16 = {
       "option_not_found": "That option does not exist.",
       "ballot_not_found": "You have not cast a ballot in this consultation.",
       "author_cannot_support": "Your own support does not count toward your proposal. Other members add theirs.",
-      "election_not_found": "This election was not found."
+      "election_not_found": "This election was not found.",
+      "business_account": "Business accounts represent organizations and do not vote. Switch to your personal account to cast a ballot.",
+      "citizenship_required": "This needs citizenship. Verified members become citizens 30 days after verification, or 14 days after accepting the civic framework."
     }
   },
   "governanceMember": {
@@ -165,6 +167,10 @@ export const m_messages_16 = {
     "task_became_actionable": { "title": "Task is ready", "body": "A Task assigned to you can now be worked on." },
     "agreement_signature_required": { "title": "Your signature is needed: {title}", "body": "An agreement is ready for you to sign." },
     "agreement_signed": { "title": "Agreement signed: {title}", "body": "A party signed an agreement you are part of." },
-    "agreement_active": { "title": "Agreement active: {title}", "body": "All required signatures are in; the agreement is active." }
+    "agreement_active": { "title": "Agreement active: {title}", "body": "All required signatures are in; the agreement is active." },
+    "citizenship_granted": { "title": "You are now a Civizen citizen", "body": "Your verified membership has matured into citizenship." },
+    "verification_approved": { "title": "Your identity is verified", "body": "Reviewers approved your identity verification." },
+    "verification_rejected": { "title": "Your verification needs another look", "body": "Reviewers could not approve your verification yet. Open profile settings to see what to redo." },
+    "verification_revoked": { "title": "Your identity verification was revoked", "body": "A reviewer revoked your verification. Open profile settings to see the reason and verify again." }
   },
 } as const;

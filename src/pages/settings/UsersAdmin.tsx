@@ -22,8 +22,8 @@ import {
   getCitizenStatusLabelKey,
 } from '@/lib/civic-status';
 import { permissionMetadata } from '@/lib/permission-metadata';
+import { setProfileVerifiedOverride } from '@/lib/identity-verification-review';
 import {
-  getAdminVerificationDecision,
 } from '@/lib/verification-workflow';
 import {
   buildGovernanceSanctionScopeFlags,
@@ -1057,56 +1057,25 @@ export default function UsersAdmin() {
     setRoleSavingUserId(null);
   };
 
+  // Phase 3 step 3.3: the admin toggle is an emergency override; it needs a reason and is logged server-side.
   const handleVerificationToggle = async (target: ProfileRow) => {
     const nextVerified = !target.is_verified;
-    const now = new Date().toISOString();
-    setRoleSavingUserId(target.id);
-
-    const existingCase = verificationCasesByProfile[target.id] || null;
-    const caseUpsert: Database['public']['Tables']['identity_verification_cases']['Insert'] = {
-      profile_id: target.id,
-      status: nextVerified ? 'in_review' : 'revoked',
-      verification_method: existingCase?.verification_method || 'admin_review',
-      personal_info_completed:
-        existingCase?.personal_info_completed
-        ?? Boolean(target.full_name && target.country && target.official_id),
-      contact_info_completed:
-        existingCase?.contact_info_completed
-        ?? Boolean(target.username || target.language_code),
-      live_verification_completed: nextVerified ? true : existingCase?.live_verification_completed ?? false,
-      submitted_at: existingCase?.submitted_at ?? now,
-      notes: nextVerified
-        ? t('admin.users.verificationApprovedNote')
-        : t('admin.users.verificationRevokedNote'),
-    };
-
-    const caseResponse = await supabase
-      .from('identity_verification_cases')
-      .upsert(caseUpsert, { onConflict: 'profile_id' })
-      .select('*')
-      .single();
-
-    if (caseResponse.error || !caseResponse.data) {
-      console.error('Error upserting verification case:', caseResponse.error);
-      toast.error(t('admin.users.verificationCaseUpdateFailed'));
-      setRoleSavingUserId(null);
+    const reason = window.prompt(t('admin.users.verificationOverrideReason'))?.trim() ?? '';
+    if (reason.length < 5) {
+      toast.error(t('admin.users.verificationOverrideReasonRequired'));
       return;
     }
-
-    const reviewResponse = await supabase
-      .from('identity_verification_reviews')
-      .insert({
-        case_id: caseResponse.data.id,
-        reviewer_id: profile?.id ?? null,
-        decision: getAdminVerificationDecision(nextVerified),
-        notes: nextVerified
-          ? t('admin.users.verificationApprovedNote')
-          : t('admin.users.verificationRevokedNote'),
-      });
-
-    if (reviewResponse.error) {
-      console.error('Error recording verification review:', reviewResponse.error);
-      toast.error(t('admin.users.verificationReviewFailed'));
+    setRoleSavingUserId(target.id);
+    try {
+      await setProfileVerifiedOverride(target.id, nextVerified, reason);
+    } catch (error) {
+      console.error('Error applying verification override:', error);
+      const message = error instanceof Error ? error.message : '';
+      toast.error(
+        message.includes('duplicate_identity')
+          ? t('admin.users.verificationDuplicateIdentity')
+          : t('admin.users.verificationUpdateFailed'),
+      );
       setRoleSavingUserId(null);
       return;
     }
