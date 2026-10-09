@@ -1,5 +1,7 @@
 export const m_messages_06 = {
   "governance": {
+    "founderAccessActive": "Founder operational access in this domain: active until the domain matures.",
+    "founderAccessWithdrawn": "Founder operational access in this domain: withdrawn (mature domain); the founder keeps constitutional standing and any ordinary assignment.",
     "title": "Governance Policies",
     "subtitle": "Manage the foundational policy controls that guide issuance, stability, and oversight.",
     "localMode": "Governance backend tables are not available yet. Changes are currently local to this device.",

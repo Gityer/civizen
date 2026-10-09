@@ -3,6 +3,7 @@ import { AlertCircle, CheckCircle2, Loader2, RefreshCcw, ShieldAlert, TrendingDo
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   getGovernanceDomainMaturityDeficits,
   getGovernanceDomainMaturityProgress,
@@ -89,6 +90,7 @@ export function GovernanceMaturityReviewCard({
   onRefreshAll,
   onRefreshDomain,
 }: GovernanceMaturityReviewCardProps) {
+  const { t } = useLanguage();
   return (
     <Card className="p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -146,6 +148,10 @@ export function GovernanceMaturityReviewCard({
                     </div>
                   </div>
 
+                  {/* Phase 10.4: founder stewardship ends by domain; the resolver withdraws the domain's permissions once it is mature. */}
+                  <p className="mt-2 text-xs text-muted-foreground" data-testid="founder-domain-access" data-state={state === 'mature' ? 'withdrawn' : 'active'}>
+                    {t(state === 'mature' ? 'governance.founderAccessWithdrawn' : 'governance.founderAccessActive')}
+                  </p>
                   <div className="mt-3 grid grid-cols-2 gap-2 rounded-lg bg-muted/40 p-2 text-xs">
                     <div>
                       <p className="text-muted-foreground">Thresholds met</p>

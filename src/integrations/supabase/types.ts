@@ -2703,6 +2703,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"governance_domain_permission_scopes": {
+                  Row: {
+                    "created_at": string,"domain_key": string,"permission": Database["public"]['Enums']["app_permission"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"domain_key": string,"permission": Database["public"]['Enums']["app_permission"]
+                  }
+                  Update: {
+                    "created_at"?: string,"domain_key"?: string,"permission"?: Database["public"]['Enums']["app_permission"]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "governance_domain_permission_scopes_domain_key_fkey"
+      columns: ["domain_key"]
+isOneToOne: false
+      referencedRelation: "governance_domains"
+      referencedColumns: ["domain_key"]
+    }
+                  ]
                 },"governance_domain_roles": {
                   Row: {
                     "created_at": string,"description": string,"domain_key": string,"is_system_role": boolean,"name": string,"role_key": string,"updated_at": string
@@ -2794,6 +2814,32 @@ isOneToOne: false
       columns: ["actor_profile_id"]
 isOneToOne: false
       referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"governance_emergency_access_request_approvals": {
+                  Row: {
+                    "created_at": string,"request_id": string,"review_notes": string | null,"reviewer_profile_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"request_id": string,"review_notes"?: string | null,"reviewer_profile_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"request_id"?: string,"review_notes"?: string | null,"reviewer_profile_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "governance_emergency_access_request_ap_reviewer_profile_id_fkey"
+      columns: ["reviewer_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "governance_emergency_access_request_approvals_request_id_fkey"
+      columns: ["request_id"]
+isOneToOne: false
+      referencedRelation: "governance_emergency_access_requests"
       referencedColumns: ["id"]
     }
                   ]
@@ -8800,6 +8846,12 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"emergency_access_approvals_required":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
+"emergency_access_request_approval_count":
+{ Args: { "target_request_id": string }; Returns: number
+                           },
 "ensure_agreement_civizen_reference":
 { Args: { "p_agreement_id": string }; Returns: string
                            },
@@ -8972,6 +9024,12 @@ isOneToOne: false
       } },
 "finance_write_audit":
 { Args: { "p_actor"?: string,"p_entity_id": string,"p_entity_type": string,"p_event_type": string,"p_payload"?: Json }; Returns: string
+                           },
+"founder_domain_access_summary":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"founder_withdrawn_permissions":
+{ Args: { "target_profile_id": string }; Returns: (Database["public"]['Enums']["app_permission"])[]
                            },
 "funding_lane_credit_account":
 { Args: { "p_lane": string }; Returns: string
