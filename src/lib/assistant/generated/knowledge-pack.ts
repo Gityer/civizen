@@ -3,12 +3,12 @@ import type { KnowledgePack } from '../types';
 
 export const KNOWLEDGE_PACK: KnowledgePack = {
   "meta": {
-    "appVersion": "0.1.212",
-    "appReleaseId": "20261009-v0.1.212",
-    "androidVersionCode": 214,
-    "gitSha": "7932ff826c02b5c0e1876e2fa036b166c8f01bd4",
-    "generatedAt": "2026-10-09T19:15:57.146Z",
-    "sourceFingerprint": "38ff8b20a022ccd5cfe4f51f3fb4798b134ded44f7112d56bd7fa914347538e7",
+    "appVersion": "0.1.213",
+    "appReleaseId": "20261009-v0.1.213",
+    "androidVersionCode": 215,
+    "gitSha": "f7cbfefb4cfb30f3ccacddf537537066528b2dde",
+    "generatedAt": "2026-10-09T19:17:07.576Z",
+    "sourceFingerprint": "dd5b8bcde3b4953ca4d7854f464651e35e571d74889c740e638abb40193f75f6",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 396
