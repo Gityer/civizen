@@ -24,6 +24,7 @@ import {
   type StoredAccountSession,
 } from '@/contexts/auth-session-storage';
 import { syncBiometricSessionIfEnabled, unlockBiometricSession } from '@/lib/biometric-sign-in';
+import { isEmailIdentifier, signInWithIdentifier } from '@/lib/sign-in-with-identifier';
 
 type CitizenshipStatus = Database['public']['Enums']['citizenship_status'];
 
@@ -625,7 +626,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (identifier: string, password: string, options?: SignInOptions) => {
     const trimmedIdentifier = identifier.trim();
-    let email = trimmedIdentifier;
+    const email = trimmedIdentifier;
     const supabase = await getSupabase();
     const previousSessionSnapshot = options?.preserveCurrentSession
       ? captureCurrentSession({
@@ -634,26 +635,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })
       : null;
 
-    if (!trimmedIdentifier.includes('@')) {
-      const { data, error: resolveError } = await supabase.rpc('resolve_login_email', {
-        identifier: trimmedIdentifier,
-      });
-
-      if (resolveError) {
-        return { error: resolveError as Error };
-      }
-
-      if (!data) {
-        return { error: new Error('Invalid login credentials') };
-      }
-
-      email = data;
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } = isEmailIdentifier(trimmedIdentifier)
+      ? await supabase.auth.signInWithPassword({ email, password })
+      : await signInWithIdentifier(supabase, trimmedIdentifier, password).then((result) => ({
+          data: { session: result.session },
+          error: result.error,
+        }));
 
     if (!error && previousSessionSnapshot) {
       storeSessionSnapshot(previousSessionSnapshot);
