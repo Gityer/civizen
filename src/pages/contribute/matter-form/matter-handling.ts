@@ -25,8 +25,7 @@ type Deps = {
 };
 
 async function defaultLinkProblem(problemId: string, matterId: string): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any).rpc('link_solution_problem_matter', { p_problem_id: problemId, p_matter_id: matterId });
+  const { error } = await supabase.rpc('link_solution_problem_matter', { p_problem_id: problemId, p_matter_id: matterId });
   if (error) throw new Error(error.message);
 }
 

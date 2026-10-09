@@ -1,8 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 
 /** Civic voting tables / RPCs are not yet in generated Database types. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as any;
+const db = supabase;
 
 export type CivicPublicTallyRow = {
   candidateId: string;

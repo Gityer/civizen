@@ -10,8 +10,7 @@ import {
 } from '@/lib/civic-voting';
 
 /** Civic voting tables are not yet in generated Database types. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as any;
+const db = supabase;
 
 type ElectionRow = {
   id: string;

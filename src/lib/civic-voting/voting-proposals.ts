@@ -2,8 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { INTENT_SCOPES, recordSignedIntent, type SignerProfile } from '@/lib/governance-intents';
 
 /** Civic voting proposal tables / RPCs are not yet in generated Database types. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as any;
+const db = supabase;
 
 export type VotingProposalStatus = 'draft' | 'published' | 'closed' | 'withdrawn';
 
