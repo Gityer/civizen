@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CiviAvatar } from '@/components/ui/civi-avatar';
 import { splitChatPageLinks } from '@/lib/chat-page-links';
+import { parseAttachmentLine } from '@/lib/messaging-attachments-e2ee';
 import { CIVI_ASSISTANT_PROFILE_ID, resolveMessagingAvatarUrl } from '@/lib/messaging-constants';
 import { splitAssistantMessageBlocks } from '@/lib/split-assistant-message';
 import { cn } from '@/lib/utils';
@@ -44,6 +45,8 @@ export type ChatMessageRowProps = {
   onOpenProfile?: (senderId: string) => void;
   onRetry?: (messageId: string) => void;
   registerRef?: (messageId: string, node: HTMLDivElement | null) => void;
+  onOpenAttachment?: (url: string) => void;
+  attachmentLabel?: string;
 };
 
 function ChatLinkedText({
@@ -90,13 +93,16 @@ export function ChatMessageRow({
   onOpenProfile,
   onRetry,
   registerRef,
+  onOpenAttachment,
+  attachmentLabel,
 }: ChatMessageRowProps) {
   const pending = message.id.startsWith('local-') || message.id.startsWith('failed-');
   const selectable = !pending;
   const isCivi = message.sender_id === CIVI_ASSISTANT_PROFILE_ID;
+  const attachment = isCivi ? null : parseAttachmentLine(message.content);
   const blocks = isCivi
     ? splitAssistantMessageBlocks(message.content)
-    : { primary: message.content, details: [] as string[] };
+    : { primary: attachment?.encrypted ? `${attachment.prefix} ${attachment.encrypted.name}` : message.content, details: [] as string[] };
 
   return (
     <div
@@ -154,6 +160,22 @@ export function ChatMessageRow({
         </div>
 
         <div data-testid="chat-message-body" className="space-y-1.5">
+          {attachment && onOpenAttachment ? (
+            <button
+              type="button"
+              data-testid="chat-message-attachment"
+              className="inline-flex max-w-full items-center gap-1 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-xs text-foreground hover:bg-muted"
+              onClick={(event) => {
+                event.stopPropagation();
+                onOpenAttachment(attachment.encrypted ? `${attachment.url}#e2ee=1&${new URLSearchParams({ nonce: attachment.encrypted.nonceB64, name: attachment.encrypted.name, type: attachment.encrypted.type }).toString()}` : attachment.url);
+              }}
+              onPointerDown={(event) => event.stopPropagation()}
+            >
+              <span aria-hidden>{attachment.prefix}</span>
+              <span className="truncate">{attachment.encrypted ? attachment.encrypted.name : attachmentLabel ?? 'Open'}</span>
+              {attachment.encrypted ? <span className="text-[10px] text-muted-foreground">🔒</span> : null}
+            </button>
+          ) : null}
           <p
             data-testid="chat-message-primary"
             className="whitespace-pre-wrap wrap-break-word text-pretty text-sm text-foreground wrap-break-word [word-break:normal]"

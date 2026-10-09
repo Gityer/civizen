@@ -36,6 +36,9 @@ import {
 } from 'lucide-react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+
+import { buildEncryptedAttachmentLine, encryptAttachmentBytes } from '@/lib/messaging-attachments-e2ee';
+import { openAttachmentUrlWith, threadSharedKeyFrom } from '@/lib/messaging-attachment-open';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import {
@@ -2595,20 +2598,25 @@ export function ChatBar({
       conversations,
       conversationKindByIdRef,
     );
-    if (activeKind === 'direct' && directDmE2eeReady) {
-      toast.error(t('chatBar.private.attachmentsBlockedE2ee'));
-      return;
-    }
     if (blob.size > MAX_MESSAGING_UPLOAD_BYTES) {
       toast.error(t('chatBar.private.attachmentTooLarge'));
       return;
     }
     const safeName = sanitizeUploadFilename(filename);
     const objectPath = `${selectedConversationId}/${crypto.randomUUID()}-${safeName}`;
+    // In an encrypted chat the bytes are sealed with the thread key before they leave the device (step 7.1).
+    const sealKey = activeKind === 'direct' && directDmE2eeReady ? threadSharedKey() : null;
+    let uploadBody: Blob = blob;
+    let sealNonce: string | null = null;
+    if (sealKey) {
+      const sealed = encryptAttachmentBytes(new Uint8Array(await blob.arrayBuffer()), sealKey);
+      uploadBody = new Blob([sealed.cipher.slice()], { type: 'application/octet-stream' });
+      sealNonce = sealed.nonceB64;
+    }
     try {
       const { error: uploadError } = await supabase.storage
         .from(MESSAGING_ATTACHMENTS_BUCKET)
-        .upload(objectPath, blob, { upsert: false, contentType: blob.type || undefined });
+        .upload(objectPath, uploadBody, { upsert: false, contentType: sealKey ? 'application/octet-stream' : blob.type || undefined });
       if (uploadError) {
         console.error('ChatBar: attachment upload failed', uploadError);
         toast.error(t('chatBar.private.attachmentUploadFailed'));
@@ -2622,7 +2630,9 @@ export function ChatBar({
         toast.error(t('chatBar.private.attachmentUploadFailed'));
         return;
       }
-      const line = `${labelPrefix} ${signed.signedUrl}`;
+      const line = sealNonce
+        ? buildEncryptedAttachmentLine(labelPrefix, signed.signedUrl, sealNonce, filename, blob.type || 'application/octet-stream')
+        : `${labelPrefix} ${signed.signedUrl}`;
       enqueueOutgoingText(line, undefined, { clearInput: false });
     } catch (e) {
       console.error('ChatBar: attachment error', e);
@@ -2670,10 +2680,6 @@ export function ChatBar({
       conversations,
       conversationKindByIdRef,
     );
-    if (activeKind === 'direct' && directDmE2eeReady) {
-      toast.error(t('chatBar.private.attachmentsBlockedE2ee'));
-      return;
-    }
     if (isRecordingVoice) {
       stopVoiceRecording();
       return;
@@ -3367,6 +3373,8 @@ export function ChatBar({
             <ChatMessageRow
               key={message.id}
               message={message}
+              onOpenAttachment={(url) => void openAttachmentUrl(url)}
+              attachmentLabel={t('chatBar.private.openAttachment')}
               selectionMode={messageSelectionMode}
               selected={selectedMessageIds.has(message.id)}
               highlighted={highlightedMessageId === message.id}
@@ -3405,15 +3413,10 @@ export function ChatBar({
     (isDirectThread && isThreadBlocked) ||
     Boolean(profile?.id && !selectedConversationId);
 
-  const attachmentsDisabled =
-    composerDisabled ||
-    !profile?.id ||
-    Boolean(
-      profile?.id &&
-        selectedConversationId &&
-        resolveConversationKind(selectedConversationId, conversations, conversationKindByIdRef) === 'direct' &&
-        directDmE2eeReady,
-    );
+  const attachmentsDisabled = composerDisabled || !profile?.id;
+
+  const threadSharedKey = () => threadSharedKeyFrom(localMessagingSecretKeyRef.current, peerMessagingPublicKeyB64Ref.current);
+  const openAttachmentUrl = (url: string) => openAttachmentUrlWith(url, threadSharedKey(), () => toast.error(t('chatBar.private.attachmentOpenFailed')));
 
   const showSendButton = Boolean(newMessage.trim()) || isRecordingVoice;
 
@@ -4688,7 +4691,7 @@ export function ChatBar({
                       key={`${row.id}-${row.url}`}
                       type="button"
                       className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left hover:bg-muted/40"
-                      onClick={() => window.open(row.url, '_blank', 'noopener,noreferrer')}
+                      onClick={() => void openAttachmentUrl(row.url)}
                     >
                       <span className="truncate text-xs text-foreground">{row.url}</span>
                       <span className="ml-2 shrink-0 text-[10px] text-muted-foreground">
