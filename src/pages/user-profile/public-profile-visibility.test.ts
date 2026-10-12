@@ -22,4 +22,10 @@ describe('public profile card', () => {
     expect(card?.showScore).toBe(true);
     expect(mapPublicProfileCard(null)).toBeNull();
   });
+
+  it('carries the full name only when the server sends it', () => {
+    expect(mapPublicProfileCard({ id: 'p3', full_name: 'Ana Petrosyan' })?.fullName).toBe('Ana Petrosyan');
+    expect(mapPublicProfileCard({ id: 'p4', full_name: null })?.fullName).toBeNull();
+    expect(mapPublicProfileCard({ id: 'p5', full_name: '  ' })?.fullName).toBeNull();
+  });
 });

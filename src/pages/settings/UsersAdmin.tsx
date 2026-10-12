@@ -286,7 +286,7 @@ export default function UsersAdmin() {
       executionPageBoardResponse,
       emergencyEscalationHistoryResponse,
     ] = await Promise.all([
-      supabase.from('profiles').select('*').is('deleted_at', null).order('created_at', { ascending: false }),
+      supabase.rpc('admin_list_profiles'),
       supabase
         .from('linked_accounts')
         .select('owner_profile_id, linked_profile_id, relationship_type, business_name_normalized')

@@ -8,6 +8,8 @@ export type ProfileScore = ReturnType<typeof buildScoreFromProfileActivity>;
 export type PublicProfileCard = {
   id: string;
   isOwn: boolean;
+  /** Null when the owner hides the full name from other members. */
+  fullName: string | null;
   showScore: boolean;
   showEndorsements: boolean;
   showCountry: boolean;
@@ -42,6 +44,7 @@ export function mapPublicProfileCard(data: unknown): PublicProfileCard | null {
   return {
     id: String(row.id ?? ''),
     isOwn: row.is_own === true,
+    fullName: typeof row.full_name === 'string' && row.full_name.trim() ? row.full_name : null,
     showScore: bool(row.show_score, true),
     showEndorsements: bool(row.show_endorsements, true),
     showCountry: bool(row.show_country, true),
@@ -108,10 +111,13 @@ export function usePublicProfileVisibility(input: { userId: string | undefined; 
     void saveMyScoreSnapshot(score);
   }, [isOwn, ready, userId, score]);
 
+  // Fail closed: until the server card arrives (or when it cannot be loaded) a visitor sees only the
+  // always-public parts (username, photo, badge), never what the owner may have hidden.
   return {
     card,
-    showScore: isOwn || (card?.showScore ?? true),
-    showEndorsements: isOwn || (card?.showEndorsements ?? true),
+    showScore: isOwn || card?.showScore === true,
+    showEndorsements: isOwn || card?.showEndorsements === true,
+    fullName: isOwn ? undefined : (card?.fullName ?? null),
     score: !isOwn && card?.scoreSnapshot ? card.scoreSnapshot : null,
   };
 }

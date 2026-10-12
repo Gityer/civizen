@@ -6401,6 +6401,34 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"notification_digest_config": {
+                  Row: {
+                    "cron_secret": string | null,"function_url": string | null,"id": boolean,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cron_secret"?: string | null,"function_url"?: string | null,"id"?: boolean,"updated_at"?: string
+                  }
+                  Update: {
+                    "cron_secret"?: string | null,"function_url"?: string | null,"id"?: boolean,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"notification_digest_runs": {
+                  Row: {
+                    "id": number,"request_id": number | null,"requested_at": string,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "id"?: number,"request_id"?: number | null,"requested_at"?: string,"status": string
+                  }
+                  Update: {
+                    "id"?: number,"request_id"?: number | null,"requested_at"?: string,"status"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"notification_digests": {
                   Row: {
                     "id": string,"item_count": number,"profile_id": string,"sent_at": string,"through": string
@@ -8330,6 +8358,72 @@ isOneToOne: false
 "add_task_dependency":
 { Args: { "p_depends_on_task_id": string,"p_task_id": string }; Returns: undefined
                            },
+"admin_list_profiles":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "active_citizen_since": string | null,
+"avatar_url": string | null,
+"bio": string | null,
+"citizen_signing_key_algorithm": string | null,
+"citizen_signing_key_registered_at": string | null,
+"citizen_signing_public_key": string | null,
+"citizenship_acceptance_mode": string | null,
+"citizenship_accepted_at": string | null,
+"citizenship_review_cleared_at": string | null,
+"citizenship_status": Database["public"]['Enums']["citizenship_status"],
+"city": string | null,
+"civic_framework_accepted_at": string | null,
+"country": string | null,
+"country_code": string | null,
+"created_at": string,
+"custom_permissions": (Database["public"]['Enums']["app_permission"])[],
+"date_of_birth": string | null,
+"deleted_at": string | null,
+"deletion_reason": string | null,
+"denied_permissions": (Database["public"]['Enums']["app_permission"])[],
+"experience_level": string,
+"full_name": string | null,
+"full_name_change_count": number,
+"full_name_last_changed_at": string | null,
+"governance_eligible_at": string | null,
+"granted_permissions": (Database["public"]['Enums']["app_permission"])[],
+"id": string,
+"is_active_citizen": boolean,
+"is_admin": boolean | null,
+"is_governance_eligible": boolean,
+"is_system_agent": boolean,
+"is_verified": boolean | null,
+"language_code": string,
+"last_active_at": string | null,
+"messaging_backup_note": string | null,
+"messaging_backup_provider": string | null,
+"messaging_server_retention_days": number | null,
+"messaging_server_retention_max_kb": number | null,
+"messaging_x25519_public_key": string | null,
+"notification_email_digest": boolean,
+"official_id": string,
+"phone_country_code": string | null,
+"phone_e164": string | null,
+"phone_number": string | null,
+"place_of_birth": string | null,
+"privacy_settings": NonNullable<Json>,
+"region_code": string | null,
+"role": Database["public"]['Enums']["app_role"],
+"sex": string | null,
+"social_security_number": string,
+"terms_acceptance_method": string | null,
+"terms_accepted_at": string | null,
+"terms_version": string | null,
+"updated_at": string,
+"user_id": string | null,
+"username": string | null,
+"username_last_changed_at": string | null
+            }[]
+                          SetofOptions: {
+        from: "*"
+        to: "profiles"
+        isOneToOne: false
+        isSetofReturn: true
+      } },
 "adopt_matter_agent_plan_task":
 { Args: { "p_artifact_id": string,"p_depends_on_titles"?: (string)[],"p_description"?: string,"p_title": string }; Returns: string
                            },
@@ -9849,6 +9943,72 @@ isOneToOne: false
 "my_eligibility":
 { Args: { "p_scope": string }; Returns: Json
                            },
+"my_profile":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "active_citizen_since": string | null,
+"avatar_url": string | null,
+"bio": string | null,
+"citizen_signing_key_algorithm": string | null,
+"citizen_signing_key_registered_at": string | null,
+"citizen_signing_public_key": string | null,
+"citizenship_acceptance_mode": string | null,
+"citizenship_accepted_at": string | null,
+"citizenship_review_cleared_at": string | null,
+"citizenship_status": Database["public"]['Enums']["citizenship_status"],
+"city": string | null,
+"civic_framework_accepted_at": string | null,
+"country": string | null,
+"country_code": string | null,
+"created_at": string,
+"custom_permissions": (Database["public"]['Enums']["app_permission"])[],
+"date_of_birth": string | null,
+"deleted_at": string | null,
+"deletion_reason": string | null,
+"denied_permissions": (Database["public"]['Enums']["app_permission"])[],
+"experience_level": string,
+"full_name": string | null,
+"full_name_change_count": number,
+"full_name_last_changed_at": string | null,
+"governance_eligible_at": string | null,
+"granted_permissions": (Database["public"]['Enums']["app_permission"])[],
+"id": string,
+"is_active_citizen": boolean,
+"is_admin": boolean | null,
+"is_governance_eligible": boolean,
+"is_system_agent": boolean,
+"is_verified": boolean | null,
+"language_code": string,
+"last_active_at": string | null,
+"messaging_backup_note": string | null,
+"messaging_backup_provider": string | null,
+"messaging_server_retention_days": number | null,
+"messaging_server_retention_max_kb": number | null,
+"messaging_x25519_public_key": string | null,
+"notification_email_digest": boolean,
+"official_id": string,
+"phone_country_code": string | null,
+"phone_e164": string | null,
+"phone_number": string | null,
+"place_of_birth": string | null,
+"privacy_settings": NonNullable<Json>,
+"region_code": string | null,
+"role": Database["public"]['Enums']["app_role"],
+"sex": string | null,
+"social_security_number": string,
+"terms_acceptance_method": string | null,
+"terms_accepted_at": string | null,
+"terms_version": string | null,
+"updated_at": string,
+"user_id": string | null,
+"username": string | null,
+"username_last_changed_at": string | null
+            }[]
+                          SetofOptions: {
+        from: "*"
+        to: "profiles"
+        isOneToOne: false
+        isSetofReturn: true
+      } },
 "nela_governance_participation_comment":
 { Args: { "proposal_summary": string,"proposal_title": string }; Returns: string
                            },
@@ -9862,6 +10022,14 @@ isOneToOne: false
 { Args: Record<PropertyKey, never>; Returns: {
               "display_name": string,"email": string,"items": Json,"language_code": string,"profile_id": string
             }[]
+                           },
+"notification_digest_recent_runs":
+{ Args: { "p_limit"?: number }; Returns: {
+              "http_status": number,"requested_at": string,"response": string,"status": string
+            }[]
+                           },
+"notification_digest_tick":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "onboard_governance_public_audit_verifier_mirror_federation_requ":
 { Args: { "activate_mirror"?: boolean,"requested_metadata"?: Json,"target_request_id": string }; Returns: string
@@ -9968,6 +10136,9 @@ isOneToOne: false
                            },
 "profile_is_guardian_signer":
 { Args: { "target_profile_id": string }; Returns: boolean
+                           },
+"profile_shows_endorsements":
+{ Args: { "p_profile_id": string }; Returns: boolean
                            },
 "project_citizenship_status":
 { Args: { "user_role": Database["public"]['Enums']["app_role"],"verified": boolean }; Returns: Database["public"]['Enums']["citizenship_status"]

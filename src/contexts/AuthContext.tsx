@@ -296,13 +296,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchProfile = useCallback(async (userId: string) => {
     const supabase = await getSupabase();
     // Profile row + permissions in parallel — do not serialize two round-trips.
+    // The full own row comes from my_profile(): members can select only the public columns of profiles (A2).
     const [{ data, error }, permissionsResult] = await Promise.all([
-      supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .is('deleted_at', null)
-        .single(),
+      supabase.rpc('my_profile').single(),
       supabase.rpc('current_app_permissions'),
     ]);
 

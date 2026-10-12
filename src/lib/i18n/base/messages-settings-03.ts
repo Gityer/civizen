@@ -59,7 +59,8 @@ export const m_messages_settings_03 = {
     },
     "visibility": {
       "title": "What other members see",
-      "description": "Your name, photo and verification badge are always shown to signed-in members. Choose what else appears on your public profile.",
+      "description": "Your username, photo and verification badge are always shown to signed-in members; your birth date, phone and ID numbers never are. Choose what else appears on your public profile.",
+      "show_full_name": "Full name",
       "show_country": "Country",
       "show_city": "City",
       "show_score": "Civizen score",

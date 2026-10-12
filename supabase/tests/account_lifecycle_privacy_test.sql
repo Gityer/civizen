@@ -28,7 +28,7 @@ BEGIN
   card := public.public_profile(current_setting('test.member_pid')::uuid);
   IF NOT (card->>'is_own')::boolean THEN RAISE EXCEPTION 'owner card not marked own'; END IF;
   IF card->>'country' <> 'France' OR (card->'score'->>'score')::numeric <> 42.5 THEN RAISE EXCEPTION 'owner must see everything: %', card; END IF;
-  IF (SELECT privacy_settings FROM public.profiles WHERE id = current_setting('test.member_pid')::uuid) ? 'bogus' THEN RAISE EXCEPTION 'unknown privacy key stored'; END IF;
+  IF (SELECT privacy_settings FROM public.my_profile()) ? 'bogus' THEN RAISE EXCEPTION 'unknown privacy key stored'; END IF;
   RAISE NOTICE 'ok: owner sees everything, unknown keys dropped';
 END $$;
 SELECT set_config('request.jwt.claims', json_build_object('sub', current_setting('test.citizen_uid'))::text, true);

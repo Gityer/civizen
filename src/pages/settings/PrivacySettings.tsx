@@ -96,7 +96,7 @@ export default function PrivacySettings() {
   };
 
   // Step 3.7: what other members may see on the public profile card.
-  const PRIVACY_KEYS = ['show_country', 'show_city', 'show_score', 'show_endorsements'] as const;
+  const PRIVACY_KEYS = ['show_full_name', 'show_country', 'show_city', 'show_score', 'show_endorsements'] as const;
   const [privacy, setPrivacy] = useState<Record<string, boolean>>({});
   const [privacyBusy, setPrivacyBusy] = useState<string | null>(null);
   useEffect(() => {

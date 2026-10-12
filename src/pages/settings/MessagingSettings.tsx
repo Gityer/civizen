@@ -91,13 +91,7 @@ export default function MessagingSettings() {
       return;
     }
     setLoading(true);
-    const { data, error } = await supabase
-      .from('profiles')
-      .select(
-        'messaging_backup_provider, messaging_backup_note, messaging_server_retention_days, messaging_server_retention_max_kb',
-      )
-      .eq('id', profile.id)
-      .single();
+    const { data, error } = await supabase.rpc('my_profile').single();
 
     if (error || !data) {
       setLoading(false);

@@ -82,7 +82,7 @@ export default function UserProfile() {
 
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
-      .select('*')
+      .select('id, user_id, username, full_name, avatar_url, bio, is_verified, role, country, country_code, created_at')
       .eq('id', userId)
       .single();
 
@@ -234,6 +234,8 @@ export default function UserProfile() {
   );
   const visibility = usePublicProfileVisibility({ userId, isOwn: currentProfile?.id === userId, score, ready: !loading });
   const displayScore = visibility.score ?? score;
+  // Visitors see the full name only when the owner shows it (server card); the owner always sees their own.
+  const displayName = visibility.fullName === undefined ? profile?.full_name ?? null : visibility.fullName;
 
   const getInitials = (name?: string | null) => {
     if (!name) return '?';
@@ -272,7 +274,7 @@ export default function UserProfile() {
     <AppLayout>
       <div className="space-y-6 px-4 py-6">
         <AppPageHeader
-          title={profile.full_name || t('common.anonymousUser')}
+          title={displayName || (profile.username ? `@${profile.username}` : t('common.anonymousUser'))}
           fallbackPath="/search"
         />
 
@@ -285,7 +287,7 @@ export default function UserProfile() {
             <Avatar className="h-24 w-24 border-4 border-background shadow-elevated">
               <AvatarImage src={profile.avatar_url || undefined} />
               <AvatarFallback className="bg-primary/10 font-display text-2xl text-primary">
-                {getInitials(profile.full_name)}
+                {getInitials(displayName || profile.username)}
               </AvatarFallback>
             </Avatar>
             {profile.is_verified && (
@@ -304,7 +306,7 @@ export default function UserProfile() {
             <UserProfileActions
               viewerProfileId={currentProfile.id}
               profileId={profile.id}
-              profileName={profile.full_name || profile.username || ''}
+              profileName={displayName || profile.username || ''}
             />
           )}
         </motion.div>
