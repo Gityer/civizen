@@ -55,6 +55,7 @@ import {
   GovernanceEntry,
   HelpSupport,
   Notifications,
+  Moderation,
   OpportunityDetail,
   OpportunityForm,
   Pillars,
@@ -107,6 +108,7 @@ export const appRoutes1 = (
       <Route path="/about" element={<InstitutionalDocRoute />} />
       <Route path="/about/legal-status" element={<InstitutionalDocRoute />} />
       <Route path="/privacy" element={<InstitutionalDocRoute />} />
+      <Route path="/guidelines" element={<InstitutionalDocRoute />} />
       <Route path="/about/mission" element={<InstitutionalDocRoute />} />
       <Route path="/about/open-source" element={<InstitutionalDocRoute />} />
       <Route path="/about/ai" element={<InstitutionalDocRoute />} />
@@ -235,6 +237,7 @@ export const appRoutes1 = (
       <Route path="/governance/tools/steward" element={<ProtectedRoute requiredPermissions={['role.assign', 'settings.manage']}><GovernanceNew /></ProtectedRoute>} />
       <Route path="/governance/new" element={<ProtectedRoute><Navigate to="/governance/tools/steward" replace /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+      <Route path="/moderation" element={<ProtectedRoute><Moderation /></ProtectedRoute>} />
       <Route path="/governance/solutions" element={<ProtectedRoute><SolutionsHub /></ProtectedRoute>} />
       <Route path="/governance/solutions/:problemId" element={<ProtectedRoute><SolutionProblemDetail /></ProtectedRoute>} />
       <Route path="/features" element={<Navigate to="/study" replace />} />

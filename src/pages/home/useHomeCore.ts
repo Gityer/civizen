@@ -191,6 +191,8 @@ export function useHomeCore() {
     author_id: raw.author_id,
     is_edited: raw.is_edited,
     edited_at: raw.edited_at,
+    moderation_hidden_at: raw.moderation_hidden_at ?? null,
+    moderation_reason: raw.moderation_reason ?? null,
     syncStatus: raw.syncStatus ?? 'remote',
     author: raw.author as Post['author'],
   });

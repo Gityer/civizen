@@ -84,6 +84,7 @@ export const HelpSupport = lazyWithChunkReload(() => import('@/pages/settings/He
 export const GovernanceMember = lazyWithChunkReload(() => import('@/pages/governance/GovernanceMember'));
 export const GovernanceEntry = lazyWithChunkReload(() => import('@/pages/governance/GovernanceEntry'));
 export const Notifications = lazyWithChunkReload(() => import('@/pages/Notifications'));
+export const Moderation = lazyWithChunkReload(() => import('@/pages/moderation/Moderation'));
 export const MessagingSettingsPage = lazyWithChunkReload(() => import('@/pages/settings/MessagingSettings'));
 export const MessagingSecurity = lazyWithChunkReload(() => import('@/pages/settings/MessagingSecurity'));
 export const PrivacySettings = lazyWithChunkReload(() => import('@/pages/settings/PrivacySettings'));

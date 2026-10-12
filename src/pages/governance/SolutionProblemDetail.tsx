@@ -39,6 +39,7 @@ import { toast } from 'sonner';
 import { HumanOutcomeLinks } from '@/pages/wellbeing/HumanOutcomeLinks';
 import { SolutionsCouncilNotice } from '@/pages/governance/SolutionsCouncilNotice';
 import { councilErrorMessageKey, runSolutionsCouncil } from '@/lib/solutions-council-client';
+import { ModerationHiddenNotice, ReportButton } from '@/components/moderation';
 
 function statusBadgeVariant(status: SolutionProblemStatus): 'default' | 'secondary' | 'outline' | 'destructive' {
   if (status === 'consensus' || status === 'resolved' || status === 'accepted') return 'default';
@@ -363,9 +364,11 @@ export default function SolutionProblemDetail() {
                 {comments.map((comment) => (
                   <li key={comment.id}>
                     <Card className="rounded-xl border-border/50 p-3">
-                      <p className="text-xs font-medium text-foreground">
-                        {comment.authorName || t('solutions.anonymousCitizen')}
-                      </p>
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs font-medium text-foreground">{comment.authorName || t('solutions.anonymousCitizen')}</p>
+                        <ReportButton targetKind="solution_comment" targetId={comment.id} authorProfileId={comment.authorId} />
+                      </div>
+                      <ModerationHiddenNotice hiddenAt={comment.moderationHiddenAt} reason={comment.moderationReason} />
                       <p className="mt-1 whitespace-pre-wrap text-sm text-foreground/90">
                         {comment.body}
                       </p>

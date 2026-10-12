@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Pencil, Trash2, MoreHorizontal } from 'lucide-react';
+import { Flag, Pencil, Trash2, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +18,10 @@ type HomePostOverflowMenuProps = {
   canDelete: boolean;
   onEdit: () => void;
   onDelete: () => void;
+  /** Report (v2 step A6): offered on other members' posts. */
+  reportLabel?: string;
+  canReport?: boolean;
+  onReport?: () => void;
 };
 
 function IconMenuItem({
@@ -62,8 +66,11 @@ export function HomePostOverflowMenu({
   canDelete,
   onEdit,
   onDelete,
+  reportLabel,
+  canReport = false,
+  onReport,
 }: HomePostOverflowMenuProps) {
-  if (!canEdit && !canDelete) return null;
+  if (!canEdit && !canDelete && !canReport) return null;
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -101,6 +108,16 @@ export function HomePostOverflowMenu({
               onSelect={() => onDelete()}
             >
               <Trash2 className="h-4 w-4" aria-hidden />
+            </IconMenuItem>
+          ) : null}
+          {canReport && onReport ? (
+            <IconMenuItem
+              label={reportLabel ?? 'Report'}
+              testId="home-post-report"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center p-0"
+              onSelect={() => onReport()}
+            >
+              <Flag className="h-4 w-4" aria-hidden />
             </IconMenuItem>
           ) : null}
         </DropdownMenuContent>

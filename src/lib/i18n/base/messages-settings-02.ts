@@ -235,4 +235,5 @@ export const m_messages_settings_02 = {
     "helpTermsDescription": "The platform terms you agreed to.",
     "helpPrivacy": "Privacy notice",
     "helpPrivacyDescription": "What Civizen collects, why, and your choices.",
+    "helpGuidelinesDescription": "What does not belong here, and how reports and appeals work.",
 } as const;

@@ -65,6 +65,9 @@ export type MatterComment = {
   visibility: MatterVisibility | null;
   createdAt: string;
   taskId: string | null;
+  /** Set when moderation hid the comment; only its author and moderators receive it. */
+  moderationHiddenAt?: string | null;
+  moderationReason?: string | null;
 };
 
 export type MatterEvent = {

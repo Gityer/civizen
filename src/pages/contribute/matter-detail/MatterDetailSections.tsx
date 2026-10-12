@@ -9,6 +9,8 @@ import { MatterWorkPanel } from '@/pages/contribute/MatterWorkPanel';
 import { MatterAgentPanel } from '@/pages/contribute/MatterAgentPanel';
 import { MatterResolutionPanel } from '@/pages/contribute/MatterResolutionPanel';
 import { formatWhen } from '@/pages/contribute/matter-detail/matter-detail-shared';
+import { ModerationHiddenNotice } from '@/components/moderation/ModerationHiddenNotice';
+import { ReportButton } from '@/components/moderation/ReportButton';
 import type { useMatterDetail } from '@/pages/contribute/matter-detail/useMatterDetail';
 
 type MatterDetailModel = ReturnType<typeof useMatterDetail>;
@@ -34,9 +36,15 @@ export function MatterDetailSections({ model }: { model: MatterDetailModel }) {
         <div className="space-y-3">
           {rootComments.map((item) => (
             <Card key={item.id} className="space-y-2 border-dashed border-border/80 bg-muted/30 p-4">
-              <p className="text-xs text-muted-foreground">
-                {actorLabel(item.author)} · {formatWhen(item.createdAt)}
-              </p>
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs text-muted-foreground">
+                  {actorLabel(item.author)} · {formatWhen(item.createdAt)}
+                </p>
+                {item.author.profileId ? (
+                  <ReportButton targetKind="matter_comment" targetId={item.id} authorProfileId={item.author.profileId} />
+                ) : null}
+              </div>
+              <ModerationHiddenNotice hiddenAt={item.moderationHiddenAt} reason={item.moderationReason} />
               <p className="whitespace-pre-wrap text-sm text-foreground">{item.body}</p>
               {matter.lifecycleStatus !== 'closed' ? (
               <Button type="button" variant="ghost" size="sm" onClick={() => setReplyTo(item.id)}>
@@ -47,9 +55,15 @@ export function MatterDetailSections({ model }: { model: MatterDetailModel }) {
                 .filter((child) => child.parentId === item.id)
                 .map((child) => (
                   <div key={child.id} className="ml-4 border-l border-border/70 pl-3">
-                    <p className="text-xs text-muted-foreground">
-                      {actorLabel(child.author)} · {formatWhen(child.createdAt)}
-                    </p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-xs text-muted-foreground">
+                        {actorLabel(child.author)} · {formatWhen(child.createdAt)}
+                      </p>
+                      {child.author.profileId ? (
+                        <ReportButton targetKind="matter_comment" targetId={child.id} authorProfileId={child.author.profileId} />
+                      ) : null}
+                    </div>
+                    <ModerationHiddenNotice hiddenAt={child.moderationHiddenAt} reason={child.moderationReason} />
                     <p className="whitespace-pre-wrap text-sm">{child.body}</p>
                   </div>
                 ))}

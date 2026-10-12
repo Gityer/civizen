@@ -110,6 +110,8 @@ export function useHomeFeed({ endorsements, setEndorsements, setEducationCount, 
             content,
             created_at,
             author_id,
+            moderation_hidden_at,
+            moderation_reason,
             author:profiles!post_comments_author_id_fkey(id, username, full_name, avatar_url)
           `)
           .in('post_id', postIds)
@@ -251,6 +253,8 @@ export function useHomeFeed({ endorsements, setEndorsements, setEducationCount, 
             author_id,
             is_edited,
             edited_at,
+            moderation_hidden_at,
+            moderation_reason,
             author:profiles!posts_author_id_fkey(id, username, full_name, avatar_url)
           `)
           .order('created_at', { ascending: false })

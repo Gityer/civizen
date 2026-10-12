@@ -292,4 +292,17 @@ export const ASSISTANT_CAPABILITIES_PART_2: AssistantCapability[] = [
     aliases: ['pilots', 'phase 1'],
     sourceRefs: ['docs/04-operations/dev/phase-1-pilot-operating-model.md'],
   },
+  {
+    id: 'content_moderation',
+    name: 'Reporting, moderation and appeals',
+    status: 'implemented',
+    description:
+      'Any signed-in member can report a post, comment, Matter, Solutions comment, job listing or member profile with a reason (spam, harassment, hate speech, violence, sexual content, false information, private information, illegal content, other). Moderators of the Moderation and Conduct domain work one queue: they hide the item with a reason or dismiss the reports. Hidden posts and comments disappear for everyone except the author and moderators; a hidden public Matter becomes participants-only; a hidden job listing is closed. Nothing is deleted. The author is told the reason and can appeal once; a different moderator decides, and a successful appeal restores the item exactly. People are not hidden; conduct towards people goes through governance sanctions. Private messages are reported from the chat.',
+    howTo: 'Tap the flag icon on the item (on posts it is in the post menu). Moderators open Moderation from Settings. Authors open Moderation from the notice on the hidden item or from the notification to appeal. The Community Guidelines are at /guidelines.',
+    routes: ['/moderation', '/guidelines'],
+    roles: ['member', 'moderator'],
+    relatedCapabilities: ['messaging'],
+    aliases: ['report a post', 'report abuse', 'flag', 'moderation', 'appeal', 'hidden post', 'community guidelines', 'code of conduct'],
+    sourceRefs: ['docs/04-operations/dev/content-moderation.md', 'docs/02-policies/institutional/community-guidelines.md'],
+  },
 ];

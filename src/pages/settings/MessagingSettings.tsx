@@ -114,6 +114,8 @@ export default function MessagingSettings() {
         .select(
           'id, reason, status, admin_notes, report_context, created_at, resolved_at, reporter:profiles!reports_reporter_id_fkey(full_name, username), reported:profiles!reports_reported_user_id_fkey(full_name, username)',
         )
+        // Message reports only; reports on posts, comments, Matters, listings and profiles are in /moderation.
+        .eq('report_context->>source', 'private_message')
         .order('created_at', { ascending: false })
         .limit(100);
       setReportsLoading(false);

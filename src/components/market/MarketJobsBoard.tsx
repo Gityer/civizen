@@ -24,6 +24,7 @@ import {
 } from '@/lib/market-job-listings';
 import type { MarketJobMode } from '@/lib/market-job-types';
 import { cn } from '@/lib/utils';
+import { ReportButton } from '@/components/moderation/ReportButton';
 
 type MarketJobsBoardProps = {
   viewerMode: MarketJobMode;
@@ -229,6 +230,7 @@ export function MarketJobsBoard({
                           )}
                         </Button>
                       )}
+                      {!listing.is_own ? <ReportButton targetKind="job_listing" targetId={listing.id} /> : null}
                     </td>
                   </tr>
                 );

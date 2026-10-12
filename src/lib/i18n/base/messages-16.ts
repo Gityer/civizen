@@ -195,6 +195,9 @@ export const m_messages_16 = {
     "knowledge_resource_proposed": { "title": "Resource proposed in {title}", "body": "A member proposed a resource for your knowledge space. Review it under Resources." },
     "knowledge_gap_reported": { "title": "Gap reported in {title}", "body": "A member reported a knowledge gap in your space." },
     "knowledge_resource_published": { "title": "Your resource is live in {title}", "body": "Coordinators shared the resource you proposed." },
-    "fund_inquiry_received": { "title": "New Fund inquiry ({lane})", "body": "Someone sent an inquiry through the Fund pages. Open Funding › Interest to answer it." }
+    "fund_inquiry_received": { "title": "New Fund inquiry ({lane})", "body": "Someone sent an inquiry through the Fund pages. Open Funding › Interest to answer it." },
+    "moderation_hidden": { "title": "Your content was hidden by moderation", "body": "Open Moderation to see the reason. You can appeal once." },
+    "moderation_appeal_overturned": { "title": "Your appeal was accepted", "body": "Your content is visible again." },
+    "moderation_appeal_upheld": { "title": "Your appeal was reviewed", "body": "A second moderator kept the decision." }
   },
 } as const;

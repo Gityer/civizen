@@ -5,6 +5,7 @@ import { m_messages_settings_02 } from './i18n/base/messages-settings-02';
 import { m_messages_settings_03 } from './i18n/base/messages-settings-03';
 import { m_messages_market_jobs_admin, m_messages_settings_04 } from './i18n/base/messages-settings-04';
 import { m_messages_study_02 } from './i18n/base/messages-study-02';
+import { m_messages_moderation } from './i18n/base/messages-moderation';
 import { m_messages_03 } from './i18n/base/messages-03';
 import { m_messages_04 } from './i18n/base/messages-04';
 import { m_messages_05 } from './i18n/base/messages-05';
@@ -49,6 +50,7 @@ export const baseTranslations = {
   "features": { ...m_messages_features_01, "catalog": { ...m_messages_features_catalog_01, ...m_messages_features_catalog_02, }, },
   ...m_messages_09,
   ...m_messages_study_02,
+  ...m_messages_moderation,
   ...m_messages_market_jobs_admin,
   ...m_messages_10,
   "profile": { ...m_messages_profile_01, ...m_messages_profile_02, },

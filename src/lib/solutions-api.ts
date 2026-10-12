@@ -1,6 +1,7 @@
 import { supabase, type SupabaseDbClient } from '@/integrations/supabase/client-type';
 import { categorizeSolutionIssue } from '@/lib/solution-categorize';
 import { getSolutionAuthority } from '@/lib/solution-authorities';
+import { mapComment } from './solutions-comment-map';
 import type {
   SolutionAgentSpeaker,
   SolutionIssueMode,
@@ -86,6 +87,8 @@ export type SolutionComment = {
   body: string;
   createdAt: string;
   authorName?: string | null;
+  moderationHiddenAt?: string | null;
+  moderationReason?: string | null;
 };
 
 export type SolutionRoutingEvent = {
@@ -185,18 +188,6 @@ function mapProposal(
     createdAt: asString(row.created_at),
     endorsementCount,
     endorsedByMe,
-  };
-}
-
-function mapComment(row: Record<string, unknown>): SolutionComment {
-  const author = (row.author ?? row.profiles) as Record<string, unknown> | null | undefined;
-  return {
-    id: asString(row.id),
-    problemId: asString(row.problem_id),
-    authorId: asString(row.author_id),
-    body: asString(row.body),
-    createdAt: asString(row.created_at),
-    authorName: author ? asString(author.full_name || author.username, '') || null : null,
   };
 }
 

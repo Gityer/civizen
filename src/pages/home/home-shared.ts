@@ -21,6 +21,9 @@ export interface Post {
   author_id: string;
   is_edited: boolean | null;
   edited_at?: string | null;
+  /** Set when moderation hid the post; only the author and moderators receive such rows. */
+  moderation_hidden_at?: string | null;
+  moderation_reason?: string | null;
   syncStatus?: 'local' | 'remote';
   author: {
     id: string;
@@ -36,6 +39,8 @@ export interface PostComment {
   content: string;
   created_at: string;
   author_id: string;
+  moderation_hidden_at?: string | null;
+  moderation_reason?: string | null;
   author: {
     id: string;
     username?: string;
@@ -51,6 +56,8 @@ export type RawPostRecord = {
   author_id: string;
   is_edited: boolean | null;
   edited_at?: string | null;
+  moderation_hidden_at?: string | null;
+  moderation_reason?: string | null;
   syncStatus?: 'local' | 'remote';
   author: Post['author'];
 };

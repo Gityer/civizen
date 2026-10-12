@@ -8,4 +8,5 @@ export const HELP_SUPPORT_LINKS = [
   { icon: Scale, labelKey: 'settings.helpLegal', descriptionKey: 'settings.helpLegalDescription', path: '/about/legal-status' },
   { icon: ScrollText, labelKey: 'settings.helpTerms', descriptionKey: 'settings.helpTermsDescription', path: '/terms' },
   { icon: Lock, labelKey: 'settings.helpPrivacy', descriptionKey: 'settings.helpPrivacyDescription', path: '/privacy' },
+  { icon: ScrollText, labelKey: 'moderation.report.guidelines', descriptionKey: 'settings.helpGuidelinesDescription', path: '/guidelines' },
 ] as const;

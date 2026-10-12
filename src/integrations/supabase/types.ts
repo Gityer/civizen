@@ -5749,14 +5749,14 @@ isOneToOne: false
                   ]
                 },"matter_comments": {
                   Row: {
-                    "agent_id": string | null,"author_kind": string,"author_profile_id": string | null,"body": string,"created_at": string,"id": string,"is_ai_agent": boolean,"matter_id": string,"mentioned_profile_ids": (string)[],"parent_id": string | null,"run_id": string | null,"task_id": string | null,"visibility": string | null
+                    "agent_id": string | null,"author_kind": string,"author_profile_id": string | null,"body": string,"created_at": string,"id": string,"is_ai_agent": boolean,"matter_id": string,"mentioned_profile_ids": (string)[],"moderation_hidden_at": string | null,"moderation_reason": string | null,"parent_id": string | null,"run_id": string | null,"task_id": string | null,"visibility": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "agent_id"?: string | null,"author_kind": string,"author_profile_id"?: string | null,"body": string,"created_at"?: string,"id"?: string,"is_ai_agent"?: boolean,"matter_id": string,"mentioned_profile_ids"?: (string)[],"parent_id"?: string | null,"run_id"?: string | null,"task_id"?: string | null,"visibility"?: string | null
+                    "agent_id"?: string | null,"author_kind": string,"author_profile_id"?: string | null,"body": string,"created_at"?: string,"id"?: string,"is_ai_agent"?: boolean,"matter_id": string,"mentioned_profile_ids"?: (string)[],"moderation_hidden_at"?: string | null,"moderation_reason"?: string | null,"parent_id"?: string | null,"run_id"?: string | null,"task_id"?: string | null,"visibility"?: string | null
                   }
                   Update: {
-                    "agent_id"?: string | null,"author_kind"?: string,"author_profile_id"?: string | null,"body"?: string,"created_at"?: string,"id"?: string,"is_ai_agent"?: boolean,"matter_id"?: string,"mentioned_profile_ids"?: (string)[],"parent_id"?: string | null,"run_id"?: string | null,"task_id"?: string | null,"visibility"?: string | null
+                    "agent_id"?: string | null,"author_kind"?: string,"author_profile_id"?: string | null,"body"?: string,"created_at"?: string,"id"?: string,"is_ai_agent"?: boolean,"matter_id"?: string,"mentioned_profile_ids"?: (string)[],"moderation_hidden_at"?: string | null,"moderation_reason"?: string | null,"parent_id"?: string | null,"run_id"?: string | null,"task_id"?: string | null,"visibility"?: string | null
                   }
                   Relationships: [
                     {
@@ -6315,6 +6315,44 @@ isOneToOne: true
       referencedColumns: ["id"]
     }
                   ]
+                },"moderation_actions": {
+                  Row: {
+                    "appeal_decided_at": string | null,"appeal_decision": string | null,"appeal_note": string | null,"appeal_reviewer_id": string | null,"appeal_text": string | null,"appealed_at": string | null,"author_profile_id": string | null,"created_at": string,"id": string,"moderator_profile_id": string | null,"note": string | null,"previous_state": NonNullable<Json>,"reason_code": string,"restored_at": string | null,"restored_by": string | null,"target_id": string,"target_kind": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "appeal_decided_at"?: string | null,"appeal_decision"?: string | null,"appeal_note"?: string | null,"appeal_reviewer_id"?: string | null,"appeal_text"?: string | null,"appealed_at"?: string | null,"author_profile_id"?: string | null,"created_at"?: string,"id"?: string,"moderator_profile_id"?: string | null,"note"?: string | null,"previous_state"?: NonNullable<Json>,"reason_code": string,"restored_at"?: string | null,"restored_by"?: string | null,"target_id": string,"target_kind": string
+                  }
+                  Update: {
+                    "appeal_decided_at"?: string | null,"appeal_decision"?: string | null,"appeal_note"?: string | null,"appeal_reviewer_id"?: string | null,"appeal_text"?: string | null,"appealed_at"?: string | null,"author_profile_id"?: string | null,"created_at"?: string,"id"?: string,"moderator_profile_id"?: string | null,"note"?: string | null,"previous_state"?: NonNullable<Json>,"reason_code"?: string,"restored_at"?: string | null,"restored_by"?: string | null,"target_id"?: string,"target_kind"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "moderation_actions_appeal_reviewer_id_fkey"
+      columns: ["appeal_reviewer_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "moderation_actions_author_profile_id_fkey"
+      columns: ["author_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "moderation_actions_moderator_profile_id_fkey"
+      columns: ["moderator_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "moderation_actions_restored_by_fkey"
+      columns: ["restored_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"monetary_policy_approvals": {
                   Row: {
                     "approval_class": string,"approver_id": string,"created_at": string,"decision": string,"id": string,"notes": string | null,"policy_profile_id": string
@@ -6605,14 +6643,14 @@ isOneToOne: true
                   ]
                 },"post_comments": {
                   Row: {
-                    "author_id": string,"content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null,"post_id": string
+                    "author_id": string,"content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null,"moderation_hidden_at": string | null,"moderation_reason": string | null,"post_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "author_id": string,"content": string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"post_id": string
+                    "author_id": string,"content": string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"moderation_hidden_at"?: string | null,"moderation_reason"?: string | null,"post_id": string
                   }
                   Update: {
-                    "author_id"?: string,"content"?: string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"post_id"?: string
+                    "author_id"?: string,"content"?: string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"moderation_hidden_at"?: string | null,"moderation_reason"?: string | null,"post_id"?: string
                   }
                   Relationships: [
                     {
@@ -6741,14 +6779,14 @@ isOneToOne: false
                   ]
                 },"posts": {
                   Row: {
-                    "author_id": string,"content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null
+                    "author_id": string,"content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null,"moderation_hidden_at": string | null,"moderation_reason": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "author_id": string,"content": string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null
+                    "author_id": string,"content": string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"moderation_hidden_at"?: string | null,"moderation_reason"?: string | null
                   }
                   Update: {
-                    "author_id"?: string,"content"?: string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null
+                    "author_id"?: string,"content"?: string,"created_at"?: string,"edited_at"?: string | null,"id"?: string,"is_edited"?: boolean | null,"moderation_hidden_at"?: string | null,"moderation_reason"?: string | null
                   }
                   Relationships: [
                     {
@@ -7203,17 +7241,29 @@ isOneToOne: false
                   ]
                 },"reports": {
                   Row: {
-                    "admin_notes": string | null,"created_at": string,"endorsement_id": string | null,"id": string,"reason": string,"report_context": Json | null,"reported_user_id": string | null,"reporter_id": string,"resolved_at": string | null,"status": string | null
+                    "admin_notes": string | null,"claimed_at": string | null,"claimed_by": string | null,"created_at": string,"decided_by": string | null,"decision": string | null,"endorsement_id": string | null,"id": string,"reason": string,"reason_code": string | null,"report_context": Json | null,"reported_user_id": string | null,"reporter_id": string,"resolved_at": string | null,"status": string | null,"target_id": string | null,"target_kind": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "admin_notes"?: string | null,"created_at"?: string,"endorsement_id"?: string | null,"id"?: string,"reason": string,"report_context"?: Json | null,"reported_user_id"?: string | null,"reporter_id": string,"resolved_at"?: string | null,"status"?: string | null
+                    "admin_notes"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"decided_by"?: string | null,"decision"?: string | null,"endorsement_id"?: string | null,"id"?: string,"reason": string,"reason_code"?: string | null,"report_context"?: Json | null,"reported_user_id"?: string | null,"reporter_id": string,"resolved_at"?: string | null,"status"?: string | null,"target_id"?: string | null,"target_kind"?: string | null
                   }
                   Update: {
-                    "admin_notes"?: string | null,"created_at"?: string,"endorsement_id"?: string | null,"id"?: string,"reason"?: string,"report_context"?: Json | null,"reported_user_id"?: string | null,"reporter_id"?: string,"resolved_at"?: string | null,"status"?: string | null
+                    "admin_notes"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"decided_by"?: string | null,"decision"?: string | null,"endorsement_id"?: string | null,"id"?: string,"reason"?: string,"reason_code"?: string | null,"report_context"?: Json | null,"reported_user_id"?: string | null,"reporter_id"?: string,"resolved_at"?: string | null,"status"?: string | null,"target_id"?: string | null,"target_kind"?: string | null
                   }
                   Relationships: [
                     {
+      foreignKeyName: "reports_claimed_by_fkey"
+      columns: ["claimed_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reports_decided_by_fkey"
+      columns: ["decided_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "reports_endorsement_id_fkey"
       columns: ["endorsement_id"]
 isOneToOne: false
@@ -7335,14 +7385,14 @@ isOneToOne: false
                   ]
                 },"solution_comments": {
                   Row: {
-                    "author_id": string,"body": string,"created_at": string,"id": string,"problem_id": string
+                    "author_id": string,"body": string,"created_at": string,"id": string,"moderation_hidden_at": string | null,"moderation_reason": string | null,"problem_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "author_id": string,"body": string,"created_at"?: string,"id"?: string,"problem_id": string
+                    "author_id": string,"body": string,"created_at"?: string,"id"?: string,"moderation_hidden_at"?: string | null,"moderation_reason"?: string | null,"problem_id": string
                   }
                   Update: {
-                    "author_id"?: string,"body"?: string,"created_at"?: string,"id"?: string,"problem_id"?: string
+                    "author_id"?: string,"body"?: string,"created_at"?: string,"id"?: string,"moderation_hidden_at"?: string | null,"moderation_reason"?: string | null,"problem_id"?: string
                   }
                   Relationships: [
                     {
@@ -8955,7 +9005,9 @@ isOneToOne: false
 "created_at": string,
 "edited_at": string | null,
 "id": string,
-"is_edited": boolean | null
+"is_edited": boolean | null,
+"moderation_hidden_at": string | null,
+"moderation_reason": string | null
             }
                           SetofOptions: {
         from: "*"
@@ -9925,6 +9977,46 @@ isOneToOne: false
 "mint_luma_to_profile":
 { Args: { "p_amount_lumens": number,"p_idempotency_key": string,"p_memo"?: string,"p_target_profile_id": string }; Returns: string
                            },
+"moderation_actions_list":
+{ Args: { "p_scope"?: string }; Returns: {
+              "appeal_decided_at": string,"appeal_decision": string,"appeal_note": string,"appeal_text": string,"appealed_at": string,"author_profile_id": string,"author_username": string,"created_at": string,"excerpt": string,"id": string,"moderator_profile_id": string,"note": string,"reason_code": string,"restored_at": string,"target_id": string,"target_kind": string
+            }[]
+                           },
+"moderation_appeal":
+{ Args: { "p_action_id": string,"p_text": string }; Returns: undefined
+                           },
+"moderation_apply_hidden":
+{ Args: { "p_hidden": boolean,"p_id": string,"p_kind": string,"p_previous": Json,"p_reason": string }; Returns: Json
+                           },
+"moderation_claim":
+{ Args: { "p_target_id": string,"p_target_kind": string }; Returns: number
+                           },
+"moderation_decide_appeal":
+{ Args: { "p_action_id": string,"p_note"?: string,"p_overturn": boolean }; Returns: undefined
+                           },
+"moderation_dismiss":
+{ Args: { "p_note"?: string,"p_target_id": string,"p_target_kind": string }; Returns: number
+                           },
+"moderation_hide":
+{ Args: { "p_note"?: string,"p_reason_code": string,"p_target_id": string,"p_target_kind": string }; Returns: string
+                           },
+"moderation_notify":
+{ Args: { "p_action": string,"p_body": string,"p_profile": string,"p_title": string,"p_type": string }; Returns: undefined
+                           },
+"moderation_queue":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "author_profile_id": string,"author_username": string,"claimed_by": string,"claimed_by_username": string,"excerpt": string,"first_reported_at": string,"last_reported_at": string,"reason_codes": (string)[],"report_count": number,"report_ids": (string)[],"target_id": string,"target_kind": string
+            }[]
+                           },
+"moderation_reason_codes":
+{ Args: Record<PropertyKey, never>; Returns: (string)[]
+                           },
+"moderation_target_author":
+{ Args: { "p_id": string,"p_kind": string }; Returns: string
+                           },
+"moderation_target_excerpt":
+{ Args: { "p_id": string,"p_kind": string }; Returns: string
+                           },
 "my_civic_status":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
@@ -10302,6 +10394,9 @@ isOneToOne: false
                            },
 "replace_knowledge_resource_attributions":
 { Args: { "p_items": Json,"p_resource_id": string }; Returns: undefined
+                           },
+"report_content":
+{ Args: { "p_details"?: string,"p_reason_code": string,"p_target_id": string,"p_target_kind": string }; Returns: string
                            },
 "request_agreement_review":
 { Args: { "p_agreement_id": string }; Returns: undefined

@@ -191,6 +191,7 @@ export const settingsHy = {
     helpTermsDescription: 'Հարթակի պայմանները, որոնց համաձայնել եք։',
     helpPrivacy: 'Գաղտնիության ծանուցում',
     helpPrivacyDescription: 'Ինչ է հավաքում Civizen-ը, ինչու, և ձեր ընտրությունները։',
+    helpGuidelinesDescription: 'Ինչն այստեղ տեղ չունի, և ինչպես են աշխատում բողոքներն ու բողոքարկումները։',
     accountTitle: 'Հաշիվ',
     accountDescription: 'Մուտքի էլ. փոստ, գաղտնաբառ և ձեր տվյալների պատճենը',
     account: {

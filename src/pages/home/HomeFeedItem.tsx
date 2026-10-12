@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,6 +16,8 @@ import { canDeletePublishedPost, canEditPublishedPost, postShowsEditedIndicator 
 import { HomePostEmbeddedOriginal } from '@/components/home/HomePostEmbeddedOriginal';
 import { HomeRepostMenu } from '@/components/home/HomeRepostMenu';
 import { cn } from '@/lib/utils';
+import { permissionListHasAny } from '@/lib/access-control';
+import { ModerationHiddenNotice, ReportButton, ReportContentDialog } from '@/components/moderation';
 import { type Post } from '@/pages/home/home-shared';
 import type { useHome } from '@/pages/home/useHome';
 
@@ -33,6 +36,8 @@ export function HomeFeedItem({ model, item, index }: { model: HomeModel; item: H
   } = model;
 
   const post = item.post as Post;
+  const [reportOpen, setReportOpen] = useState(false);
+  const canReportPost = Boolean(profile?.id) && post.author_id !== profile?.id && permissionListHasAny(viewerPermissions ?? [], ['report.create']);
   const interactionPostId = item.interactionPostId;
   const repostTargetPostId = item.repostTargetPostId;
   const likes = postLikes[interactionPostId] || [];
@@ -113,7 +118,13 @@ export function HomeFeedItem({ model, item, index }: { model: HomeModel; item: H
                 })}
                 onEdit={() => beginEditPost(post)}
                 onDelete={() => void deleteOwnPost(post)}
+                reportLabel={t('moderation.report.action')}
+                canReport={canReportPost}
+                onReport={() => setReportOpen(true)}
               />
+              {reportOpen ? (
+                <ReportContentDialog open={reportOpen} onOpenChange={setReportOpen} targetKind="post" targetId={post.id} />
+              ) : null}
             <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
                 <button
@@ -155,7 +166,10 @@ export function HomeFeedItem({ model, item, index }: { model: HomeModel; item: H
               onSave={() => void saveEditedPost()}
             />
           ) : (
-            <PostFormattedBody content={post.content} />
+            <>
+              <ModerationHiddenNotice hiddenAt={post.moderation_hidden_at} reason={post.moderation_reason} />
+              <PostFormattedBody content={post.content} />
+            </>
           )}
 
           {item.kind === 'quote_repost' ? (
@@ -339,9 +353,11 @@ export function HomeFeedItem({ model, item, index }: { model: HomeModel; item: H
                 <div className="space-y-2">
                   {comments.map((comment) => (
                     <div key={comment.id} className="rounded-2xl border border-border/50 bg-muted/35 p-3 shadow-sm">
-                      <p className="text-xs font-medium text-foreground">
-                        {getDisplayName(comment.author)}
-                      </p>
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs font-medium text-foreground">{getDisplayName(comment.author)}</p>
+                        <ReportButton targetKind="post_comment" targetId={comment.id} authorProfileId={comment.author_id} />
+                      </div>
+                      <ModerationHiddenNotice hiddenAt={comment.moderation_hidden_at} reason={comment.moderation_reason} />
                       <p className="mt-1 whitespace-pre-wrap wrap-break-word text-sm text-foreground">
                         {comment.content}
                       </p>

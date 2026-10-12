@@ -8,6 +8,7 @@ import { MatterDetailBall } from '@/pages/contribute/matter-detail/MatterDetailB
 import { MatterDetailActions } from '@/pages/contribute/matter-detail/MatterDetailActions';
 import { MatterDetailOverview } from '@/pages/contribute/matter-detail/MatterDetailOverview';
 import { MatterDetailSections } from '@/pages/contribute/matter-detail/MatterDetailSections';
+import { ReportButton } from '@/components/moderation/ReportButton';
 
 export default function MatterDetail() {
   const model = useMatterDetail();
@@ -39,6 +40,7 @@ export default function MatterDetail() {
           title={matter.title}
           subtitle={t(`contribute.matters.types.${matter.matterType}`)}
           fallbackPath="/contribute/matters"
+          actions={<ReportButton targetKind="matter" targetId={matter.id} authorProfileId={matter.initiator.profileId} subject={matter.title} />}
         />
 
         <div className="flex flex-wrap gap-2">

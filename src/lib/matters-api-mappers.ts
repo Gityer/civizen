@@ -205,6 +205,8 @@ export function mapComment(row: Record<string, unknown>): MatterComment {
     visibility: strOrNull(row.visibility) as MatterVisibility | null,
     createdAt: str(row.created_at),
     taskId: strOrNull(row.task_id),
+    moderationHiddenAt: strOrNull(row.moderation_hidden_at),
+    moderationReason: strOrNull(row.moderation_reason),
   };
 }
 

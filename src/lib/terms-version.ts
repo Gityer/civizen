@@ -10,6 +10,7 @@ export type TermsAcceptanceMethod = 'signup' | 'reconsent';
 export const TERMS_RECONSENT_ALLOWED_PATHS = [
   '/terms',
   '/privacy',
+  '/guidelines',
   '/settings/legal',
   '/about/legal-status',
   '/settings/privacy',

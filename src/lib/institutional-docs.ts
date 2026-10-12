@@ -1,5 +1,8 @@
 import currentLegalStatus from '../../docs/02-policies/institutional/current-legal-status-notice.md?raw';
 import privacyNotice from '../../docs/02-policies/institutional/privacy-notice.md?raw';
+import communityGuidelines from '../../docs/02-policies/institutional/community-guidelines.md?raw';
+import communityGuidelinesHy from '../../docs/02-policies/institutional/community-guidelines.hy.md?raw';
+import communityGuidelinesRu from '../../docs/02-policies/institutional/community-guidelines.ru.md?raw';
 import institutionalIdentity from '../../docs/02-policies/institutional/institutional-identity-and-relationship.md?raw';
 import missionIndependence from '../../docs/02-policies/institutional/mission-and-independence-charter.md?raw';
 import missionIndependenceHy from '../../docs/02-policies/institutional/mission-and-independence-charter.hy.md?raw';
@@ -123,6 +126,7 @@ export const INSTITUTIONAL_DOCS: InstitutionalDoc[] = [
   docFrom('mission', '/about/mission', 'mission', missionIndependence, 'Mission and Independence Charter', { hy: missionIndependenceHy, ru: missionIndependenceRu }),
   docFrom('legal-status', '/about/legal-status', 'legal', currentLegalStatus, 'Current Legal Status'),
   docFrom('privacy-notice', '/privacy', 'legal', privacyNotice, 'Privacy Notice'),
+  docFrom('community-guidelines', '/guidelines', 'legal', communityGuidelines, 'Community Guidelines', { hy: communityGuidelinesHy, ru: communityGuidelinesRu }),
   docFrom('open-source', '/about/open-source', 'openSource', openSourceIp, 'Open Source, Intellectual Property, and Brand Stewardship'),
   docFrom('ai', '/about/ai', 'ai', aiAuthority, 'AI Advisory and Human Authority'),
   docFrom('world-citizenship', '/about/world-citizenship', 'worldCitizenship', worldCitizenship, 'World Citizenship: Present Status and Long-Term Aim'),
