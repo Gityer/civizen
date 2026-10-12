@@ -1,3 +1,6 @@
+import type { GovernancePublicAuditVerifierNodeRow, GovernancePublicAuditBatchVerificationRow, GovernancePublicAuditNetworkProofRow, GovernancePublicAuditReplicationPolicyRow, GovernancePublicAuditVerifierMirrorHealthRow, GovernancePublicAuditClientVerifierBundle, GovernancePublicAuditVerifierSummary } from './governance-public-audit-verifiers.types';
+export type { GovernancePublicAuditVerifierNodeRow, GovernancePublicAuditBatchVerificationRow, GovernancePublicAuditNetworkProofRow, GovernancePublicAuditReplicationPolicyRow, GovernancePublicAuditVerifierMirrorHealthRow, GovernancePublicAuditClientVerifierBundle, GovernancePublicAuditVerifierSummary } from './governance-public-audit-verifiers.types';
+
 import type { Database } from '@/integrations/supabase/types';
 import {
   readGovernancePublicAuditClientVerifierBundleProductionData,
@@ -141,61 +144,6 @@ export {
   readGovernancePublicAuditVerifierMirrorSignerGovernanceSummary,
   readGovernancePublicAuditVerifierMirrorPolicyRatificationSummary,
 } from '@/lib/governance-public-audit-verifier-federation';
-
-export type GovernancePublicAuditVerifierNodeRow = Database['public']['Tables']['governance_public_audit_verifier_nodes']['Row'];
-export type GovernancePublicAuditBatchVerificationRow = Database['public']['Tables']['governance_public_audit_batch_verifications']['Row'];
-export type GovernancePublicAuditNetworkProofRow = Database['public']['Tables']['governance_public_audit_network_proofs']['Row'];
-export type GovernancePublicAuditReplicationPolicyRow = Database['public']['Tables']['governance_public_audit_replication_policies']['Row'];
-
-export interface GovernancePublicAuditVerifierMirrorHealthRow {
-  mirrorId: string;
-  mirrorKey: string;
-  mirrorLabel: string | null;
-  endpointUrl: string;
-  mirrorType: string;
-  regionCode: string;
-  jurisdictionCountryCode: string;
-  operatorLabel: string;
-  isActive: boolean;
-  lastCheckAt: string | null;
-  lastCheckStatus: 'ok' | 'degraded' | 'failed' | 'unknown';
-  lastCheckLatencyMs: number | null;
-  lastObservedBatchId: string | null;
-  lastObservedBatchHash: string | null;
-  lastErrorMessage: string | null;
-  isStale: boolean;
-  healthStatus: 'healthy' | 'degraded' | 'critical' | 'unknown' | 'inactive';
-}
-
-export interface GovernancePublicAuditClientVerifierBundle {
-  bundleVersion: string;
-  bundleHash: string;
-  bundlePayload: Record<string, unknown>;
-  healthyMirrorCount: number;
-  quorumMet: boolean;
-  failoverPolicy: GovernancePublicAuditVerifierMirrorFailoverPolicySummary | null;
-  failoverOrder: GovernancePublicAuditClientMirrorFailoverTarget[];
-  signedDirectoryHash: string | null;
-  signedDirectorySignature: string | null;
-  signedDirectorySignerKey: string | null;
-  signedDirectoryTrust: GovernancePublicAuditVerifierMirrorDirectoryTrustSummary | null;
-  federationDiversity: GovernancePublicAuditVerifierMirrorFederationDiversitySummary | null;
-  federationOperations: GovernancePublicAuditVerifierMirrorFederationOperationsSummary | null;
-  federationDistribution: GovernancePublicAuditVerifierFederationPackageDistributionSummary | null;
-  policyRatification: GovernancePublicAuditVerifierMirrorPolicyRatificationSummary | null;
-}
-
-export interface GovernancePublicAuditVerifierSummary {
-  policyEnabled: boolean;
-  requiredVerifiedCount: number;
-  requiredNetworkProofCount: number;
-  activeVerifierCount: number;
-  verifiedCount: number;
-  mismatchCount: number;
-  unreachableCount: number;
-  networkProofCount: number;
-  meetsReplicationThreshold: boolean;
-}
 
 function asNonNegativeInteger(value: unknown, fallback = 0) {
   if (typeof value === 'number' && Number.isFinite(value)) return Math.max(0, Math.floor(value));
