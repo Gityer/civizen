@@ -1,4 +1,8 @@
 import { Capacitor } from '@capacitor/core';
+import { useAppUpdateRecheck } from '@/components/app/useAppUpdateRecheck';
+import { needsReinstallForSigning } from '@/lib/app-updates';
+import { ANDROID_INSTALL_PAGE_URL } from '@/lib/downloads';
+import { ApkUpdater } from '@/lib/apk-updater-plugin';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -268,47 +272,20 @@ export function AppUpdatePrompt() {
     }
   }, [allowTestingChannel, shouldUseExternalApkPrompt]);
 
-  useEffect(() => {
-    if (!shouldUseExternalApkPrompt) {
-      setAvailableUpdate(null);
-      return;
-    }
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState !== 'visible') return;
-
-      if (waitingForInstallPermissionRef.current && availableUpdateRef.current) {
-        // User likely returned from the install-permission settings screen.
-        setStatusMessage(t('appUpdate.permissionNeeded'));
-        return;
-      }
-
-      void checkForUpdates();
-    };
-
-    const handleFocus = () => {
-      if (waitingForInstallPermissionRef.current && availableUpdateRef.current) {
-        setStatusMessage(t('appUpdate.permissionNeeded'));
-        return;
-      }
-      void checkForUpdates();
-    };
-
-    void checkForUpdates();
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
-
+  useAppUpdateRecheck({
+    enabled: shouldUseExternalApkPrompt,
+    checkForUpdates,
+    onDisabled: () => setAvailableUpdate(null),
+    // User likely returned from the install-permission settings screen.
+    waitingForPermission: () => Boolean(waitingForInstallPermissionRef.current && availableUpdateRef.current),
+    onReturnWhileWaiting: () => setStatusMessage(t('appUpdate.permissionNeeded')),
+    onCleanup: () => {
       if (releaseLaunchTimeoutRef.current !== null) {
         window.clearTimeout(releaseLaunchTimeoutRef.current);
         releaseLaunchTimeoutRef.current = null;
       }
-    };
-  }, [checkForUpdates, shouldUseExternalApkPrompt, t]);
+    },
+  });
 
   if (!shouldUseExternalApkPrompt || !availableUpdate) {
     return null;
@@ -327,6 +304,11 @@ export function AppUpdatePrompt() {
     if (updateLaunchLockRef.current) return;
     const update = availableUpdateRef.current ?? availableUpdate;
     if (!update) return;
+    // Decision D10: a release-signed APK cannot be installed over the debug-signed testing app; send the member to the download page to reinstall once.
+    if (needsReinstallForSigning(update.manifest)) {
+      void ApkUpdater.openExternalUrl({ url: ANDROID_INSTALL_PAGE_URL });
+      return;
+    }
 
     updateLaunchLockRef.current = true;
     setIsLaunchingUpdate(true);
@@ -396,6 +378,9 @@ export function AppUpdatePrompt() {
               ),
               currentVersion: CURRENT_ANDROID_RELEASE_LABEL,
             })}
+            {needsReinstallForSigning(availableUpdate.manifest) ? (
+              <span className="mt-3 block text-sm text-foreground" data-testid="app-update-reinstall">{t('appUpdate.reinstallSigned')}</span>
+            ) : null}
             {statusMessage ? (
               <span className="mt-3 block text-sm text-muted-foreground">{statusMessage}</span>
             ) : null}
@@ -407,7 +392,7 @@ export function AppUpdatePrompt() {
             {t('appUpdate.later')}
           </AlertDialogCancel>
           <AlertDialogAction onClick={handleUpdate} disabled={isLaunchingUpdate}>
-            {isLaunchingUpdate ? t('appUpdate.downloading') : t('appUpdate.updateNow')}
+            {isLaunchingUpdate ? t('appUpdate.downloading') : needsReinstallForSigning(availableUpdate.manifest) ? t('appUpdate.openDownload') : t('appUpdate.updateNow')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -4,7 +4,22 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ANDROID_DIR="$ROOT_DIR/android"
-APK_SOURCE="$ANDROID_DIR/app/build/outputs/apk/debug/app-debug.apk"
+# Decision D10: a release keystore (local ~/.civizen-secrets/civizen-release.keystore.properties, or
+# ANDROID_KEYSTORE_FILE in CI) makes this a signed release build; without it the pipeline keeps the debug build.
+if [ -f "$HOME/.civizen-secrets/civizen-release.keystore.properties" ] || { [ -n "${ANDROID_KEYSTORE_FILE:-}" ] && [ -f "${ANDROID_KEYSTORE_FILE:-}" ]; }; then
+  BUILD_SIGNING="release"
+  GRADLE_TASKS="assembleRelease bundleRelease"
+  APK_SOURCE="$ANDROID_DIR/app/build/outputs/apk/release/app-release.apk"
+  AAB_SOURCE="$ANDROID_DIR/app/build/outputs/bundle/release/app-release.aab"
+  APK_PREFIX="civizen-android"
+else
+  BUILD_SIGNING="debug"
+  GRADLE_TASKS="assembleDebug"
+  APK_SOURCE="$ANDROID_DIR/app/build/outputs/apk/debug/app-debug.apk"
+  AAB_SOURCE=""
+  APK_PREFIX="civizen-debug"
+fi
+export VITE_ANDROID_SIGNING="$BUILD_SIGNING"
 APK_TARGET_DIR="$ROOT_DIR/public/downloads"
 APK_TARGET="$APK_TARGET_DIR/civizen-debug.apk"
 UPDATE_MANIFEST_DIR="$ROOT_DIR/public/updates"
@@ -31,7 +46,7 @@ resolve_channel_suffix() {
 versioned_apk_filename() {
   local suffix
   suffix="$(resolve_channel_suffix "$1")"
-  echo "civizen-debug-${suffix}-${RELEASE_ID}.apk"
+  echo "${APK_PREFIX}-${suffix}-${RELEASE_ID}.apk"
 }
 JDK_CACHE_DIR="/tmp/civizen-jdk"
 JDK_ARCHIVE="$JDK_CACHE_DIR/temurin21.tar.gz"
@@ -79,7 +94,7 @@ prune_download_archive() {
   mkdir -p "$APK_TARGET_DIR"
 
   local -a versioned_apks=()
-  mapfile -t versioned_apks < <(cd "$APK_TARGET_DIR" && ls -1t "civizen-debug-${suffix}-"*.apk 2>/dev/null || true)
+  mapfile -t versioned_apks < <(cd "$APK_TARGET_DIR" && ls -1t "civizen-debug-${suffix}-"*.apk "civizen-android-${suffix}-"*.apk 2>/dev/null || true)
   if [ "${#versioned_apks[@]}" -eq 0 ]; then
     return
   fi
@@ -143,6 +158,7 @@ write_update_manifest() {
   "downloadUrl": "$apk_url",
   "publishedAt": "$published_at",
   "sha256": "$apk_sha256",
+  "signing": "$BUILD_SIGNING",
   "notes": $notes_json
 }
 EOF
@@ -158,6 +174,7 @@ window.__CIVIZEN_ANDROID_UPDATE__ = {
   downloadUrl: '$apk_url',
   publishedAt: '$published_at',
   sha256: '$apk_sha256',
+  signing: '$BUILD_SIGNING',
   notes: $notes_json,
 };
 EOF
@@ -191,11 +208,20 @@ bash "$ROOT_DIR/scripts/apply-android-native-overlays.sh"
 echo "Preparing Java for the Android build..."
 ensure_java
 
-echo "Building the Android debug APK..."
+echo "Building the Android $BUILD_SIGNING APK ($GRADLE_TASKS)..."
 (
   cd "$ANDROID_DIR"
-  ./gradlew clean assembleDebug
+  # shellcheck disable=SC2086
+  ./gradlew clean $GRADLE_TASKS
 )
+if [ -n "$AAB_SOURCE" ] && [ -f "$AAB_SOURCE" ]; then
+  # Play-ready bundle (9.2): kept outside the website and the repository; a copy goes to the private vault when mounted.
+  mkdir -p "$ROOT_DIR/android-release"
+  cp "$AAB_SOURCE" "$ROOT_DIR/android-release/civizen-${RELEASE_ID}.aab"
+  VAULT_AAB_DIR="/mnt/c/Users/armen/My Drive (armen.yeremyan@gmail.com)/Personal/Projects/AIS - OS/AIS-OS/projects/civizen/play-bundles"
+  if mkdir -p "$VAULT_AAB_DIR" 2>/dev/null; then cp "$AAB_SOURCE" "$VAULT_AAB_DIR/civizen-${RELEASE_ID}.aab"; fi
+  echo "Play bundle: android-release/civizen-${RELEASE_ID}.aab"
+fi
 
 if [ ! -f "$APK_SOURCE" ]; then
   echo "Expected APK not found at $APK_SOURCE" >&2

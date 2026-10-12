@@ -44,8 +44,10 @@ function main() {
     process.exit(1);
   }
 
-  const testingApkName = `civizen-debug-testing-${releaseId}.apk`;
-  const releaseApkName = `civizen-debug-release-${releaseId}.apk`;
+  // signed release builds are civizen-android-*, debug builds civizen-debug-* (decision D10)
+  const apkPrefix = fs.existsSync(path.join(downloadsDir, `civizen-android-testing-${releaseId}.apk`)) ? 'civizen-android' : 'civizen-debug';
+  const testingApkName = `${apkPrefix}-testing-${releaseId}.apk`;
+  const releaseApkName = `${apkPrefix}-release-${releaseId}.apk`;
   const testingApk = path.join(downloadsDir, testingApkName);
   const releaseApk = path.join(downloadsDir, releaseApkName);
 

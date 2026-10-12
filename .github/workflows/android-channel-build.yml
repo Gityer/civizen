@@ -62,7 +62,7 @@ jobs:
         run: |
           mkdir -p release-artifacts
           cp public/updates/android*.json release-artifacts/
-          cp public/downloads/civizen-debug*.apk release-artifacts/
+          cp public/downloads/civizen-debug*.apk public/downloads/civizen-android*.apk release-artifacts/ 2>/dev/null || true
           (cd release-artifacts && sha256sum *.apk > SHA256SUMS.txt)
 
       - name: Upload release artifacts
@@ -81,5 +81,5 @@ jobs:
           gh release create "$tag" \
             --title "Civizen ${tag}" \
             --notes "Production APK mirror for Civizen ${tag}. The official update endpoint remains https://civizen.world/updates/android.json." \
-            release-artifacts/civizen-debug-release-*.apk \
+            release-artifacts/civizen-*-release-*.apk \
             release-artifacts/SHA256SUMS.txt

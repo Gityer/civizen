@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ANDROID_DOWNLOAD_URL } from '@/lib/downloads';
+import { ANDROID_SIGNING, ANDROID_DOWNLOAD_URL } from '@/lib/downloads';
 import { AndroidChecksum } from '@/components/download/AndroidChecksum';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
 
@@ -66,6 +66,9 @@ export default function DownloadPage() {
               </div>
 
               <p className="text-sm leading-6 text-muted-foreground">{t('downloads.android.description')}</p>
+              {ANDROID_SIGNING === 'release' ? (
+                <p className="text-sm leading-6 text-foreground" data-testid="download-reinstall-note">{t('downloads.android.reinstallNote')}</p>
+              ) : null}
 
               <ol className="space-y-2 rounded-2xl border border-border/60 bg-background/80 p-4 text-sm text-muted-foreground">
                 <li>1. {t('downloads.android.step1')}</li>

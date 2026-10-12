@@ -51,3 +51,5 @@ AGENT_CHECKIN.md
 
 # web OTA bundles are built artifacts (deployed with dist/, never committed)
 public/updates/bundles/
+# signed Play bundles built locally (copies live in the private vault)
+android-release/

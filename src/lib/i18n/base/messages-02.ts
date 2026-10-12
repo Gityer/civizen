@@ -101,6 +101,7 @@ export const m_messages_02 = {
       "step1": "Tap Download Android APK below (prefer Chrome, not an in-app browser).",
       "step2": "If Chrome shows Open, tap it to install. Otherwise open Civizen.apk from the notification shade or Files / Downloads.",
       "step3": "If Android asks, allow installs from your browser or file manager, then tap Install.",
+      "reinstallNote": "This build is signed with Civizen's release key. If you installed an earlier testing build, uninstall it first; Android cannot update across signing keys. You only do this once.",
       "button": "Download Android APK",
       "openingDownload": "If install did not open automatically, open the APK from notifications or Downloads."
     },
@@ -120,6 +121,8 @@ export const m_messages_02 = {
     "installFailed": "Could not install the update. You can still download it from the website.",
     "permissionNeeded": "Android needs permission to install Civizen updates. Turn on Allow from this source, return here, then tap Update again.",
     "updateNow": "Update now",
-    "later": "Later"
+    "later": "Later",
+    "reinstallSigned": "This update is signed with Civizen's release key, so it cannot be installed over the testing build you have. Uninstall Civizen, then install the new build from the download page. You only do this once.",
+    "openDownload": "Open download page"
   },
 } as const;

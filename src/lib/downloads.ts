@@ -2,8 +2,9 @@ import { APP_RELEASE_ID } from '@/lib/app-release';
 import type { AppUpdateChannel } from '@/lib/update-channel';
 
 export const PUBLIC_APP_ORIGIN = 'https://civizen.world';
-/** Matches `versioned_apk_filename(release)` in `scripts/update-application.sh`. */
-export const ANDROID_DOWNLOAD_FILENAME = `civizen-debug-release-${APP_RELEASE_ID}.apk`;
+/** Signed release builds (decision D10) are `civizen-android-*`; debug builds keep `civizen-debug-*`. Matches `versioned_apk_filename(release)` in `scripts/update-application.sh`. */
+export const ANDROID_SIGNING: 'debug' | 'release' = import.meta.env.VITE_ANDROID_SIGNING === 'release' ? 'release' : 'debug';
+export const ANDROID_DOWNLOAD_FILENAME = `${ANDROID_SIGNING === 'release' ? 'civizen-android' : 'civizen-debug'}-release-${APP_RELEASE_ID}.apk`;
 export const ANDROID_DOWNLOAD_PATH = `/downloads/${ANDROID_DOWNLOAD_FILENAME}`;
 export const ANDROID_DOWNLOAD_QUERY = `v=${encodeURIComponent(APP_RELEASE_ID)}&h=apk`;
 export const LEGACY_ANDROID_DOWNLOAD_PATH = '/downloads/civizen-debug.apk';

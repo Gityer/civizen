@@ -12,6 +12,8 @@ export type AndroidUpdateManifest = {
   notes?: string[];
   /** SHA-256 of the published APK, for members who verify the download (Phase 9 step 9.1). */
   sha256?: string;
+  /** Which key signed the APK; a release-signed update cannot be installed over a debug-signed app (decision D10). */
+  signing?: 'debug' | 'release';
 };
 
 export type InstalledAndroidRelease = {
@@ -25,6 +27,15 @@ export const CURRENT_ANDROID_RELEASE: InstalledAndroidRelease = {
 };
 
 export const CURRENT_ANDROID_RELEASE_LABEL = `${APP_VERSION_TAG} (${ANDROID_VERSION_CODE})`;
+
+/** How this build was signed (baked in at build time; older builds carry no flag and were debug-signed). */
+export const INSTALLED_ANDROID_SIGNING: 'debug' | 'release' = import.meta.env.VITE_ANDROID_SIGNING === 'release' ? 'release' : 'debug';
+
+/** True when Android will refuse the update as an in-place install because the signing key changed. */
+export function needsReinstallForSigning(manifest: Pick<AndroidUpdateManifest, 'signing'>, installed: 'debug' | 'release' = INSTALLED_ANDROID_SIGNING): boolean {
+  const target = manifest.signing ?? 'debug';
+  return target !== installed;
+}
 
 function normalizeVersion(version: string) {
   return version.trim().replace(/^v/i, '');

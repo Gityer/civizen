@@ -78,10 +78,10 @@ sudo tar -C "\$ROOT" -xzf "\$STAGE/civizen-dist.tgz"
 sudo find "\$ROOT/assets" -type f -mtime +"\$DAYS" -delete || true
 # Keep release soak APKs, current aliases, and this deploy's versioned APKs.
 if [[ -d "\$ROOT/downloads" ]]; then
-  sudo find "\$ROOT/downloads" -maxdepth 1 -type f -name 'civizen-debug-*.apk' \
-    ! -name 'civizen-debug-release-*.apk' \
+  sudo find "\$ROOT/downloads" -maxdepth 1 -type f \( -name 'civizen-debug-*.apk' -o -name 'civizen-android-*.apk' \) \
+    ! -name 'civizen-debug-release-*.apk' ! -name 'civizen-android-release-*.apk' \
     ! -name "civizen-debug-\${RELEASE_ID}.apk" \
-    ! -name "civizen-debug-testing-\${RELEASE_ID}.apk" \
+    ! -name "civizen-debug-testing-\${RELEASE_ID}.apk" ! -name "civizen-android-testing-\${RELEASE_ID}.apk" \
     -delete || true
 fi
 rm -f "\$STAGE/civizen-dist.tgz"

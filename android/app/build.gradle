@@ -28,10 +28,40 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // Release signing (decision D10): the keystore never lives in the repository.
+    //   local:  ~/.civizen-secrets/civizen-release.keystore.properties (storeFile, storePassword, keyAlias, keyPassword)
+    //   CI:     ANDROID_KEYSTORE_FILE (path to a decoded keystore), ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+    def signingProps = new Properties()
+    def signingPropsFile = new File(System.getProperty("user.home"), ".civizen-secrets/civizen-release.keystore.properties")
+    if (signingPropsFile.exists()) {
+        signingPropsFile.withInputStream { signingProps.load(it) }
+    }
+    def envKeystore = System.getenv("ANDROID_KEYSTORE_FILE")
+    def releaseStoreFile = signingProps.getProperty("storeFile") ?: envKeystore
+    def releaseStorePassword = signingProps.getProperty("storePassword") ?: System.getenv("ANDROID_KEYSTORE_PASSWORD")
+    def releaseKeyAlias = signingProps.getProperty("keyAlias") ?: System.getenv("ANDROID_KEY_ALIAS")
+    def releaseKeyPassword = signingProps.getProperty("keyPassword") ?: System.getenv("ANDROID_KEY_PASSWORD")
+    def hasReleaseSigning = releaseStoreFile != null && new File(releaseStoreFile).exists() && releaseStorePassword != null && releaseKeyAlias != null
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword ?: releaseStorePassword
+                enableV1Signing true
+                enableV2Signing true
+                enableV3Signing true
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }
