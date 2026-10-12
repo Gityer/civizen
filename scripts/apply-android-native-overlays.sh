@@ -26,7 +26,9 @@ cp "$SRC_DIR/app/src/main/AndroidManifest.xml" "$DST_DIR/app/src/main/AndroidMan
 cp "$SRC_DIR/app/src/main/res/xml/file_paths.xml" "$DST_DIR/app/src/main/res/xml/file_paths.xml"
 cp "$SRC_DIR/app/src/main/java/com/civizen/app/MainActivity.java" \
   "$DST_DIR/app/src/main/java/com/civizen/app/MainActivity.java"
-cp "$SRC_DIR/app/src/main/java/com/civizen/app/ApkUpdaterPlugin.java" \
-  "$DST_DIR/app/src/main/java/com/civizen/app/ApkUpdaterPlugin.java"
+for plugin in ApkUpdaterPlugin BiometricAuthPlugin; do
+  cp "$SRC_DIR/app/src/main/java/com/civizen/app/$plugin.java" \
+    "$DST_DIR/app/src/main/java/com/civizen/app/$plugin.java"
+done
 
 echo "Android native overlays applied."

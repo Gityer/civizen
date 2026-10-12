@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import { downloadJson, exportFileName, exportMyData } from '@/lib/account-export';
+import { exportFileName, exportMyData, saveJson } from '@/lib/account-export';
 
 /**
  * Account lifecycle (Phase 3 step 3.5): change the sign-in e-mail, change the password after proving the
@@ -65,7 +65,7 @@ export default function AccountSettings() {
     setBusy('export');
     try {
       const data = await exportMyData();
-      downloadJson(exportFileName(profile?.username), data);
+      await saveJson(exportFileName(profile?.username), data);
       toast.success(t('settings.account.exportReady'));
     } catch {
       toast.error(t('settings.account.exportFailed'));
