@@ -1,6 +1,6 @@
 ---
 title: Product inventory and implementation plan (2026-10-07)
-status: current
+status: executed (plan and tracker superseded by product-inventory-and-plan-v2-2026-10-12.md)
 version: 0.1
 date: 2026-10-07
 owners: Armen Yeremyan (owner); maintained by the agents working on Civizen
@@ -18,6 +18,7 @@ related:
 **Audience:** the owner and every agent working on Civizen.
 **Scope:** the whole application (web and Android) from the point of view of every user type.
 **Basis:** read-only review of `main` at `cd98df6` (v0.1.201, build 203), the live site (guest view), 234 docs, 278 migrations, and read-only counts from the production database on 2026-10-07. Nothing was changed in code or data while producing this document.
+**Superseded 2026-10-12:** the live plan and tracker are in [v2](product-inventory-and-plan-v2-2026-10-12.md); this file is the history of Phases 0–11. Sections 1, 2 and 8 stay binding.
 **How to use it:** Section 7 is the ordered step list. When a step ships, its row in Section 10 is updated with evidence in the same change. This file is the single product-wide tracker; AyMe keeps the reasons and decisions; detailed specs stay in their own documents.
 
 ---
@@ -557,7 +558,7 @@ Typed client in the remaining civic-voting files and Wellbeing types; delete dea
 | 9.1 (done) Signed release builds | shipped (next release) — decision D10 adopted (2026-10-11): a 4096-bit release key (valid to 2056) in the owner's private vault signs every Android build; the pipeline builds the signed APK and the Play bundle when the keystore is present; signed artifacts are `civizen-android-*`, manifests carry `signing`, and a debug-signed install is sent to the download page to reinstall once (in-place install across keys is impossible on Android) | `android/app/build.gradle`, `scripts/update-application.sh`, `src/lib/app-updates.ts`, `AppUpdatePrompt.tsx`, `RELEASING.md` | 2026-10-11 |
 | 9.2 (prep) Play internal track | prepared — signed `.aab` per release (local `android-release/`, vault copy), privacy notice at `/privacy`, store listing text and Data safety answers drafted; the Play Console account (25 USD, identity check) and the first upload are the owner's; iOS needs an Apple account and a Mac | `docs/04-operations/dev/PLAY_STORE_LISTING.md`, `docs/02-policies/institutional/privacy-notice.md` | 2026-10-11 |
 | 9.3 (done) Native web OTA | shipped (next release) — the Android sideload build applies a newer published web bundle on start (Capgo updater: zip with SHA-256, activate, restart, automatic rollback when the bundle does not report ready); store builds never do; the publisher writes a deterministic zip | `src/lib/native-web-ota.ts` (+ test), `scripts/publish-web-ota.sh`, `capacitor.config*.json` | 2026-10-11 |
-| Operator: TURN relay and e-mail digest | live on production (2026-10-11) — coturn on the VPS on TCP 39000 (the cloud firewall filters UDP), `turn-credentials` hands out short-lived credentials; the functions container has the SMTP settings GoTrue already used plus the digest secret, and a daily 06:00 UTC cron posts the digest | `docs/04-operations/dev/messaging-calls.md`, `RELEASING.md` | 2026-10-11 |
+| Operator: TURN relay and e-mail digest | live on production (2026-10-11) — coturn on the VPS on TCP 39000 (the cloud firewall filters UDP), `turn-credentials` hands out short-lived credentials; the functions container has the SMTP settings GoTrue already used plus the digest secret, and a daily 06:00 UTC cron posts the digest. **Correction 2026-10-12:** no digest schedule exists on production (pg_cron has none; the VPS `ubuntu` crontab is empty since 05:43 UTC 10-12) — TURN stands, digest is step A3 in v2 | `docs/04-operations/dev/messaging-calls.md`, `RELEASING.md` | 2026-10-12 |
 | 11 (baseline to zero, continuous); owner: Play/App Store accounts (D7), group chats only if asked (D9) | the baseline shrinks with every touched file; store accounts are the owner's | | |
 
 Already shipped before this plan (for reference): sealed ballots with receipts and hash-chained events, approval and ranked ballots, server eligibility (sanctions, age, scope), hourly lifecycle tick with outcome, member-supported proposals, one member Governance workspace page, notification center, hand-written HY/RU for voting, error reporting hook, skip link, axe tests, Playwright ballot spec, typed client regeneration, landing consultation banner, production-by-default releases (voting audit §6).
