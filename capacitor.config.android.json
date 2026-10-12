@@ -1,5 +1,13 @@
 {
   "appId": "com.civizen.app",
   "appName": "Civizen",
-  "webDir": "dist"
+  "webDir": "dist",
+  "plugins": {
+    "CapacitorUpdater": {
+      "autoUpdate": false,
+      "appReadyTimeout": 10000,
+      "resetWhenUpdate": true,
+      "directUpdate": false
+    }
+  }
 }

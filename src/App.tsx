@@ -59,6 +59,21 @@ function DeferredAppUpdatePrompt() {
   const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => scheduleAfterIdle(() => setShouldLoad(true), 1500), []);
+  // Phase 9.3: on the Android shell, confirm this web bundle booted (else the updater rolls back) and apply a newer published one.
+  useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      void import('@/lib/native-web-ota').then(async ({ markWebBundleReady, applyNativeWebOta }) => {
+        if (cancelled) return;
+        await markWebBundleReady();
+        await applyNativeWebOta();
+      });
+    }, 2500);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
 
   if (!shouldLoad) return null;
 
