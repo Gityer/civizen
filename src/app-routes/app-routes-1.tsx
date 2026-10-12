@@ -106,6 +106,7 @@ export const appRoutes1 = (
       <Route path="/documents/:docSlug" element={<InstitutionalDocRoute />} />
       <Route path="/about" element={<InstitutionalDocRoute />} />
       <Route path="/about/legal-status" element={<InstitutionalDocRoute />} />
+      <Route path="/privacy" element={<InstitutionalDocRoute />} />
       <Route path="/about/mission" element={<InstitutionalDocRoute />} />
       <Route path="/about/open-source" element={<InstitutionalDocRoute />} />
       <Route path="/about/ai" element={<InstitutionalDocRoute />} />

@@ -34,7 +34,28 @@ Then deploy `dist/`. Do not leave a build on the Testing track without a plan to
 
 On native Android sideload builds, the app loads **only the manifest for the track** the user chose in **Settings** (Production vs Testing). Switching tracks triggers an immediate check against the server for that track's latest version.
 
-## E-mail digest (optional sender)
+## Android signing and the Play bundle (decision D10, 2026-10-11)
+
+Every Android build is signed with the Civizen release key when the keystore is available. The keystore and its
+passwords live outside the repository: locally in `~/.civizen-secrets/civizen-release.keystore.properties`
+(`storeFile`, `storePassword`, `keyAlias`, `keyPassword`), in CI as `ANDROID_KEYSTORE_FILE` (a decoded keystore path)
+plus `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. The owner's copy is in the private
+vault (`projects/civizen/release-keystore/`). `scripts/update-application.sh` then runs `assembleRelease bundleRelease`,
+publishes `civizen-android-<channel>-<release id>.apk` (manifests carry `"signing": "release"`) and keeps the Play
+bundle in `android-release/` (gitignored; copy in the vault `projects/civizen/play-bundles/`). Without a keystore the
+pipeline keeps the debug build and the `civizen-debug-*` names. Android cannot install a release-signed APK over a
+debug-signed one: the app shows the reinstall notice once and the Download page says so. Play steps:
+`PLAY_STORE_LISTING.md`.
+
+## Web OTA on the Android shell (step 9.3)
+
+The release publishes `public/updates/web-android.json` and a deterministic zip of the web layer
+(`scripts/publish-web-ota.sh`). On the sideload channel the app (`src/lib/native-web-ota.ts`, Capgo updater) downloads
+a newer bundle with its SHA-256, activates it and restarts; a bundle that does not report ready within 10 s is rolled
+back by the plugin. Store builds never do this (`VITE_DISTRIBUTION_CHANNEL`). A new native floor (`minNative`) still
+goes through the APK update.
+
+## E-mail digest (sender live since 2026-10-11)
 
 The daily notification digest is an edge function (`supabase/functions/notification-digest`). It only sends when the
 functions container has `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME`
@@ -45,7 +66,8 @@ curl -fsS -X POST -H "x-digest-secret: $DIGEST_CRON_SECRET" https://<functions-h
 ```
 
 `DIGEST_DRY_RUN=1` makes it list candidates without mailing. Members opt in under Settings > Privacy; nobody is
-mailed by default.
+mailed by default. On production the functions container has these variables (docker `.env` + compose), and the
+`ubuntu` crontab posts daily at 06:00 UTC via `/home/ubuntu/civizen-digest-cron.sh` (log `~/civizen-digest.log`).
 
 ## Database migrations
 
