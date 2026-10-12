@@ -6,12 +6,12 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.233",
     "appReleaseId": "20261012-v0.1.233",
     "androidVersionCode": 235,
-    "gitSha": "578ee1e34b591ffa35f3a73ea5091fff9f1993bf",
-    "generatedAt": "2026-10-12T23:16:12.673Z",
-    "sourceFingerprint": "326fd02a57342bbafa483a6acab21219dc2836c2a1596c602cb8629acba09679",
+    "gitSha": "6866254f18d2c704d12cb04254b721e9692a4d81",
+    "generatedAt": "2026-10-12T23:49:07.773Z",
+    "sourceFingerprint": "ba3b9547e8312d6d87b1578c706bfa90931cc6bdf7290c9e0cbc5b5447819a2f",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 397
+    "chunkCount": 398
   },
   "capabilities": [
     {
@@ -1052,6 +1052,38 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       ],
       "sourceRefs": [
         "docs/04-operations/dev/phase-1-pilot-operating-model.md"
+      ]
+    },
+    {
+      "id": "content_moderation",
+      "name": "Reporting, moderation and appeals",
+      "status": "implemented",
+      "description": "Any signed-in member can report a post, comment, Matter, Solutions comment, job listing or member profile with a reason (spam, harassment, hate speech, violence, sexual content, false information, private information, illegal content, other). Moderators of the Moderation and Conduct domain work one queue: they hide the item with a reason or dismiss the reports. Hidden posts and comments disappear for everyone except the author and moderators; a hidden public Matter becomes participants-only; a hidden job listing is closed. Nothing is deleted. The author is told the reason and can appeal once; a different moderator decides, and a successful appeal restores the item exactly. People are not hidden; conduct towards people goes through governance sanctions. Private messages are reported from the chat.",
+      "howTo": "Tap the flag icon on the item (on posts it is in the post menu). Moderators open Moderation from Settings. Authors open Moderation from the notice on the hidden item or from the notification to appeal. The Community Guidelines are at /guidelines.",
+      "routes": [
+        "/moderation",
+        "/guidelines"
+      ],
+      "roles": [
+        "member",
+        "moderator"
+      ],
+      "relatedCapabilities": [
+        "messaging"
+      ],
+      "aliases": [
+        "report a post",
+        "report abuse",
+        "flag",
+        "moderation",
+        "appeal",
+        "hidden post",
+        "community guidelines",
+        "code of conduct"
+      ],
+      "sourceRefs": [
+        "docs/04-operations/dev/content-moderation.md",
+        "docs/02-policies/institutional/community-guidelines.md"
       ]
     }
   ],
@@ -2765,6 +2797,15 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "title": "Phase 1 contribution pilots",
       "path": "src/lib/assistant/catalog.ts",
       "text": "Phase 1 contribution pilots status=implemented. Three live pilots: Education-to-Contribution, Community Problem-Solving Lab, and Shared Knowledge / Learning Commons.  Routes: /contribute/professional, /contribute/challenges, /contribute/knowledge.",
+      "status": "implemented",
+      "priority": 3,
+      "kind": "capability"
+    },
+    {
+      "id": "capability:content_moderation",
+      "title": "Reporting, moderation and appeals",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Reporting, moderation and appeals status=implemented. Any signed-in member can report a post, comment, Matter, Solutions comment, job listing or member profile with a reason (spam, harassment, hate speech, violence, sexual content, false information, private information, illegal content, other). Moderators of the Moderation and Conduct domain work one queue: they hide the item with a reason or dismiss the reports. Hidden posts and comments disappear for everyone except the author and moderators; a hidden public Matter becomes participants-only; a hidden job listing is closed. Nothing is deleted. The author is told the reason and can appeal once; a different moderator decides, and a successful appeal restores the item exactly. People are not hidden; conduct towards people goes through governance sanctions. Private messages are reported from the chat. Tap the flag icon on the item (on posts it is in the post menu). Moderators open Moderation from Settings. Authors open Moderation from the notice on the hidden item or from the notification to appeal. The Community Guidelines are at /guidelines. Routes: /moderation, /guidelines.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"
