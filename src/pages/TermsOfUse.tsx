@@ -75,6 +75,10 @@ export default function TermsOfUse() {
                     {t('worldCitizenshipNotice.title')}
                   </Link>
                   {' · '}
+                  <Link to="/privacy" className="text-primary underline-offset-4 hover:underline">
+                    {t('auth.privacyNotice')}
+                  </Link>
+                  {' · '}
                   <Link to="/documents" className="text-primary underline-offset-4 hover:underline">
                     {t('onboarding.footerDocuments')}
                   </Link>

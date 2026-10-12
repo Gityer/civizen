@@ -14,6 +14,7 @@ const FOOTER_LINKS = [
   { to: '/governance', labelKey: 'onboarding.footerGovernance' },
   { to: '/about/legal-status', labelKey: 'onboarding.footerLegalStatus' },
   { to: '/terms', labelKey: 'onboarding.footerTerms' },
+  { to: '/privacy', labelKey: 'onboarding.footerPrivacy' },
   { to: '/download', labelKey: 'onboarding.footerDownload' },
 ] as const;
 

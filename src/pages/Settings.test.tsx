@@ -180,7 +180,7 @@ describe('Settings page', () => {
       'Pillars',
       'Privacy',
       'Professional credentials',
-      'Terms of Use',
+      'Terms and privacy',
     ];
 
     const headingNodes = titles.map((title) => screen.getAllByText(title)[0]);

@@ -224,6 +224,7 @@ export const homeLandingRu = {
     existingAccount: 'У меня уже есть аккаунт',
     earlyAccessBadge: 'Ранний доступ · Тестовая сборка',
     footerTerms: 'Условия',
+    footerPrivacy: 'Конфиденциальность',
     footerDownload: 'Скачать',
     footerContact: 'Контакты',
     footerGovernance: 'Управление',

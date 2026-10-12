@@ -233,4 +233,6 @@ export const m_messages_settings_02 = {
     "helpLegalDescription": "What Civizen is and is not, as of today.",
     "helpTerms": "Terms of Use",
     "helpTermsDescription": "The platform terms you agreed to.",
+    "helpPrivacy": "Privacy notice",
+    "helpPrivacyDescription": "What Civizen collects, why, and your choices.",
 } as const;

@@ -36,6 +36,7 @@ export const m_messages_02 = {
     "createAccount": "Create Account",
     "creatingAccount": "Creating account...",
     "termsOfUse": "Terms of Use",
+    "privacyNotice": "Privacy notice",
     "acceptTermsPrefix": "I have read and agree to the",
     "acceptTermsDescription": "You must agree before creating your account.",
     "mustAcceptTerms": "You must agree to the Terms of Use before signing up.",

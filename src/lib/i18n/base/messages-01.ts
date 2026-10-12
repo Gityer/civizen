@@ -120,6 +120,7 @@ export const m_messages_01 = {
     "existingAccount": "I already have an account",
     "earlyAccessBadge": "Early access · Testing build",
     "footerTerms": "Terms",
+    "footerPrivacy": "Privacy",
     "footerDownload": "Download",
     "footerContact": "Contact",
     "footerGovernance": "Governance",

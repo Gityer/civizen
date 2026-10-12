@@ -37,6 +37,7 @@ export const participationLoopHy = {
     createAccount: 'Ստեղծել հաշիվ',
     creatingAccount: 'Հաշիվը ստեղծվում է...',
     termsOfUse: 'Օգտագործման պայմաններ',
+    privacyNotice: 'Գաղտնիության ծանուցում',
     acceptTermsPrefix: 'Կարդացել եմ և համաձայն եմ',
     acceptTermsDescription: 'Հաշիվ ստեղծելուց առաջ պետք է համաձայնեք։',
     mustAcceptTerms: 'Գրանցվելուց առաջ պետք է համաձայնեք Օգտագործման պայմաններին։',

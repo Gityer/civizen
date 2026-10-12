@@ -224,6 +224,7 @@ export const homeLandingHy = {
     existingAccount: 'Ես արդեն հաշիվ ունեմ',
     earlyAccessBadge: 'Վաղ մուտք · Փորձնական տարբերակ',
     footerTerms: 'Պայմաններ',
+    footerPrivacy: 'Գաղտնիություն',
     footerDownload: 'Ներբեռնել',
     footerContact: 'Կապ',
     footerGovernance: 'Կառավարում',

@@ -277,6 +277,10 @@ export default function SignUp() {
                     <Link to="/terms" className="text-primary hover:underline">
                       {t('auth.termsOfUse')}
                     </Link>
+                    {' · '}
+                    <Link to="/privacy" className="text-primary hover:underline">
+                      {t('auth.privacyNotice')}
+                    </Link>
                   </Label>
                   <p className="text-xs text-muted-foreground">{t('auth.acceptTermsDescription')}</p>
                   <p className="text-xs text-muted-foreground">{t('worldCitizenshipNotice.short')}</p>

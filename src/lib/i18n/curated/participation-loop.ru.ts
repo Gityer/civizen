@@ -37,6 +37,7 @@ export const participationLoopRu = {
     createAccount: 'Создать аккаунт',
     creatingAccount: 'Создаём аккаунт...',
     termsOfUse: 'Условия использования',
+    privacyNotice: 'Уведомление о конфиденциальности',
     acceptTermsPrefix: 'Я прочитал(а) и принимаю',
     acceptTermsDescription: 'Прежде чем создать аккаунт, нужно согласиться.',
     mustAcceptTerms: 'Перед регистрацией нужно принять Условия использования.',
