@@ -55,19 +55,16 @@ a newer bundle with its SHA-256, activates it and restarts; a bundle that does n
 back by the plugin. Store builds never do this (`VITE_DISTRIBUTION_CHANNEL`). A new native floor (`minNative`) still
 goes through the APK update.
 
-## E-mail digest (sender live since 2026-10-11)
+## E-mail digest (scheduled in the database since v2 step A3)
 
-The daily notification digest is an edge function (`supabase/functions/notification-digest`). It only sends when the
-functions container has `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME`
-(the same values GoTrue uses) and `DIGEST_CRON_SECRET`, and when a host cron posts to it once a day:
-
-```
-curl -fsS -X POST -H "x-digest-secret: $DIGEST_CRON_SECRET" https://<functions-host>/notification-digest
-```
-
-`DIGEST_DRY_RUN=1` makes it list candidates without mailing. Members opt in under Settings > Privacy; nobody is
-mailed by default. On production the functions container has these variables (docker `.env` + compose), and the
-`ubuntu` crontab posts daily at 06:00 UTC via `/home/ubuntu/civizen-digest-cron.sh` (log `~/civizen-digest.log`).
+The daily notification digest is an edge function (`supabase/functions/notification-digest`). It sends only when the
+functions container has the SMTP settings GoTrue uses (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`,
+`SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME`) and `DIGEST_CRON_SECRET`. The schedule lives in the database, not on the host:
+pg_cron job `notification_digest_tick` (06:00 UTC) calls the function through pg_net with the URL and secret stored in
+the server-only row `notification_digest_config` (migration `20261013090000_notification_digest_schedule.sql`; an
+operator fills that row once per environment). Every tick is logged in `notification_digest_runs`; staff read the last
+runs and the HTTP answers with `notification_digest_recent_runs()`. `DIGEST_DRY_RUN=1` on the function lists
+candidates without mailing. Members opt in under Settings > Privacy; nobody is mailed by default.
 
 ## Database migrations
 
