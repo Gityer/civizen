@@ -243,17 +243,16 @@ export default function OpportunityForm() {
               value={form.compensationStatus}
               onValueChange={(value) => setField('compensationStatus', value as CompensationStatus)}
             >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {COMPENSATION_STATUSES.map((status) => (
+                {COMPENSATION_STATUSES.filter((status) => status !== 'credit' || form.compensationStatus === 'credit').map((status) => (
                   <SelectItem key={status} value={status}>
                     {t(`contribute.opportunities.compensation.${status}`)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground">{t('contribute.opportunities.compensationHint')}</p>
           </div>
         </Card>
 

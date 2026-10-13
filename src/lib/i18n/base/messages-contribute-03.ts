@@ -30,6 +30,7 @@ export const m_messages_contribute_03 = {
       "remoteToggle": "This work can be done remotely",
       "locationLabel": "Location",
       "compensationLabel": "Compensation",
+      "compensationHint": "Paid and stipend opportunities are paid by the organizer outside Civizen; Civizen does not process payments.",
       "descriptionLabel": "Detailed description",
       "areaLabel": "Area",
       "areaNone": "No area selected",
@@ -137,7 +138,7 @@ export const m_messages_contribute_03 = {
         "volunteer": "Volunteer",
         "paid": "Paid",
         "stipend": "Stipend",
-        "credit": "Credit",
+        "credit": "Credit (retired)",
         "learning": "Learning",
         "mixed": "Mixed"
       },

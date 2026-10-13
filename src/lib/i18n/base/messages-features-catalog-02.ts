@@ -164,17 +164,17 @@ export const m_messages_features_catalog_02 = {
         ]
       },
       "phoneFirstSignup": {
-        "title": "Sign up with phone-first identity",
-        "summary": "Signup now prioritizes phone-based registration while still allowing email as the single alternate contact method.",
+        "title": "Sign up with your e-mail address",
+        "summary": "Create an account with an e-mail address you confirm; phone sign-up returns only when SMS confirmation exists.",
         "workflow": [
-          "Open Sign Up and enter your full name.",
-          "Use the detected flag and country code, then enter your local phone number, or provide an email instead.",
-          "Choose your language, agree to the Terms, and create the account."
+          "Open Sign Up and enter your full name and e-mail address.",
+          "Choose a password and your language, and agree to the Terms.",
+          "Open the confirmation e-mail; if it does not arrive, use Resend on the sign-up or sign-in screen."
         ],
         "details": [
-          "The signup form no longer asks people to invent a username up front.",
-          "Phone entry uses the detected country and dialing code so mobile registration feels lighter.",
-          "Signup accepts either email or phone, but not both in the same registration step."
+          "The sign-up form does not ask people to invent a username up front.",
+          "Members can sign in later with their e-mail address, username or a phone number they add to their profile.",
+          "Phone-only sign-up is switched off until a phone number can be confirmed by SMS (decision D8)."
         ]
       },
       "profileEditing": {

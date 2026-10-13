@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { SlowRunningText } from '@/components/ui/slow-running-text';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
@@ -538,11 +537,7 @@ export default function CivicVotingHub() {
             }
             title={t('civicVoting.title')}
           />
-          <SlowRunningText
-            text={t('civicVoting.subtitle')}
-            className="w-full text-sm text-muted-foreground"
-            onlyWhenOverflow
-          />
+          <p className="text-sm text-muted-foreground">{t('civicVoting.subtitle')}</p>
         </div>
 
         <section className="space-y-3">
@@ -632,6 +627,8 @@ export default function CivicVotingHub() {
             </div>
 
             <div className="ml-auto flex min-w-0 items-center gap-1.5">
+              {/* City and state only once there is something to pick; never an empty "— , —" pill (v2 B6). */}
+              {localityOptions.length > 0 || regionOptions.length > 0 || filterLocality || filterRegion ? (
               <div className="flex min-w-0 items-center text-xs text-muted-foreground">
                 <ScopeTextMenu
                   label={t('civicVoting.filters.city')}
@@ -666,6 +663,7 @@ export default function CivicVotingHub() {
                   }
                 />
               </div>
+              ) : null}
               <CountryFilterMenu
                 label={t('civicVoting.filters.country')}
                 globalLabel={t('civicVoting.filters.global')}
