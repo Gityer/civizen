@@ -45,7 +45,8 @@ export function ProtectedRoute({
   if (
     requiredPermissions?.length &&
     profile &&
-    !(profile.role === 'founder' || profile.role === 'system') &&
+    // Decision E5: founders pass on their permissions like everyone else; only system agents skip the check.
+    profile.role !== 'system' &&
     !permissionListHasAny(profile.effective_permissions || [], requiredPermissions)
   ) {
     return <Navigate to={redirectTo} replace />;

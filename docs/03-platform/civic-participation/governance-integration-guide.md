@@ -54,3 +54,18 @@ The steward console's Policies tab is read-only. `governance-policy-catalog.ts` 
 - An editable, versioned policy store with execution after an approved proposal (today the thresholds are code constants; the Policies tab only shows them).
 - More office keys or council seats: add values to `constitutional_office_key` and the dashboard lists them automatically; term limits and multi-holder offices need schema design first.
 - Moving `pages/Governance.tsx` `handleVote` onto `recordGovernanceVote` (same payload) once that page has test coverage.
+
+## Founder as an office (decision E5, v2 step C6)
+
+Founder authority is decided in one place, `profile_has_founder_authority(profile)`: the holder of the active
+constitutional `founder` office, or (while `founder_role_grants_authority()` returns true) an account with the
+`founder` role. The office grants the founder permission set in `current_app_permissions()`; permissions withdrawn by
+matured governance domains (`founder_withdrawn_permissions`) apply to whoever holds founder authority; voting proposal
+management (`civic_can_manage_voting_proposals`) follows the same helper; the client asks `my_founder_authority()`.
+Routes no longer let the founder role past a permission check (`ProtectedRoute`); only system agents skip it.
+
+Part 2, pending the owner's choice of office holder: a migration replaces `founder_role_grants_authority()` with
+`SELECT false`, so the founder role carries member permissions and only the office holder keeps founder powers. The
+client role checks that still read `role === 'founder'` (`access-control.ts`, `voting-proposals.ts`,
+`governance-member-model.ts`, `assistant/interaction-log.ts`) switch to `my_founder_authority()` in the same change.
+Tests: `supabase/tests/founder_office_authority_test.sql`, `src/components/auth/ProtectedRoute.test.tsx`.

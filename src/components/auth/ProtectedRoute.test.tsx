@@ -77,15 +77,26 @@ describe('ProtectedRoute', () => {
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
-  it('renders the page once a founder profile is ready', () => {
+  it('renders the page once a founder profile with the permission is ready', () => {
     authState.user = { id: 'user-1' };
-    authState.profile = { role: 'founder', effective_permissions: [] };
+    authState.profile = { role: 'founder', effective_permissions: ['role.assign'] };
     authState.loading = false;
 
     renderRoute();
 
     expect(screen.getByTestId('permissions-page')).toBeInTheDocument();
     expect(screen.queryByTestId('home-page')).not.toBeInTheDocument();
+  });
+
+  it('redirects a founder whose permission was withdrawn (no route bypass, decision E5)', () => {
+    authState.user = { id: 'user-1' };
+    authState.profile = { role: 'founder', effective_permissions: ['content.read'] };
+    authState.loading = false;
+
+    renderRoute();
+
+    expect(screen.getByTestId('home-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('permissions-page')).not.toBeInTheDocument();
   });
 
   it('redirects to Home when a non-founder lacks required permissions', () => {

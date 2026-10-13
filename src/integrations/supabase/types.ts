@@ -9340,6 +9340,9 @@ isOneToOne: false
 "founder_domain_access_summary":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
+"founder_role_grants_authority":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
 "founder_withdrawn_permissions":
 { Args: { "target_profile_id": string }; Returns: (Database["public"]['Enums']["app_permission"])[]
                            },
@@ -10225,6 +10228,9 @@ isOneToOne: false
 "my_eligibility":
 { Args: { "p_scope": string }; Returns: Json
                            },
+"my_founder_authority":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
 "my_getting_started":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
@@ -10415,6 +10421,9 @@ isOneToOne: false
                            },
 "profile_has_constitutional_office":
 { Args: { "requested_office": Database["public"]['Enums']["constitutional_office_key"],"target_profile_id": string }; Returns: boolean
+                           },
+"profile_has_founder_authority":
+{ Args: { "p_profile_id": string }; Returns: boolean
                            },
 "profile_has_governance_block":
 { Args: { "requested_scope": Database["public"]['Enums']["governance_block_scope"],"target_profile_id": string }; Returns: boolean
