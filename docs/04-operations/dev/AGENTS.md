@@ -2,6 +2,14 @@
 
 This file stores project-specific notes for future AI agent work.
 
+## Check in and out with AyMe (every session)
+
+Several agents work on Civizen at once (roles in AyMe `context/project-roles.md`; the Civizen PM is the lead). Check in with
+AyMe when you start: `aios_checkin` action=in with project civizen, the component, your session name, role, model and
+environment (shell: `node <aios-plugin>/src/cli.js checkin civizen --session "<you>" --component "..."`). A final
+`aios_log_progress` checks you out. `AGENT_CHECKIN.md` is generated from AyMe; do not edit it by hand. Continue a stale
+check-in only with `aios_checkin` action=takeover. Stage only your own files: other sessions commit in the same tree.
+
 ## 0. Mandatory context loading (every session, every UI task)
 
 Before planning or editing, agents **must read**:
