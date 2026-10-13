@@ -14,6 +14,10 @@
 - This is Civizen platform trust, not a government ID or passport claim.
 - Automated vendor liveness + face-match is a later phase on the same tables. Voting booth face gates remain simulators until that phase.
 
+- Case status changes only through `assign_identity_verification_case`, `decide_identity_verification_case` and the
+  revoke function; the one direct change is the owner submitting their own draft. Nobody reviews, assigns or decides
+  their own case or a case of an account linked to theirs (`profiles_are_linked`), reviewers included (v2 step A7).
+
 ## Ops notes
 
 - Migration: `supabase/migrations/20260907120000_identity_verification_storage.sql`

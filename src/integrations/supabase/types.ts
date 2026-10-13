@@ -6655,6 +6655,26 @@ isOneToOne: true
                   Relationships: [
                     
                   ]
+                },"phone_lookup_usage": {
+                  Row: {
+                    "day": string,"numbers": number,"profile_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "day": string,"numbers"?: number,"profile_id": string
+                  }
+                  Update: {
+                    "day"?: string,"numbers"?: number,"profile_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "phone_lookup_usage_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"post_comments": {
                   Row: {
                     "author_id": string,"content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null,"moderation_hidden_at": string | null,"moderation_reason": string | null,"post_id": string
@@ -8711,8 +8731,16 @@ isOneToOne: false
 "civic_election_observer_metrics":
 { Args: { "p_election_id": string }; Returns: Json
                            },
+"civic_election_option_tallies_raw":
+{ Args: { "p_election_id": string }; Returns: {
+              "candidate_id": string,"display_name": string,"option_key": string,"vote_count": number
+            }[]
+                           },
 "civic_election_outcome":
 { Args: { "p_election_id": string }; Returns: Json
+                           },
+"civic_election_participation":
+{ Args: { "p_election_id": string }; Returns: number
                            },
 "civic_election_public_directory":
 { Args: { "p_election_id": string }; Returns: {
@@ -8737,6 +8765,9 @@ isOneToOne: false
 { Args: { "p_election_id": string }; Returns: {
               "receipt": string
             }[]
+                           },
+"civic_election_results_published":
+{ Args: { "p_election_id": string }; Returns: boolean
                            },
 "civic_election_secret_ensure":
 { Args: { "p_election_id": string }; Returns: string
@@ -9719,6 +9750,9 @@ isOneToOne: false
 "is_established_business_profile":
 { Args: { "p_profile_id": string }; Returns: boolean
                            },
+"is_own_or_linked_profile":
+{ Args: { "p_profile_id": string }; Returns: boolean
+                           },
 "link_challenge_source_matter":
 { Args: { "p_challenge_id": string,"p_matter_id": string }; Returns: undefined
                            },
@@ -10255,6 +10289,9 @@ isOneToOne: false
 "profile_shows_endorsements":
 { Args: { "p_profile_id": string }; Returns: boolean
                            },
+"profiles_are_linked":
+{ Args: { "p_a": string,"p_b": string }; Returns: boolean
+                           },
 "project_citizenship_status":
 { Args: { "user_role": Database["public"]['Enums']["app_role"],"verified": boolean }; Returns: Database["public"]['Enums']["citizenship_status"]
                            },
@@ -10287,6 +10324,9 @@ isOneToOne: false
                            },
 "propose_matter_resolution":
 { Args: { "payload": Json }; Returns: string
+                           },
+"public_display_name":
+{ Args: { "p_profile_id": string }; Returns: string
                            },
 "public_matter":
 { Args: { "p_id": string }; Returns: Json

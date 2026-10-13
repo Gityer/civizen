@@ -41,27 +41,31 @@ EXCEPTION
   WHEN insufficient_privilege OR check_violation THEN NULL;
 END $$;
 
--- Bob reads Alice's intent (public verification material) but cannot change it.
+-- Bob cannot read Alice's ballot intent (it would tie her to her receipt; v2 step A7) and cannot change it.
 SELECT set_config('request.jwt.claims', json_build_object('sub', 'a1000000-0000-4000-8000-000000000002', 'role', 'authenticated')::text, true);
 DO $$
 DECLARE v_count int;
 BEGIN
   SELECT count(*) INTO v_count FROM public.governance_action_intents
    WHERE action_scope = 'consultation_ballot' AND target_id = 'c1000000-0000-4000-8000-000000000001' AND public_key = 'alice-public-key';
-  IF v_count <> 1 THEN RAISE EXCEPTION 'members must be able to read signed intents, got %', v_count; END IF;
+  IF v_count <> 0 THEN RAISE EXCEPTION 'another member read a ballot intent (% rows)', v_count; END IF;
 END $$;
 
-UPDATE public.governance_action_intents SET signature = 'tampered' WHERE public_key = 'alice-public-key';
+DO $$
+BEGIN
+  UPDATE public.governance_action_intents SET signature = 'tampered' WHERE public_key = 'alice-public-key';
+EXCEPTION WHEN insufficient_privilege THEN NULL;  -- clients have no UPDATE on intents at all (v2 step A7)
+END $$;
+
+-- Bob cannot register a key on Alice's profile.
+UPDATE public.profiles SET citizen_signing_public_key = 'bob-wrote-this' WHERE id = (SELECT alice FROM intent_fixture);
+RESET ROLE;
 DO $$
 DECLARE v_sig text;
 BEGIN
   SELECT signature INTO v_sig FROM public.governance_action_intents WHERE public_key = 'alice-public-key';
   IF v_sig <> 'sig-1' THEN RAISE EXCEPTION 'another member must not be able to alter a stored signature'; END IF;
 END $$;
-
--- Bob cannot register a key on Alice's profile.
-UPDATE public.profiles SET citizen_signing_public_key = 'bob-wrote-this' WHERE id = (SELECT alice FROM intent_fixture);
-RESET ROLE;
 DO $$
 DECLARE v_key text;
 BEGIN

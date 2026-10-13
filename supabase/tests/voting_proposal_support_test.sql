@@ -108,9 +108,9 @@ BEGIN
   RAISE NOTICE 'ok: tick opens scheduled election';
 END $$;
 
+UPDATE public.profiles SET country_code = 'AM' WHERE id = current_setting('test.supporter_pid')::uuid;
 SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claims', json_build_object('sub', current_setting('test.supporter_uid'))::text, true);
-UPDATE public.profiles SET country_code = 'AM' WHERE id = current_setting('test.supporter_pid')::uuid;
 SELECT public.cast_consultation_ballot(current_setting('test.election_id')::uuid, 'support');
 RESET ROLE;
 UPDATE public.civic_elections SET voting_opens_at = now() - interval '2 minutes', voting_closes_at = now() - interval '1 minute' WHERE id = current_setting('test.election_id')::uuid;
