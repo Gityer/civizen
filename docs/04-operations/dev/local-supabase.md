@@ -65,7 +65,15 @@ Every table named in `types.ts` exists locally (about 100 of about 300); functio
 
 ## SQL tests
 
-`scripts/local-supabase/run-sql-tests.sh [name-filter]` runs every `supabase/tests/*_test.sql` against the local database only. Each file wraps itself in `BEGIN … ROLLBACK`, impersonates members with `SET LOCAL ROLE authenticated` + `request.jwt.claims`, and raises on any failed assertion, so nothing persists. The consultation ballot and proposal-support tests need the production-derived data (election `single-world-citizenship`, profiles `member` and `citizen`).
+`scripts/local-supabase/run-sql-tests.sh [name-filter]` runs every `supabase/tests/*_test.sql` against the local database only. Each file wraps itself in `BEGIN … ROLLBACK`, impersonates members with `SET LOCAL ROLE authenticated` + `request.jwt.claims`, and raises on any failed assertion, so nothing persists.
+
+The tests look up fixture rows by name: profiles `member`, `citizen`, `verified_member`, `certified`, `law`, `moderator`, `market_manager`, `guest`, the founders `maturehumanity` (with the founder office) and `armen`, the Civizen organization account `civizen` (a business account owned by `armen`, resolved by `resolve_civizen_org_profile()`), the consultation `single-world-citizenship` with Support/Oppose/Abstain, and at least one (demo) contribution program. A database loaded from the production-derived dump already has them. A database built from migrations alone (CI, a fresh stack) gets them from `scripts/local-supabase/seed-test-fixtures.sql`, which the `Migrations replay and SQL tests` workflow applies between the replay and the tests:
+
+```bash
+docker exec -i supabase_db_civizen-local psql -U postgres -q -v ON_ERROR_STOP=1 < scripts/local-supabase/seed-test-fixtures.sql
+```
+
+The seed uses fixed user ids (`c1000000-…`) and fixture emails `<username>@test.civizen.local`, holds no personal data, and skips every fixture whose username or key already exists, so running it on a dump-loaded database changes nothing. When a new test needs another pre-existing row, add it to the seed in the same change.
 
 ## End-to-end tests
 
