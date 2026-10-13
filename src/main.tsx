@@ -86,6 +86,12 @@ async function bootstrapApp() {
 
     // Prefetch English base strings while the App chunk downloads so LanguageProvider
     // can paint without a full-screen gate or raw translation keys.
+    // Start every chunk the first screen needs at once instead of one after another (v2 plan step B2): the base
+    // strings, the database client and, on the landing page, the page itself. Failures surface where they are used.
+    void import("@/lib/i18n.base").catch(() => undefined);
+    void import("@/integrations/supabase/client").catch(() => undefined);
+    const landingPath = window.location.pathname.replace(/\/+$/, "") || "/";
+    if (landingPath === "/" || landingPath === "/onboarding") void import("@/pages/Onboarding").catch(() => undefined);
     const [{ default: App }] = await Promise.all([
       import("./App.tsx"),
       import("@/lib/i18n.runtime").then((mod) => mod.loadBaseTranslations()),

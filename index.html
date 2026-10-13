@@ -166,6 +166,47 @@
 
   <body>
     <div id="root"></div>
+    <script>
+      // First paint before the app code arrives (v2 plan step B2): on the landing page, show its hero as static
+      // text in the visitor's language. React replaces it on mount; other routes keep the plain themed background.
+      (function () {
+        try {
+          var path = window.location.pathname.replace(/\/+$/, '') || '/';
+          if (path !== '/' && path !== '/onboarding') return;
+          var root = document.getElementById('root');
+          if (!root || root.childNodes.length) return;
+          var stored = null;
+          try { stored = window.localStorage.getItem('civizen-language'); } catch (_e) {}
+          var lang = (stored || navigator.language || 'en').toLowerCase().slice(0, 2);
+          var copy = {
+            en: ['For a Mature Humanity', 'A voluntary civic network to prevent harm, align interests, and advance world citizenship for a mature humanity — on one shared planet.', 'Join the network', 'Sign in'],
+            hy: ['Հասուն մարդկության համար', '', 'Միանալ ցանցին', 'Մուտք'],
+            ru: ['Для зрелого человечества', '', 'Присоединиться к сети', 'Войти']
+          }[lang] || null;
+          if (!copy) copy = ['For a Mature Humanity', 'A voluntary civic network to prevent harm, align interests, and advance world citizenship for a mature humanity — on one shared planet.', 'Join the network', 'Sign in'];
+          var dark = document.documentElement.classList.contains('dark');
+          var fg = dark ? '#e6eef0' : '#0c1113';
+          var muted = dark ? 'rgba(230,238,240,.75)' : 'rgba(12,17,19,.72)';
+          root.innerHTML =
+            '<div data-static-shell style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:96px 24px 24px;text-align:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:' + fg + '">' +
+            '<img src="/favicon.svg" alt="" width="56" height="56" style="margin-bottom:20px" />' +
+            '<h1 style="margin:0;font-size:44px;line-height:1;font-weight:700;letter-spacing:-.02em">Civizen</h1>' +
+            '<p style="margin:12px 0 0;font-size:18px;font-weight:600;color:hsl(38 92% 50%)">' + copy[0] + '</p>' +
+            (copy[1] ? '<p style="margin:20px auto 0;max-width:36rem;font-size:16px;line-height:1.6;color:' + muted + '">' + copy[1] + '</p>' : '') +
+            '<div style="margin-top:28px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' +
+            '<a href="/signup" style="display:inline-flex;align-items:center;height:48px;padding:0 22px;border-radius:12px;background:#3bc8c0;color:#04161a;font-weight:600;text-decoration:none">' + copy[2] + '</a>' +
+            '<a href="/login" style="display:inline-flex;align-items:center;height:48px;padding:0 20px;border-radius:12px;border:1px solid rgba(59,200,192,.35);color:' + fg + ';font-weight:600;text-decoration:none">' + copy[3] + '</a>' +
+            '</div></div>';
+        } catch (_error) {
+          // the app renders normally
+        }
+      })();
+    </script>
+    <noscript>
+      <h1>Civizen</h1>
+      <p>For a Mature Humanity. A voluntary civic network to prevent harm, align interests, and advance world citizenship
+      for a mature humanity, on one shared planet. Civizen needs JavaScript to run.</p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

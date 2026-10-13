@@ -36,10 +36,16 @@ const BUILD_OVERLAY_STORAGE_KEY = 'civizen-build-overlay-enabled-v1';
 
 function RouteFallback() {
   const { t } = useLanguage();
+  // Say "Loading" only when a page takes noticeably long; a quick chunk load shows nothing (v2 plan step B2).
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSlow(true), 400);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="animate-pulse-soft text-muted-foreground">{t('common.loading')}</div>
+      {slow ? <div className="animate-pulse-soft text-muted-foreground">{t('common.loading')}</div> : null}
     </div>
   );
 }
