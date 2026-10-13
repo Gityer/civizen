@@ -19,6 +19,7 @@ export function useCivicVotingElection() {
   const [detailLoading, setDetailLoading] = useState(true);
   const [detailError, setDetailError] = useState<string | null>(null);
   const [tallies, setTallies] = useState<CivicPublicTallyRow[]>([]);
+  const [tallyPublished, setTallyPublished] = useState(true);
   const [tallyTotal, setTallyTotal] = useState(0);
   const [tallyError, setTallyError] = useState<string | null>(null);
   const [countryStats, setCountryStats] = useState<CivicCountryStatRow[]>([]);
@@ -46,6 +47,7 @@ export function useCivicVotingElection() {
     ]);
     setVerificationSplit(splitResult);
     setTallies(tallyResult.tallies);
+    setTallyPublished(tallyResult.published);
     setTallyTotal(tallyResult.totalCountable);
     setTallyError(tallyResult.error);
     setCountryStats(countryResult.rows);
@@ -371,7 +373,7 @@ export function useCivicVotingElection() {
 
   return {
     detail, detailLoading, detailError, electionId, t, language, user, isConsultation, title,
-    displayTitle, verificationSplit, tallies, tallyTotal, tallyError, countryStats, directory, directoryVisible,
+    displayTitle, verificationSplit, tallies, tallyPublished, tallyTotal, tallyError, countryStats, directory, directoryVisible,
     directoryBusy, myOption, myOptions, myReceipt, myBallotAdvisory, advisoryVoter, eligibilityReason, votingWindow, casting, withdrawing,
     votingOpen, votingClosed, castConsultation, withdrawConsultation, verifyReceipt, merkleRoot, ballotSignature, toggleDirectoryPresence, gates, windowOpen, boothOpen, castComplete,
     pinInput, setPinInput, assistedStatus, pinMessage, canOpenBooth, failed, policy,

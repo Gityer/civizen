@@ -258,6 +258,7 @@ export const settingsHy = {
       show_city: 'Քաղաք',
       show_score: 'Civizen միավոր',
       show_endorsements: 'Հավանություններ',
+      discoverable_by_phone: 'Թույլ տալ ինձ գտնել նրանց, ովքեր ունեն իմ հեռախոսահամարը',
       failed: 'Հնարավոր չէ պահել տեսանելիության կարգավորումը։',
     },
     marketJobsAdminCardTitle: 'Վերանայել աշխատանքի հայտարարությունները',

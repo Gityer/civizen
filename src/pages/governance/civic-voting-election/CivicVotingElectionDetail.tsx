@@ -15,7 +15,7 @@ type CivicVotingElectionModel = ReturnType<typeof useCivicVotingElection>;
 
 export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectionModel }) {
   const {
-    detail, tallies, tallyTotal, tallyError, countryStats, directory, t, language, isConsultation,
+    detail, tallies, tallyPublished, tallyTotal, tallyError, countryStats, directory, t, language, isConsultation,
     verificationSplit,
   } = model;
   return (
@@ -126,6 +126,8 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
             <p className="text-xs text-muted-foreground">{t('civicVoting.tallies.unavailable')}</p>
           ) : tallyTotal === 0 ? (
             <p className="text-xs text-muted-foreground">{t('civicVoting.tallies.noneYet')}</p>
+          ) : !tallyPublished ? (
+            <p className="text-xs text-muted-foreground" data-testid="tallies-after-close">{t('civicVoting.tallies.afterClose')}</p>
           ) : (
             <ul className="space-y-2">
               {tallies.map((row) => {

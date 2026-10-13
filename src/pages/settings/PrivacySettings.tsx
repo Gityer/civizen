@@ -96,12 +96,14 @@ export default function PrivacySettings() {
   };
 
   // Step 3.7: what other members may see on the public profile card.
-  const PRIVACY_KEYS = ['show_full_name', 'show_country', 'show_city', 'show_score', 'show_endorsements'] as const;
+  const PRIVACY_KEYS = ['show_full_name', 'show_country', 'show_city', 'show_score', 'show_endorsements', 'discoverable_by_phone'] as const;
+  // Finding people by phone is opt-in (v2 step A7); every other switch is on unless turned off.
+  const OFF_BY_DEFAULT = new Set<string>(['discoverable_by_phone']);
   const [privacy, setPrivacy] = useState<Record<string, boolean>>({});
   const [privacyBusy, setPrivacyBusy] = useState<string | null>(null);
   useEffect(() => {
     const stored = (profile as { privacy_settings?: Record<string, unknown> } | null)?.privacy_settings ?? {};
-    setPrivacy(Object.fromEntries(PRIVACY_KEYS.map((key) => [key, stored[key] !== false])));
+    setPrivacy(Object.fromEntries(PRIVACY_KEYS.map((key) => [key, OFF_BY_DEFAULT.has(key) ? stored[key] === true : stored[key] !== false])));
   // eslint-disable-next-line react-hooks/exhaustive-deps -- PRIVACY_KEYS is a constant
   }, [profile]);
   const handlePrivacy = async (key: string, next: boolean) => {

@@ -258,6 +258,7 @@ export const settingsRu = {
       show_city: 'Город',
       show_score: 'Балл Civizen',
       show_endorsements: 'Рекомендации',
+      discoverable_by_phone: 'Разрешить находить меня тем, у кого есть мой номер телефона',
       failed: 'Не удалось сохранить настройку видимости.',
     },
     marketJobsAdminCardTitle: 'Проверка вакансий',

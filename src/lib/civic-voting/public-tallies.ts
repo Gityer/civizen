@@ -32,6 +32,8 @@ export type CivicPublicDirectoryRow = {
 export async function loadCivicElectionPublicTallies(electionId: string): Promise<{
   tallies: CivicPublicTallyRow[];
   totalCountable: number;
+  /** False while voting is open: option counts are published only after close (v2 step A7). */
+  published: boolean;
   error: string | null;
 }> {
   const { data, error } = await db.rpc('civic_election_public_tallies', {
@@ -39,15 +41,25 @@ export async function loadCivicElectionPublicTallies(electionId: string): Promis
   });
 
   if (error) {
-    return { tallies: [], totalCountable: 0, error: error.message };
+    return { tallies: [], totalCountable: 0, published: false, error: error.message };
   }
 
   const rows = (data || []) as Array<{
     candidate_id: string;
     option_key: string | null;
     display_name: string;
-    vote_count: number | string;
+    vote_count: number | string | null;
   }>;
+
+  if (rows.length > 0 && rows.every((row) => row.vote_count === null)) {
+    const { data: participation, error: participationError } = await db.rpc('civic_election_participation', { p_election_id: electionId });
+    return {
+      tallies: [],
+      totalCountable: Number(participation) || 0,
+      published: false,
+      error: participationError?.message ?? null,
+    };
+  }
 
   const tallies = rows.map((row) => ({
     candidateId: row.candidate_id,
@@ -59,6 +71,7 @@ export async function loadCivicElectionPublicTallies(electionId: string): Promis
   return {
     tallies,
     totalCountable: tallies.reduce((sum, row) => sum + row.voteCount, 0),
+    published: true,
     error: null,
   };
 }

@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { withoutLockedIdentityFields } from '@/lib/verified-identity-lock';
 import { Check, ChevronsUpDown, Globe, Loader2, MapPin, Save } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getCountryName, getCountryOptions } from '@/lib/countries';
@@ -321,10 +322,12 @@ export default function EditProfile() {
     setSaving(true);
     setAutosaveError(null);
 
-    const { error } = await supabase
-      .from('profiles')
-      .update(nextDraft)
-      .eq('id', profile.id);
+    const locked = withoutLockedIdentityFields(nextDraft, profile);
+    if (locked.attemptedChange) {
+      setDateOfBirth(profile.date_of_birth || ''); setCountry(profile.country || ''); setCountryCode(profile.country_code || '');
+      toast.info(t('editProfile.identityLocked'));
+    }
+    const { error } = await supabase.from('profiles').update(locked.patch).eq('id', profile.id);
 
     if (error) {
       const nextError =
@@ -334,11 +337,7 @@ export default function EditProfile() {
         setAutosaveError(nextError);
       }
 
-      if (error.code === '23505') {
-        toast.error(t('editProfile.usernameTaken'));
-      } else {
-        toast.error(t('editProfile.autoSaveFailed'));
-      }
+      toast.error(error.code === '23505' ? t('editProfile.usernameTaken') : t('editProfile.autoSaveFailed'));
 
       if (version === latestAttemptVersionRef.current) {
         setSaving(false);

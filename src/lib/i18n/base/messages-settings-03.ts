@@ -65,6 +65,7 @@ export const m_messages_settings_03 = {
       "show_city": "City",
       "show_score": "Civizen score",
       "show_endorsements": "Endorsements",
+      "discoverable_by_phone": "Let people who have my phone number find me",
       "failed": "Could not save the visibility setting."
     }
 } as const;

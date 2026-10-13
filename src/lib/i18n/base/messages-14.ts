@@ -25,6 +25,7 @@ export const m_messages_14 = {
       "total": "{count} countable ballots",
       "totalOne": "1 countable ballot",
       "noneYet": "No countable ballots yet.",
+      "afterClose": "Counts per option are published when voting closes, so no one can work out how a person voted from the running totals.",
       "unavailable": "Public counts could not be loaded.",
       "validOnly": "Counts include valid ballots only. Individual choices stay private.",
       "verifiedSplit": "{verified} counted from verified members; {unverified} advisory from accounts not yet verified.",

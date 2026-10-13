@@ -21,6 +21,12 @@ Rules for code:
 - SECURITY DEFINER functions are not affected; use them when a feature needs a private field of another member (for example an aggregate), and return only what the feature needs.
 - The profile page fails closed: until the server card arrives, a visitor sees username, photo and badges only.
 
+Finding people by phone number (`lookup_civizen_contacts_by_phone`, used by the chat's device-contact matching) returns only members who turned on **Let people who have my phone number find me** (off by default), hides the full name when the owner hides it, takes at most 50 numbers per call and 200 per member per day (v2 step A7).
+
+Once a member is verified, birth date and country are locked on the server (`guard_verified_identity_fields`), because eligibility reads them; Edit Profile keeps the stored values and explains why.
+
+Signed-out visitors of public Matters see `@username` (or "Former member") through `public_display_name`, never a real name.
+
 Country stays readable to members because the directory, consultation country statistics and Matters scope rely on it; the **Country** switch hides it on the profile card.
 
 Tests: `supabase/tests/profiles_member_privacy_test.sql`, `supabase/tests/account_lifecycle_privacy_test.sql`, `src/pages/user-profile/public-profile-visibility.test.ts`.

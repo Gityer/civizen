@@ -173,6 +173,7 @@ export const m_messages_11 = {
     "autoSaveActive": "Changes save automatically.",
     "autoSaveFailed": "Auto-save failed. Use Save Changes to retry.",
     "usernameTaken": "Username is already taken",
+    "identityLocked": "Birth date and country are locked after identity verification. Ask a reviewer if they need correcting.",
     "usernameChangeWindow": "You can edit your username until {date}.",
     "usernameChangeAvailable": "You can still change your username once. After that, it becomes available again once each year.",
     "usernameChangeYearlyAvailable": "Your yearly username change is available.",
