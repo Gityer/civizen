@@ -11,15 +11,31 @@ export type GeoCapitalLocation = {
   regionCode: string | null;
 };
 
-type GeoModule = typeof import('country-state-city');
+/** One country's states ([code, name]) and cities ([name, state code]); see scripts/geo-data.mjs (v2 step B2). */
+type CountryGeo = { s: Array<[string, string]>; c: Array<[string, string]> };
+type GeoFetcher = (countryCode: string) => Promise<CountryGeo | null>;
 
-let geoModulePromise: Promise<GeoModule> | null = null;
+const defaultFetcher: GeoFetcher = async (code) => {
+  const response = await fetch(`/geo/v1/${code}.json`);
+  return response.ok ? ((await response.json()) as CountryGeo) : null;
+};
 
-function loadGeoModule(): Promise<GeoModule> {
-  if (!geoModulePromise) {
-    geoModulePromise = import('country-state-city');
+let fetcher: GeoFetcher = defaultFetcher;
+const cache = new Map<string, Promise<CountryGeo | null>>();
+
+/** Tests read the generated files from disk instead of over HTTP. */
+export function setGeoFetcher(next: GeoFetcher | null): void {
+  fetcher = next ?? defaultFetcher;
+  cache.clear();
+}
+
+function loadCountryGeo(code: string): Promise<CountryGeo | null> {
+  let pending = cache.get(code);
+  if (!pending) {
+    pending = fetcher(code).catch(() => null);
+    cache.set(code, pending);
   }
-  return geoModulePromise;
+  return pending;
 }
 
 function normalizePlaceName(value: string): string {
@@ -52,12 +68,9 @@ export async function listGeoRegions(countryCode: string): Promise<GeoRegionOpti
   const code = countryCode.trim().toUpperCase();
   if (!/^[A-Z]{2}$/.test(code)) return [];
 
-  const { State } = await loadGeoModule();
-  return State.getStatesOfCountry(code)
-    .map((state) => ({
-      code: state.isoCode,
-      name: state.name,
-    }))
+  const geo = await loadCountryGeo(code);
+  return (geo?.s ?? [])
+    .map(([stateCode, name]) => ({ code: stateCode, name }))
     .sort((left, right) => left.name.localeCompare(right.name));
 }
 
@@ -67,9 +80,10 @@ export async function listGeoCities(countryCode: string, regionCode: string): Pr
   const region = regionCode.trim().toUpperCase();
   if (!/^[A-Z]{2}$/.test(country) || !region) return [];
 
-  const { City } = await loadGeoModule();
-  return City.getCitiesOfState(country, region)
-    .map((city) => city.name)
+  const geo = await loadCountryGeo(country);
+  return (geo?.c ?? [])
+    .filter(([, stateCode]) => (stateCode ?? '').toUpperCase() === region)
+    .map(([name]) => name)
     .sort((left, right) => left.localeCompare(right));
 }
 
@@ -78,8 +92,8 @@ export async function listGeoCitiesOfCountry(countryCode: string): Promise<strin
   const country = countryCode.trim().toUpperCase();
   if (!/^[A-Z]{2}$/.test(country)) return [];
 
-  const { City } = await loadGeoModule();
-  const names = (City.getCitiesOfCountry(country) ?? []).map((city) => city.name);
+  const geo = await loadCountryGeo(country);
+  const names = (geo?.c ?? []).map(([name]) => name);
   return Array.from(new Set(names)).sort((left, right) => left.localeCompare(right));
 }
 
@@ -97,19 +111,18 @@ export async function resolveCountryCapitalLocation(
   const capitalName = getCountryCapitalName(code);
   if (!capitalName) return null;
 
-  const { City } = await loadGeoModule();
-  const cities = City.getCitiesOfCountry(code) ?? [];
+  const geo = await loadCountryGeo(code);
   let best: { name: string; stateCode: string; score: number } | null = null;
 
-  for (const city of cities) {
-    const score = capitalMatchScore(city.name, capitalName);
+  for (const [cityName, stateCode] of geo?.c ?? []) {
+    const score = capitalMatchScore(cityName, capitalName);
     if (score <= 0) continue;
     if (
       !best ||
       score > best.score ||
-      (score === best.score && city.name.length > best.name.length)
+      (score === best.score && cityName.length > best.name.length)
     ) {
-      best = { name: city.name, stateCode: city.stateCode, score };
+      best = { name: cityName, stateCode, score };
     }
   }
 

@@ -53,3 +53,5 @@ AGENT_CHECKIN.md
 public/updates/bundles/
 # signed Play bundles built locally (copies live in the private vault)
 android-release/
+# generated per-country geo data (scripts/geo-data.mjs)
+public/geo/
