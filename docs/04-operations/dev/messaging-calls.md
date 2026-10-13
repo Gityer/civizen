@@ -41,11 +41,10 @@ browsers find each other (signalling) and how media gets through restrictive net
 | `TURN_TTL_SECONDS` | lifetime of derived credentials, default 3600 |
 | `TURN_USERNAME` / `TURN_CREDENTIAL` | static credentials when no shared secret is used |
 
-Relay on production (since 2026-10-11): coturn runs in Docker on the VPS (`civizen-coturn`, host network, config
-`/home/ubuntu/coturn/turnserver.conf`, shared secret in `/home/ubuntu/coturn/secret`). The cloud firewall in front
-of the host passes only TCP in 39000–40000, so the relay listens on **TCP 39000** (`TURN_URLS=turn:130.61.32.187:39000?transport=tcp`)
-with UDP relay ports 39001–40000 used between allocations on the same server; UDP 3478 and UDP 39000 are filtered
-upstream. Opening UDP in the cloud security list would let the relay serve UDP too.
+Relay on production (since 2026-10-11): coturn runs in Docker on the application host; its configuration and shared
+secret live in the access-controlled operations store. The cloud firewall in front of the host passes only TCP in a
+high port range, so the relay is offered as a TCP TURN URL (clients receive it from `turn-credentials`); UDP is
+filtered upstream. Opening UDP in the cloud security list would let the relay serve UDP too.
 
 ## Local verification
 

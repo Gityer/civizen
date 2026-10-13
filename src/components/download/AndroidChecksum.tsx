@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Copy, ShieldCheck } from 'lucide-react';
+import { Code2, Copy, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { isAndroidUpdateManifest, type AndroidUpdateManifest } from '@/lib/app-updates';
 import { getAndroidUpdateManifestUrl } from '@/lib/downloads';
+
+/** Canonical public repository (decision E1); releases push here and to the mirror. */
+const PUBLIC_SOURCE_REPOSITORY = 'https://github.com/maturehumanity/civizen';
 
 /** The published APK's SHA-256 and the release notes, read from the release manifest (Phase 9 step 9.1). */
 export function AndroidChecksum() {
@@ -60,6 +63,23 @@ export function AndroidChecksum() {
               <Copy className="h-4 w-4" aria-hidden />
             </Button>
           </div>
+        </div>
+      ) : null}
+      {manifest.sourceCommit && /^[0-9a-f]{7,40}$/.test(manifest.sourceCommit) ? (
+        <div data-testid="android-source-commit">
+          <p className="flex items-center gap-1.5 font-medium text-foreground">
+            <Code2 className="h-4 w-4 text-primary" aria-hidden />
+            {t('downloads.android.sourceLabel')}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t('downloads.android.sourceHint')}</p>
+          <a
+            href={`${PUBLIC_SOURCE_REPOSITORY}/commit/${manifest.sourceCommit}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 inline-block rounded-md bg-muted/60 px-2 py-1 font-mono text-[11px] text-primary hover:underline"
+          >
+            {manifest.sourceCommit.slice(0, 12)}
+          </a>
         </div>
       ) : null}
     </div>

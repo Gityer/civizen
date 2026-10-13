@@ -159,6 +159,7 @@ write_update_manifest() {
   "publishedAt": "$published_at",
   "sha256": "$apk_sha256",
   "signing": "$BUILD_SIGNING",
+  "sourceCommit": "$(git rev-parse HEAD)",
   "notes": $notes_json
 }
 EOF
@@ -175,6 +176,7 @@ window.__CIVIZEN_ANDROID_UPDATE__ = {
   publishedAt: '$published_at',
   sha256: '$apk_sha256',
   signing: '$BUILD_SIGNING',
+  sourceCommit: '$(git rev-parse HEAD)',
   notes: $notes_json,
 };
 EOF

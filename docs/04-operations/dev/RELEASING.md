@@ -151,10 +151,15 @@ Confirm:
 5. Commit and push source-only changes.
 
 ```bash
-git add .
-git commit -m "feat: release vX.Y.Z"
-git push origin main
+git add <the files the bump and build changed>
+git commit -m "chore(release): vX.Y.Z ..."
+npm run release:push
 ```
+
+`release:push` pushes `main` to the canonical public repository (`origin`, maturehumanity/civizen) and to the mirror
+(`gityer-mirror`) and fails unless both point at the local HEAD (decision E1: the public source never lags a
+release). The Android manifest carries `sourceCommit`, and the Download page links that public commit next to the
+APK checksum.
 
 Before committing, confirm APK files are not staged:
 

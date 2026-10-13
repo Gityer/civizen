@@ -14,6 +14,8 @@ export type AndroidUpdateManifest = {
   sha256?: string;
   /** Which key signed the APK; a release-signed update cannot be installed over a debug-signed app (decision D10). */
   signing?: 'debug' | 'release';
+  /** Commit of the public repository the build was made from (v2 step A1). */
+  sourceCommit?: string;
 };
 
 export type InstalledAndroidRelease = {
@@ -103,5 +105,6 @@ export function isAndroidUpdateManifest(value: unknown): value is AndroidUpdateM
     && typeof manifest.publishedAt === 'string'
     && (manifest.notes === undefined || Array.isArray(manifest.notes))
     && (manifest.sha256 === undefined || typeof manifest.sha256 === 'string')
+    && (manifest.sourceCommit === undefined || typeof manifest.sourceCommit === 'string')
   );
 }

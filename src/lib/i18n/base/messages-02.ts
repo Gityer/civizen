@@ -95,6 +95,8 @@ export const m_messages_02 = {
       "checksumHint": "Compare it with the file you downloaded before installing; a different value means the file was altered on the way.",
       "copyChecksum": "Copy checksum",
       "copied": "Checksum copied.",
+      "sourceLabel": "Source code of this build",
+      "sourceHint": "The public commit this build was made from; anyone can rebuild it and compare.",
       "title": "Android",
       "subtitle": "Installable APK",
       "description": "This is the latest Civizen Android build, packaged as a native Capacitor app for sideload install.",
