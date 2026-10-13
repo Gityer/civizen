@@ -10,7 +10,7 @@ application_placement:
   - app stores
 professional_review_required: true
 publication_date: 2026-10-11
-last_updated: 2026-10-11
+last_updated: 2026-10-13
 status: current
 canonical: true
 ---
@@ -42,6 +42,12 @@ Civizen is operated by the Mature Humanity initiative. Contact: the e-mail addre
   you ask it to fill in your city, fingerprint or face unlock only on your device, and notifications you opted into.
   The app checks civizen.world for updates.
 - **Technical logs.** Standard server logs (IP address, time, requested page) kept for security and debugging.
+- **Usage totals.** Civizen counts how often each page is opened, as one daily total per page (for example
+  "/matters: 40 views today"). The count stores no IP address, account, cookie or device, so it cannot be traced to
+  anyone. Staff use these totals, together with counts of sign-ups, ballots and Matters, to see whether people manage
+  to take part. There are no third-party analytics or advertising trackers.
+- **Moderation.** Reports you make, the reason given, and moderators' decisions and appeals about content. The person
+  you report is not told who reported them.
 
 ## What we do not do
 

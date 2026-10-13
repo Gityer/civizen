@@ -86,6 +86,7 @@ export const GovernanceEntry = lazyWithChunkReload(() => import('@/pages/governa
 export const Notifications = lazyWithChunkReload(() => import('@/pages/Notifications'));
 export const Moderation = lazyWithChunkReload(() => import('@/pages/moderation/Moderation'));
 export const PublicMatters = lazyWithChunkReload(() => import('@/pages/public/PublicMatters'));
+export const ParticipationAdmin = lazyWithChunkReload(() => import('@/pages/settings/ParticipationAdmin'));
 export const PublicMatterDetail = lazyWithChunkReload(() => import('@/pages/public/PublicMatterDetail'));
 export const MessagingSettingsPage = lazyWithChunkReload(() => import('@/pages/settings/MessagingSettings'));
 export const MessagingSecurity = lazyWithChunkReload(() => import('@/pages/settings/MessagingSecurity'));

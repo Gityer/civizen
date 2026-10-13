@@ -57,6 +57,7 @@ import {
   Notifications,
   Moderation,
   PublicMatters,
+  ParticipationAdmin,
   PublicMatterDetail,
   OpportunityDetail,
   OpportunityForm,
@@ -381,6 +382,10 @@ export const appRoutes1 = (
             <RolesAdmin />
           </ProtectedRoute>
         }
+      />
+      <Route
+        path="/settings/admin/participation"
+        element={<ProtectedRoute requiredPermissions={['role.assign', 'settings.manage']}><ParticipationAdmin /></ProtectedRoute>}
       />
       <Route
         path="/settings/admin/users"

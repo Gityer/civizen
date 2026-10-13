@@ -6641,6 +6641,20 @@ isOneToOne: true
       referencedColumns: ["id"]
     }
                   ]
+                },"participation_page_views": {
+                  Row: {
+                    "day": string,"path_bucket": string,"views": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "day": string,"path_bucket": string,"views"?: number
+                  }
+                  Update: {
+                    "day"?: string,"path_bucket"?: string,"views"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"post_comments": {
                   Row: {
                     "author_id": string,"content": string,"created_at": string,"edited_at": string | null,"id": string,"is_edited": boolean | null,"moderation_hidden_at": string | null,"moderation_reason": string | null,"post_id": string
@@ -10153,8 +10167,14 @@ isOneToOne: false
 "opportunity_publisher_id":
 { Args: { "p_opportunity_id": string }; Returns: string
                            },
+"participation_funnel":
+{ Args: { "p_days"?: number }; Returns: Json
+                           },
 "participation_is_verified_completed":
 { Args: { "p_participation_id": string }; Returns: boolean
+                           },
+"participation_path_bucket":
+{ Args: { "p_path": string }; Returns: string
                            },
 "peek_agreement_next_reference":
 { Args: Record<PropertyKey, never>; Returns: Json
@@ -10371,6 +10391,9 @@ isOneToOne: false
                            },
 "record_opportunity_work_assessment":
 { Args: { "p_notes"?: string,"p_participation_id": string,"p_scores"?: Json }; Returns: string
+                           },
+"record_page_view":
+{ Args: { "p_path": string }; Returns: undefined
                            },
 "record_post_view":
 { Args: { "p_post_id": string }; Returns: {

@@ -20,6 +20,7 @@ import { WebOtaStatusLine } from '@/components/settings/WebOtaStatusLine';
 import { ensureAuthorizedAppUpdateChannel, getAppUpdateChannel, getAppUpdateChannelExpiresAt, onAppUpdateChannelChange, setAppUpdateChannel, type AppUpdateChannel } from '@/lib/update-channel';
 import { cn } from '@/lib/utils';
 import { LogOut, ChevronRight, Globe, Palette, Users, KeyRound, ShieldCheck, Fingerprint, Bot, Landmark, LayoutGrid, Lightbulb, Coins, Vote, FlaskConical, Briefcase } from 'lucide-react';
+import { ADMIN_SETTINGS_ITEMS } from '@/pages/settings-admin-items';
 import { type SettingsNavItem, settingsItems } from '@/pages/settings-items';
 
 
@@ -159,46 +160,7 @@ export default function Settings() {
     ...visibleSettingsItems.map((item) => ({ kind: 'nav' as const, item })),
   ].sort((a, b) => primaryRowLabel(a).localeCompare(primaryRowLabel(b), language, { sensitivity: 'base' }));
 
-  const adminItems = canAccessAdmin
-    ? [
-        {
-          icon: Fingerprint,
-          labelKey: 'settings.adminRoles',
-          descriptionKey: 'settings.adminRolesDescription',
-          path: '/settings/admin/roles',
-        },
-        {
-          icon: Users,
-          labelKey: 'settings.adminUsers',
-          descriptionKey: 'settings.adminUsersDescription',
-          path: '/settings/admin/users',
-        },
-        {
-          icon: KeyRound,
-          labelKey: 'settings.adminPermissions',
-          descriptionKey: 'settings.adminPermissionsDescription',
-          path: '/settings/admin/permissions',
-        },
-        {
-          icon: Landmark,
-          labelKey: 'settings.adminGovernance',
-          descriptionKey: 'settings.adminGovernanceDescription',
-          path: '/settings/admin/governance',
-        },
-        {
-          icon: LayoutGrid,
-          labelKey: 'settings.adminModules',
-          descriptionKey: 'settings.adminModulesDescription',
-          path: '/settings/admin/modules',
-        },
-        {
-          icon: Coins,
-          labelKey: 'settings.adminFunding',
-          descriptionKey: 'settings.adminFundingDescription',
-          path: '/settings/admin/funding',
-        },
-      ]
-    : [];
+  const adminItems = canAccessAdmin ? ADMIN_SETTINGS_ITEMS : [];
 
   const handleSignOut = async () => {
     await signOut();

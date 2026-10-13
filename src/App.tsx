@@ -10,6 +10,7 @@ import { ThemeStorageSync } from "@/components/app/ThemeStorageSync";
 import { AppCrashBoundary } from "@/components/app/AppCrashBoundary";
 import { PublicCiviHost } from "@/components/public/PublicCiviHost";
 import { PendingAuthReturnRedirect } from "@/components/auth/PendingAuthReturnRedirect";
+import { PageViewRecorder } from "@/components/app/PageViewRecorder";
 import { permissionListHas } from "@/lib/access-control";
 import { lazyWithChunkReload } from "@/lib/lazy-with-chunk-reload";
 import { appRoutes1 } from "@/app-routes/app-routes-1";
@@ -167,6 +168,7 @@ const App = () => (
                   </Routes>
                 </Suspense>
                 <PendingAuthReturnRedirect />
+                <PageViewRecorder />
                 <PublicCiviHost />
                 <BuildOverlayLoader />
                 </PageSecondaryNavProvider>

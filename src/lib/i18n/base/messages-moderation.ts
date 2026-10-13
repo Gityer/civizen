@@ -108,5 +108,35 @@ export const m_messages_moderation = {
       "verify": { "title": "Verify your identity", "hint": "An ID photo and a selfie; it makes your vote count." },
       "profile": { "title": "Add a photo or a short bio", "hint": "Helps others know who they are talking to." }
     }
+  },
+  "participation": {
+    "title": "Participation",
+    "subtitle": "The funnel from visit to countable vote, in totals",
+    "privacyNote": "Aggregate counts only: page views are daily totals per page; no visitor, IP address or device is recorded.",
+    "loadFailed": "The participation numbers could not be loaded.",
+    "target": "Target by 22 Dec 2026: {value}",
+    "members": "Members",
+    "countries": "Countries",
+    "ballotsCountable": "Countable ballots",
+    "publicMatters": "Public Matters by members",
+    "verificationHours": "Median verification time (hours)",
+    "oldestReportHours": "Oldest open report (hours)",
+    "funnelTitle": "Last {days} days",
+    "dailyTitle": "Day by day",
+    "topPages": "Most viewed pages",
+    "noPageViews": "No page views recorded yet.",
+    "metrics": {
+      "signups": "Sign-ups",
+      "confirmed": "Confirmed e-mail",
+      "tookFirstAction": "Members who posted, raised, commented or voted (all time)",
+      "verificationRequested": "Asked for verification (all time)",
+      "verified": "Verified members",
+      "ballotsAdvisory": "Advisory ballots",
+      "active7d": "Signed in during the last 7 days",
+      "active30d": "Signed in during the last 30 days",
+      "openReports": "Open reports",
+      "returned": "Came back after their first day (of those who joined over a week ago)"
+    },
+    "columns": { "day": "Day", "pageViews": "Views", "signups": "Sign-ups", "ballots": "Ballots", "matters": "Public Matters", "posts": "Posts" }
   }
 } as const;
