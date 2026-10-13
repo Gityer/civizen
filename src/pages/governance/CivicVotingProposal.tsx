@@ -104,8 +104,8 @@ export default function CivicVotingProposal() {
       if (!proposal || !window.confirm(t('civicVoting.proposals.withdrawConfirm'))) return;
       await withdrawVotingProposal(proposal.id);
       setProposal({ ...proposal, status: 'withdrawn' });
-      toast.success(t('civicVoting.proposals.withdrawn'));
-    }, 'civicVoting.proposals.withdrawFailed');
+      toast.success(t('civicVoting.proposals.proposalWithdrawn'));
+    }, 'civicVoting.proposals.withdrawProposalFailed');
 
   const handleOpenForSupport = (threshold: number) =>
     run(async () => {

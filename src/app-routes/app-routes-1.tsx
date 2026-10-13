@@ -33,7 +33,6 @@ import {
   FundProjectFinance,
   FundSupport,
   FundTransparency,
-  Governance,
   GovernanceNew,
   Home,
   InstitutionalDocRoute,
@@ -238,8 +237,8 @@ export const appRoutes1 = (
         <Route path="tests" element={<Navigate to="/study" replace />} />
       </Route>
       <Route path="/governance/workspace" element={<GovernanceWorkspaceRedirect />} />
-      <Route path="/governance/tools" element={<ProtectedRoute requiredPermissions={['role.assign', 'settings.manage']}><Governance /></ProtectedRoute>} />
-      <Route path="/governance/tools/steward" element={<ProtectedRoute requiredPermissions={['role.assign', 'settings.manage']}><GovernanceNew /></ProtectedRoute>} />
+      <Route path="/governance/tools" element={<Navigate to="/governance/tools/steward" replace />} />
+      <Route path="/governance/tools/steward" element={<ProtectedRoute><GovernanceNew /></ProtectedRoute>} />
       <Route path="/governance/new" element={<ProtectedRoute><Navigate to="/governance/tools/steward" replace /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
       <Route path="/moderation" element={<ProtectedRoute><Moderation /></ProtectedRoute>} />

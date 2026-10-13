@@ -10,8 +10,8 @@ Working institutional model (project reference, not this product guide): [Instit
 |---|---|---|
 | `/governance/voting` | `CivicVotingHub` | Public elections and civic proposals |
 | `/governance` | `GovernanceEntry` → `GovernanceMember` (signed in) / `PublicGovernanceLanding` (guest) | One Governance surface (2026-10-09): Open votes · My votes · Proposals · Results · Tools (Tools for stewards only); `/governance/workspace` redirects here |
-| `/governance/tools` | `Governance` | Legacy workspace tools (proposals, execution, guardian and audit tooling); stewards only (`role.assign` / `settings.manage`), no member navigation entry since 2026-10-09 |
-| `/governance/tools/steward` (`/governance/new` redirects) | `GovernanceNew` | Steward console: identity verification review, constitutional offices, policies; stewards only |
+| `/governance/tools` | redirect | Redirects to the steward console; the legacy workspace (proposals, execution, guardian tooling) was retired in v2 step C5 (2026-10-13). Members see their own sanctions and appeal them on `/governance`; staff manage sanctions in Users admin |
+| `/governance/tools/steward` (`/governance/new` redirects) | `GovernanceNew` | Steward console: identity verification review, constitutional offices, policies. Opens for the same people the Tools tab shows it to (office holders, founder/admin roles, `role.assign` / `settings.manage`); anyone else signed in sees a short note |
 | `/governance/solutions`, `/governance/solutions/:problemId` | `SolutionsHub`, `SolutionProblemDetail` | AI council problems; each problem is also a public Matter (2026-10-09) |
 | `/contribute/matters`, `/contribute/matters/:matterId` | Matters | The entry point for every problem; voting proposals, community challenges and Solutions problems link back here |
 
@@ -43,7 +43,7 @@ Results come from `summarizeGovernanceResults` / `fetchGovernanceProposalResults
 
 ## Policies
 
-The steward console's Policies tab is read-only. `governance-policy-catalog.ts` reads the same constants the proposal composer and resolver use (`GOVERNANCE_DECISION_CLASS_BASELINES` and `GOVERNANCE_ACTION_THRESHOLD_OVERRIDES` in `governance-execution-thresholds.ts`, the eligibility rules and the voting window), so the tab shows the thresholds that actually decide a vote: approval class, share of decisive votes, quorum and whether the vote waits for the window to close, per decision class and per sensitive action. Stewards do not edit these values; a change is proposed in the workspace and decided by vote under the current rules.
+The steward console's Policies tab is read-only. `governance-policy-catalog.ts` reads the same constants the proposal composer and resolver use (`GOVERNANCE_DECISION_CLASS_BASELINES` and `GOVERNANCE_ACTION_THRESHOLD_OVERRIDES` in `governance-execution-thresholds.ts`, the eligibility rules and the voting window), so the tab shows the thresholds that actually decide a vote: approval class, share of decisive votes, quorum and whether the vote waits for the window to close, per decision class and per sensitive action. Stewards do not edit these values; a change is raised as a Matter, turned into a voting proposal and decided by vote under the current rules.
 
 ## Tests
 

@@ -45,7 +45,6 @@ export const StudyCivicLearning = lazyWithChunkReload(() => import('@/pages/stud
 export const StudyMaterials = lazyWithChunkReload(() => import('@/pages/study/StudyMaterials'));
 export const StudyLearningPaths = lazyWithChunkReload(() => import('@/pages/study/StudyLearningPaths'));
 export const StudyLearningPathDetail = lazyWithChunkReload(() => import('@/pages/study/StudyLearningPathDetail'));
-export const Governance = lazyWithChunkReload(() => import('@/pages/Governance'));
 export const GovernanceNew = lazyWithChunkReload(() => import('@/pages/GovernanceNew'));
 export const PublicGovernanceLanding = lazyWithChunkReload(() => import('@/pages/governance/PublicGovernanceLanding'));
 export const CivicVotingHub = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingHub'));

@@ -106,7 +106,8 @@ export const m_messages_06 = {
   },
   "governanceDashboard": {
     "title": "Governance",
-    "subtitle": "Vote on open proposals and, if you hold or manage an office, run the steward console.",
+    "subtitle": "Review identity verifications, manage constitutional offices and see the rules that decide votes.",
+    "stewardNoAccess": "The steward console is for office holders and members who manage offices.",
     "standingTitle": "Your governance standing",
     "canVote": "Can vote",
     "canPropose": "Can create proposals",
@@ -160,8 +161,8 @@ export const m_messages_06 = {
       "windowHours": "Voting window: {hours} hours when more than one member is eligible",
       "weight": "Each eligible member's vote counts once; sanctioned or ineligible members' votes count zero.",
       "changeTitle": "Propose a change",
-      "changeHelp": "Open the proposal workspace, pick the decision class that matches how serious the change is, and describe the new rule. Members vote on it under the rules above.",
-      "changeAction": "Open proposal workspace"
+      "changeHelp": "Raise the change as a Matter, then create a voting proposal from it and describe the new rule. Members support and vote on it under the rules above.",
+      "changeAction": "Open Proposals"
     },
     "tabVerifications": "Identity verifications",
     "tabOffices": "Constitutional offices",

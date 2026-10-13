@@ -1,27 +1,25 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { canAccessGovernanceTools } from '@/components/governance/member/governance-member-model';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useActiveOfficeKeys } from '@/hooks/useActiveOfficeKeys';
 import { useGovernanceVoteContext } from '@/hooks/useGovernanceVoteContext';
 import { deriveGovernancePermissions } from '@/lib/governance-permission-model';
-import { getGovernanceProposalStatusLabelKey } from '@/lib/governance-proposals';
-import type { GovernanceProposal, GovernanceProposalFilter } from '@/lib/governance-ui.types';
-import { GovernanceProposalsList } from './GovernanceProposalsList';
 import { StewardConsole } from './StewardConsole';
 
+/**
+ * The steward console page (/governance/tools/steward). Voting and proposals live on the member
+ * Governance page (/governance); the legacy proposal system is retired (v2 step C5).
+ */
 export function GovernanceDashboard() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { profile } = useAuth();
-  const { loading, context, identity } = useGovernanceVoteContext();
+  const { loading, context } = useGovernanceVoteContext();
   const officeKeys = useActiveOfficeKeys(profile?.id);
-  const [filter, setFilter] = useState<GovernanceProposalFilter>('open');
-  const [selected, setSelected] = useState<GovernanceProposal | null>(null);
 
   const permissions = useMemo(
     () =>
@@ -34,6 +32,11 @@ export function GovernanceDashboard() {
       }),
     [context, officeKeys, profile?.effective_permissions],
   );
+  const consoleAllowed = canAccessGovernanceTools({
+    role: profile?.role,
+    permissions: profile?.effective_permissions,
+    officeKeys,
+  });
 
   if (loading) {
     return (
@@ -43,15 +46,8 @@ export function GovernanceDashboard() {
     );
   }
 
-  const formatDate = (value: string) => new Date(value).toLocaleDateString(language);
-
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">{t('governanceDashboard.title')}</h1>
-        <p className="mt-2 text-muted-foreground">{t('governanceDashboard.subtitle')}</p>
-      </div>
-
       <Card className="p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -72,79 +68,13 @@ export function GovernanceDashboard() {
         </div>
       </Card>
 
-      <Tabs defaultValue="proposals" className="w-full">
-        <TabsList>
-          <TabsTrigger value="proposals">{t('governanceDashboard.tabProposals')}</TabsTrigger>
-          {permissions.canAccessStewardConsole && (
-            <TabsTrigger value="steward">{t('governanceDashboard.tabSteward')}</TabsTrigger>
-          )}
-        </TabsList>
-
-        <TabsContent value="proposals" className="space-y-4">
-          <div className="flex gap-2">
-            {(['open', 'closed'] as const).map((option) => (
-              <Button
-                key={option}
-                size="sm"
-                variant={filter === option ? 'default' : 'outline'}
-                onClick={() => {
-                  setFilter(option);
-                  setSelected(null);
-                }}
-              >
-                {t(option === 'open' ? 'governanceDashboard.filterOpen' : 'governanceDashboard.filterClosed')}
-              </Button>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <GovernanceProposalsList
-                filter={filter}
-                identity={identity}
-                canVote={permissions.canVote}
-                voteBlockedBySanction={Boolean(context?.voteBlockedBySanction)}
-                onProposalSelect={setSelected}
-              />
-            </div>
-
-            <div>
-              {selected ? (
-                <Card className="space-y-4 p-6">
-                  <h3 className="text-lg font-semibold">{selected.title}</h3>
-                  <Detail label={t('governanceDashboard.summary')}>{selected.body || selected.summary}</Detail>
-                  <Detail label={t('governanceDashboard.type')}>{selected.proposal_type}</Detail>
-                  <Detail label={t('governanceDashboard.status')}>
-                    <Badge>{t(getGovernanceProposalStatusLabelKey(selected.status))}</Badge>
-                  </Detail>
-                  <Detail label={t('governanceDashboard.votingPeriod')}>
-                    {formatDate(selected.opens_at)} – {formatDate(selected.closes_at)}
-                  </Detail>
-                </Card>
-              ) : (
-                <Card className="p-6 text-center">
-                  <p className="text-muted-foreground">{t('governanceDashboard.selectProposal')}</p>
-                </Card>
-              )}
-            </div>
-          </div>
-        </TabsContent>
-
-        {permissions.canAccessStewardConsole && (
-          <TabsContent value="steward" className="space-y-4">
-            <StewardConsole canManageOffices={permissions.canManageOffices} />
-          </TabsContent>
-        )}
-      </Tabs>
-    </div>
-  );
-}
-
-function Detail({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div>
-      <h4 className="text-sm font-medium text-muted-foreground">{label}</h4>
-      <div className="mt-1 whitespace-pre-line text-sm">{children}</div>
+      {consoleAllowed ? (
+        <StewardConsole canManageOffices={permissions.canManageOffices} />
+      ) : (
+        <Card className="p-6 text-sm text-muted-foreground" data-testid="steward-console-no-access">
+          {t('governanceDashboard.stewardNoAccess')}
+        </Card>
+      )}
     </div>
   );
 }

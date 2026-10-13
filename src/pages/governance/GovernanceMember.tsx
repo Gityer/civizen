@@ -8,6 +8,7 @@ import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { GovernanceProposalsTab } from '@/components/governance/member/GovernanceProposalsTab';
 import { GovernanceToolsTab } from '@/components/governance/member/GovernanceToolsTab';
 import { GovernanceVotesTab } from '@/components/governance/member/GovernanceVotesTab';
+import { MySanctionsCard } from '@/components/governance/member/MySanctionsCard';
 import {
   canAccessGovernanceTools,
   groupElections,
@@ -119,6 +120,8 @@ export default function GovernanceMember() {
             fallbackPath="/"
           />
         </div>
+
+        {profile?.id ? <MySanctionsCard profileId={profile.id} t={t} language={language} /> : null}
 
         <Tabs value={tab} onValueChange={(value) => setTab(value as GovernanceMemberTab)}>
           <TabsList className="mb-4 w-full justify-start overflow-x-auto">
