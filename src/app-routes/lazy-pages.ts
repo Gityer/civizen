@@ -51,6 +51,7 @@ export const CivicVotingHub = lazyWithChunkReload(() => import('@/pages/governan
 export const CivicVotingProposal = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingProposal'));
 export const CivicVotingElection = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingElection'));
 export const CivicVotingObserver = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingObserver'));
+export const CivicVotingVerify = lazyWithChunkReload(() => import('@/pages/governance/CivicVotingVerify'));
 export const SolutionsHub = lazyWithChunkReload(() => import('@/pages/governance/SolutionsHub'));
 export const SolutionProblemDetail = lazyWithChunkReload(() => import('@/pages/governance/SolutionProblemDetail'));
 export const Home = lazyWithChunkReload(() => import('@/pages/Home'));

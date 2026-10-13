@@ -16,6 +16,7 @@ import {
   CivicVotingElection,
   CivicVotingHub,
   CivicVotingObserver,
+  CivicVotingVerify,
   CivicVotingProposal,
   CommunityChallenges,
   Contribute,
@@ -125,6 +126,7 @@ export const appRoutes1 = (
       <Route path="/governance/voting/proposals/:proposalId" element={<CivicVotingProposal />} />
       <Route path="/governance/voting/:electionId" element={<CivicVotingElection />} />
       <Route path="/governance/voting/:electionId/observe" element={<CivicVotingObserver />} />
+      <Route path="/governance/voting/:electionId/verify" element={<CivicVotingVerify />} />
       <Route path="/transparency" element={<InstitutionalDocRoute />} />
       <Route path="/partners" element={<InstitutionalDocRoute />} />
       <Route path="/contribute/policy" element={<InstitutionalDocRoute />} />

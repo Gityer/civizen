@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { isAndroidUpdateManifest, type AndroidUpdateManifest } from '@/lib/app-updates';
 import { getAndroidUpdateManifestUrl } from '@/lib/downloads';
+import { PUBLIC_SOURCE_REPOSITORY } from '@/lib/public-source';
 
 /** Canonical public repository (decision E1); releases push here and to the mirror. */
-const PUBLIC_SOURCE_REPOSITORY = 'https://github.com/maturehumanity/civizen';
 
 /** The published APK's SHA-256 and the release notes, read from the release manifest (Phase 9 step 9.1). */
 export function AndroidChecksum() {

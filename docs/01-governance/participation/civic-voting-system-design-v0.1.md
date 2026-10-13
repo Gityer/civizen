@@ -361,3 +361,14 @@ sanction is active) work from Governance › Tools › Steward console › Elect
 
 Tests: `supabase/tests/election_administration_test.sql`,
 `src/components/governance/election-admin/StewardConsoleElections.test.tsx`.
+
+## 18. Public "verify this election" page (v2 step C4, 2026-10-13)
+
+`/governance/voting/<election id>/verify` works without an account (linked from each consultation page). It shows
+the Merkle root sealed at closing next to the root of the receipts now, recomputes the root in the browser from the
+downloadable receipt list (`civic_election_receipts`), checks one's own receipt with its inclusion proof
+(`civic_election_receipt_proof`), and shows where the sealing event (`ballot_box_committed`) sits in the public audit
+log: event hash, audit batch and external anchor (`civic_election_audit_anchor`, the only new function; audit batches
+themselves stay readable by members only). `scripts/verify-election.mjs` recomputes the root on any computer, offline
+from the downloaded JSON (`--file`) or online from the public API. Tests: `supabase/tests/election_public_verification_test.sql`,
+`src/lib/civic-voting/merkle.test.ts` (same test vector as the database function).

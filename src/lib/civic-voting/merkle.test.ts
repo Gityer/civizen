@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('@/integrations/supabase/client', () => ({ supabase: { rpc: vi.fn() } }));
 
 import { sha256Hex } from '@/lib/civic-voting/transparency';
-import { parseReceiptProof, shortHash, verifyReceiptProof } from './merkle';
+import { computeMerkleRoot, parseReceiptProof, shortHash, verifyReceiptProof } from './merkle';
 
 async function root(receipts: string[]): Promise<{ root: string; leaves: string[] }> {
   const leaves = await Promise.all([...receipts].sort().map((r) => sha256Hex(r)));
@@ -42,5 +42,17 @@ describe('consultation merkle proofs', () => {
     expect(parseReceiptProof({ included: false, root: 'ab', leaf: 'cd' })).toEqual({ included: false, root: 'ab', leaf: 'cd', index: undefined, count: undefined, path: undefined });
     expect(parseReceiptProof(null)).toBeNull();
     expect(shortHash('0123456789abcdef0123456789abcdef')).toBe('01234567…89abcdef');
+  });
+});
+
+describe('computeMerkleRoot', () => {
+  it('matches the database function civic_merkle_root_for', async () => {
+    // SELECT public.civic_merkle_root_for(ARRAY['b','a','c','d','e']) on the local database, 2026-10-13
+    expect(await computeMerkleRoot(['b', 'a', 'c', 'd', 'e'])).toBe('3615e586768e706351e326736e446554c49123d0e24c169d3ecf9b791a82636b');
+  });
+
+  it('uses sha256 of the receipt for one ballot and sha256("") for none', async () => {
+    expect(await computeMerkleRoot(['abc'])).toBe(await sha256Hex('abc'));
+    expect(await computeMerkleRoot([])).toBe(await sha256Hex(''));
   });
 });

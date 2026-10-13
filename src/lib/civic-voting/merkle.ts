@@ -60,3 +60,58 @@ export function shortHash(hash: string | null | undefined): string {
   if (!hash) return '';
   return `${hash.slice(0, 8)}…${hash.slice(-8)}`;
 }
+
+/**
+ * Recomputes an election's Merkle root from its public receipts, exactly as the server does
+ * (`civic_merkle_root_for`): receipts sorted, leaf = sha256(receipt), node = sha256(left_hex || right_hex),
+ * an odd last node pairs with itself, and no receipts gives sha256('').
+ */
+export async function computeMerkleRoot(receipts: string[]): Promise<string> {
+  let level = await Promise.all([...receipts].sort().map((receipt) => sha256Hex(receipt)));
+  if (level.length === 0) return sha256Hex('');
+  while (level.length > 1) {
+    const next: string[] = [];
+    for (let i = 0; i < level.length; i += 2) {
+      next.push(await sha256Hex(level[i] + (level[i + 1] ?? level[i])));
+    }
+    level = next;
+  }
+  return level[0];
+}
+
+export async function fetchElectionReceipts(electionId: string): Promise<string[]> {
+  const { data, error } = await supabase.rpc('civic_election_receipts', { p_election_id: electionId });
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((row: { receipt: string }) => row.receipt);
+}
+
+/** Where the ballot-box commitment sits in the public audit log (v2 step C4). */
+export type ElectionAuditAnchor = {
+  eventHash: string;
+  committedRoot: string | null;
+  committedCount: number | null;
+  batchId: string | null;
+  batchIndex: number | null;
+  batchHash: string | null;
+  anchorNetwork: string | null;
+  anchorReference: string | null;
+  anchoredAt: string | null;
+};
+
+export async function fetchElectionAuditAnchor(electionId: string): Promise<ElectionAuditAnchor | null> {
+  const { data, error } = await supabase.rpc('civic_election_audit_anchor', { p_election_id: electionId });
+  if (error) throw new Error(error.message);
+  const row = (data ?? [])[0];
+  if (!row) return null;
+  return {
+    eventHash: row.event_hash,
+    committedRoot: row.committed_root ?? null,
+    committedCount: row.committed_count ?? null,
+    batchId: row.batch_id ?? null,
+    batchIndex: row.batch_index ?? null,
+    batchHash: row.batch_hash ?? null,
+    anchorNetwork: row.anchor_network ?? null,
+    anchorReference: row.anchor_reference ?? null,
+    anchoredAt: row.anchored_at ?? null,
+  };
+}

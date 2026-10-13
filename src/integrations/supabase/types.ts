@@ -8800,6 +8800,11 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"civic_election_audit_anchor":
+{ Args: { "p_election_id": string }; Returns: {
+              "anchor_network": string,"anchor_reference": string,"anchored_at": string,"batch_hash": string,"batch_id": string,"batch_index": number,"committed_count": number,"committed_root": string,"event_created_at": string,"event_hash": string
+            }[]
+                           },
 "civic_election_country_stats":
 { Args: { "p_election_id": string }; Returns: {
               "country_code": string,"participant_count": number

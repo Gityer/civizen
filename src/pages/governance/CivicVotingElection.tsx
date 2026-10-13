@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { authLinkState } from '@/lib/auth-link-state';
-import { Eye, Globe2, Loader2 } from 'lucide-react';
+import { Eye, Globe2, Loader2, ShieldCheck } from 'lucide-react';
 import { CivicVotingPageShell } from '@/components/governance/CivicVotingPageShell';
 import { RoundCountryFlag } from '@/components/governance/RoundCountryFlag';
 import { Button } from '@/components/ui/button';
@@ -71,6 +71,16 @@ export default function CivicVotingElection() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="left">{t('civicVoting.observer.short')}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button type="button" size="icon" variant="outline" className="h-8 w-8 shrink-0" asChild>
+                  <Link to={`/governance/voting/${electionId}/verify`} aria-label={t('electionVerify.short')} data-testid="election-verify-link">
+                    <ShieldCheck className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">{t('electionVerify.short')}</TooltipContent>
             </Tooltip>
           </div>
         </div>
