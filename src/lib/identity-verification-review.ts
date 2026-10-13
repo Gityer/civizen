@@ -78,11 +78,14 @@ export async function reviewIdentityVerificationCase(args: {
   reviewerId: string;
   decision: Extract<IdentityVerificationDecision, 'approved' | 'rejected'>;
   notes?: string | null;
+  /** Required for a rejection (v2 step C1); see IDENTITY_REVIEW_REASON_CODES. */
+  reasonCode?: string | null;
 }): Promise<void> {
   const { data, error } = await supabase.rpc('decide_identity_verification_case', {
     p_case_id: args.caseId,
     p_decision: args.decision,
-    p_notes: args.notes ?? null,
+    p_notes: args.notes ?? undefined,
+    p_reason_code: args.reasonCode ?? undefined,
   });
   if (error) {
     throw new Error(error.message);

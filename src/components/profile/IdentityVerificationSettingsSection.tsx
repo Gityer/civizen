@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { IdentityVerificationLastDecisionNotice } from './IdentityVerificationLastDecisionNotice';
 import {
   ensureIdentityVerificationCase,
   type IdentityVerificationBundle,
@@ -369,6 +370,8 @@ export function IdentityVerificationSettingsSection() {
               {t('editProfile.identityVerification.rejected')}
             </p>
           ) : null}
+
+          <IdentityVerificationLastDecisionNotice status={status} metadata={bundle?.caseRow.metadata} />
 
           {canEditUploads ? (
             <Button

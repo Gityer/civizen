@@ -20,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useActiveOfficeKeys } from '@/hooks/useActiveOfficeKeys';
+import { useIdentityReviewerAccess } from '@/hooks/useIdentityReviewerAccess';
 import {
   getVotingProposalSupport,
   listCivicElections,
@@ -43,10 +44,12 @@ export default function GovernanceMember() {
   const navigate = useNavigate();
   const location = useLocation();
   const officeKeys = useActiveOfficeKeys(profile?.id);
+  const identityReviewer = useIdentityReviewerAccess(profile?.id);
   const toolsAllowed = canAccessGovernanceTools({
     role: profile?.role,
     permissions: profile?.effective_permissions,
     officeKeys,
+    identityReviewer,
   });
   const tab = readGovernanceTab(location.search, toolsAllowed);
 

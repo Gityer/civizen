@@ -38,7 +38,7 @@ BEGIN
   BEGIN
     PERFORM public.decide_identity_verification_case('7c000000-0000-4000-8000-000000000001', 'approved', NULL);
     RAISE EXCEPTION 'reviewer decided own case';
-  EXCEPTION WHEN raise_exception THEN
+  EXCEPTION WHEN raise_exception OR insufficient_privilege THEN
     IF SQLERRM NOT LIKE '%cannot_review_own_case%' THEN RAISE; END IF;
   END;
   RAISE NOTICE 'ok: T1 self-verification closed';

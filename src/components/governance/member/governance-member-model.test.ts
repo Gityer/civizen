@@ -106,6 +106,7 @@ describe('governance member model', () => {
     expect(canAccessGovernanceTools({ role: 'founder', permissions: [], officeKeys: [] })).toBe(true);
     expect(canAccessGovernanceTools({ role: 'member', permissions: ['role.assign'], officeKeys: [] })).toBe(true);
     expect(canAccessGovernanceTools({ role: 'member', permissions: [], officeKeys: ['founder'] })).toBe(true);
+    expect(canAccessGovernanceTools({ role: 'member', permissions: [], officeKeys: [], identityReviewer: true })).toBe(true);
     expect(readGovernanceTab('?tab=tools', false)).toBe('open');
     expect(readGovernanceTab('?tab=tools', true)).toBe('tools');
     expect(readGovernanceTab('?tab=proposals', false)).toBe('proposals');

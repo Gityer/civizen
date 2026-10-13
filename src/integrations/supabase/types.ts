@@ -4931,6 +4931,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"identity_verification_case_events": {
+                  Row: {
+                    "actor_profile_id": string | null,"case_id": string,"created_at": string,"id": string,"kind": string,"note": string | null,"reason_code": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "actor_profile_id"?: string | null,"case_id": string,"created_at"?: string,"id"?: string,"kind": string,"note"?: string | null,"reason_code"?: string | null
+                  }
+                  Update: {
+                    "actor_profile_id"?: string | null,"case_id"?: string,"created_at"?: string,"id"?: string,"kind"?: string,"note"?: string | null,"reason_code"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "identity_verification_case_events_actor_profile_id_fkey"
+      columns: ["actor_profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "identity_verification_case_events_case_id_fkey"
+      columns: ["case_id"]
+isOneToOne: false
+      referencedRelation: "identity_verification_cases"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"identity_verification_cases": {
                   Row: {
                     "contact_info_completed": boolean,"created_at": string,"discrepancy_flags": (string)[],"id": string,"last_reviewed_by": string | null,"live_verification_completed": boolean,"metadata": NonNullable<Json>,"notes": string | null,"personal_info_completed": boolean,"profile_id": string,"resolved_at": string | null,"reviewed_at": string | null,"status": Database["public"]['Enums']["identity_verification_case_status"],"submitted_at": string | null,"updated_at": string,"verification_method": string
@@ -8427,6 +8453,9 @@ isOneToOne: false
 "add_agreement_review_note":
 { Args: { "p_agreement_id": string,"p_body": string }; Returns: undefined
                            },
+"add_identity_verification_case_note":
+{ Args: { "p_case_id": string,"p_note": string }; Returns: undefined
+                           },
 "add_matter_ai_comment":
 { Args: { "p_assignment_id": string,"p_body": string,"p_run_id"?: string }; Returns: string
                            },
@@ -9032,7 +9061,7 @@ isOneToOne: false
 { Args: { "p_kind": string,"p_profile_id": string }; Returns: boolean
                            },
 "decide_identity_verification_case":
-{ Args: { "p_case_id": string,"p_decision": string,"p_notes"?: string }; Returns: Json
+{ Args: { "p_case_id": string,"p_decision": string,"p_notes"?: string,"p_reason_code"?: string }; Returns: Json
                            },
 "delete_content_item_from_source":
 { Args: { "target_source_id": string,"target_source_table": string }; Returns: undefined
@@ -9655,8 +9684,49 @@ isOneToOne: false
 "has_permission":
 { Args: { "requested": Database["public"]['Enums']["app_permission"] }; Returns: boolean
                            },
+"identity_verification_case_history":
+{ Args: { "p_case_id": string }; Returns: {
+              "actor_username": string,"created_at": string,"id": string,"kind": string,"note": string,"reason_code": string
+            }[]
+                           },
 "identity_verification_duplicate_of":
 { Args: { "p_case_id": string }; Returns: string
+                           },
+"identity_verification_lock_open_case":
+{ Args: { "p_case_id": string }; Returns: {
+              "contact_info_completed": boolean,
+"created_at": string,
+"discrepancy_flags": (string)[],
+"id": string,
+"last_reviewed_by": string | null,
+"live_verification_completed": boolean,
+"metadata": NonNullable<Json>,
+"notes": string | null,
+"personal_info_completed": boolean,
+"profile_id": string,
+"resolved_at": string | null,
+"reviewed_at": string | null,
+"status": Database["public"]['Enums']["identity_verification_case_status"],
+"submitted_at": string | null,
+"updated_at": string,
+"verification_method": string
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "identity_verification_cases"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"identity_verification_log_event":
+{ Args: { "p_case_id": string,"p_kind": string,"p_note"?: string,"p_reason_code"?: string }; Returns: undefined
+                           },
+"identity_verification_queue":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "age_hours": number,"assigned_to": string,"assigned_username": string,"case_id": string,"country": string,"full_name": string,"info_request_count": number,"note_count": number,"profile_id": string,"resubmission": boolean,"status": string,"submitted_at": string,"username": string
+            }[]
+                           },
+"identity_verification_reason_code_valid":
+{ Args: { "p_code": string }; Returns: boolean
                            },
 "increment_nela_moderation_event_count":
 { Args: { "target_category": string }; Returns: undefined
@@ -10464,6 +10534,9 @@ isOneToOne: false
 "register_governance_public_audit_verifier_node":
 { Args: { "endpoint_url"?: string,"key_algorithm"?: string,"metadata"?: Json,"verifier_key": string,"verifier_label"?: string }; Returns: string
                            },
+"release_identity_verification_case":
+{ Args: { "p_case_id": string }; Returns: Json
+                           },
 "release_stale_activation_demographic_feed_worker_claims":
 { Args: Record<PropertyKey, never>; Returns: number
                            },
@@ -10478,6 +10551,9 @@ isOneToOne: false
                            },
 "request_governance_emergency_access":
 { Args: { "request_reason": string,"target_profile_id": string }; Returns: string
+                           },
+"request_identity_verification_info":
+{ Args: { "p_case_id": string,"p_message": string,"p_reason_code": string }; Returns: Json
                            },
 "resolve_activation_demographic_feed_worker_alerts":
 { Args: { "target_adapter_id": string,"target_alert_type"?: Database["public"]['Enums']["activation_demographic_feed_alert_type"] }; Returns: number
