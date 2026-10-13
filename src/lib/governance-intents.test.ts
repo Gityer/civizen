@@ -80,6 +80,23 @@ describe('signed governance intents', () => {
     expect((await signatureSummaryFor(client, INTENT_SCOPES.consultationBallot, 'e2', 'p1')).status).toBe('unsigned');
   });
 
+  it('verifies a row whose timestamp comes back in the database form (+00:00, trimmed milliseconds)', async () => {
+    const { client, intents } = fakeClient();
+    await recordSignedIntent(client, {
+      profile: { id: 'p1' },
+      scope: INTENT_SCOPES.consultationBallot,
+      targetId: 'e1',
+      payload: await ballotIntentPayload('e1', 'RCPT'),
+    });
+    const signed = intents[0].client_created_at;
+    expect(signed).toMatch(/Z$/);
+    // timestamptz as PostgREST returns it: "+00:00" instead of "Z", trailing zeros of the milliseconds dropped
+    const asStored = signed.replace('Z', '+00:00').replace(/(\.\d*?)0+\+/, '$1+').replace('.+', '+');
+    expect(asStored).not.toBe(signed);
+    expect(await verifyIntentRow({ ...intents[0], client_created_at: asStored })).toBe('verified');
+    expect(await verifyIntentRow({ ...intents[0], client_created_at: '2026-10-13T00:46:55.37+00:00' })).toBe('invalid');
+  });
+
   it('rejects a tampered payload or signature', async () => {
     const { client, intents } = fakeClient();
     await recordSignedIntent(client, { profile: { id: 'p1' }, scope: INTENT_SCOPES.votingProposalPublish, targetId: 'v1', payload: { proposal_id: 'v1', title: 'A' } });

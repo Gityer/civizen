@@ -135,13 +135,22 @@ export async function fetchLatestIntent(client: IntentClient, scope: IntentScope
   return (data as IntentRow | null) ?? null;
 }
 
+/**
+ * The device signed `clientCreatedAt` as `Date#toISOString()` (`…02.402Z`), but the timestamptz column comes back
+ * as `…02.402+00:00` (trailing zeros of the milliseconds dropped). Restore the signed form before verifying.
+ */
+export function signedClientCreatedAt(value: string): string {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? value : parsed.toISOString();
+}
+
 export function envelopeFromRow(row: IntentRow): GovernanceIntentEnvelope {
   return {
     actorProfileId: row.actor_id,
     actionScope: row.action_scope,
     targetId: row.target_id,
     payload: row.payload,
-    clientCreatedAt: row.client_created_at,
+    clientCreatedAt: signedClientCreatedAt(row.client_created_at),
     algorithm: CITIZEN_SIGNING_ALGORITHM,
     publicKey: row.public_key,
     payloadHash: row.payload_hash,
