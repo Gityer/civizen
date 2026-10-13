@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Apple, Download, ExternalLink, Smartphone } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -14,6 +15,7 @@ function isAndroidUserAgent(ua: string) {
 }
 
 export default function DownloadPage() {
+  const { user } = useAuth();
   const { t } = useLanguage();
   const [downloadStarted, setDownloadStarted] = useState(false);
 
@@ -120,7 +122,7 @@ export default function DownloadPage() {
 
         <div className="flex justify-center">
           <Button asChild variant="ghost">
-            <Link to="/login">{t('downloads.backToApp')}</Link>
+            <Link to={user ? '/' : '/login'}>{t('downloads.backToApp')}</Link>
           </Button>
         </div>
       </motion.div>

@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { authLinkState } from '@/lib/auth-link-state';
 import { Vote, FileText, BookOpen, Lightbulb } from 'lucide-react';
 
 import { PublicPageShell } from '@/components/public/PublicPageShell';
@@ -16,6 +17,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 export default function PublicGovernanceLanding() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const location = useLocation();
   const governanceLabel = t('civicVoting.publicLanding.title');
 
   usePageMeta({
@@ -117,10 +119,10 @@ export default function PublicGovernanceLanding() {
             <p className="text-xs text-muted-foreground">{t('civicVoting.publicLanding.signInBody')}</p>
             <div className="flex flex-wrap gap-2">
               <Button type="button" size="sm" asChild>
-                <Link to="/login">{t('civicVoting.publicLanding.signIn')}</Link>
+                <Link to="/login" state={authLinkState(location, true)}>{t('civicVoting.publicLanding.signIn')}</Link>
               </Button>
               <Button type="button" size="sm" variant="outline" asChild>
-                <Link to="/signup">{t('civicVoting.publicLanding.signUp')}</Link>
+                <Link to="/signup" state={authLinkState(location, true)}>{t('civicVoting.publicLanding.signUp')}</Link>
               </Button>
             </div>
           </Card>

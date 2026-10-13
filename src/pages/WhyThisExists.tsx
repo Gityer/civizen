@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check, Globe2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { PublicPageFooter } from '@/components/public/PublicPageFooter';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
@@ -9,6 +9,7 @@ import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { authLinkState } from '@/lib/auth-link-state';
 import { CIVIZEN_REPO_URL, MATURE_HUMANITY_BOOK_URL } from '@/lib/onboarding-links';
 import { cn } from '@/lib/utils';
 
@@ -56,11 +57,12 @@ function ActionButtons({
   sourceLabel: string;
   backLabel: string;
 }) {
+  const location = useLocation();
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
         <Button asChild className="h-11 min-h-11 flex-1 gap-2 dark:shadow-glow">
-          <Link to="/signup">
+          <Link to="/signup" state={authLinkState(location)}>
             {joinLabel}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { BookOpen, Briefcase, ChevronRight, Compass, Download } from 'lucide-react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -9,6 +9,7 @@ import {
   onboardingSectionTitleClass,
 } from '@/components/public/onboarding-styles';
 import { PUBLIC_JOBS_PATH } from '@/lib/public-jobs-path';
+import { authLinkState } from '@/lib/auth-link-state';
 import { cn } from '@/lib/utils';
 
 const visitorPaths = [
@@ -37,11 +38,12 @@ export function OnboardingGetStartedHub({
   showDownloadPath = true,
 }: OnboardingGetStartedHubProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
 
   const handlePathAction = (action: PathAction) => {
     if (action === 'jobs') navigate(PUBLIC_JOBS_PATH);
-    else if (action === 'study') navigate('/signup');
+    else if (action === 'study') navigate('/signup', { state: authLinkState(location) });
     else if (action === 'download') onScrollToDownload();
     else onScrollToLearnMore();
   };

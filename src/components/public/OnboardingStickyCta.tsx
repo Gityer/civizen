@@ -1,7 +1,8 @@
 import { ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
+import { authLinkState } from '@/lib/auth-link-state';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 
@@ -13,6 +14,7 @@ type OnboardingStickyCtaProps = {
 /** Phone/tablet join bar. Large screens get Sign in / Join in the public header instead. */
 export function OnboardingStickyCta({ visible }: OnboardingStickyCtaProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
   return (
     <div
@@ -27,7 +29,7 @@ export function OnboardingStickyCta({ visible }: OnboardingStickyCtaProps) {
       {/* Right padding keeps both actions clear of the Civi launcher (bottom-right, 56px). */}
       <div className="mx-auto flex w-full max-w-3xl gap-2 pr-17">
         <Button
-          onClick={() => navigate('/signup')}
+          onClick={() => navigate('/signup', { state: authLinkState(location) })}
           className="h-11 flex-1 gap-2 dark:shadow-glow"
           tabIndex={visible ? undefined : -1}
         >
@@ -35,7 +37,7 @@ export function OnboardingStickyCta({ visible }: OnboardingStickyCtaProps) {
           <ArrowRight className="h-4 w-4" />
         </Button>
         <Button
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/login', { state: authLinkState(location) })}
           variant="outline"
           className="h-11 px-4"
           tabIndex={visible ? undefined : -1}

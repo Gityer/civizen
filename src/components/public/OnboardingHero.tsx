@@ -1,10 +1,11 @@
 import type { ReactNode, Ref } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Briefcase } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { authLinkState } from '@/lib/auth-link-state';
 import { PUBLIC_JOBS_PATH } from '@/lib/public-jobs-path';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +19,7 @@ type OnboardingHeroProps = {
 
 export function OnboardingHero({ reducedMotion, ctaRef, aside }: OnboardingHeroProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
   const split = Boolean(aside);
 
@@ -52,12 +54,12 @@ export function OnboardingHero({ reducedMotion, ctaRef, aside }: OnboardingHeroP
           className={cn('mx-auto mt-7 flex max-w-md gap-2 lg:mt-9', split && 'lg:mx-0')}
           data-testid="onboarding-hero-actions"
         >
-          <Button onClick={() => navigate('/signup')} className="h-12 flex-1 gap-2 text-base dark:shadow-glow" size="lg">
+          <Button onClick={() => navigate('/signup', { state: authLinkState(location) })} className="h-12 flex-1 gap-2 text-base dark:shadow-glow" size="lg">
             {t('onboarding.joinNetwork')}
             <ArrowRight className="h-4 w-4" />
           </Button>
           <Button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/login', { state: authLinkState(location) })}
             variant="outline"
             className="h-12 border-primary/30 bg-background/60 px-5 text-base backdrop-blur-sm"
             size="lg"

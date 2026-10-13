@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { authLinkState } from '@/lib/auth-link-state';
 import { Eye, Globe2, Loader2 } from 'lucide-react';
 import { CivicVotingPageShell } from '@/components/governance/CivicVotingPageShell';
 import { RoundCountryFlag } from '@/components/governance/RoundCountryFlag';
@@ -12,6 +13,7 @@ import { CivicVotingElectionAccordion } from '@/pages/governance/civic-voting-el
 
 export default function CivicVotingElection() {
   const model = useCivicVotingElection();
+  const location = useLocation();
   const {
     detail, detailLoading, detailError, electionId, t, language, user, isConsultation, title,
     displayTitle,
@@ -93,10 +95,10 @@ export default function CivicVotingElection() {
             <p className="text-sm text-muted-foreground">{t('civicVoting.publicBrowseOnly')}</p>
             <div className="flex flex-wrap gap-2">
               <Button type="button" size="sm" asChild>
-                <Link to="/login">{t('civicVoting.publicLanding.signIn')}</Link>
+                <Link to="/login" state={authLinkState(location, true)}>{t('civicVoting.publicLanding.signIn')}</Link>
               </Button>
               <Button type="button" size="sm" variant="outline" asChild>
-                <Link to="/signup">{t('civicVoting.publicLanding.signUp')}</Link>
+                <Link to="/signup" state={authLinkState(location, true)}>{t('civicVoting.publicLanding.signUp')}</Link>
               </Button>
             </div>
           </Card>
