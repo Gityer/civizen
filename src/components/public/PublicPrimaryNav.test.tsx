@@ -29,7 +29,7 @@ describe('PublicPrimaryNav', () => {
     );
 
     const nav = screen.getByTestId('public-primary-nav');
-    expect(nav.className).toContain('lg:flex');
+    expect(nav.className).toContain('xl:flex');
     expect(screen.getByRole('link', { name: 'Why this exists' })).toHaveAttribute(
       'href',
       '/why-this-exists',

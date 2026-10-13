@@ -51,7 +51,8 @@ export function PublicPrimaryNav({ className }: { className?: string }) {
     <nav
       data-testid="public-primary-nav"
       aria-label={t('common.appName')}
-      className={cn('hidden items-center gap-1 lg:flex', className)}
+      // From xl only: at lg (1024–1279) logo, section, five links and the sign-in actions do not fit on one row.
+      className={cn('hidden items-center gap-1 xl:flex', className)}
     >
       {PUBLIC_PRIMARY_NAV.map((item) => {
         const active = item.match?.(location.pathname) ?? location.pathname === item.href;
@@ -61,7 +62,7 @@ export function PublicPrimaryNav({ className }: { className?: string }) {
             to={item.href}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              'rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
+              'whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
               active
                 ? 'bg-primary/10 text-primary'
                 : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground',

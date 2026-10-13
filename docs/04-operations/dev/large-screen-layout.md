@@ -28,7 +28,7 @@ Secondary arc geometry and `verify:arc-carousel-*` remain phone-only. See `nav-s
 
 | Phone | Large screen |
 |-------|----------------|
-| Logo + compact toolbar (Jobs / Download / language / theme) | Logo + **PublicPrimaryNav** (Why · Areas · Jobs · Documents · Governance) + Sign in / Join + Download |
+| Logo + compact toolbar (Jobs / Download / language / theme) | Logo + **PublicPrimaryNav** (Why · Areas · Jobs · Documents · Governance, from `xl` 1280px; at `lg` the row did not fit beside a section name and the sign-in actions) + Sign in / Join + Download |
 | Footer as a single wrapped link row | Footer with brand line + multi-column link grid |
 | Narrow content column | **reading** (`max-w-3xl`) for essays; **directory** (`max-w-5xl`) for Areas / Download / Governance landing |
 
