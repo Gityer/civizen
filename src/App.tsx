@@ -45,7 +45,7 @@ function RouteFallback() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      {slow ? <div className="animate-pulse-soft text-muted-foreground">{t('common.loading')}</div> : null}
+      {slow ? <div role="status" className="text-muted-foreground">{t('common.loading')}</div> : null}
     </div>
   );
 }
