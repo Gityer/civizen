@@ -7,7 +7,7 @@ import { canAccessGovernanceTools } from '@/components/governance/member/governa
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useActiveOfficeKeys } from '@/hooks/useActiveOfficeKeys';
-import { useIdentityReviewerAccess } from '@/hooks/useIdentityReviewerAccess';
+import { useGovernanceToolAccess } from '@/hooks/useGovernanceToolAccess';
 import { useGovernanceVoteContext } from '@/hooks/useGovernanceVoteContext';
 import { deriveGovernancePermissions } from '@/lib/governance-permission-model';
 import { StewardConsole } from './StewardConsole';
@@ -21,7 +21,7 @@ export function GovernanceDashboard() {
   const { profile } = useAuth();
   const { loading, context } = useGovernanceVoteContext();
   const officeKeys = useActiveOfficeKeys(profile?.id);
-  const identityReviewer = useIdentityReviewerAccess(profile?.id);
+  const toolAccess = useGovernanceToolAccess(profile?.id);
 
   const permissions = useMemo(
     () =>
@@ -38,7 +38,7 @@ export function GovernanceDashboard() {
     role: profile?.role,
     permissions: profile?.effective_permissions,
     officeKeys,
-    identityReviewer,
+    ...toolAccess,
   });
 
   if (loading) {

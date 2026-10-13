@@ -339,3 +339,25 @@ options without counts and `civic_election_participation` gives the number of co
 running totals next to the public receipt events let anyone match a receipt to a choice. A ballot's signed intent
 (actor + receipt hash) is readable only by the voter; proposal intents stay readable by members. The outcome
 function is server-only. Tests: `supabase/tests/insider_and_privacy_bypasses_test.sql`.
+
+## 17. Election administration (v2 step C2, 2026-10-13)
+
+Consultations are still created and scheduled from a Matter through a voting proposal. Election administrators
+(founder, admin or system role, or a member of the Civic Operations governance domain; never while an `execution`
+sanction is active) work from Governance › Tools › Steward console › Elections:
+
+- **Reschedule** a scheduled consultation before it opens (`admin_reschedule_election`): opening at least 5 minutes
+  ahead, window of 1 hour to 90 days.
+- **Extend** a scheduled or open consultation (`admin_extend_election`): only later, at most 14 days more at once;
+  followers are notified.
+- **Cancel** before closing (`admin_cancel_election`): status `cancelled`, the proposal becomes `withdrawn`, counts
+  stay sealed (`civic_election_results_published` is false for cancelled consultations), no outcome is written to
+  the Matter, followers and voters are notified, and the reason shows on the consultation page.
+- **Certify with two people:** one administrator requests certification of a closed result
+  (`request_election_certification`), a different one, not linked to the first, certifies it (`certify_election`).
+- Every action needs a reason (certification takes an optional note) and is appended to the hash-chained public
+  event log (`civic_voting_events`) with the administrator's username; `election_admin_history` reads it back.
+  Sample and demo consultations cannot be administered.
+
+Tests: `supabase/tests/election_administration_test.sql`,
+`src/components/governance/election-admin/StewardConsoleElections.test.tsx`.

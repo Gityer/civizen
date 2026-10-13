@@ -7,6 +7,7 @@ import { m_messages_market_jobs_admin, m_messages_settings_04 } from './i18n/bas
 import { m_messages_study_02 } from './i18n/base/messages-study-02';
 import { m_messages_moderation } from './i18n/base/messages-moderation';
 import { m_messages_identity_review } from './i18n/base/messages-identity-review';
+import { m_messages_election_admin } from './i18n/base/messages-election-admin';
 import { m_messages_03 } from './i18n/base/messages-03';
 import { m_messages_04 } from './i18n/base/messages-04';
 import { m_messages_05 } from './i18n/base/messages-05';
@@ -53,6 +54,7 @@ export const baseTranslations = {
   ...m_messages_study_02,
   ...m_messages_moderation,
   ...m_messages_identity_review,
+  ...m_messages_election_admin,
   ...m_messages_market_jobs_admin,
   ...m_messages_10,
   "profile": { ...m_messages_profile_01, ...m_messages_profile_02, },

@@ -8471,6 +8471,12 @@ isOneToOne: false
 "add_task_dependency":
 { Args: { "p_depends_on_task_id": string,"p_task_id": string }; Returns: undefined
                            },
+"admin_cancel_election":
+{ Args: { "p_election_id": string,"p_reason": string }; Returns: Json
+                           },
+"admin_extend_election":
+{ Args: { "p_closes_at": string,"p_election_id": string,"p_reason": string }; Returns: Json
+                           },
 "admin_list_profiles":
 { Args: Record<PropertyKey, never>; Returns: {
               "active_citizen_since": string | null,
@@ -8537,6 +8543,9 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
+"admin_reschedule_election":
+{ Args: { "p_closes_at": string,"p_election_id": string,"p_opens_at": string,"p_reason": string }; Returns: Json
+                           },
 "adopt_matter_agent_plan_task":
 { Args: { "p_artifact_id": string,"p_depends_on_titles"?: (string)[],"p_description"?: string,"p_title": string }; Returns: string
                            },
@@ -8710,6 +8719,9 @@ isOneToOne: false
                            } |
 { Args: { "p_election_id": string,"p_option_keys": (string)[] }; Returns: Json
                            },
+"certify_election":
+{ Args: { "p_election_id": string }; Returns: Json
+                           },
 "citizenship_due_at":
 { Args: { "p_profile_id": string }; Returns: string
                            },
@@ -8721,6 +8733,9 @@ isOneToOne: false
                            },
 "civic_append_election_event":
 { Args: { "p_election_id": string,"p_event_type": string,"p_payload": Json }; Returns: string
+                           },
+"civic_can_administer_elections":
+{ Args: { "p_profile_id": string }; Returns: boolean
                            },
 "civic_can_draft_voting_proposal_for_matter":
 { Args: { "p_matter_id": string,"p_profile_id": string }; Returns: boolean
@@ -8746,6 +8761,45 @@ isOneToOne: false
 "civic_consultation_reminders":
 { Args: Record<PropertyKey, never>; Returns: number
                            },
+"civic_election_admin_event":
+{ Args: { "p_election_id": string,"p_payload": Json,"p_type": string }; Returns: undefined
+                           },
+"civic_election_admin_lock":
+{ Args: { "p_election_id": string,"p_reason": string }; Returns: {
+              "ballot_box_commitment": string | null,
+"body": string,
+"canvass_sample_rate": number,
+"challenge_closes_at": string | null,
+"challenge_opens_at": string | null,
+"created_at": string,
+"created_by": string | null,
+"eligibility_roster_commitment": string | null,
+"id": string,
+"max_attempts": number,
+"metadata": NonNullable<Json>,
+"primary_window_seconds": number,
+"require_face_liveness": boolean,
+"require_home_presence": boolean,
+"require_solitude": boolean,
+"retry_spacing_hours": number,
+"scope_country_code": string | null,
+"scope_locality_code": string | null,
+"scope_region_code": string | null,
+"security_class": Database["public"]['Enums']["civic_election_security_class"],
+"status": Database["public"]['Enums']["civic_election_status"],
+"summary": string,
+"tier": Database["public"]['Enums']["civic_election_tier"],
+"title": string,
+"updated_at": string,
+"voting_closes_at": string,
+"voting_opens_at": string
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "civic_elections"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
 "civic_election_country_stats":
 { Args: { "p_election_id": string }; Returns: {
               "country_code": string,"participant_count": number
@@ -9089,6 +9143,16 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"election_admin_history":
+{ Args: { "p_election_id": string }; Returns: {
+              "actor_username": string,"created_at": string,"event_type": string,"payload": Json
+            }[]
+                           },
+"election_admin_list":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "cancel_reason": string,"certification_requested_at": string,"certification_requested_by": string,"certification_requested_by_me": boolean,"countable_ballots": number,"election_id": string,"proposal_id": string,"status": string,"title": string,"updated_at": string,"voting_closes_at": string,"voting_opens_at": string
+            }[]
+                           },
 "emergency_access_approvals_required":
 { Args: Record<PropertyKey, never>; Returns: number
                            },
@@ -10135,6 +10199,9 @@ isOneToOne: false
 "moderation_target_excerpt":
 { Args: { "p_id": string,"p_kind": string }; Returns: string
                            },
+"my_can_administer_elections":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
 "my_civic_status":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
@@ -10548,6 +10615,9 @@ isOneToOne: false
                            },
 "request_agreement_review":
 { Args: { "p_agreement_id": string }; Returns: undefined
+                           },
+"request_election_certification":
+{ Args: { "p_election_id": string,"p_note"?: string }; Returns: Json
                            },
 "request_governance_emergency_access":
 { Args: { "request_reason": string,"target_profile_id": string }; Returns: string

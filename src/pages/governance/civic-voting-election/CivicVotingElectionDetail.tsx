@@ -56,6 +56,12 @@ export function CivicVotingElectionDetail({ model }: { model: CivicVotingElectio
           </Badge>
         </div>
 
+        {detail.election.status === 'cancelled' && typeof detail.election.metadata?.cancel_reason === 'string' ? (
+          <p className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-foreground" role="status" data-testid="election-cancel-reason">
+            {t('electionAdmin.cancelReason', { reason: detail.election.metadata.cancel_reason })}
+          </p>
+        ) : null}
+
         {isConsultation && detail.election.summary ? (
           <p className="text-base leading-relaxed text-foreground">{detail.election.summary}</p>
         ) : null}

@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { callRpc } from '@/lib/supabase-rpc';
 import type { IdentityVerificationArtifactRow } from '@/lib/identity-verification-types';
 
 /** Reasons a reviewer gives when rejecting or asking for more information (v2 step C1). Same list as the server. */
@@ -67,19 +68,11 @@ export function filterIdentityReviewQueue(
   }
 }
 
-async function rpc<T>(name: string, args?: Record<string, unknown>): Promise<T> {
-  const { data, error } = await (supabase.rpc as unknown as (
-    fn: string,
-    params?: Record<string, unknown>,
-  ) => Promise<{ data: T; error: { message: string } | null }>)(name, args);
-  if (error) throw new Error(error.message);
-  return data;
-}
 
 /** True when the signed-in member may review identity verifications (staff or Identity Verification domain). */
 export async function canReviewIdentityVerification(): Promise<boolean> {
   try {
-    return Boolean(await rpc<boolean>('can_review_identity_verification_storage'));
+    return Boolean(await callRpc('can_review_identity_verification_storage'));
   } catch {
     return false;
   }
@@ -102,7 +95,7 @@ type QueueRow = {
 };
 
 export async function listIdentityReviewQueue(): Promise<IdentityReviewQueueItem[]> {
-  const rows = (await rpc<QueueRow[] | null>('identity_verification_queue')) ?? [];
+  const rows = ((await callRpc('identity_verification_queue')) ?? []) as unknown as QueueRow[];
   if (rows.length === 0) return [];
   const { data: artifacts, error } = await supabase
     .from('identity_verification_artifacts')
@@ -133,21 +126,21 @@ export async function listIdentityReviewQueue(): Promise<IdentityReviewQueueItem
 }
 
 export async function releaseIdentityVerificationCase(caseId: string): Promise<void> {
-  await rpc('release_identity_verification_case', { p_case_id: caseId });
+  await callRpc('release_identity_verification_case', { p_case_id: caseId });
 }
 
 export async function requestIdentityVerificationInfo(caseId: string, reasonCode: IdentityReviewReasonCode, message: string): Promise<void> {
-  await rpc('request_identity_verification_info', { p_case_id: caseId, p_reason_code: reasonCode, p_message: message });
+  await callRpc('request_identity_verification_info', { p_case_id: caseId, p_reason_code: reasonCode, p_message: message });
 }
 
 export async function addIdentityVerificationCaseNote(caseId: string, note: string): Promise<void> {
-  await rpc('add_identity_verification_case_note', { p_case_id: caseId, p_note: note });
+  await callRpc('add_identity_verification_case_note', { p_case_id: caseId, p_note: note });
 }
 
 type HistoryRow = { id: string; kind: string; reason_code: string | null; note: string | null; actor_username: string | null; created_at: string };
 
 export async function loadIdentityVerificationCaseHistory(caseId: string): Promise<IdentityReviewHistoryEntry[]> {
-  const rows = (await rpc<HistoryRow[] | null>('identity_verification_case_history', { p_case_id: caseId })) ?? [];
+  const rows = ((await callRpc('identity_verification_case_history', { p_case_id: caseId })) ?? []) as unknown as HistoryRow[];
   return rows.map((row) => ({
     id: row.id,
     kind: row.kind,

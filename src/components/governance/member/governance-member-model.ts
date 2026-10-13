@@ -81,8 +81,10 @@ export function canAccessGovernanceTools(input: {
   officeKeys: readonly string[] | null | undefined;
   /** Member of the Identity Verification domain (server check `can_review_identity_verification_storage`). */
   identityReviewer?: boolean;
+  /** Election administrator (server check `my_can_administer_elections`). */
+  electionAdmin?: boolean;
 }): boolean {
-  if (input.identityReviewer) return true;
+  if (input.identityReviewer || input.electionAdmin) return true;
   if (input.role && TOOL_ROLES.has(input.role)) return true;
   if (permissionListHasAny(input.permissions ?? [], TOOL_PERMISSIONS)) return true;
   return Boolean(input.officeKeys && input.officeKeys.length > 0);
