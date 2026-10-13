@@ -1,12 +1,12 @@
 {
   "platform": "android",
   "channel": "web-ota",
-  "bundleVersion": "0.1.235",
-  "bundlePath": "/updates/bundles/civizen-web-0.1.235.zip",
-  "bundleUrl": "https://civizen.world/updates/bundles/civizen-web-0.1.235.zip",
-  "bundleSha256": "95b9af77e47e75dc355667f2cd305ee8e0c73e99d07409bfecd9ffb1cb8f2938",
-  "bundleSize": 5060891,
-  "minNative": { "version": "0.1.235", "buildNumber": 237 },
+  "bundleVersion": "0.1.236",
+  "bundlePath": "/updates/bundles/civizen-web-0.1.236.zip",
+  "bundleUrl": "https://civizen.world/updates/bundles/civizen-web-0.1.236.zip",
+  "bundleSha256": "c6f4cf23ff3596a19e24c9d6bfdadda83eb967e1389f68613dc10cbc54e16eda",
+  "bundleSize": 5062890,
+  "minNative": { "version": "0.1.236", "buildNumber": 238 },
   "mandatory": false,
-  "publishedAt": "2026-10-13T00:50:11Z"
+  "publishedAt": "2026-10-13T01:39:42Z"
 }
