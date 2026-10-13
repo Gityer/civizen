@@ -13,6 +13,7 @@ import { type Post } from '@/pages/home/home-shared';
 import { useHome } from '@/pages/home/useHome';
 import { HomeScoreCard } from '@/pages/home/HomeScoreCard';
 import { OpenConsultationBanner } from '@/components/governance/OpenConsultationBanner';
+import { HomeFirstSteps } from '@/components/home/HomeFirstSteps';
 import { HomeComposer } from '@/pages/home/HomeComposer';
 import { HomeFeedItem } from '@/pages/home/HomeFeedItem';
 import { HomeStories } from '@/pages/home/HomeStories';
@@ -78,6 +79,9 @@ export default function Home() {
 
         {/* Score Card */}
         <HomeScoreCard model={model} />
+
+        {/* First steps for new members (v2 step B4) */}
+        <HomeFirstSteps profileId={model.profile?.id} />
 
         {/* The open consultation members can vote on right now */}
         <OpenConsultationBanner />

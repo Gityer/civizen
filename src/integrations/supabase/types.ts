@@ -10035,6 +10035,9 @@ isOneToOne: false
 "my_eligibility":
 { Args: { "p_scope": string }; Returns: Json
                            },
+"my_getting_started":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "my_profile":
 { Args: Record<PropertyKey, never>; Returns: {
               "active_citizen_since": string | null,

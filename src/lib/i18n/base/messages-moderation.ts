@@ -94,5 +94,19 @@ export const m_messages_moderation = {
     "joinPrompt": "Join Civizen to comment, support a proposal or help resolve this Matter. You will come back here after signing up.",
     "join": "Join to take part",
     "discussion": "Discussion ({count})"
+  },
+  "firstSteps": {
+    "title": "Getting started",
+    "progress": "{done} of {total} done",
+    "dismiss": "Hide getting started",
+    "voteCounts": "Your vote counts.",
+    "voteAdvisory": "Your vote is advisory until your identity is verified.",
+    "steps": {
+      "lesson": { "title": "Read your first lesson", "hint": "Five minutes on how Civizen works and decides." },
+      "vote": { "title": "Vote in the open consultation", "hint": "Read the question and cast your ballot." },
+      "matter": { "title": "Raise or join a Matter", "hint": "Bring up an issue, a question or an idea, or add to one." },
+      "verify": { "title": "Verify your identity", "hint": "An ID photo and a selfie; it makes your vote count." },
+      "profile": { "title": "Add a photo or a short bio", "hint": "Helps others know who they are talking to." }
+    }
   }
 } as const;
