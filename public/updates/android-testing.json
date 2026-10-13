@@ -1,13 +1,14 @@
 {
   "platform": "android",
-  "version": "0.1.234",
-  "versionTag": "v0.1.234",
-  "buildNumber": 236,
-  "releaseId": "20261012-v0.1.234",
-  "downloadPath": "/downloads/civizen-android-testing-20261012-v0.1.234.apk",
-  "downloadUrl": "https://civizen.world/downloads/civizen-android-testing-20261012-v0.1.234.apk?v=20261012-v0.1.234",
-  "publishedAt": "2026-10-12T23:50:49Z",
-  "sha256": "c1b90bcd4bae2caa3c892d439289e9608d264903cad2f74c8762b9cd80ffc356",
+  "version": "0.1.235",
+  "versionTag": "v0.1.235",
+  "buildNumber": 237,
+  "releaseId": "20261012-v0.1.235",
+  "downloadPath": "/downloads/civizen-android-testing-20261012-v0.1.235.apk",
+  "downloadUrl": "https://civizen.world/downloads/civizen-android-testing-20261012-v0.1.235.apk?v=20261012-v0.1.235",
+  "publishedAt": "2026-10-13T00:50:10Z",
+  "sha256": "17ee40396058e8fc9a97a15c87da5b5ca78d3005ee45f18a6457986bfd10a0f1",
   "signing": "release",
-  "notes": ["report anything, one moderation queue, hide with a reason, one appeal to another moderator"]
+  "sourceCommit": "426b84b6220fb9ce0d83c59a96f876d02a26bc48",
+  "notes": ["see the funnel without tracking anyone","getting started card for new members","header links start at 1280px so they no longer overlap at 1024px","visitors read public Matters before joining","labels match what the product does","every guest sign-in and sign-up button keeps the return path"]
 }
