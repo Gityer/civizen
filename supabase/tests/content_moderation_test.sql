@@ -78,7 +78,9 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM public.user_notifications WHERE notification_type = 'moderation_hidden' AND entity_id = current_setting('t.action')::uuid) THEN
     RAISE EXCEPTION 'author not notified';
   END IF;
-  IF (SELECT count(*) FROM public.moderation_actions_list('mine')) <> 1 THEN RAISE EXCEPTION 'author does not see the action'; END IF;
+  IF NOT EXISTS (SELECT 1 FROM public.moderation_actions_list('mine') WHERE id = current_setting('t.action')::uuid) THEN
+    RAISE EXCEPTION 'author does not see the action';
+  END IF;
   PERFORM public.moderation_appeal(current_setting('t.action')::uuid, 'This is my own event announcement, not an advert.');
   BEGIN
     PERFORM public.moderation_appeal(current_setting('t.action')::uuid, 'again');
