@@ -233,6 +233,7 @@ export const homeLandingHy = {
     footerLegalStatus: 'Իրավական կարգավիճակ',
     footerWhy: 'Ինչու է սա գոյություն ունի',
     footerAreas: 'Ոլորտներ',
+    footerMatters: 'Հանրային Հարցեր',
     footerJobs: 'Աշխատանք',
     statusTitle: 'Նախագծի կարգավիճակ',
     statusBadge: 'Վաղ մուտք',

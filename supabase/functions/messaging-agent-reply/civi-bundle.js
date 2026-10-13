@@ -1055,9 +1055,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.234",
     "appReleaseId": "20261012-v0.1.234",
     "androidVersionCode": 236,
-    "gitSha": "469931751c43c23211598b42b0772e2380084328",
-    "generatedAt": "2026-10-12T23:50:13.525Z",
-    "sourceFingerprint": "4da887b31759c138b143de0c09cd3dcde2249d953b7aa39fdafcbe6908dd4b86",
+    "gitSha": "257324e335fd3471f3c5539671f2080408ab191c",
+    "generatedAt": "2026-10-13T00:18:40.384Z",
+    "sourceFingerprint": "9952ba4efc2eefe3b62f63020e82d65b38ce74ada117a3e8c0aa01cf47ccb9fc",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 398
@@ -1219,10 +1219,11 @@ var KNOWLEDGE_PACK = {
       "name": "Questions, Issues & Ideas",
       "status": "implemented",
       "description": "Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review \u2014 it does not commit, push, or deploy.",
-      "howTo": "Open Contribute > Questions, Issues & Ideas: the page lands on the public Matters list (search, Area, country and type filters). Tap + to create a Matter, choose the intended person or organization or address it to the Civizen community, set the geographic scope and Area, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks.",
+      "howTo": "Open Contribute > Questions, Issues & Ideas: the page lands on the public Matters list (search, Area, country and type filters). Tap + to create a Matter, choose the intended person or organization or address it to the Civizen community, set the geographic scope and Area, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks. Visitors who are not signed in can read public Matters and their public comments at /matters (Public Matters in the footer) and join from a Matter to come back to it.",
       "routes": [
         "/contribute/matters",
-        "/contribute/matters/new"
+        "/contribute/matters/new",
+        "/matters"
       ],
       "roles": [
         "member"
@@ -3566,7 +3567,7 @@ var KNOWLEDGE_PACK = {
       "id": "capability:matters",
       "title": "Questions, Issues & Ideas",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Questions, Issues & Ideas status=implemented. Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review \u2014 it does not commit, push, or deploy. Open Contribute > Questions, Issues & Ideas: the page lands on the public Matters list (search, Area, country and type filters). Tap + to create a Matter, choose the intended person or organization or address it to the Civizen community, set the geographic scope and Area, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks. Routes: /contribute/matters, /contribute/matters/new.",
+      "text": "Questions, Issues & Ideas status=implemented. Generic Matter collaboration under Contribute. Ask a question, raise an issue, suggest an improvement, or work with others toward an outcome. Every active Matter shows who must act next, what is expected, when it is due, and what happens if nobody acts. Comments are not formal actions. When work is needed, the responsible party can start collaborative work, assign Tasks, record Decisions, and return to the same resolution confirmation flow. Completing a Task does not resolve the Matter. Ordinary collaborative-work completion requires required Tasks to be Completed or Cancelled; inviting someone to collaborate is not the same as asking them to accept shared responsibility. Authorized leads can add AI assistance, including a Coding Agent that uses a live model to inspect and edit authorized files through a trusted isolated worktree runner for human review \u2014 it does not commit, push, or deploy. Open Contribute > Questions, Issues & Ideas: the page lands on the public Matters list (search, Area, country and type filters). Tap + to create a Matter, choose the intended person or organization or address it to the Civizen community, set the geographic scope and Area, then follow the Current Action panel. For work that needs several people, use Start collaborative work. Needs Your Action also lists assigned Tasks. Visitors who are not signed in can read public Matters and their public comments at /matters (Public Matters in the footer) and join from a Matter to come back to it. Routes: /contribute/matters, /contribute/matters/new, /matters.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"

@@ -8,6 +8,7 @@ const CONTACT_URL = 'https://civizen.world';
 const FOOTER_LINKS = [
   { to: '/why-this-exists', labelKey: 'onboarding.footerWhy' },
   { to: '/areas', labelKey: 'onboarding.footerAreas' },
+  { to: '/matters', labelKey: 'onboarding.footerMatters' },
   { to: PUBLIC_JOBS_PATH, labelKey: 'onboarding.footerJobs' },
   { to: '/fund', labelKey: 'onboarding.footerFund' },
   { to: '/documents', labelKey: 'onboarding.footerDocuments' },

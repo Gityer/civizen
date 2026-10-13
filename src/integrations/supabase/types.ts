@@ -10265,6 +10265,15 @@ isOneToOne: false
 "propose_matter_resolution":
 { Args: { "payload": Json }; Returns: string
                            },
+"public_matter":
+{ Args: { "p_id": string }; Returns: Json
+                           },
+"public_matter_card":
+{ Args: { "p_id": string }; Returns: Json
+                           },
+"public_matter_cards":
+{ Args: { "p_area_node_id"?: string,"p_limit"?: number,"p_matter_type"?: string,"p_offset"?: number,"p_scope_country_code"?: string,"p_search"?: string }; Returns: Json
+                           },
 "public_profile":
 { Args: { "p_profile_id": string }; Returns: Json
                            },

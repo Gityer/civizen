@@ -40,7 +40,10 @@ function ActivityList<T extends { id: string; title: string }>({
   );
 }
 
-/** Real activity tagged with the Area (step 4.4): programs, challenges and public Matters. Guests sign in first. */
+/**
+ * Real activity tagged with the Area (step 4.4): programs, challenges and public Matters. Guests sign in first for
+ * programs and challenges; public Matters open on /matters/:id for everyone (v2 step B3).
+ */
 export function AreaActivitySection({ activity, memberLink }: { activity: AreaActivity; memberLink: MemberLink }) {
   const { t } = useLanguage();
   if (!hasAreaActivity(activity)) return null;
@@ -63,9 +66,9 @@ export function AreaActivitySection({ activity, memberLink }: { activity: AreaAc
       <ActivityList
         title={t('areas.activityMatters')}
         items={activity.matters}
-        hrefFor={(item) => `/contribute/matters/${item.id}`}
+        hrefFor={(item) => `/matters/${item.id}`}
         badgeFor={(item) => t(`contribute.matters.types.${item.matterType}`)}
-        memberLink={memberLink}
+        memberLink={(to) => ({ to })}
       />
     </div>
   );

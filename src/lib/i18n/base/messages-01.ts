@@ -129,6 +129,7 @@ export const m_messages_01 = {
     "footerLegalStatus": "Legal status",
     "footerWhy": "Why this exists",
     "footerAreas": "Areas",
+    "footerMatters": "Public Matters",
     "footerJobs": "Jobs",
     "statusTitle": "Project status",
     "statusBadge": "Early access",

@@ -233,6 +233,7 @@ export const homeLandingRu = {
     footerLegalStatus: 'Правовой статус',
     footerWhy: 'Зачем это существует',
     footerAreas: 'Направления',
+    footerMatters: 'Публичные Вопросы',
     footerJobs: 'Вакансии',
     statusTitle: 'Статус проекта',
     statusBadge: 'Ранний доступ',

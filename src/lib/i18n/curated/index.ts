@@ -18,6 +18,8 @@ import { settingsHy } from './settings.hy';
 import { settingsRu } from './settings.ru';
 import { moderationHy } from './moderation.hy';
 import { moderationRu } from './moderation.ru';
+import { publicMattersHy } from './public-matters.hy';
+import { publicMattersRu } from './public-matters.ru';
 
 type Tree = Record<string, unknown>;
 
@@ -30,8 +32,8 @@ function mergeGroups(...groups: Tree[]): Tree {
 }
 
 export const curatedTranslations: Record<string, Tree> = {
-  hy: mergeGroups({ governanceDashboard: governanceDashboardHy, ...governanceHubHy }, civicVotingHy, participationLoopHy, { contribute: { matters: mattersHy } }, homeLandingHy, profileHy, profileLedgerHy, settingsHy, moderationHy),
-  ru: mergeGroups({ governanceDashboard: governanceDashboardRu, ...governanceHubRu }, civicVotingRu, participationLoopRu, { contribute: { matters: mattersRu } }, homeLandingRu, profileRu, profileLedgerRu, settingsRu, moderationRu),
+  hy: mergeGroups({ governanceDashboard: governanceDashboardHy, ...governanceHubHy }, civicVotingHy, participationLoopHy, { contribute: { matters: mattersHy } }, homeLandingHy, profileHy, profileLedgerHy, settingsHy, moderationHy, publicMattersHy),
+  ru: mergeGroups({ governanceDashboard: governanceDashboardRu, ...governanceHubRu }, civicVotingRu, participationLoopRu, { contribute: { matters: mattersRu } }, homeLandingRu, profileRu, profileLedgerRu, settingsRu, moderationRu, publicMattersRu),
 };
 
 /** Languages a person has reviewed; every other language is machine translation and is labelled so (Phase 8 step 8.2). */

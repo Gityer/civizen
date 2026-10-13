@@ -56,6 +56,8 @@ import {
   HelpSupport,
   Notifications,
   Moderation,
+  PublicMatters,
+  PublicMatterDetail,
   OpportunityDetail,
   OpportunityForm,
   Pillars,
@@ -109,6 +111,8 @@ export const appRoutes1 = (
       <Route path="/about/legal-status" element={<InstitutionalDocRoute />} />
       <Route path="/privacy" element={<InstitutionalDocRoute />} />
       <Route path="/guidelines" element={<InstitutionalDocRoute />} />
+      <Route path="/matters" element={<PublicMatters />} />
+      <Route path="/matters/:id" element={<PublicMatterDetail />} />
       <Route path="/about/mission" element={<InstitutionalDocRoute />} />
       <Route path="/about/open-source" element={<InstitutionalDocRoute />} />
       <Route path="/about/ai" element={<InstitutionalDocRoute />} />

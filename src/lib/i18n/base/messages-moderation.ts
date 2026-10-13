@@ -78,5 +78,21 @@ export const m_messages_moderation = {
       "cannot_moderate_own_content": "You cannot moderate your own content.",
       "generic": "That did not work. Try again."
     }
+  },
+  "publicMatters": {
+    "title": "Public Matters",
+    "metaTitle": "Public Matters — Civizen",
+    "metaDescription": "Issues, questions and suggestions people have raised openly on Civizen, and the discussion around them.",
+    "subtitle": "Issues, questions and suggestions raised openly by members, with their discussion. Join to take part.",
+    "searchPlaceholder": "Search Matters",
+    "all": "All",
+    "open": "Open",
+    "empty": "No public Matters match.",
+    "more": "Show more",
+    "notFound": "This Matter is not public or does not exist.",
+    "raisedBy": "Raised by {initiator} for {addressee}",
+    "joinPrompt": "Join Civizen to comment, support a proposal or help resolve this Matter. You will come back here after signing up.",
+    "join": "Join to take part",
+    "discussion": "Discussion ({count})"
   }
 } as const;
