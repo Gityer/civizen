@@ -307,6 +307,12 @@ function mapSupport(data: unknown): VotingProposalSupport {
   };
 }
 
+/** Author (or a proposal manager) withdraws a draft; supporters are told (v2 step C3). */
+export async function withdrawVotingProposal(proposalId: string): Promise<void> {
+  const { error } = await db.rpc('withdraw_voting_proposal', { p_proposal_id: proposalId });
+  if (error) throw new Error(error.message);
+}
+
 export async function getVotingProposalSupport(proposalId: string): Promise<VotingProposalSupport | null> {
   const { data, error } = await db.rpc('voting_proposal_support_summary', { p_proposal_id: proposalId });
   if (error || !data) return null;

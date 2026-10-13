@@ -18,6 +18,7 @@ import {
   getVotingProposalSupport,
   openVotingProposalForSupport,
   publishVotingProposal,
+  withdrawVotingProposal,
   toConsultationReasonCode,
   toggleVotingProposalSupport,
   updateVotingProposalSettings,
@@ -97,6 +98,14 @@ export default function CivicVotingProposal() {
       toast.success(t('civicVoting.proposals.published'));
       navigate(`/governance/voting/${electionId}`);
     }, 'civicVoting.proposals.publishFailed');
+
+  const handleWithdraw = () =>
+    run(async () => {
+      if (!proposal || !window.confirm(t('civicVoting.proposals.withdrawConfirm'))) return;
+      await withdrawVotingProposal(proposal.id);
+      setProposal({ ...proposal, status: 'withdrawn' });
+      toast.success(t('civicVoting.proposals.withdrawn'));
+    }, 'civicVoting.proposals.withdrawFailed');
 
   const handleOpenForSupport = (threshold: number) =>
     run(async () => {
@@ -183,6 +192,12 @@ export default function CivicVotingProposal() {
                   <Button type="button" size="sm" disabled={busy} onClick={() => void handlePublish()}>
                     {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                     {t('civicVoting.proposals.publish')}
+                  </Button>
+                ) : null}
+                {proposal.status === 'draft' && (isAuthor || isManager) ? (
+                  <Button type="button" size="sm" variant="ghost" className="text-destructive" disabled={busy}
+                    data-testid="proposal-withdraw" onClick={() => void handleWithdraw()}>
+                    {t('civicVoting.proposals.withdraw')}
                   </Button>
                 ) : null}
                 {proposal.electionId ? (
