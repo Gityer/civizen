@@ -1,8 +1,10 @@
+
+
 # Active context
 
 ## Current focus
 
-**Sign-in Home Loading (2026-10-23):** Post-sign-in "Loading" could last 30–60+ s because `loadContributionEvidenceRecords` built one unbounded `contribution_source_id=in.(…)` GET (414 / failed, repeated ~10×) and Home `fetchData` awaited evidence before `setLoading(false)`. Fixed: prefer `subject_profile_id` (else chunked `in()` of 50), in-flight dedupe, ledger-first load with background enrich/sync, Home does not wait on contributions for first paint. Guards: `src/lib/civizen-contribution-evidence-store.test.ts`, `e2e/signin-home-ready.spec.ts`. Local founder-sized member (683 ledger rows): sign-in→usable Home **598 ms** (was 32 958 ms).
+**Sign-in Home Loading + score ledger paging (2026-10-23):** Post-sign-in "Loading" could last 30–60+ s because `loadContributionEvidenceRecords` built one unbounded `contribution_source_id=in.(…)` GET (414 / failed, repeated ~10×) and Home `fetchData` awaited evidence before `setLoading(false)`. Fixed: prefer `subject_profile_id` (else chunked `in()` of 50), in-flight dedupe, ledger-first load with background enrich/sync, Home does not wait on contributions for first paint. Guards: `src/lib/civizen-contribution-evidence-store.test.ts`, `e2e/signin-home-ready.spec.ts`. Follow-up: PostgREST silently capped ledger selects at 1000 rows, dropping older verified opportunity_participations (Home Skills); fetchAllContributionEventRows pages the ledger (27.4/2 areas to 29.0/3 on the local member fixture). Guards include home-score-ledger-inputs.test.ts. Local founder-sized member (683 ledger rows): sign-in→usable Home **598 ms** (was 32 958 ms).
 
 **Product plan v2 (2026-10-12):** the 10-07 plan is executed; the live inventory, corrected tracker claims and next plan (A safe to invite: public source sync, member-to-member privacy, digest schedule, privacy links, dead native controls, moderation → B first visit + funnel measurement → C governance operations → D loop depth → E languages → F platform → G reach) are in `docs/03-platform/product-design/product-inventory-and-plan-v2-2026-10-12.md` (Section 8 tracker). Owner decisions E1–E7 in its Section 7. Start from the lowest unfinished step.
 

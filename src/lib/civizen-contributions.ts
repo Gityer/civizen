@@ -669,6 +669,58 @@ export function mapContributionEventRow(row: Record<string, unknown>): Contribut
   };
 }
 
+/**
+ * PostgREST silently caps a single response (default 1000 rows). Score inputs must
+ * page the ledger or older verified roots (e.g. opportunity_participations) drop out
+ * and Home categories change without a real activity change.
+ */
+export const CONTRIBUTION_LEDGER_PAGE_SIZE = 1000;
+
+type LedgerSelectBuilder = {
+  select: (columns: string) => LedgerSelectBuilder;
+  eq: (column: string, value: string) => LedgerSelectBuilder;
+  order: (column: string, options: { ascending: boolean }) => LedgerSelectBuilder;
+  range: (
+    from: number,
+    to: number,
+  ) => PromiseLike<{ data: Record<string, unknown>[] | null; error: { message?: string } | null }>;
+};
+
+/** Fetch every ledger row for a profile, paging past the PostgREST max-rows cap. */
+export async function fetchAllContributionEventRows(
+  profileId: string,
+  client: DbClient = supabase,
+  pageSize: number = CONTRIBUTION_LEDGER_PAGE_SIZE,
+): Promise<Record<string, unknown>[]> {
+  const size = Math.max(1, pageSize);
+  const rows: Record<string, unknown>[] = [];
+  for (let from = 0; ; from += size) {
+    const query = client
+      .from('profile_contribution_events')
+      .select('*')
+      .eq('profile_id', profileId)
+      .order('occurred_at', { ascending: false }) as unknown as LedgerSelectBuilder;
+    const { data, error } = await query.range(from, from + size - 1);
+    if (error) {
+      console.error('fetchAllContributionEventRows failed', error);
+      return rows;
+    }
+    const batch = (data ?? []) as Record<string, unknown>[];
+    rows.push(...batch);
+    if (batch.length < size) break;
+  }
+  return rows;
+}
+
+/** Ledger rows only - evidence enrich is separate so Home first paint is never blocked by it. */
+export async function loadContributionEvents(
+  profileId: string,
+  client: DbClient = supabase,
+): Promise<ContributionEvent[]> {
+  const data = await fetchAllContributionEventRows(profileId, client);
+  return data.map((row) => mapContributionEventRow(row));
+}
+
 /** Skip full domain recollect within this window (Home/Profile remounts). */
 export const CONTRIBUTION_SYNC_TTL_MS = 90_000;
 
@@ -676,6 +728,7 @@ const contributionSyncState = new Map<
   string,
   { at: number; promise: Promise<ContributionEvent[]> | null }
 >();
+
 
 /**
  * Collect domain activity, upsert into the ledger, return estimated events.
@@ -726,13 +779,9 @@ export async function syncContributionEvents(
     }
 
     if (events.length === 0) {
-      const { data } = await db
-        .from('profile_contribution_events')
-        .select('*')
-        .eq('profile_id', profileId)
-        .order('occurred_at', { ascending: false });
+      const data = await fetchAllContributionEventRows(profileId, client);
       return enrichContributionEventsWithLiveEvidence(
-        (data ?? []).map((row: Record<string, unknown>) => mapContributionEventRow(row)),
+        data.map((row) => mapContributionEventRow(row)),
         client,
       );
     }
@@ -758,14 +807,9 @@ export async function syncContributionEvents(
       .eq('source_table', 'content_items')
       .filter('raw_meta->>source_table', 'in', '("private_messages","messages")');
 
-    const { data } = await db
-      .from('profile_contribution_events')
-      .select('*')
-      .eq('profile_id', profileId)
-      .order('occurred_at', { ascending: false });
-
+    const data = await fetchAllContributionEventRows(profileId, client);
     return enrichContributionEventsWithLiveEvidence(
-      (data ?? []).map((row: Record<string, unknown>) => mapContributionEventRow(row)),
+      data.map((row) => mapContributionEventRow(row)),
       client,
     );
   })();
@@ -806,6 +850,8 @@ export async function loadContributionEventsThenSync(
   return events;
 }
 
+
+
 export {
   queryContributionLedger,
   previewContributionRecords,
@@ -813,22 +859,4 @@ export {
   summarizeContributionTypes,
 } from '@/lib/civizen-contribution-ledger';
 
-/** Ledger rows only — evidence enrich is separate so Home first paint is never blocked by it. */
-export async function loadContributionEvents(
-  profileId: string,
-  client: DbClient = supabase,
-): Promise<ContributionEvent[]> {
-  const { data, error } = await client
-    .from('profile_contribution_events')
-    .select('*')
-    .eq('profile_id', profileId)
-    .order('occurred_at', { ascending: false });
-
-  if (error) {
-    console.error('loadContributionEvents failed', error);
-    return [];
-  }
-
-  return (data ?? []).map((row: Record<string, unknown>) => mapContributionEventRow(row));
-}
 
