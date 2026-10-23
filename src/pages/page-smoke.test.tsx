@@ -298,10 +298,16 @@ describe('page module smoke', () => {
     vi.clearAllMocks();
   });
 
-  it.each(allPages)('imports $name default export', async ({ load }) => {
-    const module = await load();
-    expect(module.default).toBeTypeOf('function');
-  });
+  // Heavy pages (Home and friends) can take several seconds to transform under load;
+  // keep the same headroom as the render smoke cases so verify:pre-push does not flake.
+  it.each(allPages)(
+    'imports $name default export',
+    async ({ load }) => {
+      const module = await load();
+      expect(module.default).toBeTypeOf('function');
+    },
+    15_000,
+  );
 
   it.each(allPages.filter((page) => renderCritical.has(page.name)))(
     'renders $name without throwing',
