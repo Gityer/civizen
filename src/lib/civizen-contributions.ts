@@ -781,7 +781,7 @@ export async function syncContributionEvents(
   }
 }
 
-/** Fast ledger read, then optional background sync (does not await sync). */
+/** Fast ledger read, then optional background evidence enrich + sync (does not await either). */
 export async function loadContributionEventsThenSync(
   profileId: string,
   userId?: string | null,
@@ -789,13 +789,20 @@ export async function loadContributionEventsThenSync(
   onSynced?: (events: ContributionEvent[]) => void,
 ): Promise<ContributionEvent[]> {
   const events = await loadContributionEvents(profileId, client);
-  void syncContributionEvents(profileId, userId, client)
-    .then((synced) => {
+  void (async () => {
+    try {
+      const enriched = await enrichContributionEventsWithLiveEvidence(events, client);
+      onSynced?.(enriched);
+    } catch (error) {
+      console.error('Background contribution evidence enrich failed', error);
+    }
+    try {
+      const synced = await syncContributionEvents(profileId, userId, client);
       onSynced?.(synced);
-    })
-    .catch((error) => {
+    } catch (error) {
       console.error('Background contribution sync failed', error);
-    });
+    }
+  })();
   return events;
 }
 
@@ -806,6 +813,7 @@ export {
   summarizeContributionTypes,
 } from '@/lib/civizen-contribution-ledger';
 
+/** Ledger rows only — evidence enrich is separate so Home first paint is never blocked by it. */
 export async function loadContributionEvents(
   profileId: string,
   client: DbClient = supabase,
@@ -821,9 +829,6 @@ export async function loadContributionEvents(
     return [];
   }
 
-  return enrichContributionEventsWithLiveEvidence(
-    (data ?? []).map((row: Record<string, unknown>) => mapContributionEventRow(row)),
-    client,
-  );
+  return (data ?? []).map((row: Record<string, unknown>) => mapContributionEventRow(row));
 }
 

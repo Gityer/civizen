@@ -24,6 +24,7 @@ import {
   scoreContributionsFromEvents,
   type ContributionEvent,
 } from '@/lib/civizen-contributions';
+import { enrichContributionEventsWithLiveEvidence } from '@/lib/civizen-contribution-evidence-store';
 import {
   buildPerformanceActivities,
   loadPerformanceRatings,
@@ -175,7 +176,7 @@ export default function UserProfile() {
             supabase,
             applyEvents,
           )
-        : await loadContributionEvents(userId);
+        : await enrichContributionEventsWithLiveEvidence(await loadContributionEvents(userId), supabase);
       setContributionEvents(events);
       setContributionInput(scoreContributionsFromEvents(events));
       const ratings = await loadPerformanceRatings(userId);

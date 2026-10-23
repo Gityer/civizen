@@ -195,13 +195,19 @@ export function useHomeFeed({ endorsements, setEndorsements, setEducationCount, 
         });
       };
 
+      // Score/evidence must not block first paint (founder accounts have huge ledgers).
+      void loadContributionEventsThenSync(profile.id, profile.user_id, supabase, applyContributionEvents)
+        .then(applyContributionEvents)
+        .catch((error) => {
+          console.error('Error loading contribution events:', error);
+        });
+
       const [
         { data: endorsementData },
         { data: educationData },
         { data: trainingData },
         { data: skillsData },
         { data: experienceData },
-        contributionEvents,
         { data: recentData },
         postsResult,
       ] = await Promise.all([
@@ -229,7 +235,6 @@ export function useHomeFeed({ endorsements, setEndorsements, setEducationCount, 
           .select('experiences')
           .eq('profile_id', profile.id)
           .maybeSingle(),
-        loadContributionEventsThenSync(profile.id, profile.user_id, supabase, applyContributionEvents),
         supabase
           .from('endorsements')
           .select(`
@@ -296,7 +301,6 @@ export function useHomeFeed({ endorsements, setEndorsements, setEducationCount, 
       const experienceEntries = parseExperienceEntries(experienceData?.experiences);
       setExperienceCount(experienceEntries.length);
       setExperienceMonths(cumulativeExperienceMonths(experienceEntries));
-      applyContributionEvents(contributionEvents);
 
       if (recentData) {
         setRecentEndorsements(recentData.map(e => ({

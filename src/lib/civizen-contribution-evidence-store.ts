@@ -59,25 +59,112 @@ function mapRow(row: Record<string, unknown>): ContributionEvidenceRecord {
   };
 }
 
+/** Max ids per PostgREST `.in()` filter so the request URL stays under typical proxy limits (~2–4 KB). */
+export const CONTRIBUTION_EVIDENCE_IN_BATCH_SIZE = 50;
+
+/** Soft upper bound (chars) for one `contribution_source_id=in.(...)` filter in the URL. */
+export const CONTRIBUTION_EVIDENCE_IN_QUERY_URL_SOFT_LIMIT = 2048;
+
+const EVIDENCE_IN_QUERY_PREFIX =
+  '/rest/v1/contribution_evidence_records?select=*&contribution_source_id=in.(';
+
+/** Approximate URL length of one unbounded `in.(ids)` GET (used by guard tests). */
+export function contributionEvidenceInQueryUrlLength(ids: string[]): number {
+  return EVIDENCE_IN_QUERY_PREFIX.length + ids.join(',').length + 1;
+}
+
+const evidenceLoadInFlight = new Map<string, Promise<ContributionEvidenceRecord[]>>();
+
+function filterEvidenceForEvents(
+  records: ContributionEvidenceRecord[],
+  events: ContributionEvent[],
+): ContributionEvidenceRecord[] {
+  const keys = new Set(events.map((event) => `${event.sourceTable}:${event.sourceId}`));
+  return records.filter((item) => keys.has(`${item.contributionSourceTable}:${item.contributionSourceId}`));
+}
+
+async function fetchEvidenceBySubject(
+  subjectProfileId: string,
+  client: DbClient,
+): Promise<ContributionEvidenceRecord[]> {
+  const { data, error } = await client
+    .from('contribution_evidence_records')
+    .select('*')
+    .eq('subject_profile_id', subjectProfileId);
+  if (error || !data) return [];
+  return (data as Record<string, unknown>[]).map(mapRow);
+}
+
+async function fetchEvidenceBySourceIdsChunked(
+  ids: string[],
+  client: DbClient,
+): Promise<ContributionEvidenceRecord[]> {
+  const out: ContributionEvidenceRecord[] = [];
+  for (let i = 0; i < ids.length; i += CONTRIBUTION_EVIDENCE_IN_BATCH_SIZE) {
+    const batch = ids.slice(i, i + CONTRIBUTION_EVIDENCE_IN_BATCH_SIZE);
+    if (contributionEvidenceInQueryUrlLength(batch) > CONTRIBUTION_EVIDENCE_IN_QUERY_URL_SOFT_LIMIT) {
+      // Defensive: shrink further if a future id format grows.
+      const half = Math.max(1, Math.floor(batch.length / 2));
+      for (let j = 0; j < batch.length; j += half) {
+        const slice = batch.slice(j, j + half);
+        const { data, error } = await client
+          .from('contribution_evidence_records')
+          .select('*')
+          .in('contribution_source_id', slice);
+        if (error || !data) continue;
+        out.push(...(data as Record<string, unknown>[]).map(mapRow));
+      }
+      continue;
+    }
+    const { data, error } = await client
+      .from('contribution_evidence_records')
+      .select('*')
+      .in('contribution_source_id', batch);
+    if (error || !data) continue;
+    out.push(...(data as Record<string, unknown>[]).map(mapRow));
+  }
+  return out;
+}
+
+/**
+ * Load live evidence for contribution events.
+ * Prefers one short `subject_profile_id` query when all events share a profile;
+ * otherwise chunks `.in(contribution_source_id)` so the URL never grows unbounded.
+ * Concurrent callers with the same key share one in-flight request.
+ */
 export async function loadContributionEvidenceRecords(
   events: ContributionEvent[],
   client: DbClient = supabase,
 ): Promise<ContributionEvidenceRecord[]> {
-  const ids = [...new Set(events.map((event) => event.sourceId))];
+  const ids = [...new Set(events.map((event) => event.sourceId).filter(Boolean))];
   if (ids.length === 0) return [];
-  try {
-    const { data, error } = await client
-      .from('contribution_evidence_records')
-      .select('*')
-      .in('contribution_source_id', ids);
-    if (error || !data) return [];
-    const keys = new Set(events.map((event) => `${event.sourceTable}:${event.sourceId}`));
-    return (data as Record<string, unknown>[])
-      .map(mapRow)
-      .filter((item) => keys.has(`${item.contributionSourceTable}:${item.contributionSourceId}`));
-  } catch {
-    return [];
+
+  const profileIds = [...new Set(events.map((event) => event.profileId).filter(Boolean))];
+  const cacheKey =
+    profileIds.length === 1
+      ? `subject:${profileIds[0]}`
+      : `ids:${[...ids].sort().join(',')}`;
+
+  const existing = evidenceLoadInFlight.get(cacheKey);
+  if (existing) {
+    return existing.then((records) => filterEvidenceForEvents(records, events));
   }
+
+  const promise = (async (): Promise<ContributionEvidenceRecord[]> => {
+    try {
+      if (profileIds.length === 1) {
+        return await fetchEvidenceBySubject(profileIds[0]!, client);
+      }
+      return await fetchEvidenceBySourceIdsChunked(ids, client);
+    } catch {
+      return [];
+    } finally {
+      evidenceLoadInFlight.delete(cacheKey);
+    }
+  })();
+
+  evidenceLoadInFlight.set(cacheKey, promise);
+  return promise.then((records) => filterEvidenceForEvents(records, events));
 }
 
 export function enrichEventsWithRecords(
