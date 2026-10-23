@@ -1052,12 +1052,12 @@ function retrievalConfidence(retrieval) {
 // src/lib/assistant/generated/knowledge-pack.ts
 var KNOWLEDGE_PACK = {
   "meta": {
-    "appVersion": "0.1.238",
-    "appReleaseId": "20261023-v0.1.238",
-    "androidVersionCode": 240,
-    "gitSha": "8c5335279dabfc91f0abcbf2eab8b3e1082d75a9",
-    "generatedAt": "2026-10-23T15:38:08.506Z",
-    "sourceFingerprint": "102e5ffc27e25147fadf102d743f0123227329fd80a83be7a84178269cd8d905",
+    "appVersion": "0.1.239",
+    "appReleaseId": "20261023-v0.1.239",
+    "androidVersionCode": 241,
+    "gitSha": "f7a963f8122f611ae6649f31d4281a8509818f47",
+    "generatedAt": "2026-10-23T16:36:23.484Z",
+    "sourceFingerprint": "2955be9ddfc104ec7899647ce483bbbc15fb5607aba733decaa731562b517288",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 398

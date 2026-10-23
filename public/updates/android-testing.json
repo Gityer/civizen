@@ -1,14 +1,14 @@
 {
   "platform": "android",
-  "version": "0.1.238",
-  "versionTag": "v0.1.238",
-  "buildNumber": 240,
-  "releaseId": "20261023-v0.1.238",
-  "downloadPath": "/downloads/civizen-android-testing-20261023-v0.1.238.apk",
-  "downloadUrl": "https://civizen.world/downloads/civizen-android-testing-20261023-v0.1.238.apk?v=20261023-v0.1.238",
-  "publishedAt": "2026-10-23T15:41:29Z",
-  "sha256": "a88f7637ab9303be22c63aae4b21b2d2620170a9bc300680ec74bffb874eab3a",
+  "version": "0.1.239",
+  "versionTag": "v0.1.239",
+  "buildNumber": 241,
+  "releaseId": "20261023-v0.1.239",
+  "downloadPath": "/downloads/civizen-android-testing-20261023-v0.1.239.apk",
+  "downloadUrl": "https://civizen.world/downloads/civizen-android-testing-20261023-v0.1.239.apk?v=20261023-v0.1.239",
+  "publishedAt": "2026-10-23T16:39:37Z",
+  "sha256": "f1c59b0893802a17dd3858508052e4cb249f6625a13986d39889defcd543ffc3",
   "signing": "release",
-  "sourceCommit": "8c5335279dabfc91f0abcbf2eab8b3e1082d75a9",
-  "notes": ["stop score evidence from blocking sign-in Home","add home.tabAll and guard literal t() keys"]
+  "sourceCommit": "f7a963f8122f611ae6649f31d4281a8509818f47",
+  "notes": ["page contribution ledger past PostgREST 1000-row cap"]
 }
