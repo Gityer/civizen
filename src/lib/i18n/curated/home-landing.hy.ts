@@ -1,6 +1,7 @@
 /** Hand-written Eastern Armenian for Home, the public landing page (onboarding) and the member profile page (Phase 8 step 8.1). */
 export const homeLandingHy = {
   home: {
+    tabAll: 'Բոլորը',
     tabDevelopmentLog: 'Զարգացման մատյան',
     tabDevelopmentLogTitle: 'Ինչ է կառուցել թիմը և անդամների առաջարկները՝ բաց փաստաթղթավորված։',
     storiesDevelopment: 'Զարգացում',

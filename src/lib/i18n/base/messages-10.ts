@@ -1,5 +1,6 @@
 export const m_messages_10 = {
   "home": {
+    "tabAll": "All",
     "tabDevelopmentLog": "Development log",
     "tabDevelopmentLogTitle": "What the team built, and member suggestions, documented in the open.",
     "storiesDevelopment": "Development",

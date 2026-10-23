@@ -2,8 +2,8 @@ export const m_messages_contribute_01 = {
     "title": "Contribute",
     "subtitle": "How would you like to contribute today?",
     "backToHub": "Back to Contribute",
-    "sections": {
     "demoBadge": "Demo",
+    "sections": {
       "ways": "Ways to Contribute",
       "community": "Community",
       "knowledge": "Knowledge",

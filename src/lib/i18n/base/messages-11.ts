@@ -195,6 +195,22 @@ export const m_messages_11 = {
     "detectLocationHint": "Requests location permission, then fills city, state, and country from your device.",
     "locationDetected": "Location updated from your device.",
     "locationDetectFailed": "Could not detect your location.",
+    "civicStatus": {
+      "title": "Civic status",
+      "status": {
+        "registered_member": "Registered member",
+        "verified_member": "Verified member",
+        "citizen": "Citizen"
+      },
+      "registeredBody": "Verify your identity to become a verified member. Citizenship follows automatically 30 days after verification, or 14 days after it once you accept the civic framework.",
+      "verifiedBody": "You are a verified member. You become a citizen automatically on {date}. Accept the civic framework below to shorten the wait to 14 days after verification.",
+      "verifiedAcceptedBody": "You are a verified member and have accepted the civic framework. You become a citizen on {date}.",
+      "citizenBody": "You are a Civizen citizen since {date}. Governance eligibility adds good standing and the other checks in force.",
+      "acceptHint": "The civic framework is the Community Governance Charter and the Terms of Use you already agreed to; accepting it here confirms you want citizenship when the waiting period ends.",
+      "acceptAction": "Accept the civic framework",
+      "accepted": "Civic framework accepted",
+      "acceptFailed": "Could not record your acceptance."
+    },
     "identityVerification": {
       "title": "Identity verification",
       "body": "When Civizen needs stronger trust, upload a photo of your ID and a photo of your face. A reviewer compares them. This is not a government ID check.",

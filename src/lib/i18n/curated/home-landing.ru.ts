@@ -1,6 +1,7 @@
 /** Hand-written Russian for Home, the public landing page (onboarding) and the member profile page (Phase 8 step 8.1). */
 export const homeLandingRu = {
   home: {
+    tabAll: 'Все',
     tabDevelopmentLog: 'Журнал разработки',
     tabDevelopmentLogTitle: 'Что построила команда и предложения участников, задокументированные открыто.',
     storiesDevelopment: 'Разработка',
