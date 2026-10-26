@@ -78,7 +78,7 @@ var ARMENIAN_LEXICON = [
   { match: /հաշվվ|հաշվել|հաշված|հաշվարկ/i, terms: "counted count" },
   { match: /առաջարկ/i, terms: "proposal" },
   { match: /հրապարակային հարց/i, terms: "public matters" },
-  { match: /հարց(եր)?(ը|ն|ի|ին|երը|երի|երին)?/i, terms: "matter" },
+  { match: /հարց(եր)?(ը|ն|ի|ին|երը|երի|երին)?/i, terms: "matter" },
   { match: /ներկայաց/i, terms: "submit create" },
   { match: /ծանուց/i, terms: "notifications" },
   { match: /զանգ/i, terms: "bell" },
@@ -131,7 +131,7 @@ var RUSSIAN_LEXICON = [
   { match: /учт[её]н|учтен|учитыва|посчит|подсч[её]т/i, terms: "counted count" },
   { match: /предложен/i, terms: "proposal" },
   { match: /публичны[ехй] вопрос/i, terms: "public matters" },
-  { match: /вопрос(ы|ов|е|ах|а)?/i, terms: "matter" },
+  { match: /вопрос(ы|ов|е|ах|а)?/i, terms: "matter" },
   { match: /подать|создать|внести|выдвин/i, terms: "submit create" },
   { match: /уведомлен/i, terms: "notifications" },
   { match: /колокол/i, terms: "bell" },
@@ -1052,12 +1052,12 @@ function retrievalConfidence(retrieval) {
 // src/lib/assistant/generated/knowledge-pack.ts
 var KNOWLEDGE_PACK = {
   "meta": {
-    "appVersion": "0.1.241",
-    "appReleaseId": "20261026-v0.1.241",
-    "androidVersionCode": 243,
-    "gitSha": "d7fa9be04394677a949c891dfd49dc59fbfd2a75",
-    "generatedAt": "2026-10-26T20:21:17.314Z",
-    "sourceFingerprint": "f6595f333e3c6960a861b08f2d9010bc0d74e03d2069b3cb3eeef50f20db5ec6",
+    "appVersion": "0.1.242",
+    "appReleaseId": "20261026-v0.1.242",
+    "androidVersionCode": 244,
+    "gitSha": "ac8d2145ee07d7d60adc15e9ec76818ce1b707c7",
+    "generatedAt": "2026-10-26T21:07:16.359Z",
+    "sourceFingerprint": "4ac39d0f3f3f9636cd2b5709699af42c93d5f49f58511a89a152a0a9243af0ca",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 398
@@ -4836,7 +4836,7 @@ var KNOWLEDGE_PACK = {
       "id": "docs/04-operations/dev/contribute-page.md#0",
       "title": "Contribute Page",
       "path": "docs/04-operations/dev/contribute-page.md",
-      "text": "# Contribute Page **Project:** Civizen **Route:** `/contribute` **Version:** 2.6 **Status:** Phase 1 hub live. Three pilots: Education-to-Contribution, Community Challenges, Learning Commons. Operating model: [`phase-1-pilot-operating-model.md`](./phase-1-pilot-operating-model.md) Canonical product/UX note for agents. Source draft: `docs/tmp/contribute_page`.",
+      "text": "# Contribute Page **Project:** Civizen **Route:** `/contribute` **Version:** 2.6 **Status:** Phase 1 hub live. Three pilots: Education-to-Contribution, Community Challenges, Learning Commons. Operating model: [`phase-1-pilot-operating-model.md`](./phase-1-pilot-operating-model.md) Canonical product/UX note for agents.",
       "status": "implemented",
       "priority": 6,
       "kind": "doc"
