@@ -13,17 +13,7 @@ type CreateUserPayload = {
   role?: string;
 };
 
-const assignableRoles = new Set([
-  'guest',
-  'member',
-  'citizen',
-  'verified_member',
-  'certified',
-  'moderator',
-  'market_manager',
-  'founder',
-  'admin',
-]);
+import { resolveRequestedRole } from './authorize.ts';
 
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
@@ -74,7 +64,18 @@ Deno.serve(async (request) => {
     const payload = (await request.json()) as CreateUserPayload;
     const email = payload.email?.trim();
     const password = payload.password?.trim();
-    const role = payload.role && assignableRoles.has(payload.role) ? payload.role : 'member';
+
+    // The role write below uses the service-role client, which skips the founder-guard trigger, so founder and
+    // admin are refused here unless the caller holds founder authority. Checked before the user is created.
+    const { data: founderAuthority } = await userClient.rpc('my_founder_authority');
+    const decision = resolveRequestedRole(payload.role, founderAuthority === true);
+    if (!decision.ok) {
+      return new Response(JSON.stringify({ error: decision.error }), {
+        status: decision.status,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const role = decision.role;
 
     if (!email || !password) {
       return new Response(JSON.stringify({ error: 'Email and password are required.' }), {

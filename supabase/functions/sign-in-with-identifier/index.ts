@@ -71,6 +71,7 @@ Deno.serve(async (request) => {
       200,
     );
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : 'Unexpected error' }, 500);
+    console.error('sign-in-with-identifier failed', error instanceof Error ? error.message : error);
+    return json({ error: 'unexpected_error' }, 500);
   }
 });
