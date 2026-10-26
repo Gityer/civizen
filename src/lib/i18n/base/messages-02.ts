@@ -52,6 +52,7 @@ export const m_messages_02 = {
     "resendConfirmation": "Resend the confirmation e-mail",
     "resendConfirmationSent": "A new confirmation e-mail is on its way.",
     "resendConfirmationFailed": "Could not send the confirmation e-mail right now.",
+    "tooManyAttempts": "Too many sign-in attempts. Wait 15 minutes, then try again.",
     "emailNotConfirmedHint": "Your e-mail address is not confirmed yet. Check your inbox or",
     "quickVoteSignup": "Create a free account to vote. We only need a contact method and a password; you can complete your profile later.",
     "accountReadyTitle": "Account created",

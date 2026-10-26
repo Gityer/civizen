@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   INVALID_LOGIN_MESSAGE,
   SIGN_IN_WITH_IDENTIFIER_FUNCTION,
+  TOO_MANY_ATTEMPTS_MESSAGE,
   isEmailIdentifier,
   signInWithIdentifier,
 } from './sign-in-with-identifier';
@@ -73,6 +74,21 @@ describe('signInWithIdentifier', () => {
     expect(result.error?.message).toBe(INVALID_LOGIN_MESSAGE);
     expect(setSession).not.toHaveBeenCalled();
     expect(rpc).not.toHaveBeenCalled();
+  });
+
+  it('reports too many attempts on 429 and never falls back to the legacy path (M2 limit cannot be bypassed)', async () => {
+    const { client, setSession, rpc, signInWithPassword } = createClient({
+      invokeData: { error: 'too_many_attempts' },
+      invokeError: httpError(429),
+    });
+
+    const result = await signInWithIdentifier(client as never, 'member', 'guess');
+
+    expect(result.session).toBeNull();
+    expect(result.error?.message).toBe(TOO_MANY_ATTEMPTS_MESSAGE);
+    expect(rpc).not.toHaveBeenCalled();
+    expect(signInWithPassword).not.toHaveBeenCalled();
+    expect(setSession).not.toHaveBeenCalled();
   });
 
   it('falls back to the legacy lookup when the function is unreachable', async () => {

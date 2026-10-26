@@ -10,7 +10,7 @@ import { UserRound, Lock, ArrowRight, Fingerprint } from 'lucide-react';
 import { PublicAuthHeader } from '@/components/public/PublicAuthHeader';
 import { PublicPageShell } from '@/components/public/PublicPageShell';
 import { resolvePostAuthPath } from '@/lib/pending-auth-return';
-import { isEmailIdentifier } from '@/lib/sign-in-with-identifier';
+import { isEmailIdentifier, TOO_MANY_ATTEMPTS_MESSAGE } from '@/lib/sign-in-with-identifier';
 import { toast } from 'sonner';
 import { getBiometricSignInCapability } from '@/lib/biometric-sign-in';
 
@@ -154,7 +154,7 @@ export default function Login() {
                 animate={{ opacity: 1 }}
                 className="text-sm text-destructive"
               >
-                {error}
+                {error === TOO_MANY_ATTEMPTS_MESSAGE ? t('auth.tooManyAttempts') : error}
                 {error.toLowerCase().includes('not confirmed') && isEmailIdentifier(identifier) && (
                   <span className="block mt-1 text-muted-foreground">
                     {t('auth.emailNotConfirmedHint')}{' '}

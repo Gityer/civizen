@@ -16,6 +16,13 @@ const corsHeaders = {
 type SignInPayload = { identifier?: string; password?: string };
 
 const INVALID = { error: 'invalid_login_credentials' };
+const TOO_MANY = { error: 'too_many_attempts' };
+
+/** The caller's address as seen by the gateway (first X-Forwarded-For hop), for the per-caller limit. */
+function callerIp(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for') ?? '';
+  return (forwarded.split(',')[0] || request.headers.get('x-real-ip') || 'unknown').trim();
+}
 
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
@@ -42,11 +49,21 @@ Deno.serve(async (request) => {
       return json({ error: 'identifier_and_password_required' }, 400);
     }
 
+    // Security finding M2: at most 10 failed attempts per identifier and 30 attempts per caller in 15 minutes.
+    const admin = createClient(supabaseUrl, serviceRoleKey);
+    const ip = callerIp(request);
+    const { data: allowed, error: limitError } = await admin.rpc('sign_in_attempt_allowed', { p_identifier: identifier, p_ip: ip });
+    if (limitError || allowed !== true) {
+      return json(TOO_MANY, 429);
+    }
+    const record = (succeeded: boolean) =>
+      admin.rpc('record_sign_in_attempt', { p_identifier: identifier, p_ip: ip, p_succeeded: succeeded });
+
     let email = identifier;
     if (!identifier.includes('@')) {
-      const admin = createClient(supabaseUrl, serviceRoleKey);
       const { data, error } = await admin.rpc('resolve_login_email', { identifier });
       if (error || !data || typeof data !== 'string') {
+        await record(false);
         return json(INVALID, 400);
       }
       email = data;
@@ -56,8 +73,10 @@ Deno.serve(async (request) => {
     const { data, error } = await anon.auth.signInWithPassword({ email, password });
 
     if (error || !data.session) {
+      await record(false);
       return json(INVALID, 400);
     }
+    await record(true);
 
     return json(
       {

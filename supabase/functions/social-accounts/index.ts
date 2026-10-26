@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { codeChallengeS256, newCodeVerifier } from './pkce.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -63,17 +64,16 @@ function facebookAuthorizeUrl(state: string): string {
   return `https://www.facebook.com/v21.0/dialog/oauth?${params.toString()}`;
 }
 
-function xAuthorizeUrl(state: string): string {
+async function xAuthorizeUrl(state: string, verifier: string): Promise<string> {
   const clientId = Deno.env.get('X_CLIENT_ID') || '';
-  // PKCE challenge is finalized in oauth-callback exchange using stored verifier when available.
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: clientId,
     redirect_uri: oauthRedirectUri(),
     scope: 'tweet.read tweet.write users.read offline.access',
     state,
-    code_challenge: state.replace(/-/g, '').slice(0, 43),
-    code_challenge_method: 'plain',
+    code_challenge: await codeChallengeS256(verifier),
+    code_challenge_method: 'S256',
   });
   return `https://twitter.com/i/oauth2/authorize?${params.toString()}`;
 }
@@ -303,11 +303,13 @@ Deno.serve(async (request) => {
         }, 400);
       }
 
+      const codeVerifier = payload.provider === 'x' ? newCodeVerifier() : null;
       const { data: stateRow, error: stateError } = await adminClient
         .from('social_oauth_states')
         .insert({
           profile_id: profile.id,
           provider: payload.provider,
+          code_verifier: codeVerifier,
         })
         .select('id')
         .single();
@@ -319,7 +321,7 @@ Deno.serve(async (request) => {
       let authorizeUrl = '';
       if (payload.provider === 'linkedin') authorizeUrl = linkedInAuthorizeUrl(stateRow.id);
       else if (payload.provider === 'facebook') authorizeUrl = facebookAuthorizeUrl(stateRow.id);
-      else authorizeUrl = xAuthorizeUrl(stateRow.id);
+      else authorizeUrl = await xAuthorizeUrl(stateRow.id, codeVerifier ?? '');
 
       return jsonResponse({ authorizeUrl });
     }

@@ -12,6 +12,8 @@ import type { Session } from '@supabase/supabase-js';
 export const SIGN_IN_WITH_IDENTIFIER_FUNCTION = 'sign-in-with-identifier';
 
 export const INVALID_LOGIN_MESSAGE = 'Invalid login credentials';
+/** Shown when the function refuses with 429 (security finding M2: per-account and per-caller attempt limits). */
+export const TOO_MANY_ATTEMPTS_MESSAGE = 'too_many_attempts';
 
 type AuthError = { message?: string } | null;
 
@@ -49,9 +51,9 @@ export function isEmailIdentifier(identifier: string) {
   return identifier.includes('@');
 }
 
-/** A 400 from the function is a definitive refusal; anything else means the function was unavailable. */
+/** A 400 or 429 from the function is a definitive refusal; anything else means the function was unavailable. */
 function functionRefused(error: { context?: { status?: number } } | null) {
-  return error?.context?.status === 400;
+  return error?.context?.status === 400 || error?.context?.status === 429;
 }
 
 async function legacySignIn(client: SignInClient, identifier: string, password: string): Promise<IdentifierSignInResult> {
@@ -85,6 +87,9 @@ export async function signInWithIdentifier(
   const accessToken = body?.session?.access_token;
   const refreshToken = body?.session?.refresh_token;
 
+  if (error?.context?.status === 429) {
+    return { session: null, error: new Error(TOO_MANY_ATTEMPTS_MESSAGE) };
+  }
   if (error || !accessToken || !refreshToken) {
     return { session: null, error: new Error(INVALID_LOGIN_MESSAGE) };
   }

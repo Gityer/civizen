@@ -53,6 +53,7 @@ export const participationLoopHy = {
     resendConfirmation: 'Կրկին ուղարկել հաստատման նամակը',
     resendConfirmationSent: 'Նոր հաստատման նամակն արդեն ճանապարհին է։',
     resendConfirmationFailed: 'Այս պահին հնարավոր չէ ուղարկել հաստատման նամակը։',
+    tooManyAttempts: 'Չափազանց շատ մուտքի փորձեր։ Սպասեք 15 րոպե, ապա նորից փորձեք։',
     emailNotConfirmedHint: 'Ձեր էլ. փոստի հասցեն դեռ հաստատված չէ։ Ստուգեք փոստարկղը կամ',
     quickVoteSignup: 'Ստեղծեք անվճար հաշիվ՝ քվեարկելու համար։ Պետք է միայն կապի միջոց և գաղտնաբառ. պրոֆիլը կարող եք լրացնել ավելի ուշ։',
     accountReadyTitle: 'Հաշիվը ստեղծված է',
