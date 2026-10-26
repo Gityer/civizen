@@ -1,14 +1,14 @@
 {
   "platform": "android",
-  "version": "0.1.240",
-  "versionTag": "v0.1.240",
-  "buildNumber": 242,
-  "releaseId": "20261026-v0.1.240",
-  "downloadPath": "/downloads/civizen-android-release-20261026-v0.1.240.apk",
-  "downloadUrl": "https://civizen.world/downloads/civizen-android-release-20261026-v0.1.240.apk?v=20261026-v0.1.240",
-  "publishedAt": "2026-10-26T19:44:48Z",
-  "sha256": "20e28c9805c33f7550f676c0da91a8b240a6d4e53ff8b5c043b179ca9f79809f",
+  "version": "0.1.241",
+  "versionTag": "v0.1.241",
+  "buildNumber": 243,
+  "releaseId": "20261026-v0.1.241",
+  "downloadPath": "/downloads/civizen-android-release-20261026-v0.1.241.apk",
+  "downloadUrl": "https://civizen.world/downloads/civizen-android-release-20261026-v0.1.241.apk?v=20261026-v0.1.241",
+  "publishedAt": "2026-10-26T20:21:54Z",
+  "sha256": "96cc187354972d2be86166f181e00942842b7c2427feaee84c27aa6547f908a4",
   "signing": "release",
-  "sourceCommit": "cd39ce34dc77eda3623679e422d784d15564bfb1",
-  "notes": ["zod 4.6.7 and undici 8.12.3 (npm audit high advisories)","signed-in members no longer land on the public page after a deploy"]
+  "sourceCommit": "d7fa9be04394677a949c891dfd49dc59fbfd2a75",
+  "notes": ["sign-in attempt limits and a real PKCE verifier for X (M2, L3)"]
 }
