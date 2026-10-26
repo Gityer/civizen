@@ -12,7 +12,7 @@ describe('admin-create-user role authorization', () => {
     for (const role of ['founder', 'admin']) {
       const decision = resolveRequestedRole(role, false);
       expect(decision.ok).toBe(false);
-      if (!decision.ok) expect(decision.status).toBe(403);
+      expect((decision as { status?: number }).status).toBe(403);
     }
   });
 
