@@ -1,14 +1,14 @@
 {
   "platform": "android",
-  "version": "0.1.242",
-  "versionTag": "v0.1.242",
-  "buildNumber": 244,
-  "releaseId": "20261026-v0.1.242",
-  "downloadPath": "/downloads/civizen-android-release-20261026-v0.1.242.apk",
-  "downloadUrl": "https://civizen.world/downloads/civizen-android-release-20261026-v0.1.242.apk?v=20261026-v0.1.242",
-  "publishedAt": "2026-10-26T21:07:44Z",
-  "sha256": "0a9f532b3a8c48bd8897feed482ee95518aa27556a4534aac72187061c592321",
+  "version": "0.1.243",
+  "versionTag": "v0.1.243",
+  "buildNumber": 245,
+  "releaseId": "20261026-v0.1.243",
+  "downloadPath": "/downloads/civizen-android-release-20261026-v0.1.243.apk",
+  "downloadUrl": "https://civizen.world/downloads/civizen-android-release-20261026-v0.1.243.apk?v=20261026-v0.1.243",
+  "publishedAt": "2026-10-26T21:28:54Z",
+  "sha256": "17a4a4dee1200575ecac67c7ba5c1664426d07c99b38fc36023e9afa0180bafe",
   "signing": "release",
-  "sourceCommit": "ac8d2145ee07d7d60adc15e9ec76818ce1b707c7",
-  "notes": ["docs follow the app, with a check that fails on stale routes and files","CI gates lint and typecheck; broken Civi stems, fixture logins and lint errors fixed"]
+  "sourceCommit": "4105917f5111d360fe6e76e1958dc820b0f52b6d",
+  "notes": ["the Home tab is called Stories again (EN/HY/RU)"]
 }
