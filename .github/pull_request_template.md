@@ -14,3 +14,17 @@
 
 - [ ] No production secrets, APK binaries, private user data, or unsanitized production exports are committed.
 - [ ] Test/demo behavior uses seeded synthetic data or an approved sanitized snapshot.
+
+## AyMe report
+
+<!-- Cloud sessions cannot reach AyMe: fill these in; AyMe reads them back with `ayme sync prs civizen`. Name the AyMe job id (j + 8 hex) when there is one. -->
+
+- Outcome:
+- Why:
+- Status:
+- Next:
+- Blockers:
+- Feedback:
+- Session:
+- Model:
+- Environment: cloud
