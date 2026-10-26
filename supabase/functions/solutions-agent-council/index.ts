@@ -261,8 +261,7 @@ function isUnavailableTurn(t: TurnRow): boolean {
 }
 
 /** One run at a time per problem, and a daily cap per author (the author pays nothing; the project does). */
-// deno-lint-ignore no-explicit-any
-async function checkCouncilLimits(admin: any, problemId: string, authorId: string): Promise<{ code: string; status: number; message: string } | null> {
+async function checkCouncilLimits(admin: ReturnType<typeof createClient>, problemId: string, authorId: string): Promise<{ code: string; status: number; message: string } | null> {
   const busySince = new Date(Date.now() - COUNCIL_BUSY_WINDOW_MS).toISOString();
   const { count: recent } = await admin
     .from('solution_turns').select('id', { count: 'exact', head: true })
@@ -360,8 +359,7 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
-  // deno-lint-ignore no-explicit-any
-  let adminForError: any = null;
+  let adminForError: ReturnType<typeof createClient> | null = null;
   let problemIdForError = '';
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';

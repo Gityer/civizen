@@ -695,8 +695,7 @@ function describeStatus(row: unknown): string {
  * The member's own records, read with the member's token so RLS applies. Civi quotes counts and titles only;
  * the pages hold the detail. Returns null when nothing could be read.
  */
-// deno-lint-ignore no-explicit-any
-async function buildMemberRuntimeContext(userClient: any): Promise<{ summary: string; source: 'authenticated_runtime' } | null> {
+async function buildMemberRuntimeContext(userClient: ReturnType<typeof createClient>): Promise<{ summary: string; source: 'authenticated_runtime' } | null> {
   const lines: string[] = [];
   try {
     const [status, matters, agreements, ballots] = await Promise.all([
@@ -736,8 +735,7 @@ async function buildMemberRuntimeContext(userClient: any): Promise<{ summary: st
 }
 
 /** How many Civi turns this actor (or the public channel) used in the last minute, from the interaction log. */
-// deno-lint-ignore no-explicit-any
-async function recentTurnCount(admin: any, filter: { actorProfileId?: string; channel?: string }): Promise<number> {
+async function recentTurnCount(admin: ReturnType<typeof createClient>, filter: { actorProfileId?: string; channel?: string }): Promise<number> {
   const since = new Date(Date.now() - 60_000).toISOString();
   let query = admin.from('civi_interaction_log').select('id', { count: 'exact', head: true }).gte('created_at', since);
   if (filter.actorProfileId) query = query.eq('actor_profile_id', filter.actorProfileId);

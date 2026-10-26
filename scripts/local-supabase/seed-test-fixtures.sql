@@ -48,9 +48,14 @@ DELETE FROM ci_fixture_people f
  WHERE EXISTS (SELECT 1 FROM public.profiles p WHERE p.username = f.username)
     OR EXISTS (SELECT 1 FROM auth.users u WHERE u.id = f.user_id OR u.email = f.username || '@test.civizen.local');
 
-INSERT INTO auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+-- Fixture logins use the shared local password "civizen-local". GoTrue refuses to load a user whose token columns are
+-- NULL ("converting NULL to string is unsupported", sign-in answers 500), so they are empty strings, as GoTrue writes.
+INSERT INTO auth.users (instance_id, id, aud, role, email, encrypted_password, confirmation_token, recovery_token,
+                        email_change_token_new, email_change, email_change_token_current, phone_change, phone_change_token,
+                        reauthentication_token, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
 SELECT '00000000-0000-0000-0000-000000000000', f.user_id, 'authenticated', 'authenticated',
-       f.username || '@test.civizen.local', now(),
+       f.username || '@test.civizen.local', extensions.crypt('civizen-local', extensions.gen_salt('bf')),
+       '', '', '', '', '', '', '', '', now(),
        '{"provider": "email", "providers": ["email"]}'::jsonb,
        jsonb_build_object('username', f.username, 'full_name', f.full_name, 'country_code', f.country_code,
                           'language_code', f.language_code, 'terms_version', '2026-08-01-purpose-alignment-v1',

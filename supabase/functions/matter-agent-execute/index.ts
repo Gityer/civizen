@@ -104,8 +104,7 @@ const str = (value: unknown): string => (value == null ? '' : String(value));
 const day = (value: unknown): string => str(value).slice(0, 10);
 
 /** The Matter's discussion, tasks, decisions, evidence and activity, limited to the scopes the assignment allows. */
-// deno-lint-ignore no-explicit-any
-async function loadMatterContext(client: any, matterId: string, allowed: string[]): Promise<{ text: string; references: Array<{ kind: string; label: string }> }> {
+async function loadMatterContext(client: ReturnType<typeof createClient>, matterId: string, allowed: string[]): Promise<{ text: string; references: Array<{ kind: string; label: string }> }> {
   const sections: string[] = [];
   const references: Array<{ kind: string; label: string }> = [];
   const has = (scope: string) => allowed.length === 0 || allowed.includes(scope);

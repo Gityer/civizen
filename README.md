@@ -85,7 +85,7 @@ Local-first identity (DIDs), sync and storage toward P2P/decentralized backends,
 
 - **Feature registry:** `src/lib/feature-registry.ts` — update registry and Features-page copy together  
 - **Autosave** is the default for editable app pages  
-- **Android publish:** `npm run update:application` · **iOS:** `npm run cap:ios`  
+- **Android publish:** `npm run update:application` · **iOS:** not set up yet (decision D7 defers iOS; there is no `ios/` project, so `npm run cap:ios` needs `npx cap add ios` first)  
 - Ops / release notes: `docs/04-operations/dev/`
 
 ### Contributing

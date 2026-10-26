@@ -61,10 +61,10 @@ Deno.serve(async (request) => {
   const recipients = Array.isArray(payload.recipients) ? payload.recipients.filter((id) => typeof id === 'string') : [];
   if (recipients.length === 0) return json(200, { ok: true, sent: 0 });
 
-  let title = 'Civizen';
-  let body = '';
-  let url = '/notifications';
-  let tag = 'civizen';
+  let title: string;
+  let body: string;
+  let url: string;
+  let tag: string;
   if (payload.kind === 'notification' && payload.notification_id) {
     const { data: row } = await admin
       .from('user_notifications')
