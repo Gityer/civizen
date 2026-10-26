@@ -6,9 +6,9 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.241",
     "appReleaseId": "20261026-v0.1.241",
     "androidVersionCode": 243,
-    "gitSha": "d7fa9be04394677a949c891dfd49dc59fbfd2a75",
-    "generatedAt": "2026-10-26T20:21:17.314Z",
-    "sourceFingerprint": "f6595f333e3c6960a861b08f2d9010bc0d74e03d2069b3cb3eeef50f20db5ec6",
+    "gitSha": "0bc3884cb2d878c4ecc15b7c1f6e392cc9acd600",
+    "generatedAt": "2026-10-26T21:05:44.810Z",
+    "sourceFingerprint": "ad86f313681e92490cb3aff30c0ee727d53d39c1a9f30305e91471f31a18437a",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 398
@@ -3787,7 +3787,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "docs/04-operations/dev/contribute-page.md#0",
       "title": "Contribute Page",
       "path": "docs/04-operations/dev/contribute-page.md",
-      "text": "# Contribute Page **Project:** Civizen **Route:** `/contribute` **Version:** 2.6 **Status:** Phase 1 hub live. Three pilots: Education-to-Contribution, Community Challenges, Learning Commons. Operating model: [`phase-1-pilot-operating-model.md`](./phase-1-pilot-operating-model.md) Canonical product/UX note for agents. Source draft: `docs/tmp/contribute_page`.",
+      "text": "# Contribute Page **Project:** Civizen **Route:** `/contribute` **Version:** 2.6 **Status:** Phase 1 hub live. Three pilots: Education-to-Contribution, Community Challenges, Learning Commons. Operating model: [`phase-1-pilot-operating-model.md`](./phase-1-pilot-operating-model.md) Canonical product/UX note for agents.",
       "status": "implemented",
       "priority": 6,
       "kind": "doc"
