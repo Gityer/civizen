@@ -212,6 +212,7 @@ When restricted ops configuration is available to the agent, perform production 
 
 ## 3. Persistent User Directives
 
+- **Docs follow the app.** A change that moves, renames or removes a page, route, setting, command or file updates every current doc that names it in the same commit. `npm run docs:check` (part of `npm run lint`, so CI and the release gate run it) fails when a doc under `docs/04-operations`, `docs/assistant`, `docs/03-platform/product-design` or the README names a route or repository file that no longer exists, and prints the nearest real route. Dated plans and `archive/` record their own day and are not checked; a line that names an old path on purpose carries `docs-check: ignore`, and a removed path can be shown struck through (`~~` around it).
 - **Project-purpose preservation rule:** Legal and institutional disclaimers must accurately describe Civizen's current status, but must never erase, renounce, or permanently confine its long-term mission to unite people as citizens of humanity and develop a legitimate pathway toward recognized planetary citizenship. Always distinguish “not currently” from “never.”
 - **Simple by default. Advanced by need. Always.** Core product/design principle for every surface (member, organization/admin, forms, dashboards, navigation, workflows, settings, and documentation/implementation decisions). Full policy is in this file under **Simple by default. Advanced by need. Always.** Public and onboarding experiences still must not require understanding full institutional architecture before participating. Do **not** strip necessary detail from internal/reference documentation. Also: `docs/03-platform/product-design/information-architecture-and-content-standards.md` §2.
 - Do not ask the user to do work the agent can do itself (run commands, read or edit repo files, search the tree, run tests, inspect local config under the workspace). Only ask when something is genuinely impossible from here (for example passphrase entry on their TTY, secrets only they hold, or actions inside an account or UI only they control)—and then say briefly why.
@@ -410,7 +411,7 @@ Run `npm run verify:post-dev` **once** at these times only:
 1. **After starting or restarting the dev server** on port 8080 (confirm the app loads before continuing UI work).
 2. **After completing a front-end fix or UI change** — mandatory before telling the user the task is done (see §7 above).
 
-Do **not** start a Cursor `/loop` or `while true; sleep …; echo AGENT_LOOP_TICK_*` background monitor unless the user explicitly asks for recurring checks. Periodic 10-minute loops spam the chat and are not the default workflow.
+Do **not** start a Cursor `/loop` (a Cursor command, not an app route; docs-check: ignore) or `while true; sleep …; echo AGENT_LOOP_TICK_*` background monitor unless the user explicitly asks for recurring checks. Periodic 10-minute loops spam the chat and are not the default workflow.
 
 ## 8. Local Dev Port Policy
 

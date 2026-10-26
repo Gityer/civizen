@@ -7,7 +7,7 @@ Updated 2026-07-30 during remaining remediation action plan v0.4 so `npm run lin
 - Soft limit remains **400** lines for new/unlisted source files.
 - `legacy_allowlist` in `engineering-standards-baseline.json` freezes **current** sizes only.
 - Do **not** raise a cap again without splitting the file (or documenting an emergency exception).
-- Generated/exempt: `src/integrations/supabase/types.ts`, `src/lib/i18n.generated.ts`.
+- Generated/exempt: `src/integrations/supabase/types.ts`.
 
 ## Why temporary acceptance
 

@@ -31,7 +31,6 @@ Civizen is moving into a governance-heavy, safety-sensitive system. The codebase
 These are the only standing exemptions:
 
 - `src/integrations/supabase/types.ts`
-- `src/lib/i18n.generated.ts`
 
 If another file must become exempt, that decision should be deliberate and documented.
 

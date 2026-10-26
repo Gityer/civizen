@@ -5,7 +5,7 @@
 **Version:** 2.6  
 **Status:** Phase 1 hub live. Three pilots: Education-to-Contribution, Community Challenges, Learning Commons. Operating model: [`phase-1-pilot-operating-model.md`](./phase-1-pilot-operating-model.md)
 
-Canonical product/UX note for agents. Source draft: `docs/tmp/contribute_page`.
+Canonical product/UX note for agents.
 
 ## Objective
 
