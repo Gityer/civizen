@@ -33,8 +33,8 @@
 - Pilot: AyMe repo snapshot (.ayme/context.md) for Civizen cloud sessions
 - Civizen: docs follow the app (stale UI paths + automatic check), and the cloud-session findings (parent jobs jafe649b7, j2785e225 note)
 - Settle chat: Civizen keys for Aye
-- Rewrite this question in Armen's shape or settle it yourself: Civizen: docs follow the app (stale UI paths + automatic check), and the cloud-session findings (parent jobs jafe649b7, j2785e225 note)
 - Rewrite this question in Armen's shape or settle it yourself: Docs follow the app: a check that fails when docs name a UI path, setting or command that no longer exists
+- Signed-in production check of civizen.world v0.1.242 in Aye's browser
 
 ## Where the details live
 
