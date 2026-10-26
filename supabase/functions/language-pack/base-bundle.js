@@ -121,6 +121,7 @@ var m_messages_01 = {
     "existingAccount": "I already have an account",
     "earlyAccessBadge": "Early access \xB7 Testing build",
     "footerTerms": "Terms",
+    "footerPrivacy": "Privacy",
     "footerDownload": "Download",
     "footerContact": "Contact",
     "footerGovernance": "Governance",
@@ -129,6 +130,7 @@ var m_messages_01 = {
     "footerLegalStatus": "Legal status",
     "footerWhy": "Why this exists",
     "footerAreas": "Areas",
+    "footerMatters": "Public Matters",
     "footerJobs": "Jobs",
     "statusTitle": "Project status",
     "statusBadge": "Early access",
@@ -391,6 +393,7 @@ var m_messages_02 = {
     "createAccount": "Create Account",
     "creatingAccount": "Creating account...",
     "termsOfUse": "Terms of Use",
+    "privacyNotice": "Privacy notice",
     "acceptTermsPrefix": "I have read and agree to the",
     "acceptTermsDescription": "You must agree before creating your account.",
     "mustAcceptTerms": "You must agree to the Terms of Use before signing up.",
@@ -406,6 +409,7 @@ var m_messages_02 = {
     "resendConfirmation": "Resend the confirmation e-mail",
     "resendConfirmationSent": "A new confirmation e-mail is on its way.",
     "resendConfirmationFailed": "Could not send the confirmation e-mail right now.",
+    "tooManyAttempts": "Too many sign-in attempts. Wait 15 minutes, then try again.",
     "emailNotConfirmedHint": "Your e-mail address is not confirmed yet. Check your inbox or",
     "quickVoteSignup": "Create a free account to vote. We only need a contact method and a password; you can complete your profile later.",
     "accountReadyTitle": "Account created",
@@ -449,6 +453,8 @@ var m_messages_02 = {
       "checksumHint": "Compare it with the file you downloaded before installing; a different value means the file was altered on the way.",
       "copyChecksum": "Copy checksum",
       "copied": "Checksum copied.",
+      "sourceLabel": "Source code of this build",
+      "sourceHint": "The public commit this build was made from; anyone can rebuild it and compare.",
       "title": "Android",
       "subtitle": "Installable APK",
       "description": "This is the latest Civizen Android build, packaged as a native Capacitor app for sideload install.",
@@ -456,6 +462,7 @@ var m_messages_02 = {
       "step1": "Tap Download Android APK below (prefer Chrome, not an in-app browser).",
       "step2": "If Chrome shows Open, tap it to install. Otherwise open Civizen.apk from the notification shade or Files / Downloads.",
       "step3": "If Android asks, allow installs from your browser or file manager, then tap Install.",
+      "reinstallNote": "This build is signed with Civizen's release key. If you installed an earlier testing build, uninstall it first; Android cannot update across signing keys. You only do this once.",
       "button": "Download Android APK",
       "openingDownload": "If install did not open automatically, open the APK from notifications or Downloads."
     },
@@ -475,7 +482,9 @@ var m_messages_02 = {
     "installFailed": "Could not install the update. You can still download it from the website.",
     "permissionNeeded": "Android needs permission to install Civizen updates. Turn on Allow from this source, return here, then tap Update again.",
     "updateNow": "Update now",
-    "later": "Later"
+    "later": "Later",
+    "reinstallSigned": "This update is signed with Civizen's release key, so it cannot be installed over the testing build you have. Uninstall Civizen, then install the new build from the download page. You only do this once.",
+    "openDownload": "Open download page"
   }
 };
 
@@ -627,8 +636,8 @@ var m_messages_settings_01 = {
   "messagingSecurityStatusServerOff": "Your profile does not advertise a public key yet.",
   "safety": "Safety",
   "safetyDescription": "View your reports and blocked users",
-  "termsPrivacy": "Terms of Use",
-  "termsPrivacyDescription": "Read the platform terms",
+  "termsPrivacy": "Terms and privacy",
+  "termsPrivacyDescription": "Read the terms and the privacy notice",
   "helpSupport": "Help and support",
   "helpSupportDescription": "Get help with Civizen",
   "aiAgent": "AI Agent",
@@ -1103,7 +1112,10 @@ var m_messages_settings_02 = {
   "helpLegal": "Legal status",
   "helpLegalDescription": "What Civizen is and is not, as of today.",
   "helpTerms": "Terms of Use",
-  "helpTermsDescription": "The platform terms you agreed to."
+  "helpTermsDescription": "The platform terms you agreed to.",
+  "helpPrivacy": "Privacy notice",
+  "helpPrivacyDescription": "What Civizen collects, why, and your choices.",
+  "helpGuidelinesDescription": "What does not belong here, and how reports and appeals work."
 };
 
 // src/lib/i18n/base/messages-settings-03.ts
@@ -1133,13 +1145,48 @@ var m_messages_settings_03 = {
     "exportFailed": "Could not prepare the export right now.",
     "deleteHint": "Closing the account for good is under"
   },
+  "keyBackup": {
+    "title": "Backup and other devices",
+    "description": "Your private messaging key exists only on this device. A recovery code protects an encrypted copy on Civizen, so you can restore the same keys on another device or after clearing site data. Civizen never sees the code or the key.",
+    "none": "No backup yet.",
+    "savedOn": "Backup saved on {date}.",
+    "staleHint": "The backup holds an older key than this device uses. Create a new recovery code to update it.",
+    "create": "Create recovery code",
+    "replace": "Create a new recovery code",
+    "codeTitle": "Your recovery code",
+    "codeHint": "Write it down or keep it in a password manager. It is shown only now; whoever has it can restore your messaging keys.",
+    "copy": "Copy code",
+    "copied": "Recovery code copied.",
+    "done": "I have saved it",
+    "created": "Backup saved. Keep the recovery code safe.",
+    "createFailed": "Could not create the backup.",
+    "restoreTitle": "Restore keys on this device",
+    "restoreHint": "Enter the recovery code from your other device to use the same messaging keys here.",
+    "codePlaceholder": "XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX",
+    "restore": "Restore keys",
+    "restored": "Messaging keys restored on this device.",
+    "restoreWrongCode": "That code does not open the backup. Check it and try again.",
+    "restoreFailed": "Could not restore the keys right now.",
+    "delete": "Delete backup",
+    "deleted": "Backup deleted.",
+    "deleteFailed": "Could not delete the backup."
+  },
+  "webOta": {
+    "current": "Web layer {version} is the published one.",
+    "newer_published": "A newer web layer ({version}) is published; it arrives with the next app update.",
+    "ahead_of_manifest": "This build runs a newer web layer than the published {version}.",
+    "nativeTooOld": "The installed app is older than that web layer needs.",
+    "checkedAt": "Checked {time}."
+  },
   "visibility": {
     "title": "What other members see",
-    "description": "Your name, photo and verification badge are always shown to signed-in members. Choose what else appears on your public profile.",
+    "description": "Your username, photo and verification badge are always shown to signed-in members; your birth date, phone and ID numbers never are. Choose what else appears on your public profile.",
+    "show_full_name": "Full name",
     "show_country": "Country",
     "show_city": "City",
     "show_score": "Civizen score",
     "show_endorsements": "Endorsements",
+    "discoverable_by_phone": "Let people who have my phone number find me",
     "failed": "Could not save the visibility setting."
   }
 };
@@ -1185,6 +1232,334 @@ var m_messages_study_02 = {
     "pathCompleted": "You completed this path. It now shows on your profile.",
     "saveFailed": "Could not save your progress. Try again.",
     "profileBadgesTitle": "Learning paths completed"
+  }
+};
+
+// src/lib/i18n/base/messages-moderation.ts
+var m_messages_moderation = {
+  "moderation": {
+    "title": "Moderation",
+    "subtitle": "Reports, decisions and appeals",
+    "tabs": { "mine": "My content", "queue": "Reports", "appeals": "Appeals" },
+    "report": {
+      "action": "Report",
+      "title": "Report this",
+      "description": "Tell moderators what is wrong. They review every report against the community guidelines; the author is not told who reported.",
+      "reasonLabel": "Reason",
+      "detailsPlaceholder": "Anything moderators should know (optional)",
+      "submit": "Send report",
+      "submitted": "Thank you. Moderators will review it.",
+      "guidelines": "Community guidelines"
+    },
+    "reasons": {
+      "spam": "Spam or advertising",
+      "harassment": "Harassment or bullying",
+      "hate": "Hate speech",
+      "violence": "Violence or threats",
+      "sexual": "Sexual content",
+      "misinformation": "False or misleading information",
+      "privacy": "Shares someone's private information",
+      "illegal": "Illegal content",
+      "other": "Something else"
+    },
+    "kinds": {
+      "post": "Post",
+      "post_comment": "Comment on a post",
+      "matter": "Matter",
+      "matter_comment": "Comment on a Matter",
+      "solution_comment": "Comment in Solutions",
+      "job_listing": "Job listing",
+      "user": "Member"
+    },
+    "queue": {
+      "empty": "No open reports.",
+      "reports": "{count} reports",
+      "claim": "Claim",
+      "claimedBy": "Claimed by @{username}",
+      "hide": "Hide",
+      "dismiss": "Dismiss",
+      "hideReason": "Reason for hiding",
+      "noteLabel": "Note for the record (optional)",
+      "open": "Open",
+      "hidden": "Hidden. The author was told and may appeal.",
+      "dismissed": "Reports dismissed.",
+      "userHint": "Members are not hidden here; use sanctions in Users admin."
+    },
+    "appeals": {
+      "empty": "No appeals waiting.",
+      "rule": "The moderator who hid the item cannot decide its appeal.",
+      "uphold": "Keep hidden",
+      "overturn": "Restore",
+      "upheld": "Decision kept.",
+      "overturned": "Content restored.",
+      "appealLabel": "Appeal"
+    },
+    "mine": {
+      "empty": "Nothing of yours has been moderated.",
+      "hiddenFor": "Hidden for: {reason}",
+      "appeal": "Appeal",
+      "appealPlaceholder": "Explain why this should be visible again",
+      "sendAppeal": "Send appeal",
+      "appealSent": "Appeal sent. A different moderator will decide.",
+      "appealPending": "Appeal waiting for a decision",
+      "restored": "Restored after appeal",
+      "upheld": "Appeal reviewed; the decision stands",
+      "moderatorNote": "Moderator's note: {note}"
+    },
+    "hiddenBanner": "Hidden by moderation ({reason}). Only you and moderators see it.",
+    "hiddenBannerLink": "Details and appeal",
+    "errors": {
+      "cannot_report_own_content": "You cannot report your own content.",
+      "already_hidden": "This is already hidden.",
+      "appeal_needs_another_moderator": "Another moderator must decide this appeal.",
+      "already_appealed": "You already appealed this decision.",
+      "cannot_moderate_own_content": "You cannot moderate your own content.",
+      "generic": "That did not work. Try again."
+    }
+  },
+  "publicMatters": {
+    "title": "Public Matters",
+    "metaTitle": "Public Matters \u2014 Civizen",
+    "metaDescription": "Issues, questions and suggestions people have raised openly on Civizen, and the discussion around them.",
+    "subtitle": "Issues, questions and suggestions raised openly by members, with their discussion. Join to take part.",
+    "searchPlaceholder": "Search Matters",
+    "all": "All",
+    "open": "Open",
+    "empty": "No public Matters match.",
+    "more": "Show more",
+    "notFound": "This Matter is not public or does not exist.",
+    "raisedBy": "Raised by {initiator} for {addressee}",
+    "joinPrompt": "Join Civizen to comment, support a proposal or help resolve this Matter. You will come back here after signing up.",
+    "join": "Join to take part",
+    "discussion": "Discussion ({count})"
+  },
+  "firstSteps": {
+    "title": "Getting started",
+    "progress": "{done} of {total} done",
+    "dismiss": "Hide getting started",
+    "voteCounts": "Your vote counts.",
+    "voteAdvisory": "Your vote is advisory until your identity is verified.",
+    "steps": {
+      "lesson": { "title": "Read your first lesson", "hint": "Five minutes on how Civizen works and decides." },
+      "vote": { "title": "Vote in the open consultation", "hint": "Read the question and cast your ballot." },
+      "matter": { "title": "Raise or join a Matter", "hint": "Bring up an issue, a question or an idea, or add to one." },
+      "verify": { "title": "Verify your identity", "hint": "An ID photo and a selfie; it makes your vote count." },
+      "profile": { "title": "Add a photo or a short bio", "hint": "Helps others know who they are talking to." }
+    }
+  },
+  "participation": {
+    "title": "Participation",
+    "subtitle": "The funnel from visit to countable vote, in totals",
+    "privacyNote": "Aggregate counts only: page views are daily totals per page; no visitor, IP address or device is recorded.",
+    "loadFailed": "The participation numbers could not be loaded.",
+    "target": "Target by 22 Dec 2026: {value}",
+    "members": "Members",
+    "countries": "Countries",
+    "ballotsCountable": "Countable ballots",
+    "publicMatters": "Public Matters by members",
+    "verificationHours": "Median verification time (hours)",
+    "oldestReportHours": "Oldest open report (hours)",
+    "funnelTitle": "Last {days} days",
+    "dailyTitle": "Day by day",
+    "topPages": "Most viewed pages",
+    "noPageViews": "No page views recorded yet.",
+    "metrics": {
+      "signups": "Sign-ups",
+      "confirmed": "Confirmed e-mail",
+      "tookFirstAction": "Members who posted, raised, commented or voted (all time)",
+      "verificationRequested": "Asked for verification (all time)",
+      "verified": "Verified members",
+      "ballotsAdvisory": "Advisory ballots",
+      "active7d": "Signed in during the last 7 days",
+      "active30d": "Signed in during the last 30 days",
+      "openReports": "Open reports",
+      "returned": "Came back after their first day (of those who joined over a week ago)"
+    },
+    "columns": { "day": "Day", "pageViews": "Views", "signups": "Sign-ups", "ballots": "Ballots", "matters": "Public Matters", "posts": "Posts" }
+  }
+};
+
+// src/lib/i18n/base/messages-identity-review.ts
+var m_messages_identity_review = {
+  "identityReview": {
+    "filters": { "all": "All", "unassigned": "Unassigned", "mine": "Mine", "overdue": "Over 48 h" },
+    "filterLabel": "Show",
+    "ageHours": "Waiting {hours} h",
+    "ageDays": "Waiting {days} d",
+    "overdue": "Over the 48-hour target",
+    "assignedTo": "Taken by @{username}",
+    "unassigned": "Not taken",
+    "resubmission": "Resubmitted",
+    "infoRequests": "{count} information requests",
+    "claim": "Take case",
+    "release": "Release",
+    "claimed": "Case taken",
+    "released": "Case released",
+    "approve": "Approve",
+    "reject": "Reject",
+    "requestInfo": "Ask for more information",
+    "rejectTitle": "Reject this verification",
+    "rejectHelp": "The member sees the reason and your message, and can submit again.",
+    "requestInfoTitle": "Ask the member for more information",
+    "requestInfoHelp": "The case goes back to the member with your message. It returns to the queue when they submit again.",
+    "reasonLabel": "Reason",
+    "reasonPlaceholder": "Choose a reason",
+    "messageLabel": "Message to the member",
+    "messagePlaceholder": "Say exactly what to fix, for example: retake the photo of your ID in daylight.",
+    "send": "Send",
+    "cancel": "Cancel",
+    "requestSent": "Request sent to the member",
+    "rejected": "Verification rejected",
+    "messageRequired": "Write a message of at least 5 characters.",
+    "reasonRequired": "Choose a reason.",
+    "actionFailed": "That did not work. Reload the queue and try again.",
+    "historyToggle": "Notes and history",
+    "historyEmpty": "Nothing recorded yet.",
+    "noteLabel": "Internal note (members never see it)",
+    "notePlaceholder": "What other reviewers should know",
+    "addNote": "Add note",
+    "noteAdded": "Note added",
+    "historyBy": "by @{username}",
+    "events": {
+      "submitted": "Submitted",
+      "resubmitted": "Submitted again",
+      "assigned": "Taken",
+      "released": "Released",
+      "info_requested": "More information requested",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "duplicate_flagged": "Flagged as a possible duplicate identity",
+      "note": "Note"
+    },
+    "reasons": {
+      "document_unreadable": "ID photo cannot be read",
+      "document_expired": "ID document has expired",
+      "document_missing": "ID document or photo is missing",
+      "selfie_unclear": "Face photo is unclear",
+      "selfie_mismatch": "Face photo does not match the ID",
+      "details_mismatch": "Profile details do not match the ID",
+      "underage": "Below the minimum age",
+      "duplicate_identity": "This identity is already verified on another account",
+      "other": "Another reason"
+    },
+    "member": {
+      "infoRequestedTitle": "A reviewer asked for more information",
+      "rejectedTitle": "Why your verification was not approved",
+      "reasonPrefix": "Reason:",
+      "resubmitHint": "Fix this, then submit again."
+    }
+  }
+};
+
+// src/lib/i18n/base/messages-election-admin.ts
+var m_messages_election_admin = {
+  "electionAdmin": {
+    "tab": "Elections",
+    "intro": "Consultations that are scheduled, open, waiting for certification, or changed in the last 30 days. New consultations start from a Matter through a voting proposal. Every action here is recorded in the consultation's public log with your username and reason.",
+    "empty": "No consultations need attention.",
+    "ballots": "{count} countable ballots",
+    "cancelReason": "Cancelled: {reason}",
+    "certificationRequested": "Certification requested by @{username}.",
+    "awaitingSecond": "Another administrator must certify it.",
+    "history": "Administrative history",
+    "historyEmpty": "No administrative actions yet.",
+    "opensAt": "Voting opens",
+    "closesAt": "Voting closes",
+    "reason": "Reason (required)",
+    "note": "Note (optional)",
+    "reasonPlaceholder": "Why, in one or two sentences",
+    "public": "This is published in the consultation's public log.",
+    "status": {
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "open": "Open",
+      "closed": "Closed, not certified",
+      "certified": "Certified",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "reschedule": "Reschedule",
+      "extend": "Extend voting",
+      "cancel": "Cancel consultation",
+      "requestCertification": "Request certification",
+      "certify": "Certify result"
+    },
+    "help": {
+      "reschedule": "Move the voting window before it opens.",
+      "extend": "Give voters more time: a later closing time, at most 14 days more at once. Followers are told.",
+      "cancel": "Stop the consultation. Counts stay sealed and no outcome is written to the Matter. Followers and voters are told.",
+      "requestCertification": "You confirm the count looks right. A second administrator then certifies it.",
+      "certify": "Certify the result that another administrator checked. Followers are told."
+    },
+    "done": {
+      "reschedule": "Consultation rescheduled",
+      "extend": "Voting extended",
+      "cancel": "Consultation cancelled",
+      "requestCertification": "Certification requested",
+      "certify": "Result certified"
+    },
+    "events": {
+      "election_rescheduled": "Rescheduled",
+      "election_extended": "Voting extended",
+      "election_cancelled": "Cancelled",
+      "certification_requested": "Certification requested",
+      "election_certified": "Certified",
+      "election_opened": "Voting opened",
+      "election_closed": "Voting closed"
+    },
+    "errors": {
+      "reason_required": "Give a reason of at least 5 characters.",
+      "extension_must_be_later": "The new closing time must be later than the current one.",
+      "extension_too_long": "Extend by at most 14 days at once.",
+      "election_already_closed": "Voting has already closed.",
+      "opens_in_past": "Choose an opening time at least 5 minutes from now.",
+      "window_too_short": "Voting must stay open for at least 1 hour.",
+      "window_too_long": "Voting can stay open for at most 90 days.",
+      "second_person_required": "A different administrator must certify the result.",
+      "certification_already_requested": "Certification was already requested.",
+      "generic": "That did not work. Reload and try again."
+    }
+  }
+};
+
+// src/lib/i18n/base/messages-election-verify.ts
+var m_messages_election_verify = {
+  "electionVerify": {
+    "short": "Verify this election",
+    "title": "Verify this election",
+    "closes": "voting closes {date}",
+    "intro": "You do not need an account or to trust Civizen. When voting closes, the receipts of all counted ballots are sealed into one fingerprint (a Merkle root) and written to the public audit log. You can recompute that fingerprint here or with the open-source script, and check that your own receipt is inside.",
+    "boxTitle": "Sealed ballot box",
+    "committedRoot": "Fingerprint published at closing:",
+    "liveRoot": "Fingerprint of the receipts now:",
+    "liveMatches": "They match: no counted ballot was added, removed or changed after closing.",
+    "liveDiffers": "They differ. The ballot box changed after closing; report this.",
+    "notClosed": "Voting is still open. The ballot box is sealed and published when voting closes.",
+    "browserTitle": "Recompute it in your browser",
+    "browserBody": "Downloads the list of counted receipts (each one is a code; it does not show how anyone voted) and recomputes the fingerprint on your device.",
+    "recompute": "Recompute fingerprint",
+    "download": "Download receipts (JSON)",
+    "receiptCount": "{count} counted receipts",
+    "recomputedRoot": "Fingerprint computed on your device:",
+    "recomputeMatches": "It matches the published fingerprint.",
+    "recomputeDiffers": "It does not match the published fingerprint; report this.",
+    "receiptTitle": "Check your receipt",
+    "receiptBody": "Paste the receipt you got when you voted. The proof is checked on your device; your choice stays private.",
+    "receiptPlaceholder": "Your receipt code",
+    "checkReceipt": "Check",
+    "receiptIncluded": "Your receipt is in the counted ballot box.",
+    "receiptMissing": "This receipt is not among the counted ballots. If you voted with a verified identity, report this.",
+    "auditTitle": "Public audit log",
+    "eventHash": "Sealing event:",
+    "batch": "Audit batch #{index}:",
+    "anchor": "Anchored on {network}:",
+    "notBatched": "The sealing event is waiting for the next audit batch (captured every hour).",
+    "notAnchored": "The batch is not anchored externally yet.",
+    "noAuditYet": "Nothing is sealed yet; this appears when voting closes.",
+    "independentTitle": "Verify without this website",
+    "independentBody": "The open-source script downloads the same public data and recomputes the fingerprint on your computer (Node.js 18 or later).",
+    "sourceLink": "Read the script's source code",
+    "error": "The check could not run. Try again."
   }
 };
 
@@ -2703,6 +3078,8 @@ var m_messages_happiness_03 = {
 // src/lib/i18n/base/messages-06.ts
 var m_messages_06 = {
   "governance": {
+    "founderAccessActive": "Founder operational access in this domain: active until the domain matures.",
+    "founderAccessWithdrawn": "Founder operational access in this domain: withdrawn (mature domain); the founder keeps constitutional standing and any ordinary assignment.",
     "title": "Governance Policies",
     "subtitle": "Manage the foundational policy controls that guide issuance, stability, and oversight.",
     "localMode": "Governance backend tables are not available yet. Changes are currently local to this device.",
@@ -2807,7 +3184,8 @@ var m_messages_06 = {
   },
   "governanceDashboard": {
     "title": "Governance",
-    "subtitle": "Vote on open proposals and, if you hold or manage an office, run the steward console.",
+    "subtitle": "Review identity verifications, manage constitutional offices and see the rules that decide votes.",
+    "stewardNoAccess": "The steward console is for office holders and members who manage offices.",
     "standingTitle": "Your governance standing",
     "canVote": "Can vote",
     "canPropose": "Can create proposals",
@@ -2861,8 +3239,8 @@ var m_messages_06 = {
       "windowHours": "Voting window: {hours} hours when more than one member is eligible",
       "weight": "Each eligible member's vote counts once; sanctioned or ineligible members' votes count zero.",
       "changeTitle": "Propose a change",
-      "changeHelp": "Open the proposal workspace, pick the decision class that matches how serious the change is, and describe the new rule. Members vote on it under the rules above.",
-      "changeAction": "Open proposal workspace"
+      "changeHelp": "Raise the change as a Matter, then create a voting proposal from it and describe the new rule. Members support and vote on it under the rules above.",
+      "changeAction": "Open Proposals"
     },
     "tabVerifications": "Identity verifications",
     "tabOffices": "Constitutional offices",
@@ -3499,8 +3877,8 @@ var m_messages_contribute_01 = {
   "title": "Contribute",
   "subtitle": "How would you like to contribute today?",
   "backToHub": "Back to Contribute",
+  "demoBadge": "Demo",
   "sections": {
-    "demoBadge": "Demo",
     "ways": "Ways to Contribute",
     "community": "Community",
     "knowledge": "Knowledge",
@@ -3594,6 +3972,16 @@ var m_messages_contribute_02 = {
     "recipientLabel": "Intended party",
     "recipientHint": "Search for a person or organization",
     "recipientRequired": "Choose who this Matter is for.",
+    "handling": {
+      "label": "How should this be handled?",
+      "discussion": "Community discussion",
+      "discussionHint": "The Matter is discussed and worked on here, with the people it is addressed to.",
+      "ai_council": "AI council",
+      "ai_councilHint": "Also opens a Solutions problem: AI agents debate it in public and the record links back to this Matter.",
+      "community_project": "Community project",
+      "community_projectHint": "Continue to a community challenge prefilled from this Matter, so people can join and build the answer.",
+      "aiCouncilFailed": "The Matter was created, but the AI council problem could not be opened. You can start it from the Matter page later."
+    },
     "unitLabel": "Team or unit (optional)",
     "unitHint": "If this should go to a department or team",
     "areaLabel": "Area",
@@ -3993,6 +4381,7 @@ var m_messages_contribute_03 = {
     "remoteToggle": "This work can be done remotely",
     "locationLabel": "Location",
     "compensationLabel": "Compensation",
+    "compensationHint": "Paid and stipend opportunities are paid by the organizer outside Civizen; Civizen does not process payments.",
     "descriptionLabel": "Detailed description",
     "areaLabel": "Area",
     "areaNone": "No area selected",
@@ -4100,7 +4489,7 @@ var m_messages_contribute_03 = {
       "volunteer": "Volunteer",
       "paid": "Paid",
       "stipend": "Stipend",
-      "credit": "Credit",
+      "credit": "Credit (retired)",
       "learning": "Learning",
       "mixed": "Mixed"
     },
@@ -4989,17 +5378,17 @@ var m_messages_features_catalog_02 = {
     ]
   },
   "phoneFirstSignup": {
-    "title": "Sign up with phone-first identity",
-    "summary": "Signup now prioritizes phone-based registration while still allowing email as the single alternate contact method.",
+    "title": "Sign up with your e-mail address",
+    "summary": "Create an account with an e-mail address you confirm; phone sign-up returns only when SMS confirmation exists.",
     "workflow": [
-      "Open Sign Up and enter your full name.",
-      "Use the detected flag and country code, then enter your local phone number, or provide an email instead.",
-      "Choose your language, agree to the Terms, and create the account."
+      "Open Sign Up and enter your full name and e-mail address.",
+      "Choose a password and your language, and agree to the Terms.",
+      "Open the confirmation e-mail; if it does not arrive, use Resend on the sign-up or sign-in screen."
     ],
     "details": [
-      "The signup form no longer asks people to invent a username up front.",
-      "Phone entry uses the detected country and dialing code so mobile registration feels lighter.",
-      "Signup accepts either email or phone, but not both in the same registration step."
+      "The sign-up form does not ask people to invent a username up front.",
+      "Members can sign in later with their e-mail address, username or a phone number they add to their profile.",
+      "Phone-only sign-up is switched off until a phone number can be confirmed by SMS (decision D8)."
     ]
   },
   "profileEditing": {
@@ -5378,8 +5767,9 @@ var m_messages_09 = {
 // src/lib/i18n/base/messages-10.ts
 var m_messages_10 = {
   "home": {
-    "tabDevelopmentLog": "Development log",
-    "tabDevelopmentLogTitle": "What the team built, and member suggestions, documented in the open.",
+    "tabAll": "All",
+    "tabStories": "Stories",
+    "tabStoriesTitle": "What the team built, and member suggestions, documented in the open.",
     "storiesDevelopment": "Development",
     "storiesSuggestions": "Suggestions",
     "addSuggestion": "Suggest an improvement",
@@ -6210,6 +6600,7 @@ var m_messages_11 = {
     "autoSaveActive": "Changes save automatically.",
     "autoSaveFailed": "Auto-save failed. Use Save Changes to retry.",
     "usernameTaken": "Username is already taken",
+    "identityLocked": "Birth date and country are locked after identity verification. Ask a reviewer if they need correcting.",
     "usernameChangeWindow": "You can edit your username until {date}.",
     "usernameChangeAvailable": "You can still change your username once. After that, it becomes available again once each year.",
     "usernameChangeYearlyAvailable": "Your yearly username change is available.",
@@ -6231,6 +6622,22 @@ var m_messages_11 = {
     "detectLocationHint": "Requests location permission, then fills city, state, and country from your device.",
     "locationDetected": "Location updated from your device.",
     "locationDetectFailed": "Could not detect your location.",
+    "civicStatus": {
+      "title": "Civic status",
+      "status": {
+        "registered_member": "Registered member",
+        "verified_member": "Verified member",
+        "citizen": "Citizen"
+      },
+      "registeredBody": "Verify your identity to become a verified member. Citizenship follows automatically 30 days after verification, or 14 days after it once you accept the civic framework.",
+      "verifiedBody": "You are a verified member. You become a citizen automatically on {date}. Accept the civic framework below to shorten the wait to 14 days after verification.",
+      "verifiedAcceptedBody": "You are a verified member and have accepted the civic framework. You become a citizen on {date}.",
+      "citizenBody": "You are a Civizen citizen since {date}. Governance eligibility adds good standing and the other checks in force.",
+      "acceptHint": "The civic framework is the Community Governance Charter and the Terms of Use you already agreed to; accepting it here confirms you want citizenship when the waiting period ends.",
+      "acceptAction": "Accept the civic framework",
+      "accepted": "Civic framework accepted",
+      "acceptFailed": "Could not record your acceptance."
+    },
     "identityVerification": {
       "title": "Identity verification",
       "body": "When Civizen needs stronger trust, upload a photo of your ID and a photo of your face. A reviewer compares them. This is not a government ID check.",
@@ -6858,6 +7265,7 @@ var m_messages_13 = {
     }
   },
   "institutionalDocs": {
+    "translationNote": "Hand-written translation. The English document remains the reference text.",
     "indexTitle": "Public documents",
     "indexDescription": "Interim institutional policies for Mature Humanity and Civizen. Documents marked interim require professional review before they are treated as finally adopted legal text.",
     "pageTitle": "Civizen \u2014 Public documents",
@@ -7347,6 +7755,7 @@ var m_messages_14 = {
       "total": "{count} countable ballots",
       "totalOne": "1 countable ballot",
       "noneYet": "No countable ballots yet.",
+      "afterClose": "Counts per option are published when voting closes, so no one can work out how a person voted from the running totals.",
       "unavailable": "Public counts could not be loaded.",
       "validOnly": "Counts include valid ballots only. Individual choices stay private.",
       "verifiedSplit": "{verified} counted from verified members; {unverified} advisory from accounts not yet verified.",
@@ -7369,6 +7778,10 @@ var m_messages_14 = {
       "publish": "Publish ballot",
       "published": "Ballot published",
       "publishFailed": "Could not publish the ballot.",
+      "withdraw": "Withdraw proposal",
+      "withdrawConfirm": "Withdraw this proposal? Supporters will be told, and it cannot be published afterwards.",
+      "proposalWithdrawn": "Proposal withdrawn.",
+      "withdrawProposalFailed": "Could not withdraw the proposal.",
       "notFound": "Voting proposal not found.",
       "limitations": "This is a voluntary, nonbinding consultation on Civizen. It does not create legal citizenship, replace public-law elections, or imply a predetermined form of world government. Identity assurance is limited to the Civizen account and eligibility rules in force when you cast.",
       "changeUntilClose": "You can change your choice until voting closes. Only one effective ballot counts.",
@@ -7763,6 +8176,20 @@ var m_messages_16 = {
     "receiptIncluded": "Your receipt is on the list of counted ballots.",
     "receiptMissing": "Your receipt is not on the list of counted ballots.",
     "receiptCheckFailed": "Could not check the receipt right now.",
+    "merkleRoot": "Ballot box commitment (Merkle root over the counted receipts):",
+    "proofVerified": "Your receipt is counted: leaf {index} of {count}, and the inclusion proof recomputed on this device matches the published root.",
+    "signature": {
+      "verified": "Signed with your citizen key {fingerprint}; the signature was verified on this device.",
+      "invalid": "The stored signature for this ballot does not verify on this device.",
+      "unsigned": "Not signed: this device holds no citizen key, so only the server's record of your ballot exists.",
+      "unavailable": "The signature status could not be read right now."
+    },
+    "proposalSignature": {
+      "verified": "Signed by the author's citizen key {fingerprint}; the signature was verified on this device.",
+      "invalid": "The stored author signature for this proposal does not verify on this device.",
+      "unsigned": "Not signed by the author's citizen key; only the server's record exists.",
+      "unavailable": "The author signature could not be read right now."
+    },
     "advisoryTitle": "Your ballot is advisory until your identity is verified",
     "advisoryBody": "Anyone with an account can vote. Only ballots from verified members are counted; yours is recorded and will be counted automatically once your verification is approved while voting is open.",
     "advisoryVerifyLink": "Verify your identity in profile settings.",
@@ -7918,6 +8345,9 @@ var m_messages_16 = {
     "civic_consultation_published": { "title": "Consultation published: {title}", "body": "A consultation you follow was published. Open it to see when voting starts." },
     "civic_consultation_opened": { "title": "Voting is open: {title}", "body": "Cast your ballot while the window is open." },
     "civic_consultation_closing_soon": { "title": "Voting closes in {hours} hours: {title}", "body": "You have not voted yet. Cast your ballot before the window ends." },
+    "civic_consultation_extended": { "title": "Voting extended: {title}", "body": "You have more time to vote on a consultation you follow." },
+    "civic_consultation_cancelled": { "title": "Consultation cancelled: {title}", "body": "A consultation you follow or voted in was cancelled. The reason is on the consultation page." },
+    "civic_consultation_certified": { "title": "Result certified: {title}", "body": "The result of a consultation you follow was certified." },
     "civic_consultation_closed": { "title": "Result published: {title}", "body": "Voting has closed and the final count is public." },
     "civic_proposal_withdrawn": { "title": "Proposal withdrawn: {title}", "body": "A proposal you supported was withdrawn by its author." },
     "matter_comment": { "title": "New comment: {title}", "body": "Someone commented on a Matter you are part of." },
@@ -7934,11 +8364,15 @@ var m_messages_16 = {
     "citizenship_granted": { "title": "You are now a Civizen citizen", "body": "Your verified membership has matured into citizenship." },
     "verification_approved": { "title": "Your identity is verified", "body": "Reviewers approved your identity verification." },
     "verification_rejected": { "title": "Your verification needs another look", "body": "Reviewers could not approve your verification yet. Open profile settings to see what to redo." },
+    "verification_info_requested": { "title": "Your verification needs more information", "body": "A reviewer asked for more information. Open profile settings to see what to add, then submit again." },
     "verification_revoked": { "title": "Your identity verification was revoked", "body": "A reviewer revoked your verification. Open profile settings to see the reason and verify again." },
-    "knowledge_resource_proposed": { "title": "Resource proposed: {title}", "body": "A member proposed a resource for your knowledge space. Review it under Resources." },
-    "knowledge_gap_reported": { "title": "Gap reported: {title}", "body": "A member reported a knowledge gap in your space." },
-    "knowledge_resource_published": { "title": "Your resource is live: {title}", "body": "Coordinators shared the resource you proposed." },
-    "fund_inquiry_received": { "title": "New Fund inquiry ({lane})", "body": "Someone sent an inquiry through the Fund pages. Open Funding \u203A Interest to answer it." }
+    "knowledge_resource_proposed": { "title": "Resource proposed in {title}", "body": "A member proposed a resource for your knowledge space. Review it under Resources." },
+    "knowledge_gap_reported": { "title": "Gap reported in {title}", "body": "A member reported a knowledge gap in your space." },
+    "knowledge_resource_published": { "title": "Your resource is live in {title}", "body": "Coordinators shared the resource you proposed." },
+    "fund_inquiry_received": { "title": "New Fund inquiry ({lane})", "body": "Someone sent an inquiry through the Fund pages. Open Funding \u203A Interest to answer it." },
+    "moderation_hidden": { "title": "Your content was hidden by moderation", "body": "Open Moderation to see the reason. You can appeal once." },
+    "moderation_appeal_overturned": { "title": "Your appeal was accepted", "body": "Your content is visible again." },
+    "moderation_appeal_upheld": { "title": "Your appeal was reviewed", "body": "A second moderator kept the decision." }
   }
 };
 
@@ -7958,6 +8392,10 @@ var baseTranslations = {
   "features": { ...m_messages_features_01, "catalog": { ...m_messages_features_catalog_01, ...m_messages_features_catalog_02 } },
   ...m_messages_09,
   ...m_messages_study_02,
+  ...m_messages_moderation,
+  ...m_messages_identity_review,
+  ...m_messages_election_admin,
+  ...m_messages_election_verify,
   ...m_messages_market_jobs_admin,
   ...m_messages_10,
   "profile": { ...m_messages_profile_01, ...m_messages_profile_02 },

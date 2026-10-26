@@ -27,13 +27,14 @@
 - Re-test v0.1.233–v0.1.236 for the safe-to-invite gate
 - Docs and task gaps in Civizen
 - Civizen: fix post-sign-in Loading (continuation of jdb493d69)
-- Civizen v0.1.238 regression: Home Civizen Score dropped (40.6 / 3 of 5 areas → 27.4 / 2 of 5) after the sign-in speed fix 8c53352
 - Verify production sign-in Home is fast after v0.1.238
 - Verify v0.1.239 Home score paging fix on production
 - Docs follow the app: a check that fails when docs name a UI path, setting or command that no longer exists
 - Pilot: AyMe repo snapshot (.ayme/context.md) for Civizen cloud sessions
 - Civizen: docs follow the app (stale UI paths + automatic check), and the cloud-session findings (parent jobs jafe649b7, j2785e225 note)
 - Settle chat: Civizen keys for Aye
+- Rewrite this question in Armen's shape or settle it yourself: Civizen: docs follow the app (stale UI paths + automatic check), and the cloud-session findings (parent jobs jafe649b7, j2785e225 note)
+- Rewrite this question in Armen's shape or settle it yourself: Docs follow the app: a check that fails when docs name a UI path, setting or command that no longer exists
 
 ## Where the details live
 

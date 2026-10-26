@@ -2,8 +2,8 @@
 export const homeLandingHy = {
   home: {
     tabAll: 'Բոլորը',
-    tabDevelopmentLog: 'Զարգացման մատյան',
-    tabDevelopmentLogTitle: 'Ինչ է կառուցել թիմը և անդամների առաջարկները՝ բաց փաստաթղթավորված։',
+    tabStories: 'Պատմություններ',
+    tabStoriesTitle: 'Ինչ է կառուցել թիմը և անդամների առաջարկները՝ բաց փաստաթղթավորված։',
     storiesDevelopment: 'Զարգացում',
     storiesSuggestions: 'Առաջարկներ',
     addSuggestion: 'Առաջարկել բարելավում',

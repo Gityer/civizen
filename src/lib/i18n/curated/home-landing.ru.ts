@@ -2,8 +2,8 @@
 export const homeLandingRu = {
   home: {
     tabAll: 'Все',
-    tabDevelopmentLog: 'Журнал разработки',
-    tabDevelopmentLogTitle: 'Что построила команда и предложения участников, задокументированные открыто.',
+    tabStories: 'Истории',
+    tabStoriesTitle: 'Что построила команда и предложения участников, задокументированные открыто.',
     storiesDevelopment: 'Разработка',
     storiesSuggestions: 'Предложения',
     addSuggestion: 'Предложить улучшение',

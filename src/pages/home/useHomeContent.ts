@@ -67,8 +67,8 @@ export function useHomeContent({ endorsements, educationCount, verifiedEducation
         { id: 'all', label: t('home.tabAll') },
         {
           id: 'stories',
-          label: t('home.tabDevelopmentLog'),
-          title: t('home.tabDevelopmentLogTitle'),
+          label: t('home.tabStories'),
+          title: t('home.tabStoriesTitle'),
         },
       ],
       value: homeTab,
