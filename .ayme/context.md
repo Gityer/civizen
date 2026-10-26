@@ -32,8 +32,8 @@
 - Verify v0.1.239 Home score paging fix on production
 - Docs follow the app: a check that fails when docs name a UI path, setting or command that no longer exists
 - Pilot: AyMe repo snapshot (.ayme/context.md) for Civizen cloud sessions
-- Civizen: write the approved AyMe repo snapshot (safe-only) and get it committed (parent job j2785e225)
 - Civizen: docs follow the app (stale UI paths + automatic check), and the cloud-session findings (parent jobs jafe649b7, j2785e225 note)
+- Settle chat: Civizen keys for Aye
 
 ## Where the details live
 

@@ -26,17 +26,29 @@ export function isChunkLoadError(reason: unknown): boolean {
   );
 }
 
-function hasAttemptedRecovery(): boolean {
+/**
+ * One automatic reload per window: a second stale-chunk failure within this time is not reloaded again (no loops),
+ * but after it the tab may recover once more. Before, one failed recovery during a deploy left the tab unrecoverable
+ * for its whole life, so a member could sit on a page that never finished starting.
+ */
+export const BOOT_RECOVERY_RETRY_MS = 2 * 60 * 1000;
+
+function hasAttemptedRecovery(now = Date.now()): boolean {
   try {
-    return window.sessionStorage.getItem(BOOT_RECOVERY_SESSION_KEY) === '1';
+    const raw = window.sessionStorage.getItem(BOOT_RECOVERY_SESSION_KEY);
+    if (!raw) return false;
+    const at = Number(raw);
+    // Legacy value '1' (no time) counts as an old attempt, so recovery may run again.
+    if (!Number.isFinite(at) || at < 1e12) return false;
+    return now - at < BOOT_RECOVERY_RETRY_MS;
   } catch {
     return false;
   }
 }
 
-function markRecoveryAttempted(): void {
+function markRecoveryAttempted(now = Date.now()): void {
   try {
-    window.sessionStorage.setItem(BOOT_RECOVERY_SESSION_KEY, '1');
+    window.sessionStorage.setItem(BOOT_RECOVERY_SESSION_KEY, String(now));
   } catch {
     // Ignore storage failures.
   }

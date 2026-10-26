@@ -175,6 +175,14 @@
           if (path !== '/' && path !== '/onboarding') return;
           var root = document.getElementById('root');
           if (!root || root.childNodes.length) return;
+          // Never paint the guest CTAs for someone who is signed in: while the app starts (or if it cannot start),
+          // a member must not see "Join the network / Sign in". A stored Supabase session means signed in.
+          try {
+            for (var i = 0; i < window.localStorage.length; i++) {
+              var key = window.localStorage.key(i) || '';
+              if (/^sb-.*-auth-token$/.test(key)) return;
+            }
+          } catch (_e) {}
           var stored = null;
           try { stored = window.localStorage.getItem('civizen-language'); } catch (_e) {}
           var lang = (stored || navigator.language || 'en').toLowerCase().slice(0, 2);

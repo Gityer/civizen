@@ -73,7 +73,17 @@ backup=~/civizen-backups/civizen-\${STAMP}.tgz
 sudo tar -C "\$ROOT" -czf "\$backup" . || true
 # Cap backup retention — unbounded full-tree tarballs fill the VPS disk.
 ls -1t ~/civizen-backups/civizen-*.tgz 2>/dev/null | tail -n +3 | xargs -r sudo rm -f || true
-sudo tar -C "\$ROOT" -xzf "\$STAGE/civizen-dist.tgz"
+# Atomic for live clients: unpack into a staging folder, put every new hashed asset and file in place first, and swap
+# index.html in last. A page loaded mid-deploy then never references an asset that is not there yet, which used to
+# trigger the stale-chunk boot recovery (?boot_recovery=) for whoever opened the site during a deploy.
+NEW="\$STAGE/new-\$STAMP"
+rm -rf "\$NEW"; mkdir -p "\$NEW"
+tar -C "\$NEW" -xzf "\$STAGE/civizen-dist.tgz"
+sudo cp -a "\$NEW/assets/." "\$ROOT/assets/"
+( cd "\$NEW" && sudo find . -mindepth 1 -maxdepth 1 ! -name index.html ! -name assets -exec cp -a {} "\$ROOT/" \; )
+sudo cp "\$NEW/index.html" "\$ROOT/.index.html.new"
+sudo mv -f "\$ROOT/.index.html.new" "\$ROOT/index.html"
+rm -rf "\$NEW"
 # Keep recently hashed assets so in-flight clients can still fetch prior chunks.
 sudo find "\$ROOT/assets" -type f -mtime +"\$DAYS" -delete || true
 # Keep release soak APKs, current aliases, and this deploy's versioned APKs.
