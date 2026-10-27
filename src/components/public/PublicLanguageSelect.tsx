@@ -89,6 +89,10 @@ export function PublicLanguageSelect() {
           onMouseLeave={() => {
             if (canHoverOpen()) scheduleClose();
           }}
+          onClick={(event) => {
+            // pointing at the flag already opened the menu: the click confirms it instead of toggling it shut
+            if (canHoverOpen() && open) event.preventDefault();
+          }}
         >
           <RoundCountryFlag countryCode={selectedFlagCountry} locale={language} size="sm" />
         </button>
