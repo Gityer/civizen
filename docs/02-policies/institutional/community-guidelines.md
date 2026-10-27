@@ -1,7 +1,7 @@
 ---
 document_id: community-guidelines
 title: Community Guidelines
-version: 0.1
+version: 0.2
 visibility: public
 review_status: interim
 application_placement:
@@ -10,7 +10,7 @@ application_placement:
   - report dialogs
 professional_review_required: false
 publication_date: 2026-10-13
-last_updated: 2026-10-13
+last_updated: 2026-10-27
 status: current
 canonical: true
 ---
@@ -49,8 +49,12 @@ and is not a reason to hide anything.
   participants only; a hidden job listing is closed. Nothing is deleted, and the author is told the reason.
 - **One appeal, a different moderator.** The author can appeal each decision once. A moderator other than the one who
   hid the item decides the appeal; if the appeal succeeds, the item returns exactly as it was.
-- **People are not hidden.** Repeated or serious conduct by a person is handled through governance sanctions, which
-  have their own appeal process.
+- **Steps for people.** Repeated or serious conduct by a person leads to steps, each recorded with a reason from the
+  list above and told to the person: a note, a warning, a 7-day stop on posting and commenting, a 7-day stop on
+  starting new conversations, and a 30-day suspension during which the account cannot sign in. Moderators go one step
+  at a time, except for violence or threats, sexual content, sharing private information and illegal content (items 4,
+  5, 7 and 8), where they may go straight to any step. Each step can be appealed once; a different moderator decides.
+  Governance sanctions, which concern rights in governance, stay separate and keep their own appeal process.
 - **Messages.** Private messages may be end-to-end encrypted, so moderators see only what a reporter chooses to share.
 
 ## Changes

@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { type MatterActionRequirement, type MatterActorKind } from '@/lib/matters';
 import { performCollaborationAction, searchMatterActors, type MatterActorSuggestion } from '@/lib/matters-api';
 import { groupCollaborationTask, type CollaborationTask } from '@/lib/matters-work';
-import { rateLimitMessage } from '@/lib/rate-limit';
+import { writeRefusalMessage } from '@/lib/write-refusal';
 import { type MatterWorkPanelProps } from '@/pages/contribute/matter-work-panel/matter-work-panel-shared';
 
 export function useMatterWorkPanel({ bundle, profileId, linkedIds, canManageWork, busy, onBusy, onReload, t }: MatterWorkPanelProps) {
@@ -61,7 +61,7 @@ export function useMatterWorkPanel({ bundle, profileId, linkedIds, canManageWork
     } catch (error) {
       // callers fire and forget (`void run(...)`): without this a refused action vanished with no message
       toast.error(
-        rateLimitMessage(error, t) ??
+        writeRefusalMessage(error, t) ??
           (error instanceof Error && error.message ? error.message : t('contribute.matters.actionFailed')),
       );
     } finally {

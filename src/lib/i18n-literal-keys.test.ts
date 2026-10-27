@@ -118,6 +118,8 @@ const ALLOW_DYNAMIC_PREFIXES: readonly string[] = [
   'marketJobsAdmin.mode.',
   'marketJobsAdmin.setStatus.',
   'marketJobsAdmin.status.',
+  'memberEnforcement.refused.',
+  'memberEnforcement.steps.',
   'moderation.kinds.',
   'moderation.reasons.',
   'participation.columns.',

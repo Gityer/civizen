@@ -44,8 +44,7 @@ export const m_messages_moderation = {
       "noteLabel": "Note for the record (optional)",
       "open": "Open",
       "hidden": "Hidden. The author was told and may appeal.",
-      "dismissed": "Reports dismissed.",
-      "userHint": "Members are not hidden here; use sanctions in Users admin."
+      "dismissed": "Reports dismissed."
     },
     "appeals": {
       "empty": "No appeals waiting.",

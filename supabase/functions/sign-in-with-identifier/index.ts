@@ -74,6 +74,8 @@ Deno.serve(async (request) => {
 
     if (error || !data.session) {
       await record(false);
+      // GoTrue reports a ban only after the password matched, so this tells nothing to someone without it
+      if (error?.code === 'user_banned') return json({ error: 'user_banned' }, 403);
       return json(INVALID, 400);
     }
     await record(true);

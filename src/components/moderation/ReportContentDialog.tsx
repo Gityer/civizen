@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { rateLimitMessage } from '@/lib/rate-limit';
+import { writeRefusalMessage } from '@/lib/write-refusal';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -43,7 +43,7 @@ export function ReportContentDialog({ open, onOpenChange, targetKind, targetId, 
       setDetails('');
       onOpenChange(false);
     } catch (error) {
-      toast.error(rateLimitMessage(error, t) ?? t(moderationErrorKey(error instanceof Error ? error.message : '')));
+      toast.error(writeRefusalMessage(error, t) ?? t(moderationErrorKey(error instanceof Error ? error.message : '')));
     } finally {
       setSubmitting(false);
     }

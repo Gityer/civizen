@@ -40,3 +40,43 @@ PM decision TD4 (Trust & Safety baseline 3.5). Starting values, kept in `rate_li
 - Local stack: many e2e runs within an hour can reach a fixture's limit. `DELETE FROM public.rate_limit_events;` resets every count.
 
 Tests: `supabase/tests/account_action_rate_limits_test.sql`, `src/lib/rate-limit.test.ts`, `e2e/rate-limits.spec.ts`. Migration: `20261027100000_account_action_rate_limits.sql`.
+
+## Enforcement steps for members
+
+PM decision TD2 (Trust & Safety baseline 3.2); the public wording is in the Community Guidelines (0.2). The steps, lowest first:
+
+| Step | What it does |
+| --- | --- |
+| note | a record only |
+| warning | a record the member sees |
+| content restriction | 7 days: no new posts, comments (posts, Matters, Solutions) or Matters |
+| messaging restriction | 7 days: no new conversations; existing ones stay open |
+| suspension | 30 days: sign-in blocked |
+
+How a step works:
+
+- **Who applies it.** Moderators (`content.moderate`) apply steps with `moderation_enforce`. The form is on the queue card of a reported profile, and folded under any content report for the content's author.
+- **Reason.** Every step takes a reason code; the codes are the Guidelines items. "Other" needs a note.
+- **One rung at a time.** A first step may be a note or a warning. After that, one rung above the highest step not lifted or overturned (ended restrictions count).
+- **Skipping rungs.** Violence, sexual content, private information and illegal content (items 4, 5, 7, 8) may skip rungs.
+- **Not on yourself.** Moderators cannot apply a step to themselves.
+- **Notifications.** The member is notified (`moderation_enforcement`).
+
+How restrictions are enforced:
+
+- **Writes.** `BEFORE INSERT` triggers refuse writes with SQLSTATE `PT403` (HTTP 403), the restriction in `details` and its end in `hint`. The app shows `writeRefusalMessage` (`src/lib/write-refusal.ts`, keys `memberEnforcement.refused.*`).
+- **Suspension.** It also sets `auth.users.banned_until` and ends open sessions. Writes made with a token issued earlier are refused too. Login shows `memberEnforcement.signInSuspended`. `sign-in-with-identifier` answers 403 `user_banned` instead of "invalid credentials".
+- **Ending.** Restrictions end on their own at `ends_at`.
+
+Appeals:
+
+- **Where.** The member appeals once from Moderation (`moderation_enforcement_appeal`).
+- **Who decides.** A different moderator, never the one who decided and never the member (`moderation_enforcement_decide_appeal`).
+- **Overturning** lifts the step at once and clears a sign-in ban.
+
+Not yet done:
+
+- **Removal** (closing an account, two moderators).
+- **Owner decision: appealing a suspension.** A suspended member cannot sign in, so they cannot reach the in-app appeal. The ban lives only in `enforcement_sync_sign_in`, so switching to "signed in, read-only, appeal only" is a small change.
+
+Tests: `supabase/tests/member_enforcement_ladder_test.sql`, `src/lib/member-enforcement.test.ts`, `e2e/member-enforcement.spec.ts`. Migration: `20261027120000_member_enforcement_ladder.sql`.

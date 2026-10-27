@@ -68,6 +68,7 @@ export function notificationRoute(notification: Pick<AppNotification, 'entityTyp
     case 'post':
       return '/';
     case 'moderation_action':
+    case 'member_enforcement_action':
       return '/moderation';
     default:
       return null;

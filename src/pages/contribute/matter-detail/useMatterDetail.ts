@@ -9,7 +9,7 @@ import { buildBallIsWithCopy, deriveMatterStatus, formalActionsForContext, viewe
 import { addMatterComment, getMatterDetail, performCollaborationAction, performMatterFormalAction, searchMatterActors, uploadMatterFile, type MatterActorSuggestion, type MatterDetailBundle } from '@/lib/matters-api';
 import { listOwnedLinkedProfileIds } from '@/lib/opportunities-api';
 import { toast } from 'sonner';
-import { rateLimitMessage } from '@/lib/rate-limit';
+import { writeRefusalMessage } from '@/lib/write-refusal';
 
 export function useMatterDetail() {
   const { matterId } = useParams<{ matterId: string }>();
@@ -173,7 +173,7 @@ export function useMatterDetail() {
       await load();
     } catch (error) {
       toast.error(
-        rateLimitMessage(error, tRef.current) ??
+        writeRefusalMessage(error, tRef.current) ??
           (error instanceof Error ? error.message : tRef.current('contribute.matters.actionFailed')),
       );
     } finally {

@@ -13,6 +13,7 @@ import { resolvePostAuthPath } from '@/lib/pending-auth-return';
 import { isEmailIdentifier, TOO_MANY_ATTEMPTS_MESSAGE } from '@/lib/sign-in-with-identifier';
 import { toast } from 'sonner';
 import { getBiometricSignInCapability } from '@/lib/biometric-sign-in';
+import { isSuspendedSignInError } from '@/lib/member-enforcement';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ export default function Login() {
       const { error } = await signIn(identifier, password);
 
       if (error) {
-        setError(error.message);
+        setError(isSuspendedSignInError(error) ? t('memberEnforcement.signInSuspended') : error.message);
         return;
       }
 

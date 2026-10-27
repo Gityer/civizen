@@ -10184,6 +10184,20 @@ isOneToOne: false
 "moderation_decide_appeal":
 { Args: { "p_action_id": string,"p_note"?: string,"p_overturn": boolean }; Returns: undefined
                            },
+"moderation_enforce":
+{ Args: { "p_note"?: string,"p_profile": string,"p_reason_code": string,"p_step": string }; Returns: string
+                           },
+"moderation_enforcement_appeal":
+{ Args: { "p_action_id": string,"p_text": string }; Returns: undefined
+                           },
+"moderation_enforcement_decide_appeal":
+{ Args: { "p_action_id": string,"p_note"?: string,"p_overturn": boolean }; Returns: undefined
+                           },
+"moderation_enforcement_list":
+{ Args: { "p_profile"?: string,"p_scope"?: string }; Returns: {
+              "appeal_decided_at": string,"appeal_decision": string,"appeal_note": string,"appeal_text": string,"appealed_at": string,"created_at": string,"ends_at": string,"id": string,"lifted_at": string,"moderator_profile_id": string,"note": string,"profile_id": string,"reason_code": string,"step": string,"username": string
+            }[]
+                           },
 "moderation_dismiss":
 { Args: { "p_note"?: string,"p_target_id": string,"p_target_kind": string }; Returns: number
                            },

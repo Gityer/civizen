@@ -202,6 +202,9 @@ export const m_messages_16 = {
     "fund_inquiry_received": { "title": "New Fund inquiry ({lane})", "body": "Someone sent an inquiry through the Fund pages. Open Funding › Interest to answer it." },
     "moderation_hidden": { "title": "Your content was hidden by moderation", "body": "Open Moderation to see the reason. You can appeal once." },
     "moderation_appeal_overturned": { "title": "Your appeal was accepted", "body": "Your content is visible again." },
-    "moderation_appeal_upheld": { "title": "Your appeal was reviewed", "body": "A second moderator kept the decision." }
+    "moderation_appeal_upheld": { "title": "Your appeal was reviewed", "body": "A second moderator kept the decision." },
+    "moderation_enforcement": { "title": "A moderation decision about your account", "body": "Open Moderation to see the step, the reason and how long it lasts. You can appeal once; a different moderator will review it." },
+    "moderation_enforcement_overturned": { "title": "Your appeal was accepted", "body": "The decision about your account was withdrawn." },
+    "moderation_enforcement_upheld": { "title": "Your appeal was reviewed", "body": "A second moderator kept the decision about your account." }
   },
 } as const;

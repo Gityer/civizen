@@ -36,7 +36,7 @@ import {
   type SolutionProblemStatus,
 } from '@/lib/solutions-constants';
 import { toast } from 'sonner';
-import { rateLimitMessage } from '@/lib/rate-limit';
+import { writeRefusalMessage } from '@/lib/write-refusal';
 import { HumanOutcomeLinks } from '@/pages/wellbeing/HumanOutcomeLinks';
 import { SolutionsCouncilNotice } from '@/pages/governance/SolutionsCouncilNotice';
 import { councilErrorMessageKey, runSolutionsCouncil } from '@/lib/solutions-council-client';
@@ -135,7 +135,7 @@ export default function SolutionProblemDetail() {
     });
     setCommentSubmitting(false);
     if (error) {
-      toast.error(rateLimitMessage(error, t) ?? t('solutions.commentFailed'));
+      toast.error(writeRefusalMessage(error, t) ?? t('solutions.commentFailed'));
       return;
     }
     setCommentBody('');
