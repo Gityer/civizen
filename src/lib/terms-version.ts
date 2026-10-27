@@ -11,6 +11,7 @@ export const TERMS_RECONSENT_ALLOWED_PATHS = [
   '/terms',
   '/privacy',
   '/guidelines',
+  '/contact',
   '/settings/legal',
   '/about/legal-status',
   '/settings/privacy',

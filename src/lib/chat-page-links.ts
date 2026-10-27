@@ -7,6 +7,7 @@ import { CIVI_CHOICE_LINKS, CIVI_PAGE_LINKS } from '@/lib/civi-nav-paths';
 const EXTRA_PUBLIC_PATHS = [
   '/about',
   '/areas',
+  '/contact',
   '/contribute/policy',
   '/contribute/projects',
   '/contribute/tasks',

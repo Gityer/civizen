@@ -23,7 +23,7 @@ It does not replace the Terms of Use.
 
 ## Who runs the service
 
-Civizen is operated by the Mature Humanity initiative. Contact: the e-mail address shown on the Contact page.
+Civizen is operated by the Mature Humanity initiative. Contact: the e-mail address shown on the Contact page (`/contact`).
 
 ## What is stored, and why
 

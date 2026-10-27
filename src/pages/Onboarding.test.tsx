@@ -75,7 +75,7 @@ describe('Onboarding public page', () => {
       'https://github.com/maturehumanity/civizen',
     );
     expect(screen.getAllByRole('link', { name: 'Terms' }).length).toBeGreaterThan(0);
-    expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', 'https://civizen.world');
+    expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '/contact');
   });
 
   it('shows the public app download card with qr code and actions', async () => {

@@ -192,6 +192,7 @@ export const settingsHy = {
     helpPrivacy: 'Գաղտնիության ծանուցում',
     helpPrivacyDescription: 'Ինչ է հավաքում Civizen-ը, ինչու, և ձեր ընտրությունները։',
     helpGuidelinesDescription: 'Ինչն այստեղ տեղ չունի, և ինչպես են աշխատում բողոքներն ու բողոքարկումները։',
+    helpContactDescription: 'Ինչպես կապվել Civizen-ը վարողների հետ, և ուր դիմել յուրաքանչյուր հարցի համար։',
     accountTitle: 'Հաշիվ',
     accountDescription: 'Մուտքի էլ. փոստ, գաղտնաբառ և ձեր տվյալների պատճենը',
     account: {

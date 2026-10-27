@@ -236,4 +236,5 @@ export const m_messages_settings_02 = {
     "helpPrivacy": "Privacy notice",
     "helpPrivacyDescription": "What Civizen collects, why, and your choices.",
     "helpGuidelinesDescription": "What does not belong here, and how reports and appeals work.",
+    "helpContactDescription": "How to reach the people who run Civizen, and where each kind of question goes.",
 } as const;
