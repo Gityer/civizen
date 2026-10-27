@@ -2,6 +2,7 @@ import { Navigate, Route } from 'react-router-dom';
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import {
+  Contact,
   DevEconomicsVisual,
   Features,
   FundingAdmin,
@@ -12,6 +13,7 @@ import {
 
 export const appRoutes2 = (
   <>
+      <Route path="/contact" element={<Contact />} />
       <Route
         path="/settings/admin/governance"
         element={

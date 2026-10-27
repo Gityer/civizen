@@ -82,7 +82,6 @@ import {
   StudyLayout,
   StudyMaterials,
   TermsOfUse,
-  Contact,
   UserProfile,
   UsersAdmin,
   WhyThisExists,
@@ -107,7 +106,6 @@ export const appRoutes1 = (
       <Route path="/fund/transparency" element={<FundTransparency />} />
       <Route path="/fund/project-finance" element={<FundProjectFinance />} />
       <Route path="/terms" element={<TermsOfUse />} />
-      <Route path="/contact" element={<Contact />} />
       <Route path="/documents" element={<PublicDocumentsIndex />} />
       <Route path="/documents/:docSlug" element={<InstitutionalDocRoute />} />
       <Route path="/about" element={<InstitutionalDocRoute />} />
