@@ -159,4 +159,34 @@ SELECT 'c3000000-0000-4000-8000-000000000011', g.publisher_profile_id, g.id, 'Fi
  WHERE g.id = 'c3000000-0000-4000-8000-000000000002'
    AND NOT EXISTS (SELECT 1 FROM public.knowledge_spaces WHERE status = 'shared');
 
+-- ---- a public Matter ---------------------------------------------------------------------------------------------
+-- e2e/public-matters-guest.spec.ts opens the first public Matter as a visitor. Without one it depended on another
+-- spec having raised a Matter first. Raised through create_matter as 'citizen' (as the app does: parties, events,
+-- timing defaults), addressed to the Civizen organization. Fictional; skipped when a public Matter already exists.
+DO $$
+DECLARE
+  v_org uuid;
+BEGIN
+  IF EXISTS (SELECT 1 FROM public.matters WHERE visibility = 'public' AND lifecycle_status IN ('submitted', 'active', 'closed')) THEN
+    RETURN;
+  END IF;
+  SELECT id INTO v_org FROM public.profiles WHERE username = 'civizen' AND deleted_at IS NULL;
+  IF v_org IS NULL OR NOT EXISTS (SELECT 1 FROM auth.users WHERE id = 'c1000000-0000-4000-8000-000000000004') THEN
+    RETURN;
+  END IF;
+  PERFORM set_config('request.jwt.claims', '{"sub": "c1000000-0000-4000-8000-000000000004", "role": "authenticated"}', true);
+  SET LOCAL ROLE authenticated;
+  PERFORM public.create_matter(jsonb_build_object(
+    'title', 'Fixture: a shared reading corner for the neighbourhood',
+    'description', 'Fictional public Matter created by scripts/local-supabase/seed-test-fixtures.sql for the visitor flow.',
+    'matter_type', 'suggestion',
+    'visibility', 'public',
+    'addressee_kind', 'organization',
+    'addressee_profile_id', v_org,
+    'scope_kind', 'global',
+    'submit', true));
+  RESET ROLE;
+  PERFORM set_config('request.jwt.claims', '', true);
+END $$;
+
 COMMIT;
