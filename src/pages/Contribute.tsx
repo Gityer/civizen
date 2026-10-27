@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -6,6 +7,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
 import { APP_DIRECTORY_MAX_CLASS } from '@/lib/responsive-layout';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
@@ -13,6 +15,7 @@ import {
   getContributeLanesBySection,
   type ContributeLaneSection,
 } from '@/lib/contribute-lanes';
+import { LANE_COUNT_FIELDS, WAITING_ITEMS, loadContributeWaiting, type ContributeWaiting } from '@/lib/contribute-waiting';
 
 const SECTION_TITLE_KEYS: Record<ContributeLaneSection, string> = {
   ways: 'contribute.sections.ways',
@@ -23,6 +26,14 @@ const SECTION_TITLE_KEYS: Record<ContributeLaneSection, string> = {
 
 export default function Contribute() {
   const { t } = useLanguage();
+  const [waiting, setWaiting] = useState<ContributeWaiting | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void loadContributeWaiting().then((counts) => { if (active) setWaiting(counts); }, () => undefined);
+    return () => { active = false; };
+  }, []);
+  const waitingItems = waiting ? WAITING_ITEMS.filter((item) => waiting[item.field] > 0) : [];
 
   return (
     <AppLayout>
@@ -40,6 +51,26 @@ export default function Contribute() {
           />
         </motion.div>
 
+        {waiting ? (
+          <section className="space-y-2" data-testid="contribute-waiting" aria-labelledby="contribute-waiting-title">
+            <h2 id="contribute-waiting-title" className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              {t('contribute.waiting.title')}
+            </h2>
+            {waitingItems.length ? (
+              <div className="flex flex-wrap gap-2">
+                {waitingItems.map((item) => (
+                  <Link key={item.field} to={item.path} data-testid={`contribute-waiting-${item.field}`}
+                    className="rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary/10">
+                    {t(item.labelKey, { count: waiting[item.field] })}
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">{t('contribute.waiting.none')}</p>
+            )}
+          </section>
+        ) : null}
+
         {CONTRIBUTE_SECTION_ORDER.map((section, sectionIndex) => {
           const lanes = getContributeLanesBySection(section);
           return (
@@ -56,6 +87,8 @@ export default function Contribute() {
               <div className="grid gap-3 sm:grid-cols-2">
                 {lanes.map((lane, index) => {
                   const Icon = lane.icon;
+                  const countField = LANE_COUNT_FIELDS[lane.id];
+                  const openCount = waiting && countField ? waiting[countField] : 0;
                   return (
                     <motion.div
                       key={lane.id}
@@ -79,6 +112,9 @@ export default function Contribute() {
                             <p className="mt-0.5 text-sm text-muted-foreground sm:mt-1">
                               {t(lane.descriptionKey)}
                             </p>
+                            {openCount ? (
+                              <Badge variant="secondary" className="mt-2 rounded-full">{t('contribute.laneOpen', { count: openCount })}</Badge>
+                            ) : null}
                             {lane.relatedLinks?.length ? (
                               <p className="relative z-10 mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm">
                                 {lane.relatedLinks.map((related) => (

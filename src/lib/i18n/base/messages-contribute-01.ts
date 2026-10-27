@@ -2,6 +2,14 @@ export const m_messages_contribute_01 = {
     "title": "Contribute",
     "subtitle": "How would you like to contribute today?",
     "backToHub": "Back to Contribute",
+    "waiting": {
+      "title": "Waiting for you",
+      "actionsDue": "Matter actions due: {count}",
+      "proposalsToSupport": "Proposals to support: {count}",
+      "ballotsOpen": "Open votes: {count}",
+      "none": "Nothing is waiting for you right now."
+    },
+    "laneOpen": "Open now: {count}",
     "demoBadge": "Demo",
     "sections": {
       "ways": "Ways to Contribute",

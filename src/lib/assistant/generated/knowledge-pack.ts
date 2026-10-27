@@ -6,9 +6,9 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
     "appVersion": "0.1.243",
     "appReleaseId": "20261026-v0.1.243",
     "androidVersionCode": 245,
-    "gitSha": "914a6f0b575e707341b06fbb6a870d2069f8099a",
-    "generatedAt": "2026-10-27T20:16:06.846Z",
-    "sourceFingerprint": "0525dd61ad9a82f1eb6ce3c075a60035178087d882da620b0771642e277bc75a",
+    "gitSha": "ef4558137365ce58e113f532ac65d315e0e0f342",
+    "generatedAt": "2026-10-27T20:24:42.404Z",
+    "sourceFingerprint": "aa6e37486535de9a9d01cd64abfd8526a6e22f6785e2f211239b28bca4284bc9",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 399
@@ -78,7 +78,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "contribute_hub",
       "name": "Contribute",
       "status": "implemented",
-      "description": "Participation gateway asking how you would like to contribute today. Ways, Community, Knowledge, and Your Impact.",
+      "description": "Participation gateway asking how you would like to contribute today. At the top, \"Waiting for you\" counts the Matter actions due to you, the proposals you can support and the open votes you have not cast, each linking to its place. Below are the lanes (Ways, Community, Knowledge, Your Impact) with their related links, and how many challenges and knowledge spaces are open now.",
       "howTo": "Open Contribute from the bottom navigation.",
       "routes": [
         "/contribute"
@@ -2523,7 +2523,7 @@ export const KNOWLEDGE_PACK: KnowledgePack = {
       "id": "capability:contribute_hub",
       "title": "Contribute",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Contribute status=implemented. Participation gateway asking how you would like to contribute today. Ways, Community, Knowledge, and Your Impact. Open Contribute from the bottom navigation. Routes: /contribute.",
+      "text": "Contribute status=implemented. Participation gateway asking how you would like to contribute today. At the top, \"Waiting for you\" counts the Matter actions due to you, the proposals you can support and the open votes you have not cast, each linking to its place. Below are the lanes (Ways, Community, Knowledge, Your Impact) with their related links, and how many challenges and knowledge spaces are open now. Open Contribute from the bottom navigation. Routes: /contribute.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"

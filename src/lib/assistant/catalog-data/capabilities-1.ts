@@ -31,7 +31,7 @@ export const ASSISTANT_CAPABILITIES_PART_1: AssistantCapability[] = [
     name: 'Contribute',
     status: 'implemented',
     description:
-      'Participation gateway asking how you would like to contribute today. Ways, Community, Knowledge, and Your Impact.',
+      'Participation gateway asking how you would like to contribute today. At the top, "Waiting for you" counts the Matter actions due to you, the proposals you can support and the open votes you have not cast, each linking to its place. Below are the lanes (Ways, Community, Knowledge, Your Impact) with their related links, and how many challenges and knowledge spaces are open now.',
     howTo: 'Open Contribute from the bottom navigation.',
     routes: ['/contribute'],
     roles: ['member'],
