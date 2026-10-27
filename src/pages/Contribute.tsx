@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { PlusCircle } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
@@ -22,7 +22,6 @@ const SECTION_TITLE_KEYS: Record<ContributeLaneSection, string> = {
 };
 
 export default function Contribute() {
-  const navigate = useNavigate();
   const { t } = useLanguage();
 
   return (
@@ -64,18 +63,32 @@ export default function Contribute() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.06 + sectionIndex * 0.05 + index * 0.03 }}
                     >
-                      <Card
-                        className="flex cursor-pointer items-start gap-3 border-border/70 bg-card/95 p-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-md sm:block sm:p-4"
-                        onClick={() => navigate(lane.path)}
-                      >
-                        <Icon
-                          className={`h-6 w-6 shrink-0 sm:mb-3 sm:h-8 sm:w-8 ${lane.iconClassName}`}
-                        />
-                        <div className="min-w-0">
-                          <h3 className="font-semibold text-foreground">{t(lane.titleKey)}</h3>
-                          <p className="mt-0.5 text-sm text-muted-foreground sm:mt-1">
-                            {t(lane.descriptionKey)}
-                          </p>
+                      <Card className="relative h-full border-border/70 bg-card/95 p-3 shadow-sm transition-all duration-200 focus-within:ring-2 focus-within:ring-ring hover:-translate-y-0.5 hover:border-border hover:shadow-md sm:p-4">
+                        <div className="flex items-start gap-3 sm:block">
+                          <Icon
+                            className={`h-6 w-6 shrink-0 sm:mb-3 sm:h-8 sm:w-8 ${lane.iconClassName}`}
+                            aria-hidden
+                          />
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-foreground">
+                              {/* the title link covers the whole card; related links sit above it */}
+                              <Link to={lane.path} className="outline-none after:absolute after:inset-0 after:rounded-[inherit]" data-testid={`contribute-lane-${lane.id}`}>
+                                {t(lane.titleKey)}
+                              </Link>
+                            </h3>
+                            <p className="mt-0.5 text-sm text-muted-foreground sm:mt-1">
+                              {t(lane.descriptionKey)}
+                            </p>
+                            {lane.relatedLinks?.length ? (
+                              <p className="relative z-10 mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                                {lane.relatedLinks.map((related) => (
+                                  <Link key={related.path} to={related.path} className="text-primary underline-offset-4 hover:underline">
+                                    {t(related.labelKey)}
+                                  </Link>
+                                ))}
+                              </p>
+                            ) : null}
+                          </div>
                         </div>
                       </Card>
                     </motion.div>
