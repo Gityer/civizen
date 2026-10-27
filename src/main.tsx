@@ -1,5 +1,7 @@
 import { migrateLegacyBrandStorageKeys } from '@/lib/storage-brand-migration';
 migrateLegacyBrandStorageKeys();
+import { initReadingPreferences } from '@/lib/reading-preferences';
+initReadingPreferences();
 
 import { createRoot } from "react-dom/client";
 import {

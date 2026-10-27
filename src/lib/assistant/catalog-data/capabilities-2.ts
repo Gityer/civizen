@@ -156,6 +156,19 @@ export const ASSISTANT_CAPABILITIES_PART_2: AssistantCapability[] = [
     sourceRefs: ['src/pages/settings/HelpSupport.tsx', 'src/pages/settings/help-support-links.ts'],
   },
   {
+    id: 'reading_preferences',
+    name: 'Reading: text size, contrast and motion',
+    status: 'implemented',
+    description:
+      'Settings has a Reading card for this device: text size (Default, Large, Larger), contrast (Standard or High, which darkens secondary text and borders and underlines links) and motion (follow the device, or reduce animations). The choice applies at once and stays on this device; light and dark theme are under Appearance.',
+    howTo: 'Open Settings > Reading and choose the text size, contrast and motion.',
+    routes: ['/settings'],
+    roles: ['member'],
+    relatedCapabilities: ['help_support'],
+    aliases: ['bigger text', 'larger font', 'font size', 'high contrast', 'accessibility', 'reduce motion', 'animations'],
+    sourceRefs: ['src/components/settings/ReadingPreferencesCard.tsx', 'src/lib/reading-preferences.ts'],
+  },
+  {
     id: 'governance_solutions',
     name: 'Governance Solutions',
     status: 'implemented',

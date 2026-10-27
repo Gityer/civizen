@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Suspense, useEffect, useState } from "react";
 import { ThemeProvider } from "next-themes";
+import { ReadingMotionConfig } from "@/components/app/ReadingMotionConfig";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
 import { PageSecondaryNavProvider } from "@/contexts/PageSecondaryNavContext";
@@ -158,6 +159,7 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="civizen-theme-v1">
         <ThemeStorageSync />
+        <ReadingMotionConfig>
         <TooltipProvider>
           <AuthProvider>
             <LanguageProvider>
@@ -182,6 +184,7 @@ const App = () => (
             </LanguageProvider>
           </AuthProvider>
         </TooltipProvider>
+        </ReadingMotionConfig>
       </ThemeProvider>
     </QueryClientProvider>
   </AppCrashBoundary>

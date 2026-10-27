@@ -4,6 +4,8 @@
 
 ## Current focus
 
+**Reading preferences (2026-10-27):** Settings › Reading (text size, high contrast, reduced motion) per device in `civizen-reading-v1`, applied in `main.tsx` before render as `html[data-text-size|data-contrast|data-motion]` (CSS in `index.css`); Framer Motion follows via `ReadingMotionConfig`. `eslint-plugin-jsx-a11y` waits for ESLint 10 support.
+
 **Contact page (2026-10-27):** `/contact` shows `VITE_CONTACT_EMAIL` (owner to provide; Release Manager sets it at the web build), routes each kind of question in the app, and carries the emergency note. Footer, Help and support and Civi link to it.
 
 **Enforcement steps for members (2026-10-27, TD2):** `member_enforcement_actions` + `moderation_enforce` (note → warning → content restriction 7d → messaging restriction 7d → suspension 30d, one rung at a time except threats of violence, `child_safety`, private information); writes refused with PT403 and `writeRefusalMessage`; a suspended member stays signed in, read and appeal only (`enforcement_suspension_guard` on every public table; a new table needs the trigger); `RestrictionBanner` on every page; one appeal to a different moderator. Removal is the last rung: `moderation_enforce` only proposes it, a different moderator confirms (`moderation_enforcement_confirm`; founder alone while `moderation_moderator_count() < 2`), then 30 days read and appeal only and `enforcement_close_due_removals` (pg_cron daily) closes the account via `delete_my_account`; unconfirmed removals never restrict. Guidelines 0.2 (EN/HY/RU).

@@ -1055,12 +1055,12 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.243",
     "appReleaseId": "20261026-v0.1.243",
     "androidVersionCode": 245,
-    "gitSha": "b3e8a7b63041ee99d84a86f05e4820a136a5addf",
-    "generatedAt": "2026-10-27T19:32:50.855Z",
-    "sourceFingerprint": "c2dddb28f9ed4082d9b0c97443225f11050e979da3c69960a34edebb24bf8ac2",
+    "gitSha": "72b56a8072932be764ab85de911223290ad61b97",
+    "generatedAt": "2026-10-27T19:46:35.736Z",
+    "sourceFingerprint": "f4c00e3848fcee6f8ecd9abbff6ce66496180f95a4ecacfc799fc9b2afad6864",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 398
+    "chunkCount": 399
   },
   "capabilities": [
     {
@@ -1852,6 +1852,35 @@ var KNOWLEDGE_PACK = {
       "sourceRefs": [
         "src/pages/settings/HelpSupport.tsx",
         "src/pages/settings/help-support-links.ts"
+      ]
+    },
+    {
+      "id": "reading_preferences",
+      "name": "Reading: text size, contrast and motion",
+      "status": "implemented",
+      "description": "Settings has a Reading card for this device: text size (Default, Large, Larger), contrast (Standard or High, which darkens secondary text and borders and underlines links) and motion (follow the device, or reduce animations). The choice applies at once and stays on this device; light and dark theme are under Appearance.",
+      "howTo": "Open Settings > Reading and choose the text size, contrast and motion.",
+      "routes": [
+        "/settings"
+      ],
+      "roles": [
+        "member"
+      ],
+      "relatedCapabilities": [
+        "help_support"
+      ],
+      "aliases": [
+        "bigger text",
+        "larger font",
+        "font size",
+        "high contrast",
+        "accessibility",
+        "reduce motion",
+        "animations"
+      ],
+      "sourceRefs": [
+        "src/components/settings/ReadingPreferencesCard.tsx",
+        "src/lib/reading-preferences.ts"
       ]
     },
     {
@@ -3760,6 +3789,15 @@ var KNOWLEDGE_PACK = {
       "title": "Help and support",
       "path": "src/lib/assistant/catalog.ts",
       "text": "Help and support status=implemented. Settings page that gathers where to get help: Ask Civi in Messaging, the public Documents, Why Civizen Exists, the legal status notice, and the Terms. Open Settings > Help and support. Routes: /settings/help.",
+      "status": "implemented",
+      "priority": 3,
+      "kind": "capability"
+    },
+    {
+      "id": "capability:reading_preferences",
+      "title": "Reading: text size, contrast and motion",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Reading: text size, contrast and motion status=implemented. Settings has a Reading card for this device: text size (Default, Large, Larger), contrast (Standard or High, which darkens secondary text and borders and underlines links) and motion (follow the device, or reduce animations). The choice applies at once and stays on this device; light and dark theme are under Appearance. Open Settings > Reading and choose the text size, contrast and motion. Routes: /settings.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"
