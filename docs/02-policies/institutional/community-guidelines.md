@@ -28,12 +28,13 @@ profiles and messages. The Terms of Use remain the binding agreement; these guid
 3. **Hate speech** — attacking people for who they are: origin, nationality, ethnicity, religion, sex, gender,
    sexual orientation, disability, age or similar characteristics.
 4. **Violence or threats** — threatening, inciting or glorifying violence against anyone.
-5. **Sexual content** — sexual material, and any sexualisation of minors under any circumstance.
+5. **Sexual content** — sexual material (anything involving minors falls under item 9).
 6. **False or misleading information** — content presented as fact that is knowingly false and likely to cause harm,
    including impersonating a person, an organisation or Civizen itself.
 7. **Sharing someone's private information** — addresses, phone numbers, identity documents or other personal data
    of another person without their consent.
 8. **Illegal content** — content whose publication is illegal where it is published or that facilitates a crime.
+9. **Sexualisation of minors** — child sexual abuse material and any sexualisation of minors, under any circumstance.
 
 Disagreement is welcome. Strong criticism of ideas, proposals, institutions and public decisions is part of civic life
 and is not a reason to hide anything.
@@ -51,9 +52,9 @@ and is not a reason to hide anything.
   hid the item decides the appeal; if the appeal succeeds, the item returns exactly as it was.
 - **Steps for people.** Repeated or serious conduct by a person leads to steps, each recorded with a reason from the
   list above and told to the person: a note, a warning, a 7-day stop on posting and commenting, a 7-day stop on
-  starting new conversations, and a 30-day suspension during which the account cannot sign in. Moderators go one step
-  at a time, except for violence or threats, sexual content, sharing private information and illegal content (items 4,
-  5, 7 and 8), where they may go straight to any step. Each step can be appealed once; a different moderator decides.
+  starting new conversations, and a 30-day suspension during which the account can only read and appeal. Moderators go
+  one step at a time, except for threats of violence, sexualisation of minors and sharing private information (items
+  4, 9 and 7), where they may go straight to any step. Each step can be appealed once; a different moderator decides.
   Governance sanctions, which concern rights in governance, stay separate and keep their own appeal process.
 - **Messages.** Private messages may be end-to-end encrypted, so moderators see only what a reporter chooses to share.
 

@@ -8,8 +8,8 @@ type Translate = (key: string, vars?: Record<string, string | number>) => string
 export const ENFORCEMENT_STEPS = ['note', 'warning', 'content_restriction', 'messaging_restriction', 'suspension'] as const;
 export type EnforcementStep = (typeof ENFORCEMENT_STEPS)[number];
 
-/** Guidelines items for which a moderator may skip rungs (violence, sexual content involving minors, private information, illegal content). */
-export const SEVERE_REASONS: readonly ModerationReasonCode[] = ['violence', 'sexual', 'privacy', 'illegal'];
+/** Reasons for which a moderator may skip rungs, as TD2 adopted: threats of violence, sexualisation of minors, private information. */
+export const SEVERE_REASONS: readonly ModerationReasonCode[] = ['violence', 'child_safety', 'privacy'];
 
 export type EnforcementAction = {
   id: string;

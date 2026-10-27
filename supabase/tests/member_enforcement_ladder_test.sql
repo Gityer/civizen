@@ -14,7 +14,7 @@ SELECT set_config('t.mod_uid', (SELECT user_id::text FROM public.profiles WHERE 
 SELECT set_config('t.mod_pid', (SELECT id::text FROM public.profiles WHERE username = 'moderator' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('t.mod2_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'moderator_two' AND deleted_at IS NULL LIMIT 1), true);
 DELETE FROM public.member_enforcement_actions
- WHERE profile_id IN (current_setting('t.member_pid')::uuid, current_setting('t.citizen_pid')::uuid);
+ WHERE profile_id IN (current_setting('t.member_pid')::uuid, current_setting('t.citizen_pid')::uuid, current_setting('t.other_pid')::uuid);
 DELETE FROM public.rate_limit_events
  WHERE profile_id IN (current_setting('t.member_pid')::uuid, current_setting('t.citizen_pid')::uuid);
 INSERT INTO auth.sessions (id, user_id, created_at, updated_at) VALUES (gen_random_uuid(), current_setting('t.citizen_uid')::uuid, now(), now());
@@ -78,6 +78,18 @@ SELECT pg_temp.expect_error(format('SELECT public.private_get_or_create_direct_c
 SELECT public.private_get_or_create_direct_conversation(current_setting('t.citizen_pid')::uuid);
 INSERT INTO public.private_messages (conversation_id, sender_id, content)
 VALUES (current_setting('t.conv')::uuid, current_setting('t.member_pid')::uuid, 'existing conversation still open');
+
+-- ---- only TD2's reasons skip rungs: threats of violence, sexualisation of minors, private information --------------
+SELECT pg_temp.as_member(current_setting('t.mod_uid'));
+SELECT pg_temp.expect_error(format('SELECT public.moderation_enforce(%L, %L, %L, NULL)', current_setting('t.other_pid'), 'suspension', 'illegal'),
+  '22023', NULL, 'illegal content skipped rungs');
+SELECT pg_temp.expect_error(format('SELECT public.moderation_enforce(%L, %L, %L, NULL)', current_setting('t.other_pid'), 'suspension', 'sexual'),
+  '22023', NULL, 'adult sexual content skipped rungs');
+SELECT public.moderation_enforce(current_setting('t.other_pid')::uuid, 'content_restriction', 'child_safety', NULL);
+DO $$
+BEGIN
+  IF NOT ('child_safety' = ANY (public.moderation_reason_codes())) THEN RAISE EXCEPTION 'child_safety is not a reason code'; END IF;
+END $$;
 
 -- ---- severe reasons may skip rungs; suspension bans sign-in and ends sessions -------------------------------------
 SELECT pg_temp.as_member(current_setting('t.mod_uid'));

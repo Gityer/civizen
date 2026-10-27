@@ -19,6 +19,7 @@ export const m_messages_moderation = {
       "hate": "Hate speech",
       "violence": "Violence or threats",
       "sexual": "Sexual content",
+      "child_safety": "Sexualisation of minors",
       "misinformation": "False or misleading information",
       "privacy": "Shares someone's private information",
       "illegal": "Illegal content",

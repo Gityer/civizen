@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -16,8 +16,14 @@ import {
 
 describe('moderation client', () => {
   it('uses the same reason codes as the database', () => {
-    const migration = readFileSync(join(process.cwd(), 'supabase/migrations/20261013110000_content_moderation.sql'), 'utf8');
-    const sqlList = migration.match(/SELECT ARRAY\[([^\]]+)\]/)?.[1] ?? '';
+    // the latest migration that (re)defines the function holds the current list
+    const dir = join(process.cwd(), 'supabase/migrations');
+    const latest = readdirSync(dir).filter((file) => file.endsWith('.sql')).sort()
+      .map((file) => readFileSync(join(dir, file), 'utf8'))
+      .filter((sql) => sql.includes('FUNCTION public.moderation_reason_codes()'))
+      .pop() ?? '';
+    const definition = latest.slice(latest.indexOf('FUNCTION public.moderation_reason_codes()'));
+    const sqlList = definition.match(/SELECT ARRAY\[([^\]]+)\]/)?.[1] ?? '';
     const sqlCodes = [...sqlList.matchAll(/'([a-z_]+)'/g)].map((m) => m[1]).sort();
     expect([...MODERATION_REASON_CODES].sort()).toEqual(sqlCodes);
   });

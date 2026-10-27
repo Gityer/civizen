@@ -2,14 +2,24 @@
 -- not act on a person, so repeated conduct could not be stopped. The ladder:
 --   note → warning → content restriction (cannot post or comment; 7 days) → messaging restriction (cannot start
 --   conversations; 7 days) → suspension (cannot sign in; 30 days)
--- Each step records a reason from the Community Guidelines (reason codes 1–8 are the Guidelines items; "other"
--- needs a note), notifies the member, and can be appealed once to a different moderator. A step may go at most one
--- rung above the member's highest standing step, except for violence, sexual content involving minors, private
--- information and illegal content (Guidelines items 4, 5, 7, 8), where moderators may go straight to any step. A
--- first step may be a note or a warning.
+-- Each step records a reason from the Community Guidelines (each reason code is a Guidelines item; "other" needs a
+-- note), notifies the member, and can be appealed once to a different moderator. A step may go at most one rung
+-- above the member's highest standing step, except, as TD2 adopted, for threats of violence (item 4), sexual content
+-- involving minors (item 9, reason child_safety, added here) and private information (item 7), where moderators may
+-- go straight to any step (owner decision 2026-10-27). A first step may be a note or a warning.
 -- Restrictions end on their own at ends_at; an overturned appeal ends them at once. Suspension also sets
 -- auth.users.banned_until (GoTrue refuses sign-in and token refresh) and ends open sessions. Removal (closing an
 -- account, two moderators) is not part of this migration. Governance sanctions stay separate.
+
+-- Guidelines item 9: child sexual abuse material and any sexualisation of minors, separate from adult sexual content
+-- (item 5) so that only it, not all sexual content, lets a moderator skip rungs.
+CREATE OR REPLACE FUNCTION public.moderation_reason_codes()
+RETURNS text[]
+LANGUAGE sql
+IMMUTABLE
+AS $$
+  SELECT ARRAY['harassment', 'hate', 'violence', 'sexual', 'child_safety', 'spam', 'misinformation', 'privacy', 'illegal', 'other'];
+$$;
 
 CREATE TABLE IF NOT EXISTS public.member_enforcement_actions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -205,7 +215,7 @@ BEGIN
     FROM public.member_enforcement_actions
    WHERE profile_id = p_profile AND lifted_at IS NULL AND appeal_decision IS DISTINCT FROM 'overturned';
   -- a first step may be a note or a warning; after that, one rung above the highest standing step
-  IF v_rank > greatest(coalesce(v_standing, 0), 0) + 1 AND p_reason_code NOT IN ('violence', 'sexual', 'privacy', 'illegal') THEN
+  IF v_rank > greatest(coalesce(v_standing, 0), 0) + 1 AND p_reason_code NOT IN ('violence', 'child_safety', 'privacy') THEN
     RAISE EXCEPTION 'step_too_high' USING ERRCODE = '22023';
   END IF;
   v_ends := CASE p_step

@@ -30,7 +30,7 @@ export const m_messages_member_enforcement = {
       "history": "Standing steps: {steps}",
       "noHistory": "No earlier steps.",
       "step": "Step",
-      "rule": "One step above the highest standing one. Violence, sexual content involving minors, private information and illegal content may skip steps.",
+      "rule": "One step above the highest standing one. Threats of violence, sexualisation of minors and private information may skip steps.",
       "apply": "Apply step",
       "applied": "Step applied. The member is notified and can appeal once."
     },
