@@ -4,7 +4,7 @@
 
 ## Current focus
 
-**Enforcement steps for members (2026-10-27, TD2):** `member_enforcement_actions` + `moderation_enforce` (note → warning → content restriction 7d → messaging restriction 7d → suspension 30d, one rung at a time except Guidelines items 4/5/7/8); writes refused with PT403 and `writeRefusalMessage`; suspension sets `banned_until`; one appeal to a different moderator. Removal and the suspended-appeal channel are open (owner). Guidelines are version 0.2 (EN/HY/RU).
+**Enforcement steps for members (2026-10-27, TD2):** `member_enforcement_actions` + `moderation_enforce` (note → warning → content restriction 7d → messaging restriction 7d → suspension 30d, one rung at a time except threats of violence, `child_safety`, private information); writes refused with PT403 and `writeRefusalMessage`; a suspended member stays signed in, read and appeal only (`enforcement_suspension_guard` on every public table; a new table needs the trigger); `RestrictionBanner` on every page; one appeal to a different moderator. Guidelines 0.2 (EN/HY/RU).
 
 **Error reports and restore drill (2026-10-27):** browser errors now reach `record_client_error` (daily aggregate, no identifiers; staff card on Settings › Admin › Participation) unless `VITE_ERROR_REPORT_ENDPOINT` points elsewhere. `scripts/db/backup-restore-drill.sh` dumps, restores into a scratch DB and compares every table's rows; schedule, off-site copy and storage-file backup are ops (pending).
 

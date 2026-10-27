@@ -43,7 +43,7 @@ Tests: `supabase/tests/account_action_rate_limits_test.sql`, `src/lib/rate-limit
 
 ## Enforcement steps for members
 
-PM decision TD2 (Trust & Safety baseline 3.2); the public wording is in the Community Guidelines (0.2). The steps, lowest first:
+PM decision TD2 (Trust & Safety baseline 3.2), with the owner decisions of 2026-10-27; the public wording is in the Community Guidelines (0.2). The steps, lowest first:
 
 | Step | What it does |
 | --- | --- |
@@ -51,32 +51,33 @@ PM decision TD2 (Trust & Safety baseline 3.2); the public wording is in the Comm
 | warning | a record the member sees |
 | content restriction | 7 days: no new posts, comments (posts, Matters, Solutions) or Matters |
 | messaging restriction | 7 days: no new conversations; existing ones stay open |
-| suspension | 30 days: sign-in blocked |
+| suspension | 30 days: read and appeal only |
 
 How a step works:
 
 - **Who applies it.** Moderators (`content.moderate`) apply steps with `moderation_enforce`. The form is on the queue card of a reported profile, and folded under any content report for the content's author.
-- **Reason.** Every step takes a reason code; the codes are the Guidelines items. "Other" needs a note.
+- **Reason.** Every step takes a reason code; each code is a Guidelines item. "Other" needs a note.
 - **One rung at a time.** A first step may be a note or a warning. After that, one rung above the highest step not lifted or overturned (ended restrictions count).
-- **Skipping rungs.** Violence, sexual content, private information and illegal content (items 4, 5, 7, 8) may skip rungs.
+- **Skipping rungs (TD2 as adopted).** Only threats of violence (item 4), `child_safety` (item 9, sexualisation of minors) and private information (item 7) may skip rungs.
 - **Not on yourself.** Moderators cannot apply a step to themselves.
 - **Notifications.** The member is notified (`moderation_enforcement`).
 
 How restrictions are enforced:
 
-- **Writes.** `BEFORE INSERT` triggers refuse writes with SQLSTATE `PT403` (HTTP 403), the restriction in `details` and its end in `hint`. The app shows `writeRefusalMessage` (`src/lib/write-refusal.ts`, keys `memberEnforcement.refused.*`).
-- **Suspension.** It also sets `auth.users.banned_until` and ends open sessions. Writes made with a token issued earlier are refused too. Login shows `memberEnforcement.signInSuspended`. `sign-in-with-identifier` answers 403 `user_banned` instead of "invalid credentials".
+- **Content and messaging.** `BEFORE INSERT` triggers refuse those writes with SQLSTATE `PT403` (HTTP 403), the restriction in `details` and its end in `hint`.
+- **Suspension.** The member stays signed in, so they can read and appeal. Every other write they make is refused: a statement trigger `enforcement_suspension_guard` sits on every public table outside `enforcement_guard_exempt_tables()`.
+  - **Exempt tables:** view counters, error reports, notification read marks, push subscriptions and the two appeal records.
+  - **Profiles:** a row guard on `profiles` lets only `last_active_at`, the Terms fields and `language_code` change.
+  - **New tables:** the ladder SQL test fails for any public table missing the guard, so a migration that adds a table must add the trigger.
+- **What the member sees.**
+  - **When a write is refused:** `writeRefusalMessage` (`src/lib/write-refusal.ts`, keys `memberEnforcement.refused.*`) explains the refusal.
+  - **On every page:** `RestrictionBanner` says what is restricted, until when, and links to Moderation.
 - **Ending.** Restrictions end on their own at `ends_at`.
 
 Appeals:
 
 - **Where.** The member appeals once from Moderation (`moderation_enforcement_appeal`).
 - **Who decides.** A different moderator, never the one who decided and never the member (`moderation_enforcement_decide_appeal`).
-- **Overturning** lifts the step at once and clears a sign-in ban.
+- **Overturning** lifts the step at once.
 
-Not yet done:
-
-- **Removal** (closing an account, two moderators).
-- **Owner decision: appealing a suspension.** A suspended member cannot sign in, so they cannot reach the in-app appeal. The ban lives only in `enforcement_sync_sign_in`, so switching to "signed in, read-only, appeal only" is a small change.
-
-Tests: `supabase/tests/member_enforcement_ladder_test.sql`, `src/lib/member-enforcement.test.ts`, `e2e/member-enforcement.spec.ts`. Migration: `20261027120000_member_enforcement_ladder.sql`.
+Tests: `supabase/tests/member_enforcement_ladder_test.sql`, `src/lib/member-enforcement.test.ts`, `src/lib/member-enforcement-banner.test.ts`, `e2e/member-enforcement.spec.ts`. Migration: `20261027120000_member_enforcement_ladder.sql`.

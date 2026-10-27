@@ -23,6 +23,9 @@ vi.mock('@/components/layout/AppSideNav', () => ({
 vi.mock('@/components/layout/NavSecondaryDesktop', () => ({
   NavSecondaryDesktop: () => <div data-testid="nav-secondary-desktop" />,
 }));
+vi.mock('@/components/moderation/RestrictionBanner', () => ({
+  RestrictionBanner: () => null,
+}));
 
 function mockDesktop(matches: boolean) {
   Object.defineProperty(window, 'matchMedia', {

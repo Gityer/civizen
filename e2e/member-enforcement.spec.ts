@@ -76,7 +76,8 @@ test('a reported member is restricted step by step, appeals, and a second modera
     // 2. the member's next post is refused with a sentence, and nothing is published
     const member = await signedIn(browser, TARGET);
     await tryToPost(member, `Enforcement e2e ${stamp}`);
-    await expect(member.getByText(/A moderation decision stops you from posting or commenting until/)).toBeVisible();
+    await expect(member.locator('[data-sonner-toast]').getByText(/A moderation decision stops you from posting or commenting until/)).toBeVisible();
+    await expect(member.getByTestId('restriction-banner')).toContainText('A moderation decision stops you from posting or commenting until');
     expect(sql(`SELECT count(*) FROM public.posts WHERE author_id = '${targetId}' AND content LIKE '%Enforcement e2e ${stamp}%'`)).toBe('0');
 
     // 3. the member sees the decisions and appeals the restriction
@@ -102,6 +103,34 @@ test('a reported member is restricted step by step, appeals, and a second modera
     await expect.poll(() => sql(`SELECT count(*) FROM public.posts WHERE author_id = '${targetId}' AND content LIKE '%Enforcement e2e ${stamp} after appeal%'`), { timeout: 20_000 }).toBe('1');
   } finally {
     sql(`DELETE FROM public.posts WHERE author_id = '${targetId}' AND content LIKE '%Enforcement e2e ${stamp}%'`);
+    reset();
+  }
+});
+
+test('a suspended member can sign in, sees why, cannot post, and can appeal', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const targetId = sql("SELECT id FROM public.profiles WHERE username = 'law' AND deleted_at IS NULL LIMIT 1");
+  const reset = () => sql(`DELETE FROM public.member_enforcement_actions WHERE profile_id = '${targetId}'`);
+  reset();
+  // a suspension applied directly as the database owner (the queue path is covered above)
+  const suspension = sql(`INSERT INTO public.member_enforcement_actions (profile_id, step, reason_code, ends_at)
+    VALUES ('${targetId}', 'suspension', 'violence', now() + interval '30 days') RETURNING id`).split('\n')[0];
+  const stamp = Date.now().toString(36);
+  try {
+    const member = await signedIn(browser, TARGET);
+    await member.goto('/');
+    await expect(member.getByTestId('restriction-banner')).toContainText('Your account is suspended until', { timeout: 20_000 });
+
+    await tryToPost(member, `Suspended e2e ${stamp}`);
+    await expect(member.locator('[data-sonner-toast]').getByText(/Your account is suspended until .* you can read and appeal/)).toBeVisible();
+    expect(sql(`SELECT count(*) FROM public.posts WHERE author_id = '${targetId}' AND content LIKE '%Suspended e2e ${stamp}%'`)).toBe('0');
+
+    await member.getByTestId('restriction-banner').getByRole('link').click();
+    const card = member.getByTestId(`enforcement-action-${suspension}`);
+    await card.getByTestId('enforcement-appeal-text').fill('Please look again.');
+    await card.getByTestId('enforcement-appeal-send').click();
+    await expect(card.getByText('Appeal waiting for a decision')).toBeVisible();
+  } finally {
     reset();
   }
 });

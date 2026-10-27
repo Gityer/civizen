@@ -49,6 +49,18 @@ export function highestAllowedStep(history: EnforcementAction[]): EnforcementSte
   return ENFORCEMENT_STEPS[Math.min(Math.max(top, 0) + 1, ENFORCEMENT_STEPS.length - 1)];
 }
 
+const BANNER_STEPS: EnforcementStep[] = ['suspension', 'messaging_restriction', 'content_restriction'];
+
+/** The strongest restriction that applies to the member now (suspension first), or null. */
+export function strongestRestriction(actions: EnforcementAction[], now: Date = new Date()): EnforcementAction | null {
+  for (const step of BANNER_STEPS) {
+    const hit = actions.filter((action) => action.step === step && isStanding(action, now))
+      .sort((a, b) => (b.endsAt ?? '').localeCompare(a.endsAt ?? ''))[0];
+    if (hit) return hit;
+  }
+  return null;
+}
+
 function mapAction(row: Record<string, unknown>): EnforcementAction {
   const text = (value: unknown) => (typeof value === 'string' ? value : null);
   return {

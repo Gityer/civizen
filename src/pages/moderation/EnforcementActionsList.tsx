@@ -13,6 +13,7 @@ import {
   isStanding,
   type EnforcementAction,
 } from '@/lib/member-enforcement';
+import { restrictionCache } from '@/components/moderation/restriction-banner-cache';
 import { isReasonCode, moderationErrorKey } from '@/lib/moderation';
 
 type Mode = 'mine' | 'appeals';
@@ -29,6 +30,7 @@ function ActionCard({ action, mode, viewerProfileId, onDone }: { action: Enforce
     setBusy(true);
     try {
       await work();
+      restrictionCache.reset();
       toast.success(t(successKey));
       setText('');
       onDone();

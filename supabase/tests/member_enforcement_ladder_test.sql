@@ -91,17 +91,17 @@ BEGIN
   IF NOT ('child_safety' = ANY (public.moderation_reason_codes())) THEN RAISE EXCEPTION 'child_safety is not a reason code'; END IF;
 END $$;
 
--- ---- severe reasons may skip rungs; suspension bans sign-in and ends sessions -------------------------------------
+-- ---- severe reasons may skip rungs; a suspended member can read and appeal, nothing else --------------------------
 SELECT pg_temp.as_member(current_setting('t.mod_uid'));
 SELECT set_config('t.suspension', public.moderation_enforce(current_setting('t.citizen_pid')::uuid, 'suspension', 'violence', 'Threats in comments')::text, true);
 RESET ROLE;
 DO $$
-DECLARE v_ban timestamptz;
 BEGIN
-  SELECT banned_until INTO v_ban FROM auth.users WHERE id = current_setting('t.citizen_uid')::uuid;
-  IF v_ban IS NULL OR v_ban < now() + interval '29 days' THEN RAISE EXCEPTION 'suspension did not ban sign-in for 30 days (%)', v_ban; END IF;
-  IF EXISTS (SELECT 1 FROM auth.sessions WHERE user_id = current_setting('t.citizen_uid')::uuid) THEN
-    RAISE EXCEPTION 'suspension left a session open';
+  IF (SELECT banned_until FROM auth.users WHERE id = current_setting('t.citizen_uid')::uuid) IS NOT NULL THEN
+    RAISE EXCEPTION 'suspension banned sign-in; it should leave the member signed in to read and appeal';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM auth.sessions WHERE user_id = current_setting('t.citizen_uid')::uuid) THEN
+    RAISE EXCEPTION 'suspension ended the member''s session';
   END IF;
   IF NOT EXISTS (SELECT 1 FROM public.user_notifications WHERE recipient_profile_id = current_setting('t.citizen_pid')::uuid
                   AND notification_type = 'moderation_enforcement') THEN
@@ -111,9 +111,16 @@ END $$;
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.as_member(current_setting('t.citizen_uid'));
 SELECT pg_temp.expect_error(format('INSERT INTO public.posts (author_id, content) VALUES (%L, %L)', current_setting('t.citizen_pid'), 'x'),
-  'PT403', 'suspension', 'post while suspended (token issued before)');
+  'PT403', 'suspension', 'post while suspended');
 SELECT pg_temp.expect_error(format('INSERT INTO public.private_messages (conversation_id, sender_id, content) VALUES (%L, %L, %L)',
   current_setting('t.conv'), current_setting('t.citizen_pid'), 'x'), 'PT403', 'suspension', 'message while suspended');
+SELECT pg_temp.expect_error(format('UPDATE public.profiles SET bio = %L WHERE id = %L', 'new bio', current_setting('t.citizen_pid')),
+  'PT403', 'suspension', 'profile edit while suspended');
+SELECT pg_temp.expect_error(format('SELECT public.report_content(%L, %L, %L, NULL)', 'user', current_setting('t.member_pid'), 'spam'),
+  'PT403', 'suspension', 'report while suspended');
+-- reading the app still works: sign-in bookkeeping, Terms, notification read marks
+UPDATE public.profiles SET last_active_at = now() WHERE id = current_setting('t.citizen_pid')::uuid;
+UPDATE public.user_notifications SET read_at = now() WHERE recipient_profile_id = current_setting('t.citizen_pid')::uuid;
 
 -- ---- appeal once; a different moderator decides; overturning lifts the ban ----------------------------------------
 SELECT public.moderation_enforcement_appeal(current_setting('t.suspension')::uuid, 'I did not threaten anyone.');
@@ -131,14 +138,6 @@ BEGIN
 END $$;
 SELECT pg_temp.as_member(current_setting('t.mod2_uid'));
 SELECT public.moderation_enforcement_decide_appeal(current_setting('t.suspension')::uuid, true, 'Quote taken out of context');
-RESET ROLE;
-DO $$
-BEGIN
-  IF (SELECT banned_until FROM auth.users WHERE id = current_setting('t.citizen_uid')::uuid) IS NOT NULL THEN
-    RAISE EXCEPTION 'overturned suspension kept the sign-in ban';
-  END IF;
-END $$;
-SET LOCAL ROLE authenticated;
 SELECT pg_temp.as_member(current_setting('t.citizen_uid'));
 INSERT INTO public.posts (author_id, content) VALUES (current_setting('t.citizen_pid')::uuid, 'back after the appeal');
 
@@ -165,6 +164,19 @@ BEGIN
 END $$;
 
 RESET ROLE;
+-- every public table except the exempt ones carries the suspension guard (a new table must get it too)
+DO $$
+DECLARE v_missing text;
+BEGIN
+  SELECT string_agg(c.relname, ', ' ORDER BY c.relname) INTO v_missing
+    FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+   WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p') AND NOT c.relispartition
+     AND NOT (c.relname = ANY (public.enforcement_guard_exempt_tables()))
+     AND NOT EXISTS (SELECT 1 FROM pg_trigger t WHERE t.tgrelid = c.oid AND t.tgname = 'enforcement_suspension_guard');
+  IF v_missing IS NOT NULL THEN
+    RAISE EXCEPTION 'tables without the suspension guard (add the trigger in their migration): %', v_missing;
+  END IF;
+END $$;
 DO $$ BEGIN RAISE NOTICE 'ok: member enforcement ladder'; END $$;
 
 ROLLBACK;

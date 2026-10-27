@@ -10,7 +10,13 @@ export const m_messages_member_enforcement = {
     "refused": {
       "content_restriction": "A moderation decision stops you from posting or commenting until {date}. Open Moderation to see why or to appeal.",
       "messaging_restriction": "A moderation decision stops you from starting new conversations until {date}. Open Moderation to see why or to appeal.",
-      "suspension": "Your account is suspended until {date} by a moderation decision."
+      "suspension": "Your account is suspended until {date} by a moderation decision: you can read and appeal, but not post, message or change anything."
+    },
+    "banner": {
+      "content_restriction": "A moderation decision stops you from posting or commenting until {date}.",
+      "messaging_restriction": "A moderation decision stops you from starting new conversations until {date}.",
+      "suspension": "Your account is suspended until {date}: you can read and appeal, but not post, message or change anything.",
+      "open": "See why or appeal"
     },
     "signInSuspended": "This account is suspended by a moderation decision, so it cannot sign in until the suspension ends.",
     "mine": {

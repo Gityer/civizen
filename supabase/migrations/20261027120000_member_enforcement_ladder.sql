@@ -1,15 +1,16 @@
 -- Enforcement steps for members (PM decision TD2, Trust & Safety baseline 3.2): moderators could hide content but
 -- not act on a person, so repeated conduct could not be stopped. The ladder:
 --   note → warning → content restriction (cannot post or comment; 7 days) → messaging restriction (cannot start
---   conversations; 7 days) → suspension (cannot sign in; 30 days)
+--   conversations; 7 days) → suspension (read and appeal only; 30 days)
 -- Each step records a reason from the Community Guidelines (each reason code is a Guidelines item; "other" needs a
 -- note), notifies the member, and can be appealed once to a different moderator. A step may go at most one rung
 -- above the member's highest standing step, except, as TD2 adopted, for threats of violence (item 4), sexual content
 -- involving minors (item 9, reason child_safety, added here) and private information (item 7), where moderators may
 -- go straight to any step (owner decision 2026-10-27). A first step may be a note or a warning.
--- Restrictions end on their own at ends_at; an overturned appeal ends them at once. Suspension also sets
--- auth.users.banned_until (GoTrue refuses sign-in and token refresh) and ends open sessions. Removal (closing an
--- account, two moderators) is not part of this migration. Governance sanctions stay separate.
+-- Restrictions end on their own at ends_at; an overturned appeal ends them at once. A suspended member stays signed in
+-- so they can read and appeal (owner decision 2026-10-27), and every other write they make is refused: a statement
+-- guard on every public table, and a row guard on profiles that lets only the sign-in bookkeeping change. Removal
+-- (closing an account, two moderators) is not part of this migration. Governance sanctions stay separate.
 
 -- Guidelines item 9: child sexual abuse material and any sexualisation of minors, separate from adult sexual content
 -- (item 5) so that only it, not all sexual content, lets a moderator skip rungs.
@@ -72,7 +73,7 @@ $$;
 REVOKE ALL ON FUNCTION public.enforcement_active_until(uuid, text) FROM PUBLIC, anon, authenticated;
 
 -- Refuses a write by a member under a restriction: SQLSTATE PT403 (PostgREST answers HTTP 403) with the restriction in
--- DETAIL and its end in HINT. A suspension also blocks writes made with a token issued before it.
+-- DETAIL and its end in HINT. A suspension refuses every write (the guards below), whatever the step checked.
 CREATE OR REPLACE FUNCTION public.enforce_member_restriction(p_restriction text)
 RETURNS void
 LANGUAGE plpgsql
@@ -155,28 +156,71 @@ DROP TRIGGER IF EXISTS enforcement_private_messages ON public.private_messages;
 CREATE TRIGGER enforcement_private_messages BEFORE INSERT ON public.private_messages
   FOR EACH ROW EXECUTE FUNCTION public.enforcement_before_insert('suspension');
 
--- Keeps the sign-in ban in step with the member's standing suspensions.
-CREATE OR REPLACE FUNCTION public.enforcement_sync_sign_in(p_profile uuid)
-RETURNS void
+-- ---- suspension: read and appeal only ------------------------------------------------------------------------------
+-- Tables a suspended member may still write, because reading the app writes them or because they carry the appeal:
+-- view counters, error reports, notification read marks, push subscriptions, and the two appeal records.
+CREATE OR REPLACE FUNCTION public.enforcement_guard_exempt_tables()
+RETURNS text[]
+LANGUAGE sql
+IMMUTABLE
+AS $$
+  SELECT ARRAY['participation_page_views', 'post_views', 'client_error_reports', 'user_notifications', 'push_subscriptions',
+               'member_enforcement_actions', 'moderation_actions', 'profiles'];
+$$;
+
+CREATE OR REPLACE FUNCTION public.enforcement_suspension_guard()
+RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, auth
+SET search_path = public
 AS $$
-DECLARE
-  v_user uuid;
-  v_until timestamptz := public.enforcement_active_until(p_profile, 'suspension');
 BEGIN
-  SELECT user_id INTO v_user FROM public.profiles WHERE id = p_profile;
-  IF v_user IS NULL THEN
-    RETURN;
-  END IF;
-  UPDATE auth.users SET banned_until = v_until WHERE id = v_user;
-  IF v_until IS NOT NULL THEN
-    DELETE FROM auth.sessions WHERE user_id = v_user;
-  END IF;
+  PERFORM public.enforce_member_restriction('suspension');
+  RETURN NULL;
 END;
 $$;
-REVOKE ALL ON FUNCTION public.enforcement_sync_sign_in(uuid) FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.enforcement_suspension_guard() FROM PUBLIC, anon, authenticated;
+
+-- profiles: the app writes last_active_at on every load, and a member must still be able to accept new Terms and
+-- choose a language; any other change by a suspended member is refused.
+CREATE OR REPLACE FUNCTION public.enforcement_profiles_guard()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_allowed text[] := ARRAY['last_active_at', 'updated_at', 'terms_version', 'terms_accepted_at', 'terms_acceptance_method', 'language_code'];
+BEGIN
+  IF TG_OP = 'UPDATE' AND (to_jsonb(NEW) - v_allowed) = (to_jsonb(OLD) - v_allowed) THEN
+    RETURN NEW;
+  END IF;
+  PERFORM public.enforce_member_restriction('suspension');
+  RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;
+END;
+$$;
+REVOKE ALL ON FUNCTION public.enforcement_profiles_guard() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS enforcement_profiles_guard ON public.profiles;
+CREATE TRIGGER enforcement_profiles_guard BEFORE INSERT OR UPDATE OR DELETE ON public.profiles
+  FOR EACH ROW EXECUTE FUNCTION public.enforcement_profiles_guard();
+
+-- Every other table in public gets the statement guard (supabase/tests/member_enforcement_ladder_test.sql fails when
+-- a new table is missing it).
+DO $$
+DECLARE r record;
+BEGIN
+  FOR r IN
+    SELECT c.relname
+      FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+     WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p') AND NOT c.relispartition
+       AND NOT (c.relname = ANY (public.enforcement_guard_exempt_tables()))
+  LOOP
+    EXECUTE format('DROP TRIGGER IF EXISTS enforcement_suspension_guard ON public.%I', r.relname);
+    EXECUTE format('CREATE TRIGGER enforcement_suspension_guard BEFORE INSERT OR UPDATE OR DELETE ON public.%I '
+                   'FOR EACH STATEMENT EXECUTE FUNCTION public.enforcement_suspension_guard()', r.relname);
+  END LOOP;
+END $$;
 
 -- ---- moderators: apply a step --------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.moderation_enforce(p_profile uuid, p_step text, p_reason_code text, p_note text DEFAULT NULL)
@@ -225,9 +269,6 @@ BEGIN
   INSERT INTO public.member_enforcement_actions (profile_id, step, reason_code, note, moderator_profile_id, ends_at)
   VALUES (p_profile, p_step, p_reason_code, nullif(btrim(p_note), ''), v_me, v_ends)
   RETURNING id INTO v_id;
-  IF p_step = 'suspension' THEN
-    PERFORM public.enforcement_sync_sign_in(p_profile);
-  END IF;
   INSERT INTO public.user_notifications (recipient_profile_id, notification_type, title, body, entity_type, entity_id, metadata)
   VALUES (p_profile, 'moderation_enforcement', 'A moderation decision about your account',
           'Open Moderation to see the step, the reason and how long it lasts. You can appeal once; a different moderator will review it.',
@@ -286,9 +327,6 @@ BEGIN
          appeal_note = nullif(btrim(p_note), ''), appeal_decided_at = now(),
          lifted_at = CASE WHEN p_overturn THEN now() END, lifted_by = CASE WHEN p_overturn THEN v_me END
    WHERE id = p_action_id;
-  IF p_overturn AND v_row.step = 'suspension' THEN
-    PERFORM public.enforcement_sync_sign_in(v_row.profile_id);
-  END IF;
   INSERT INTO public.user_notifications (recipient_profile_id, notification_type, title, body, entity_type, entity_id, metadata)
   VALUES (v_row.profile_id,
           CASE WHEN p_overturn THEN 'moderation_enforcement_overturned' ELSE 'moderation_enforcement_upheld' END,
