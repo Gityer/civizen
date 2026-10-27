@@ -94,8 +94,9 @@ jobs:
           cat vite.log
           exit 1
 
+      # `github` turns each failure into an annotation on the pull request; `list` keeps the readable log.
       - name: E2E
-        run: npm run e2e
+        run: npm run e2e -- --reporter=github,list
         env:
           CIVIZEN_E2E_BASE_URL: http://localhost:8081
 
