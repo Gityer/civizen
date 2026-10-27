@@ -10349,6 +10349,9 @@ isOneToOne: false
 "opportunity_publisher_id":
 { Args: { "p_opportunity_id": string }; Returns: string
                            },
+"client_error_summary":
+{ Args: { "p_days"?: number }; Returns: { "kind": string; "message": string; "route": string; "release_id": string; "app_version": string; "occurrences": number; "first_seen": string; "last_seen": string; "stack": string | null }[]
+                           },
 "participation_funnel":
 { Args: { "p_days"?: number }; Returns: Json
                            },
@@ -10582,6 +10585,9 @@ isOneToOne: false
                            },
 "record_opportunity_work_assessment":
 { Args: { "p_notes"?: string,"p_participation_id": string,"p_scores"?: Json }; Returns: string
+                           },
+"record_client_error":
+{ Args: { "p_report": Json }; Returns: undefined
                            },
 "record_page_view":
 { Args: { "p_path": string }; Returns: undefined

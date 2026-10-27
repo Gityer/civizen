@@ -474,7 +474,7 @@ Do **not** start a Cursor `/loop` (a Cursor command, not an app route; docs-chec
 
 ## Error reporting
 
-`src/lib/error-reporting.ts` records render errors (crash boundary), uncaught window errors and unhandled rejections. It always logs to the console; when `VITE_ERROR_REPORT_ENDPOINT` is set it also POSTs a small JSON report (message, first stack lines, pathname without query, app version, release id, time) with `keepalive`, deduplicated per message for one minute. No user data is included. Point the variable at a collector when one exists; leave it unset otherwise.
+`src/lib/error-reporting.ts` records render errors (crash boundary), uncaught window errors and unhandled rejections. It always logs to the console; when `VITE_ERROR_REPORT_ENDPOINT` is set it also POSTs a small JSON report (message, first stack lines, pathname without query, app version, release id, time) with `keepalive`, deduplicated per message for one minute. No user data is included. When `VITE_ERROR_REPORT_ENDPOINT` is unset, reports go to Civizen's own collector, `record_client_error`. It keeps daily counts per kind, message, page pattern (ids folded to `:id`) and release, with no account, IP address or device, and holds at most 1,000 distinct rows a day for 30 days. Staff read them on **Settings › Admin › Participation** (`client_error_summary`). Set the variable only to send reports to another collector instead.
 
 ## AyMe context for cloud sessions
 

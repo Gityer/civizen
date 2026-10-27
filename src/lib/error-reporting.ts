@@ -66,10 +66,17 @@ function endpoint(): string | null {
   return value ? value : null;
 }
 
+/** Sends the report to Civizen's own collector (`record_client_error`, daily counts without identifiers). */
+function sendToCivizen(report: ErrorReport): void {
+  void import('@/integrations/supabase/client')
+    .then(({ supabase }) => supabase.rpc('record_client_error', { p_report: report }))
+    .then(() => undefined, () => undefined);
+}
+
 /**
- * Records an unexpected error. Always logs to the console; when
- * `VITE_ERROR_REPORT_ENDPOINT` is set, also POSTs a small, non-personal JSON report there
- * (keepalive so it survives navigation). Never throws.
+ * Records an unexpected error. Always logs to the console, then sends a small, non-personal JSON report: to
+ * `VITE_ERROR_REPORT_ENDPOINT` when it is set (keepalive so it survives navigation), otherwise to Civizen's own
+ * collector. Never throws.
  */
 export function reportError(error: unknown, kind: ErrorReportKind): void {
   try {
@@ -78,7 +85,11 @@ export function reportError(error: unknown, kind: ErrorReportKind): void {
     if (!shouldReport(report)) return;
     console.error(`[civizen:${kind}]`, report.message, error);
     const url = endpoint();
-    if (!url || typeof fetch !== 'function') return;
+    if (!url) {
+      sendToCivizen(report);
+      return;
+    }
+    if (typeof fetch !== 'function') return;
     void fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
