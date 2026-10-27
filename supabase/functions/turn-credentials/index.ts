@@ -11,7 +11,7 @@
  * Without TURN_URLS the function answers with an empty list and the client stays on STUN only.
  * Only signed-in members may ask (the relay would otherwise be open to anyone).
  */
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
