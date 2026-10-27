@@ -15,8 +15,13 @@ test('a visitor switches to Armenian and the choice survives a reload', async ({
 
   const trigger = page.locator('button[aria-label^="Language:"]');
   await expect(trigger).toBeVisible({ timeout: 20_000 });
-  await trigger.click();
   const armenian = page.getByRole('option', { name: /հայերեն/i });
+  // pointing at the flag opens the menu; clicking it then must not toggle it shut (it did, and made this spec flaky)
+  await trigger.hover();
+  await expect(armenian).toBeVisible();
+  await page.waitForTimeout(300);
+  await trigger.click();
+  await page.waitForTimeout(500);
   await expect(armenian).toBeVisible();
   await armenian.click();
 
