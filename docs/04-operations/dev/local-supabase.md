@@ -79,7 +79,9 @@ The seed uses fixed user ids (`c1000000-…`) and fixture emails `<username>@tes
 
 `npm run e2e` runs the Playwright specs in `e2e/` (`npm run e2e:install` once for Chromium). They need a web server that points at the local stack (`CIVIZEN_E2E_BASE_URL`, default `http://localhost:8081`); the first step of every signed-in spec asserts that the page's Supabase URL is local and fails otherwise, so they can never write to production. Accounts sign in with the local password; override with `CIVIZEN_E2E_EMAIL` / `CIVIZEN_E2E_PASSWORD` (and `CIVIZEN_E2E_SECOND_MODERATOR_EMAIL` for the moderation spec).
 
-On a fresh stack the suite needs only the replay and the seed: no dump, no edge functions. The `e2e` job of `.github/workflows/ci.yml` runs exactly that on every pull request and push to `main` (`scripts/local-supabase/up.sh`, the seed, then a dev server on port 8081 given the local URL and anon key), and uploads the traces when a spec fails.
+On a fresh stack the suite needs only the replay and the seed: no dump. The `e2e` job of `.github/workflows/ci.yml` runs exactly that on every pull request and push to `main` (`scripts/local-supabase/up.sh`, the seed, then a dev server on port 8081 given the local URL and anon key), and uploads the traces when a spec fails.
+
+**Edge functions.** The same job serves the functions (`npx supabase functions serve` in the stack's work dir) with no provider secrets, and `e2e/edge-functions.spec.ts` calls them over HTTP: every function boots, the member-only ones refuse anonymous callers, and the sign-in, user-creation, account-switch, call-relay and language-pack contracts hold. The spec needs `CIVIZEN_E2E_SUPABASE_URL` and `CIVIZEN_E2E_ANON_KEY` (the `API_URL` and `ANON_KEY` of `supabase status -o env`) and skips without them. A new function belongs in its `FUNCTIONS` list, and in `MEMBER_ONLY` when signed-out callers must be refused. The functions load `npm:` packages at boot, so the runtime needs to reach the npm registry.
 
 ## Which backend does the app use?
 
