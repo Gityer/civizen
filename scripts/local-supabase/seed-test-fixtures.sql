@@ -1,4 +1,5 @@
--- Test fixtures for supabase/tests/*_test.sql on a database built from migrations alone (CI, a fresh local stack).
+-- Test fixtures for supabase/tests/*_test.sql and the e2e specs on a database built from migrations alone (CI, a
+-- fresh local stack).
 --
 -- The SQL tests look people and records up by name (profiles 'member', 'citizen', 'verified_member', 'moderator',
 -- the founders 'maturehumanity' and 'armen', the consultation 'single-world-citizenship', ...). A developer database
@@ -38,6 +39,8 @@ INSERT INTO ci_fixture_people VALUES
   ('c1000000-0000-4000-8000-000000000006', 'certified',       'Fixture Certified',       'certified',       true,  false, 'citizen',           false, 'DE', 'de',    NULL),
   ('c1000000-0000-4000-8000-000000000007', 'law',             'Fixture Law',             'certified',       true,  false, 'citizen',           false, 'BE', 'fr',    NULL),
   ('c1000000-0000-4000-8000-000000000008', 'moderator',       'Fixture Moderator',       'moderator',       true,  false, 'citizen',           false, 'NL', 'nl',    NULL),
+  -- a different moderator decides appeals against 'moderator' (e2e/content-moderation.spec.ts)
+  ('c1000000-0000-4000-8000-00000000000c', 'moderator_two',   'Fixture Second Moderator', 'moderator',      true,  false, 'citizen',           false, 'CA', 'fr',    NULL),
   ('c1000000-0000-4000-8000-000000000009', 'market_manager',  'Fixture Market Manager',  'market_manager',  true,  false, 'citizen',           false, 'BR', 'pt-BR', NULL),
   ('c1000000-0000-4000-8000-00000000000a', 'guest',           'Fixture Guest',           'guest',           false, false, 'registered_member', false, 'US', 'en-US', NULL),
   -- the official Civizen organization account (resolve_civizen_org_profile()); linked as a business below
@@ -136,5 +139,24 @@ SELECT 'c3000000-0000-4000-8000-000000000001', p.id, 'Fixture demo program', 'Fi
   FROM public.profiles p
  WHERE p.username = 'maturehumanity' AND p.deleted_at IS NULL
    AND NOT EXISTS (SELECT 1 FROM public.contribution_programs);
+
+-- ---- a shared knowledge space ------------------------------------------------------------------------------------
+-- e2e/knowledge-proposal.spec.ts has a member propose a resource and report a gap in a shared space; the dump has
+-- the founder's. Fictional content, flagged demo; skipped when any shared space already exists.
+INSERT INTO public.contribution_programs (id, publisher_profile_id, title, summary, description, status, program_kind, seed_key, is_demo)
+SELECT 'c3000000-0000-4000-8000-000000000002', p.id, 'Fixture knowledge commons', 'Fixture program holding a shared knowledge space.',
+       'Created by scripts/local-supabase/seed-test-fixtures.sql.', 'active', 'shared_knowledge', 'ci-fixture-knowledge-program', true
+  FROM public.profiles p
+ WHERE p.username = 'maturehumanity' AND p.deleted_at IS NULL
+   AND NOT EXISTS (SELECT 1 FROM public.knowledge_spaces WHERE status = 'shared')
+   AND NOT EXISTS (SELECT 1 FROM public.contribution_programs WHERE id = 'c3000000-0000-4000-8000-000000000002');
+
+INSERT INTO public.knowledge_spaces (id, publisher_profile_id, program_id, title, summary, description, status, is_demo)
+SELECT 'c3000000-0000-4000-8000-000000000011', g.publisher_profile_id, g.id, 'Fixture neighbourhood guides',
+       'Fictional shared space where members propose guides and report gaps.',
+       'Created by scripts/local-supabase/seed-test-fixtures.sql.', 'shared', true
+  FROM public.contribution_programs g
+ WHERE g.id = 'c3000000-0000-4000-8000-000000000002'
+   AND NOT EXISTS (SELECT 1 FROM public.knowledge_spaces WHERE status = 'shared');
 
 COMMIT;

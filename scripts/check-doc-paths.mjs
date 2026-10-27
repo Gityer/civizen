@@ -18,6 +18,9 @@ const ROOT = process.cwd();
 const SCOPES = ['docs/04-operations', 'docs/assistant', 'docs/03-platform/product-design'];
 const ROUTE_FILES = ['src/app-routes/app-routes-1.tsx', 'src/app-routes/app-routes-2.tsx', 'src/pages/happiness/happiness-app-routes.tsx'];
 const REPO_PREFIXES = ['src/', 'scripts/', 'supabase/', 'docs/', 'e2e/', 'public/', 'native/', '.github/'];
+// Created by the build and release scripts, not carried by git: present on a maintainer's machine, absent in a
+// clean checkout (CI), so existence on disk says nothing about whether the doc is current.
+const GENERATED = ['public/downloads/', 'public/updates/bundles/', 'dist/'];
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -105,6 +108,7 @@ for (const file of files) {
         }
       } else if (REPO_PREFIXES.some((p) => token.startsWith(p)) && !/[*<>{}$]/.test(token)) {
         const path = token.split('#')[0].replace(/:\d+(-\d+)?$/, '');
+        if (GENERATED.some((g) => `${path}/`.startsWith(g))) continue;
         if (!existsSync(join(ROOT, path))) {
           problems.push(`${relative(ROOT, file)}:${i + 1}: file ${path} does not exist`);
         }
