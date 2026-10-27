@@ -3,6 +3,7 @@ import { listOwnedLinkedProfileIds } from '@/lib/opportunities-api';
 import { parseSearchDirectoryPayload } from '@/lib/search-directory';
 import { type FormalActionType, type Matter, type MatterActorKind, type MatterListRow, type MatterQueue, type MatterType, type MatterVisibility, type ReopenReason } from '@/lib/matters';
 import { type DbClient, asRecord, asRows, db, rpcErrorMessage, str } from '@/lib/matters-api-core';
+import { errorWithFields } from '@/lib/rate-limit';
 import { type MatterDetailBundle, mapAction, mapAttachment, mapComment, mapEvent, mapListBundle, mapMatter, mapParty } from '@/lib/matters-api-mappers';
 import { mapAgentArtifact, mapAgentAssignment, mapAgentRun, mapAiAgent, mapCodingWorkspace, mapDecision, mapEvaluation, mapOutcomeFollowup, mapPatternCounts, mapResolution, mapResponsibility, mapTask } from '@/lib/matters-api-mappers-work';
 
@@ -227,7 +228,7 @@ export async function addMatterComment(
     p_mentioned_profile_ids: options?.mentionedProfileIds ?? [],
     p_task_id: options?.taskId ?? null,
   });
-  if (error) throw new Error(rpcErrorMessage(error));
+  if (error) throw errorWithFields(rpcErrorMessage(error), error);
 }
 
 export async function performMatterFormalAction(

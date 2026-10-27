@@ -1055,9 +1055,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.243",
     "appReleaseId": "20261026-v0.1.243",
     "androidVersionCode": 245,
-    "gitSha": "4105917f5111d360fe6e76e1958dc820b0f52b6d",
-    "generatedAt": "2026-10-26T21:27:50.518Z",
-    "sourceFingerprint": "c118d1dafb986e8c94e2b78d38caa4cf9fd913463c06c9581b26793d71fa99a9",
+    "gitSha": "d1892909710a4fd3db597d3d5ade129a4e8fdeab",
+    "generatedAt": "2026-10-27T17:16:29.963Z",
+    "sourceFingerprint": "31095d3fb5bf7fc9090202c8a28ee4a436a63d388df08043da4a4ab31baa8cff",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 398
@@ -2108,7 +2108,7 @@ var KNOWLEDGE_PACK = {
       "id": "content_moderation",
       "name": "Reporting, moderation and appeals",
       "status": "implemented",
-      "description": "Any signed-in member can report a post, comment, Matter, Solutions comment, job listing or member profile with a reason (spam, harassment, hate speech, violence, sexual content, false information, private information, illegal content, other). Moderators of the Moderation and Conduct domain work one queue: they hide the item with a reason or dismiss the reports. Hidden posts and comments disappear for everyone except the author and moderators; a hidden public Matter becomes participants-only; a hidden job listing is closed. Nothing is deleted. The author is told the reason and can appeal once; a different moderator decides, and a successful appeal restores the item exactly. People are not hidden; conduct towards people goes through governance sanctions. Private messages are reported from the chat.",
+      "description": "Any signed-in member can report a post, comment, Matter, Solutions comment, job listing or member profile with a reason (spam, harassment, hate speech, violence, sexual content, false information, private information, illegal content, other). Moderators of the Moderation and Conduct domain work one queue: they hide the item with a reason or dismiss the reports. Hidden posts and comments disappear for everyone except the author and moderators; a hidden public Matter becomes participants-only; a hidden job listing is closed. Nothing is deleted. The author is told the reason and can appeal once; a different moderator decides, and a successful appeal restores the item exactly. People are not hidden; conduct towards people goes through governance sanctions. Private messages are reported from the chat. Each account has generous limits on how often it can post, comment, message, start conversations and report in a short time; when one is reached, Civizen says when the member can continue.",
       "howTo": "Tap the flag icon on the item (on posts it is in the post menu). Moderators open Moderation from Settings. Authors open Moderation from the notice on the hidden item or from the notification to appeal. The Community Guidelines are at /guidelines.",
       "routes": [
         "/moderation",
@@ -2129,7 +2129,10 @@ var KNOWLEDGE_PACK = {
         "appeal",
         "hidden post",
         "community guidelines",
-        "code of conduct"
+        "code of conduct",
+        "rate limit",
+        "too many posts",
+        "cannot post"
       ],
       "sourceRefs": [
         "docs/04-operations/dev/content-moderation.md",
@@ -3855,7 +3858,7 @@ var KNOWLEDGE_PACK = {
       "id": "capability:content_moderation",
       "title": "Reporting, moderation and appeals",
       "path": "src/lib/assistant/catalog.ts",
-      "text": "Reporting, moderation and appeals status=implemented. Any signed-in member can report a post, comment, Matter, Solutions comment, job listing or member profile with a reason (spam, harassment, hate speech, violence, sexual content, false information, private information, illegal content, other). Moderators of the Moderation and Conduct domain work one queue: they hide the item with a reason or dismiss the reports. Hidden posts and comments disappear for everyone except the author and moderators; a hidden public Matter becomes participants-only; a hidden job listing is closed. Nothing is deleted. The author is told the reason and can appeal once; a different moderator decides, and a successful appeal restores the item exactly. People are not hidden; conduct towards people goes through governance sanctions. Private messages are reported from the chat. Tap the flag icon on the item (on posts it is in the post menu). Moderators open Moderation from Settings. Authors open Moderation from the notice on the hidden item or from the notification to appeal. The Community Guidelines are at /guidelines. Routes: /moderation, /guidelines.",
+      "text": "Reporting, moderation and appeals status=implemented. Any signed-in member can report a post, comment, Matter, Solutions comment, job listing or member profile with a reason (spam, harassment, hate speech, violence, sexual content, false information, private information, illegal content, other). Moderators of the Moderation and Conduct domain work one queue: they hide the item with a reason or dismiss the reports. Hidden posts and comments disappear for everyone except the author and moderators; a hidden public Matter becomes participants-only; a hidden job listing is closed. Nothing is deleted. The author is told the reason and can appeal once; a different moderator decides, and a successful appeal restores the item exactly. People are not hidden; conduct towards people goes through governance sanctions. Private messages are reported from the chat. Each account has generous limits on how often it can post, comment, message, start conversations and report in a short time; when one is reached, Civizen says when the member can continue. Tap the flag icon on the item (on posts it is in the post menu). Moderators open Moderation from Settings. Authors open Moderation from the notice on the hidden item or from the notification to appeal. The Community Guidelines are at /guidelines. Routes: /moderation, /guidelines.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"

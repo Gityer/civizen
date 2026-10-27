@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { errorWithFields } from '@/lib/rate-limit';
 
 /** What can be reported (v2 step A6). Message reports keep their own flow in the chat. */
 export const MODERATION_TARGET_KINDS = ['post', 'post_comment', 'matter', 'matter_comment', 'solution_comment', 'job_listing', 'user'] as const;
@@ -59,8 +60,8 @@ export function moderationTargetRoute(kind: ModerationTargetKind, id: string): s
   }
 }
 
-function fail(error: { message?: string } | null): never {
-  throw new Error(error?.message || 'moderation_failed');
+function fail(error: { message?: string; code?: unknown; details?: unknown; hint?: unknown } | null): never {
+  throw errorWithFields(error?.message || 'moderation_failed', error);
 }
 
 export async function reportContent(kind: ModerationTargetKind, id: string, reason: ModerationReasonCode, details?: string): Promise<string> {
