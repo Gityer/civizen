@@ -4,8 +4,8 @@ import type { ModerationReasonCode } from '@/lib/moderation';
 
 type Translate = (key: string, vars?: Record<string, string | number>) => string;
 
-/** Enforcement steps for members (PM decision TD2), lowest first. Removal is not available yet. */
-export const ENFORCEMENT_STEPS = ['note', 'warning', 'content_restriction', 'messaging_restriction', 'suspension'] as const;
+/** Enforcement steps for members (PM decision TD2), lowest first. A removal needs a second moderator to take effect. */
+export const ENFORCEMENT_STEPS = ['note', 'warning', 'content_restriction', 'messaging_restriction', 'suspension', 'removal'] as const;
 export type EnforcementStep = (typeof ENFORCEMENT_STEPS)[number];
 
 /** Reasons for which a moderator may skip rungs, as TD2 adopted: threats of violence, sexualisation of minors, private information. */
@@ -27,6 +27,9 @@ export type EnforcementAction = {
   appealDecision: 'upheld' | 'overturned' | null;
   appealNote: string | null;
   appealDecidedAt: string | null;
+  confirmedBy: string | null;
+  confirmedAt: string | null;
+  closedAt: string | null;
 };
 
 export function isEnforcementStep(value: string): value is EnforcementStep {
@@ -34,8 +37,12 @@ export function isEnforcementStep(value: string): value is EnforcementStep {
 }
 
 /** True while the step still applies: notes and warnings stand until overturned; restrictions until they end. */
-export function isStanding(action: Pick<EnforcementAction, 'endsAt' | 'liftedAt' | 'appealDecision'>, now: Date = new Date()): boolean {
-  if (action.liftedAt || action.appealDecision === 'overturned') return false;
+export function isStanding(
+  action: Pick<EnforcementAction, 'endsAt' | 'liftedAt' | 'appealDecision'> & Partial<Pick<EnforcementAction, 'confirmedAt' | 'closedAt'>>,
+  now: Date = new Date(),
+): boolean {
+  if (action.liftedAt || action.appealDecision === 'overturned' || action.closedAt) return false;
+  if (action.confirmedAt === null) return false; // a removal nobody has confirmed yet
   return action.endsAt === null || new Date(action.endsAt).getTime() > now.getTime();
 }
 
@@ -43,13 +50,13 @@ export function isStanding(action: Pick<EnforcementAction, 'endsAt' | 'liftedAt'
 export function highestAllowedStep(history: EnforcementAction[]): EnforcementStep {
   // as the server counts it: every step not lifted or overturned, ended restrictions included
   const standing = history
-    .filter((action) => action.appealDecision !== 'overturned' && !action.liftedAt)
+    .filter((action) => action.appealDecision !== 'overturned' && !action.liftedAt && action.confirmedAt !== null)
     .map((action) => ENFORCEMENT_STEPS.indexOf(action.step));
   const top = standing.length ? Math.max(...standing) : 0;
   return ENFORCEMENT_STEPS[Math.min(Math.max(top, 0) + 1, ENFORCEMENT_STEPS.length - 1)];
 }
 
-const BANNER_STEPS: EnforcementStep[] = ['suspension', 'messaging_restriction', 'content_restriction'];
+const BANNER_STEPS: EnforcementStep[] = ['removal', 'suspension', 'messaging_restriction', 'content_restriction'];
 
 /** The strongest restriction that applies to the member now (suspension first), or null. */
 export function strongestRestriction(actions: EnforcementAction[], now: Date = new Date()): EnforcementAction | null {
@@ -79,6 +86,9 @@ function mapAction(row: Record<string, unknown>): EnforcementAction {
     appealDecision: row.appeal_decision === 'upheld' || row.appeal_decision === 'overturned' ? row.appeal_decision : null,
     appealNote: text(row.appeal_note),
     appealDecidedAt: text(row.appeal_decided_at),
+    confirmedBy: text(row.confirmed_by),
+    confirmedAt: text(row.confirmed_at),
+    closedAt: text(row.closed_at),
   };
 }
 
@@ -86,7 +96,7 @@ function fail(error: { message?: string; code?: unknown; details?: unknown; hint
   throw errorWithFields(error?.message || 'moderation_failed', error);
 }
 
-export async function loadEnforcementActions(scope: 'mine' | 'appeals' | 'member', profileId?: string): Promise<EnforcementAction[]> {
+export async function loadEnforcementActions(scope: 'mine' | 'appeals' | 'member' | 'removals', profileId?: string): Promise<EnforcementAction[]> {
   const { data, error } = await supabase.rpc('moderation_enforcement_list', { p_scope: scope, p_profile: profileId });
   if (error) fail(error);
   return ((data ?? []) as Record<string, unknown>[]).map(mapAction);
@@ -101,6 +111,18 @@ export async function enforceMember(profileId: string, step: EnforcementStep, re
   });
   if (error) fail(error);
   return String(data);
+}
+
+/** A different moderator confirms a proposed removal (the founder alone while there are fewer than two moderators). */
+export async function confirmRemoval(actionId: string): Promise<void> {
+  const { error } = await supabase.rpc('moderation_enforcement_confirm', { p_action_id: actionId });
+  if (error) fail(error);
+}
+
+/** Withdraws a removal proposal that nobody has confirmed. */
+export async function withdrawRemoval(actionId: string): Promise<void> {
+  const { error } = await supabase.rpc('moderation_enforcement_withdraw', { p_action_id: actionId });
+  if (error) fail(error);
 }
 
 export async function appealEnforcement(actionId: string, text: string): Promise<void> {
@@ -125,7 +147,7 @@ export function restrictionMessage(value: unknown, t: Translate, language?: stri
   if (!value || typeof value !== 'object') return null;
   const error = value as { code?: unknown; details?: unknown; hint?: unknown };
   if (error.code !== 'PT403') return null;
-  const kind = error.details === 'suspension' || error.details === 'messaging_restriction' ? error.details : 'content_restriction';
+  const kind = error.details === 'removal' || error.details === 'suspension' || error.details === 'messaging_restriction' ? error.details : 'content_restriction';
   const until = typeof error.hint === 'string' ? new Date(error.hint) : null;
   const date = until && !Number.isNaN(until.getTime())
     ? until.toLocaleString(language || undefined, { dateStyle: 'medium', timeStyle: 'short' })
@@ -139,7 +161,7 @@ export function isSuspendedSignInError(error: { code?: unknown; message?: unknow
   return error.code === 'user_banned' || (typeof error.message === 'string' && /banned/i.test(error.message));
 }
 
-const ENFORCEMENT_ERRORS = ['step_too_high', 'note_required', 'cannot_moderate_self', 'member_not_found'];
+const ENFORCEMENT_ERRORS = ['step_too_high', 'note_required', 'cannot_moderate_self', 'member_not_found', 'cannot_remove_staff', 'removal_already_open', 'removal_needs_second_moderator', 'nothing_to_confirm'];
 
 /** i18n key for a failed enforcement call: the ladder's own errors first, then the shared moderation ones. */
 export function enforcementErrorKey(message: string, fallback: (message: string) => string): string {

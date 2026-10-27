@@ -6,7 +6,7 @@ function action(step: EnforcementAction['step'], endsAt: string | null, extra: P
   return {
     id: `${step}-${endsAt}`, profileId: 'p', username: null, step, reasonCode: 'spam', note: null, moderatorProfileId: null,
     createdAt: '2026-10-27T00:00:00Z', endsAt, liftedAt: null, appealText: null, appealedAt: null, appealDecision: null,
-    appealNote: null, appealDecidedAt: null, ...extra,
+    appealNote: null, appealDecidedAt: null, confirmedBy: 'm', confirmedAt: '2026-10-27T00:00:00Z', closedAt: null, ...extra,
   };
 }
 

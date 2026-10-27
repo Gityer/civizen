@@ -52,10 +52,12 @@ and is not a reason to hide anything.
   hid the item decides the appeal; if the appeal succeeds, the item returns exactly as it was.
 - **Steps for people.** Repeated or serious conduct by a person leads to steps, each recorded with a reason from the
   list above and told to the person: a note, a warning, a 7-day stop on posting and commenting, a 7-day stop on
-  starting new conversations, and a 30-day suspension during which the account can only read and appeal. Moderators go
-  one step at a time, except for threats of violence, sexualisation of minors and sharing private information (items
-  4, 9 and 7), where they may go straight to any step. Each step can be appealed once; a different moderator decides.
-  Governance sanctions, which concern rights in governance, stay separate and keep their own appeal process.
+  starting new conversations, and a 30-day suspension during which the account can only read and appeal. The last step
+  is removal: two moderators must agree, the account can then only read and appeal for 30 days, and after that it is
+  closed. Moderators go one step at a time, except for threats of violence, sexualisation of minors and sharing
+  private information (items 4, 9 and 7), where they may go straight to any step. Each step can be appealed once; a
+  different moderator decides. Governance sanctions, which concern rights in governance, stay separate and keep their
+  own appeal process.
 - **Messages.** Private messages may be end-to-end encrypted, so moderators see only what a reporter chooses to share.
 
 ## Changes

@@ -13,8 +13,17 @@ SELECT set_config('t.civizen_pid', (SELECT id::text FROM public.profiles WHERE u
 SELECT set_config('t.mod_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'moderator' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('t.mod_pid', (SELECT id::text FROM public.profiles WHERE username = 'moderator' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('t.mod2_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'moderator_two' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('t.mod2_pid', (SELECT id::text FROM public.profiles WHERE username = 'moderator_two' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('t.founder_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'maturehumanity' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('t.cert_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'certified' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('t.cert_pid', (SELECT id::text FROM public.profiles WHERE username = 'certified' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('t.law_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'law' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('t.law_pid', (SELECT id::text FROM public.profiles WHERE username = 'law' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('t.guest_pid', (SELECT id::text FROM public.profiles WHERE username = 'guest' AND deleted_at IS NULL LIMIT 1), true);
+SELECT set_config('t.staff_pid', (SELECT id::text FROM public.profiles WHERE username = 'market_manager' AND deleted_at IS NULL LIMIT 1), true);
 DELETE FROM public.member_enforcement_actions
- WHERE profile_id IN (current_setting('t.member_pid')::uuid, current_setting('t.citizen_pid')::uuid, current_setting('t.other_pid')::uuid);
+ WHERE profile_id IN (current_setting('t.member_pid')::uuid, current_setting('t.citizen_pid')::uuid, current_setting('t.other_pid')::uuid,
+                      current_setting('t.cert_pid')::uuid, current_setting('t.law_pid')::uuid, current_setting('t.guest_pid')::uuid);
 DELETE FROM public.rate_limit_events
  WHERE profile_id IN (current_setting('t.member_pid')::uuid, current_setting('t.citizen_pid')::uuid);
 INSERT INTO auth.sessions (id, user_id, created_at, updated_at) VALUES (gen_random_uuid(), current_setting('t.citizen_uid')::uuid, now(), now());
@@ -161,6 +170,91 @@ BEGIN
     RAISE EXCEPTION 'member wrote an enforcement action directly';
   EXCEPTION WHEN insufficient_privilege THEN NULL;
   END;
+END $$;
+
+-- ---- removal: proposed by one moderator, confirmed by another, read-only, closed when an appeal fails ---------------
+SELECT pg_temp.as_member(current_setting('t.mod_uid'));
+SELECT pg_temp.expect_error(format('SELECT public.moderation_enforce(%L, %L, %L, NULL)', current_setting('t.cert_pid'), 'removal', 'spam'),
+  '22023', NULL, 'removal without the rungs before it');
+SELECT pg_temp.expect_error(format('SELECT public.moderation_enforce(%L, %L, %L, NULL)', current_setting('t.staff_pid'), 'removal', 'violence'),
+  '42501', NULL, 'removal of a staff account');
+SELECT set_config('t.removal', public.moderation_enforce(current_setting('t.cert_pid')::uuid, 'removal', 'violence', 'Repeated threats')::text, true);
+SELECT pg_temp.expect_error(format('SELECT public.moderation_enforce(%L, %L, %L, NULL)', current_setting('t.cert_pid'), 'removal', 'violence'),
+  '22023', NULL, 'a second open removal');
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM public.moderation_enforcement_list('removals') WHERE id = current_setting('t.removal')::uuid) THEN
+    RAISE EXCEPTION 'proposal missing from the removals list';
+  END IF;
+END $$;
+SELECT pg_temp.expect_error(format('SELECT public.moderation_enforcement_confirm(%L)', current_setting('t.removal')),
+  '42501', NULL, 'the proposing moderator confirmed their own removal');
+-- a proposal alone changes nothing for the member, who does not see it yet
+SELECT pg_temp.as_member(current_setting('t.cert_uid'));
+INSERT INTO public.posts (author_id, content) VALUES (current_setting('t.cert_pid')::uuid, 'still posting while only proposed');
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM public.moderation_enforcement_list('mine')) THEN RAISE EXCEPTION 'member saw an unconfirmed removal'; END IF;
+END $$;
+-- a second moderator confirms: read and appeal only, closing in 30 days
+SELECT pg_temp.as_member(current_setting('t.mod2_uid'));
+SELECT public.moderation_enforcement_confirm(current_setting('t.removal')::uuid);
+SELECT pg_temp.as_member(current_setting('t.cert_uid'));
+SELECT pg_temp.expect_error(format('INSERT INTO public.posts (author_id, content) VALUES (%L, %L)', current_setting('t.cert_pid'), 'x'),
+  'PT403', 'removal', 'post after a confirmed removal');
+SELECT public.moderation_enforcement_appeal(current_setting('t.removal')::uuid, 'Those were quotes.');
+-- neither the proposer nor the confirmer decides the appeal; the founder (or a third moderator) does
+SELECT pg_temp.as_member(current_setting('t.mod_uid'));
+SELECT pg_temp.expect_error(format('SELECT public.moderation_enforcement_decide_appeal(%L, false, NULL)', current_setting('t.removal')),
+  '42501', NULL, 'the proposer decided the removal appeal');
+SELECT pg_temp.as_member(current_setting('t.mod2_uid'));
+SELECT pg_temp.expect_error(format('SELECT public.moderation_enforcement_decide_appeal(%L, false, NULL)', current_setting('t.removal')),
+  '42501', NULL, 'the confirmer decided the removal appeal');
+SELECT pg_temp.as_member(current_setting('t.founder_uid'));
+SELECT public.moderation_enforcement_decide_appeal(current_setting('t.removal')::uuid, false, 'Upheld');
+RESET ROLE;
+DO $$
+BEGIN
+  IF (SELECT deleted_at FROM public.profiles WHERE id = current_setting('t.cert_pid')::uuid) IS NULL
+     OR (SELECT deletion_reason FROM public.profiles WHERE id = current_setting('t.cert_pid')::uuid) <> 'moderation_removal' THEN
+    RAISE EXCEPTION 'upheld removal did not close the account';
+  END IF;
+  IF (SELECT banned_until FROM auth.users WHERE id = current_setting('t.cert_uid')::uuid) IS DISTINCT FROM 'infinity'::timestamptz THEN
+    RAISE EXCEPTION 'closed account can still sign in';
+  END IF;
+  IF (SELECT closed_at FROM public.member_enforcement_actions WHERE id = current_setting('t.removal')::uuid) IS NULL THEN
+    RAISE EXCEPTION 'removal not marked closed';
+  END IF;
+END $$;
+SET LOCAL ROLE authenticated;
+
+-- an overturned removal lifts it and the member can write again
+SELECT pg_temp.as_member(current_setting('t.mod_uid'));
+SELECT set_config('t.removal2', public.moderation_enforce(current_setting('t.law_pid')::uuid, 'removal', 'privacy', 'Posted an address')::text, true);
+SELECT pg_temp.as_member(current_setting('t.mod2_uid'));
+SELECT public.moderation_enforcement_confirm(current_setting('t.removal2')::uuid);
+SELECT pg_temp.as_member(current_setting('t.law_uid'));
+SELECT public.moderation_enforcement_appeal(current_setting('t.removal2')::uuid, 'It was my own office address.');
+SELECT pg_temp.as_member(current_setting('t.founder_uid'));
+SELECT public.moderation_enforcement_decide_appeal(current_setting('t.removal2')::uuid, true, 'Own public address');
+SELECT pg_temp.as_member(current_setting('t.law_uid'));
+INSERT INTO public.posts (author_id, content) VALUES (current_setting('t.law_pid')::uuid, 'back after the removal appeal');
+
+-- the founder alone may propose and confirm while there are fewer than two moderators; the daily job closes it
+RESET ROLE;
+UPDATE public.profiles SET role = 'member' WHERE id = current_setting('t.mod2_pid')::uuid;
+SET LOCAL ROLE authenticated;
+SELECT pg_temp.as_member(current_setting('t.founder_uid'));
+SELECT set_config('t.removal3', public.moderation_enforce(current_setting('t.guest_pid')::uuid, 'removal', 'child_safety', NULL)::text, true);
+SELECT public.moderation_enforcement_confirm(current_setting('t.removal3')::uuid);
+RESET ROLE;
+UPDATE public.member_enforcement_actions SET ends_at = now() - interval '1 minute' WHERE id = current_setting('t.removal3')::uuid;
+DO $$
+BEGIN
+  IF public.enforcement_close_due_removals() <> 1 THEN RAISE EXCEPTION 'the daily job did not close exactly the due removal'; END IF;
+  IF (SELECT deleted_at FROM public.profiles WHERE id = current_setting('t.guest_pid')::uuid) IS NULL THEN
+    RAISE EXCEPTION 'due removal left the account open';
+  END IF;
 END $$;
 
 RESET ROLE;

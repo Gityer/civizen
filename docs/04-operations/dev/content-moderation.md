@@ -52,6 +52,7 @@ PM decision TD2 (Trust & Safety baseline 3.2), with the owner decisions of 2026-
 | content restriction | 7 days: no new posts, comments (posts, Matters, Solutions) or Matters |
 | messaging restriction | 7 days: no new conversations; existing ones stay open |
 | suspension | 30 days: read and appeal only |
+| removal | needs a second moderator; then 30 days read and appeal only, after which the account is closed |
 
 How a step works:
 
@@ -60,7 +61,15 @@ How a step works:
 - **One rung at a time.** A first step may be a note or a warning. After that, one rung above the highest step not lifted or overturned (ended restrictions count).
 - **Skipping rungs (TD2 as adopted).** Only threats of violence (item 4), `child_safety` (item 9, sexualisation of minors) and private information (item 7) may skip rungs.
 - **Not on yourself.** Moderators cannot apply a step to themselves.
-- **Notifications.** The member is notified (`moderation_enforcement`).
+- **Notifications.** The member is notified (`moderation_enforcement`); for a removal only once it is confirmed (`moderation_removal`).
+
+Removal:
+
+- **Two moderators.** `moderation_enforce` only proposes a removal. A different moderator confirms it (`moderation_enforcement_confirm`) or any moderator withdraws it (`moderation_enforcement_withdraw`); proposals wait at the top of the queue tab. While there are fewer than two moderators (`moderation_moderator_count()`, which leaves out founders and system agents), the founder may confirm alone (TD1 fallback).
+- **Not for staff.** Staff roles and office holders cannot be removed (`cannot_remove_staff`); they step down first. One open removal per member.
+- **From confirmation** the member is read and appeal only for 30 days, like a suspension.
+- **Closing.** A daily job (`enforcement_close_due_removals`, pg_cron `17 5 * * *`) closes the account through the member's own deletion path (`delete_my_account`), with `deletion_reason = 'moderation_removal'`. An upheld appeal closes it at once.
+- **Appeal.** The reviewer must be neither the proposer nor the confirmer.
 
 How restrictions are enforced:
 
@@ -72,7 +81,7 @@ How restrictions are enforced:
 - **What the member sees.**
   - **When a write is refused:** `writeRefusalMessage` (`src/lib/write-refusal.ts`, keys `memberEnforcement.refused.*`) explains the refusal.
   - **On every page:** `RestrictionBanner` says what is restricted, until when, and links to Moderation.
-- **Ending.** Restrictions end on their own at `ends_at`.
+- **Ending.** Restrictions end on their own at `ends_at`; a removal ends with the account closed.
 
 Appeals:
 

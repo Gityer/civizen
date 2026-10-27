@@ -113,8 +113,8 @@ test('a suspended member can sign in, sees why, cannot post, and can appeal', as
   const reset = () => sql(`DELETE FROM public.member_enforcement_actions WHERE profile_id = '${targetId}'`);
   reset();
   // a suspension applied directly as the database owner (the queue path is covered above)
-  const suspension = sql(`INSERT INTO public.member_enforcement_actions (profile_id, step, reason_code, ends_at)
-    VALUES ('${targetId}', 'suspension', 'violence', now() + interval '30 days') RETURNING id`).split('\n')[0];
+  const suspension = sql(`INSERT INTO public.member_enforcement_actions (profile_id, step, reason_code, ends_at, confirmed_at)
+    VALUES ('${targetId}', 'suspension', 'violence', now() + interval '30 days', now()) RETURNING id`).split('\n')[0];
   const stamp = Date.now().toString(36);
   try {
     const member = await signedIn(browser, TARGET);
@@ -130,6 +130,61 @@ test('a suspended member can sign in, sees why, cannot post, and can appeal', as
     await card.getByTestId('enforcement-appeal-text').fill('Please look again.');
     await card.getByTestId('enforcement-appeal-send').click();
     await expect(card.getByText('Appeal waiting for a decision')).toBeVisible();
+  } finally {
+    reset();
+  }
+});
+
+test('a removal reaches the member only after a second moderator confirms it', async ({ browser }) => {
+  test.setTimeout(150_000);
+  const targetId = sql("SELECT id FROM public.profiles WHERE username = 'law' AND deleted_at IS NULL LIMIT 1");
+  const reporterUid = sql("SELECT user_id FROM public.profiles WHERE username = 'citizen' AND deleted_at IS NULL LIMIT 1");
+  const reset = () => {
+    sql(`DELETE FROM public.member_enforcement_actions WHERE profile_id = '${targetId}'`);
+    sql(`DELETE FROM public.user_notifications WHERE recipient_profile_id = '${targetId}' AND notification_type = 'moderation_removal'`);
+    sql(`UPDATE public.reports SET status = 'resolved', decision = 'dismissed' WHERE target_kind = 'user' AND target_id = '${targetId}' AND status IN ('pending', 'reviewed')`);
+  };
+  reset();
+  sql(`SELECT set_config('request.jwt.claims', '{"sub": "${reporterUid}", "role": "authenticated"}', false);
+       SELECT public.report_content('user', '${targetId}', 'privacy', 'e2e removal');`);
+  try {
+    // 1. sharing private information may skip steps: the moderator proposes removal straight away
+    const moderator = await signedIn(browser, MODERATOR);
+    await moderator.goto('/moderation?tab=queue');
+    const form = moderator.getByTestId(`enforcement-form-${targetId}`);
+    await expect(form).toBeVisible({ timeout: 20_000 });
+    await form.getByTestId('enforcement-reason').click();
+    await moderator.getByRole('option', { name: "Shares someone's private information" }).click();
+    await form.getByTestId('enforcement-step').click();
+    await moderator.getByRole('option', { name: /^Removal/ }).click();
+    await expect(form.getByText('Removal needs a second moderator to confirm it.', { exact: false })).toBeVisible();
+    await form.getByTestId('enforcement-apply').click();
+    await expect(moderator.getByText('Removal proposed. A second moderator must confirm it before the member is told.').last()).toBeVisible();
+    const removal = sql(`SELECT id FROM public.member_enforcement_actions WHERE profile_id = '${targetId}' AND step = 'removal'`);
+
+    // 2. nothing reaches the member yet, and the proposer cannot confirm their own proposal
+    const member = await signedIn(browser, TARGET);
+    await member.goto('/');
+    await expect(member.getByRole('textbox', { name: /Share an idea, update, or opportunity/i })).toBeVisible({ timeout: 30_000 });
+    await expect(member.getByTestId('restriction-banner')).toHaveCount(0);
+    await moderator.goto('/moderation?tab=queue');
+    const proposed = moderator.getByTestId(`removal-${removal}`);
+    await expect(proposed.getByText('You proposed this removal; a different moderator must confirm it.')).toBeVisible({ timeout: 20_000 });
+    await proposed.getByTestId('removal-confirm').click();
+    await expect(moderator.getByText('A different moderator must confirm this removal.').last()).toBeVisible();
+
+    // 3. a second moderator confirms; the member is told when the account closes and can still read and appeal
+    const second = await signedIn(browser, SECOND_MODERATOR);
+    await second.goto('/moderation?tab=queue');
+    await second.getByTestId(`removal-${removal}`).getByTestId('removal-confirm').click();
+    await expect(second.getByText('Removal confirmed. The member is notified and can appeal once.').last()).toBeVisible();
+    await expect(second.getByTestId(`removal-${removal}`)).toHaveCount(0, { timeout: 20_000 });
+    expect(sql(`SELECT count(*) FROM public.user_notifications WHERE recipient_profile_id = '${targetId}' AND notification_type = 'moderation_removal'`)).toBe('1');
+
+    const reloaded = await signedIn(browser, TARGET);
+    await reloaded.goto('/moderation?tab=mine');
+    await expect(reloaded.getByTestId('restriction-banner')).toContainText('Your account will be closed on', { timeout: 20_000 });
+    await expect(reloaded.getByTestId(`enforcement-action-${removal}`).getByTestId('enforcement-appeal-send')).toBeVisible();
   } finally {
     reset();
   }

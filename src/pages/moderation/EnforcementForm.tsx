@@ -42,7 +42,7 @@ export function EnforcementForm({ profileId, username, initialReason, onDone }: 
   useEffect(loadHistory, [loadHistory]);
 
   const allowed = useMemo(() => {
-    const top = SEVERE_REASONS.includes(reason) ? 'suspension' : highestAllowedStep(history);
+    const top = SEVERE_REASONS.includes(reason) ? 'removal' : highestAllowedStep(history);
     return ENFORCEMENT_STEPS.slice(0, ENFORCEMENT_STEPS.indexOf(top) + 1);
   }, [history, reason]);
   const chosen = allowed.includes(step) ? step : allowed[allowed.length - 1];
@@ -52,7 +52,7 @@ export function EnforcementForm({ profileId, username, initialReason, onDone }: 
     setBusy(true);
     try {
       await enforceMember(profileId, chosen, reason, note);
-      toast.success(t('memberEnforcement.form.applied'));
+      toast.success(t(chosen === 'removal' ? 'memberEnforcement.form.removalProposed' : 'memberEnforcement.form.applied'));
       setNote('');
       loadHistory();
       onDone();
@@ -95,6 +95,7 @@ export function EnforcementForm({ profileId, username, initialReason, onDone }: 
       </div>
       <Textarea value={note} onChange={(e) => setNote(e.target.value)} rows={1} placeholder={t('moderation.queue.noteLabel')} />
       <p className="text-[11px] text-muted-foreground">{t('memberEnforcement.form.rule')}</p>
+      {chosen === 'removal' ? <p className="text-[11px] text-muted-foreground">{t('memberEnforcement.form.removalNote')}</p> : null}
       <Button type="button" size="sm" variant="destructive" disabled={busy} data-testid="enforcement-apply" onClick={() => void apply()}>
         {t('memberEnforcement.form.apply')}
       </Button>

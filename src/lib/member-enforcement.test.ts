@@ -15,7 +15,7 @@ function action(step: EnforcementAction['step'], extra: Partial<EnforcementActio
   return {
     id: step, profileId: 'p', username: null, step, reasonCode: 'spam', note: null, moderatorProfileId: null,
     createdAt: '2026-10-27T00:00:00Z', endsAt: null, liftedAt: null, appealText: null, appealedAt: null,
-    appealDecision: null, appealNote: null, appealDecidedAt: null, ...extra,
+    appealDecision: null, appealNote: null, appealDecidedAt: null, confirmedBy: 'm', confirmedAt: '2026-10-27T00:00:00Z', closedAt: null, ...extra,
   };
 }
 
@@ -25,11 +25,22 @@ describe('member enforcement', () => {
     expect(highestAllowedStep([action('note')])).toBe('warning');
     expect(highestAllowedStep([action('warning')])).toBe('content_restriction');
     expect(highestAllowedStep([action('warning'), action('content_restriction', { endsAt: '2020-01-01T00:00:00Z' })])).toBe('messaging_restriction');
-    expect(highestAllowedStep([action('suspension')])).toBe('suspension');
+    expect(highestAllowedStep([action('suspension')])).toBe('removal');
+    expect(highestAllowedStep([action('removal', { endsAt: '2026-11-26T00:00:00Z' })])).toBe('removal');
   });
 
   it('does not count overturned or lifted steps', () => {
     expect(highestAllowedStep([action('warning', { appealDecision: 'overturned', liftedAt: '2026-10-27T01:00:00Z' })])).toBe('warning');
+  });
+
+  it('ignores removals nobody has confirmed, and counts confirmed ones', () => {
+    const now = new Date('2026-10-27T12:00:00Z');
+    const proposed = action('removal', { confirmedAt: null, endsAt: null });
+    const confirmed = action('removal', { endsAt: '2026-11-26T00:00:00Z' });
+    expect(isStanding(proposed, now)).toBe(false);
+    expect(isStanding(confirmed, now)).toBe(true);
+    expect(isStanding(action('removal', { endsAt: '2026-11-26T00:00:00Z', closedAt: '2026-11-26T00:00:00Z' }), now)).toBe(false);
+    expect(highestAllowedStep([action('suspension'), proposed])).toBe('removal');
   });
 
   it('knows whether a step still stands', () => {

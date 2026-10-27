@@ -9,8 +9,12 @@
 -- go straight to any step (owner decision 2026-10-27). A first step may be a note or a warning.
 -- Restrictions end on their own at ends_at; an overturned appeal ends them at once. A suspended member stays signed in
 -- so they can read and appeal (owner decision 2026-10-27), and every other write they make is refused: a statement
--- guard on every public table, and a row guard on profiles that lets only the sign-in bookkeeping change. Removal
--- (closing an account, two moderators) is not part of this migration. Governance sanctions stay separate.
+-- guard on every public table, and a row guard on profiles that lets only the sign-in bookkeeping change.
+-- Removal, the last rung, closes the account: one moderator proposes it and a different one confirms it (the founder
+-- alone while there are fewer than two moderators, the fallback stage of TD1). From confirmation the account is read
+-- and appeal only, like a suspension; it is closed through the member's own deletion path (delete_my_account) when
+-- an appeal is upheld, or 30 days after confirmation when no appeal is open. Staff and office holders cannot be
+-- removed this way. Governance sanctions stay separate.
 
 -- Guidelines item 9: child sexual abuse material and any sexualisation of minors, separate from adult sexual content
 -- (item 5) so that only it, not all sexual content, lets a moderator skip rungs.
@@ -25,12 +29,16 @@ $$;
 CREATE TABLE IF NOT EXISTS public.member_enforcement_actions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   profile_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  step text NOT NULL CHECK (step IN ('note', 'warning', 'content_restriction', 'messaging_restriction', 'suspension')),
+  step text NOT NULL CHECK (step IN ('note', 'warning', 'content_restriction', 'messaging_restriction', 'suspension', 'removal')),
   reason_code text NOT NULL,
   note text,
   moderator_profile_id uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   ends_at timestamptz,
+  -- removal takes effect only when a second moderator confirms it; every other step is confirmed when it is applied
+  confirmed_by uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
+  confirmed_at timestamptz,
+  closed_at timestamptz,
   lifted_at timestamptz,
   lifted_by uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
   appeal_text text,
@@ -55,7 +63,7 @@ IMMUTABLE
 AS $$
   SELECT CASE p_step
     WHEN 'note' THEN 0 WHEN 'warning' THEN 1 WHEN 'content_restriction' THEN 2
-    WHEN 'messaging_restriction' THEN 3 WHEN 'suspension' THEN 4 END;
+    WHEN 'messaging_restriction' THEN 3 WHEN 'suspension' THEN 4 WHEN 'removal' THEN 5 END;
 $$;
 
 -- The step's end, or NULL while it stands. A note or warning has no end; a lifted step ended when it was lifted.
@@ -68,7 +76,8 @@ SET search_path = public
 AS $$
   SELECT max(a.ends_at)
     FROM public.member_enforcement_actions a
-   WHERE a.profile_id = p_profile AND a.step = p_step AND a.lifted_at IS NULL AND a.ends_at > now();
+   WHERE a.profile_id = p_profile AND a.step = p_step AND a.lifted_at IS NULL AND a.closed_at IS NULL
+     AND a.confirmed_at IS NOT NULL AND a.ends_at > now();
 $$;
 REVOKE ALL ON FUNCTION public.enforcement_active_until(uuid, text) FROM PUBLIC, anon, authenticated;
 
@@ -85,14 +94,20 @@ DECLARE
   v_until timestamptz;
   v_kind text := p_restriction;
 BEGIN
-  IF v_profile IS NULL THEN
+  -- the closing of a removed account runs as the member (enforcement_close_account) and must not be refused
+  IF v_profile IS NULL OR current_setting('civizen.enforcement_closing', true) = 'on' THEN
     RETURN;
   END IF;
-  v_until := public.enforcement_active_until(v_profile, 'suspension');
+  v_until := public.enforcement_active_until(v_profile, 'removal');
   IF v_until IS NOT NULL THEN
-    v_kind := 'suspension';
+    v_kind := 'removal';
   ELSE
-    v_until := public.enforcement_active_until(v_profile, p_restriction);
+    v_until := public.enforcement_active_until(v_profile, 'suspension');
+    IF v_until IS NOT NULL THEN
+      v_kind := 'suspension';
+    ELSE
+      v_until := public.enforcement_active_until(v_profile, p_restriction);
+    END IF;
   END IF;
   IF v_until IS NOT NULL THEN
     RAISE EXCEPTION 'restricted'
@@ -222,6 +237,87 @@ BEGIN
   END LOOP;
 END $$;
 
+-- ---- removal helpers ------------------------------------------------------------------------------------------------
+-- People who can moderate: not founder authority (the founder is the fallback while there are fewer than two) and not
+-- system accounts (the AI agents hold the system role and never count as a moderator).
+CREATE OR REPLACE FUNCTION public.moderation_moderator_count()
+RETURNS integer
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT count(*)::integer
+    FROM public.profiles p
+   WHERE p.deleted_at IS NULL
+     AND NOT p.is_system_agent AND p.role <> 'system'::public.app_role
+     AND NOT public.profile_has_founder_authority(p.id)
+     AND 'content.moderate'::public.app_permission = ANY (
+           public.app_role_permissions(p.role)
+           || coalesce(p.granted_permissions, '{}'::public.app_permission[])
+           || coalesce(p.custom_permissions, '{}'::public.app_permission[]))
+     AND NOT ('content.moderate'::public.app_permission = ANY (coalesce(p.denied_permissions, '{}'::public.app_permission[])));
+$$;
+REVOKE ALL ON FUNCTION public.moderation_moderator_count() FROM PUBLIC, anon, authenticated;
+
+-- Closes a removed member's account through the member's own deletion path, run as the member: open ballots are
+-- withdrawn, the profile is anonymised, verification material and the sign-in identity are removed. The restriction
+-- guards stand aside while it runs.
+CREATE OR REPLACE FUNCTION public.enforcement_close_account(p_action_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, auth
+AS $$
+DECLARE
+  v_row public.member_enforcement_actions%ROWTYPE;
+  v_user uuid;
+  v_claims text := current_setting('request.jwt.claims', true);
+  v_sub text := current_setting('request.jwt.claim.sub', true);
+BEGIN
+  SELECT * INTO v_row FROM public.member_enforcement_actions WHERE id = p_action_id FOR UPDATE;
+  IF NOT FOUND OR v_row.step <> 'removal' OR v_row.confirmed_at IS NULL OR v_row.lifted_at IS NOT NULL OR v_row.closed_at IS NOT NULL THEN
+    RETURN;
+  END IF;
+  SELECT user_id INTO v_user FROM public.profiles WHERE id = v_row.profile_id AND deleted_at IS NULL;
+  IF v_user IS NOT NULL THEN
+    PERFORM set_config('civizen.enforcement_closing', 'on', true);
+    PERFORM set_config('request.jwt.claims', json_build_object('sub', v_user, 'role', 'authenticated')::text, true);
+    PERFORM set_config('request.jwt.claim.sub', v_user::text, true);
+    PERFORM public.delete_my_account('delete');
+    PERFORM set_config('request.jwt.claims', coalesce(v_claims, ''), true);
+    PERFORM set_config('request.jwt.claim.sub', coalesce(v_sub, ''), true);
+    PERFORM set_config('civizen.enforcement_closing', '', true);
+    UPDATE public.profiles SET deletion_reason = 'moderation_removal' WHERE id = v_row.profile_id;
+  END IF;
+  UPDATE public.member_enforcement_actions SET closed_at = now() WHERE id = p_action_id;
+END;
+$$;
+REVOKE ALL ON FUNCTION public.enforcement_close_account(uuid) FROM PUBLIC, anon, authenticated;
+
+-- Removals whose 30 days have passed without an open appeal are closed (scheduled daily below).
+CREATE OR REPLACE FUNCTION public.enforcement_close_due_removals()
+RETURNS integer
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE v_id uuid; v_count integer := 0;
+BEGIN
+  FOR v_id IN
+    SELECT id FROM public.member_enforcement_actions
+     WHERE step = 'removal' AND confirmed_at IS NOT NULL AND lifted_at IS NULL AND closed_at IS NULL
+       AND ends_at <= now()
+       AND (appealed_at IS NULL OR appeal_decision = 'upheld')
+  LOOP
+    PERFORM public.enforcement_close_account(v_id);
+    v_count := v_count + 1;
+  END LOOP;
+  RETURN v_count;
+END;
+$$;
+REVOKE ALL ON FUNCTION public.enforcement_close_due_removals() FROM PUBLIC, anon, authenticated;
+
 -- ---- moderators: apply a step --------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.moderation_enforce(p_profile uuid, p_step text, p_reason_code text, p_note text DEFAULT NULL)
 RETURNS uuid
@@ -232,6 +328,7 @@ AS $$
 DECLARE
   v_me uuid := public.current_profile_id();
   v_rank integer := public.enforcement_step_rank(p_step);
+  v_target public.profiles%ROWTYPE;
   v_standing integer;
   v_ends timestamptz;
   v_id uuid;
@@ -248,16 +345,29 @@ BEGIN
   IF p_reason_code = 'other' AND nullif(btrim(p_note), '') IS NULL THEN
     RAISE EXCEPTION 'note_required' USING ERRCODE = '22023';
   END IF;
-  IF p_profile IS NULL OR NOT EXISTS (SELECT 1 FROM public.profiles WHERE id = p_profile AND deleted_at IS NULL) THEN
+  SELECT * INTO v_target FROM public.profiles WHERE id = p_profile AND deleted_at IS NULL;
+  IF NOT FOUND THEN
     RAISE EXCEPTION 'member_not_found' USING ERRCODE = '22023';
   END IF;
   IF p_profile = v_me THEN
     RAISE EXCEPTION 'cannot_moderate_self' USING ERRCODE = '42501';
   END IF;
-  -- highest step that still stands (not overturned, not lifted; warnings and notes stand)
+  IF p_step = 'removal' THEN
+    -- the same accounts the member could not close themselves: staff roles and office holders lose those first
+    IF v_target.is_system_agent OR v_target.role IN ('founder', 'admin', 'system', 'moderator', 'market_manager')
+       OR EXISTS (SELECT 1 FROM public.constitutional_offices WHERE profile_id = p_profile AND is_active) THEN
+      RAISE EXCEPTION 'cannot_remove_staff' USING ERRCODE = '42501';
+    END IF;
+    IF EXISTS (SELECT 1 FROM public.member_enforcement_actions
+                WHERE profile_id = p_profile AND step = 'removal' AND lifted_at IS NULL AND closed_at IS NULL) THEN
+      RAISE EXCEPTION 'removal_already_open' USING ERRCODE = '22023';
+    END IF;
+  END IF;
+  -- highest step that still stands (confirmed, not overturned, not lifted; warnings and notes stand)
   SELECT max(public.enforcement_step_rank(step)) INTO v_standing
     FROM public.member_enforcement_actions
-   WHERE profile_id = p_profile AND lifted_at IS NULL AND appeal_decision IS DISTINCT FROM 'overturned';
+   WHERE profile_id = p_profile AND confirmed_at IS NOT NULL AND lifted_at IS NULL
+     AND appeal_decision IS DISTINCT FROM 'overturned';
   -- a first step may be a note or a warning; after that, one rung above the highest standing step
   IF v_rank > greatest(coalesce(v_standing, 0), 0) + 1 AND p_reason_code NOT IN ('violence', 'child_safety', 'privacy') THEN
     RAISE EXCEPTION 'step_too_high' USING ERRCODE = '22023';
@@ -266,18 +376,80 @@ BEGIN
     WHEN 'content_restriction' THEN now() + interval '7 days'
     WHEN 'messaging_restriction' THEN now() + interval '7 days'
     WHEN 'suspension' THEN now() + interval '30 days' END;
-  INSERT INTO public.member_enforcement_actions (profile_id, step, reason_code, note, moderator_profile_id, ends_at)
-  VALUES (p_profile, p_step, p_reason_code, nullif(btrim(p_note), ''), v_me, v_ends)
+  INSERT INTO public.member_enforcement_actions (profile_id, step, reason_code, note, moderator_profile_id, ends_at, confirmed_by, confirmed_at)
+  VALUES (p_profile, p_step, p_reason_code, nullif(btrim(p_note), ''), v_me, v_ends,
+          CASE WHEN p_step <> 'removal' THEN v_me END, CASE WHEN p_step <> 'removal' THEN now() END)
   RETURNING id INTO v_id;
-  INSERT INTO public.user_notifications (recipient_profile_id, notification_type, title, body, entity_type, entity_id, metadata)
-  VALUES (p_profile, 'moderation_enforcement', 'A moderation decision about your account',
-          'Open Moderation to see the step, the reason and how long it lasts. You can appeal once; a different moderator will review it.',
-          'member_enforcement_action', v_id, jsonb_build_object('step', p_step));
+  -- a removal reaches the member only once confirmed
+  IF p_step <> 'removal' THEN
+    INSERT INTO public.user_notifications (recipient_profile_id, notification_type, title, body, entity_type, entity_id, metadata)
+    VALUES (p_profile, 'moderation_enforcement', 'A moderation decision about your account',
+            'Open Moderation to see the step, the reason and how long it lasts. You can appeal once; a different moderator will review it.',
+            'member_enforcement_action', v_id, jsonb_build_object('step', p_step));
+  END IF;
   RETURN v_id;
 END;
 $$;
 REVOKE ALL ON FUNCTION public.moderation_enforce(uuid, text, text, text) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.moderation_enforce(uuid, text, text, text) TO authenticated;
+
+-- A different moderator confirms a proposed removal; the founder alone may confirm while there are fewer than two
+-- moderators (TD1 fallback). From confirmation the account is read and appeal only and closes in 30 days.
+CREATE OR REPLACE FUNCTION public.moderation_enforcement_confirm(p_action_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE v_me uuid := public.current_profile_id(); v_row public.member_enforcement_actions%ROWTYPE;
+BEGIN
+  IF NOT public.has_permission('content.moderate'::public.app_permission) THEN
+    RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
+  END IF;
+  SELECT * INTO v_row FROM public.member_enforcement_actions WHERE id = p_action_id FOR UPDATE;
+  IF NOT FOUND OR v_row.step <> 'removal' OR v_row.confirmed_at IS NOT NULL OR v_row.lifted_at IS NOT NULL THEN
+    RAISE EXCEPTION 'nothing_to_confirm' USING ERRCODE = '22023';
+  END IF;
+  IF v_row.profile_id = v_me THEN
+    RAISE EXCEPTION 'cannot_moderate_self' USING ERRCODE = '42501';
+  END IF;
+  IF v_row.moderator_profile_id = v_me
+     AND NOT (public.profile_has_founder_authority(v_me) AND public.moderation_moderator_count() < 2) THEN
+    RAISE EXCEPTION 'removal_needs_second_moderator' USING ERRCODE = '42501';
+  END IF;
+  UPDATE public.member_enforcement_actions
+     SET confirmed_by = v_me, confirmed_at = now(), ends_at = now() + interval '30 days'
+   WHERE id = p_action_id;
+  INSERT INTO public.user_notifications (recipient_profile_id, notification_type, title, body, entity_type, entity_id, metadata)
+  VALUES (v_row.profile_id, 'moderation_removal', 'Your account will be closed',
+          'Two moderators decided to close your account in 30 days. Until then you can read and appeal once in Moderation; a moderator who did not take part decides.',
+          'member_enforcement_action', p_action_id, jsonb_build_object('step', 'removal'));
+END;
+$$;
+REVOKE ALL ON FUNCTION public.moderation_enforcement_confirm(uuid) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.moderation_enforcement_confirm(uuid) TO authenticated;
+
+-- A moderator withdraws a removal proposal that nobody has confirmed (a confirmed one goes through the appeal).
+CREATE OR REPLACE FUNCTION public.moderation_enforcement_withdraw(p_action_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE v_me uuid := public.current_profile_id(); v_row public.member_enforcement_actions%ROWTYPE;
+BEGIN
+  IF NOT public.has_permission('content.moderate'::public.app_permission) THEN
+    RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
+  END IF;
+  SELECT * INTO v_row FROM public.member_enforcement_actions WHERE id = p_action_id FOR UPDATE;
+  IF NOT FOUND OR v_row.step <> 'removal' OR v_row.confirmed_at IS NOT NULL OR v_row.lifted_at IS NOT NULL THEN
+    RAISE EXCEPTION 'nothing_to_confirm' USING ERRCODE = '22023';
+  END IF;
+  UPDATE public.member_enforcement_actions SET lifted_at = now(), lifted_by = v_me WHERE id = p_action_id;
+END;
+$$;
+REVOKE ALL ON FUNCTION public.moderation_enforcement_withdraw(uuid) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.moderation_enforcement_withdraw(uuid) TO authenticated;
 
 -- ---- member: appeal once; a different moderator decides ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.moderation_enforcement_appeal(p_action_id uuid, p_text text)
@@ -289,11 +461,11 @@ AS $$
 DECLARE v_me uuid := public.current_profile_id(); v_row public.member_enforcement_actions%ROWTYPE;
 BEGIN
   SELECT * INTO v_row FROM public.member_enforcement_actions WHERE id = p_action_id FOR UPDATE;
-  IF NOT FOUND OR v_row.profile_id IS DISTINCT FROM v_me THEN
+  IF NOT FOUND OR v_row.profile_id IS DISTINCT FROM v_me OR v_row.confirmed_at IS NULL THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
   IF v_row.appealed_at IS NOT NULL THEN RAISE EXCEPTION 'already_appealed' USING ERRCODE = '22023'; END IF;
-  IF v_row.lifted_at IS NOT NULL THEN RAISE EXCEPTION 'already_restored' USING ERRCODE = '22023'; END IF;
+  IF v_row.lifted_at IS NOT NULL OR v_row.closed_at IS NOT NULL THEN RAISE EXCEPTION 'already_restored' USING ERRCODE = '22023'; END IF;
   IF nullif(btrim(p_text), '') IS NULL THEN RAISE EXCEPTION 'appeal_text_required' USING ERRCODE = '22023'; END IF;
   UPDATE public.member_enforcement_actions SET appeal_text = left(btrim(p_text), 2000), appealed_at = now() WHERE id = p_action_id;
 END;
@@ -316,7 +488,8 @@ BEGIN
   IF NOT FOUND OR v_row.appealed_at IS NULL OR v_row.appeal_decided_at IS NOT NULL THEN
     RAISE EXCEPTION 'no_open_appeal' USING ERRCODE = '22023';
   END IF;
-  IF v_row.moderator_profile_id = v_me THEN
+  -- neither the moderator who decided nor, for a removal, the one who confirmed it
+  IF v_row.moderator_profile_id = v_me OR (v_row.step = 'removal' AND v_row.confirmed_by = v_me) THEN
     RAISE EXCEPTION 'appeal_needs_another_moderator' USING ERRCODE = '42501';
   END IF;
   IF v_row.profile_id = v_me THEN
@@ -333,18 +506,38 @@ BEGIN
           CASE WHEN p_overturn THEN 'Your appeal was accepted' ELSE 'Your appeal was reviewed' END,
           CASE WHEN p_overturn THEN 'The decision about your account was withdrawn.' ELSE 'A second moderator kept the decision about your account.' END,
           'member_enforcement_action', p_action_id, jsonb_build_object('step', v_row.step));
+  -- an upheld removal closes the account now
+  IF NOT p_overturn AND v_row.step = 'removal' THEN
+    PERFORM public.enforcement_close_account(p_action_id);
+  END IF;
 END;
 $$;
 REVOKE ALL ON FUNCTION public.moderation_enforcement_decide_appeal(uuid, boolean, text) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.moderation_enforcement_decide_appeal(uuid, boolean, text) TO authenticated;
 
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_cron') THEN
+    BEGIN
+      PERFORM cron.unschedule('enforcement_close_due_removals');
+    EXCEPTION WHEN OTHERS THEN
+      NULL;
+    END;
+    PERFORM cron.schedule('enforcement_close_due_removals', '17 5 * * *', $cron$SELECT public.enforcement_close_due_removals();$cron$);
+  END IF;
+EXCEPTION WHEN OTHERS THEN
+  NULL;
+END $$;
+
 -- ---- lists ---------------------------------------------------------------------------------------------------------
--- 'mine': the member's own steps; 'appeals': open appeals (moderators); 'member': one member's history (moderators).
+-- 'mine': the member's own confirmed steps; 'appeals': open appeals (moderators); 'member': one member's history
+-- (moderators); 'removals': removal proposals waiting for a second moderator (moderators).
 CREATE OR REPLACE FUNCTION public.moderation_enforcement_list(p_scope text DEFAULT 'mine', p_profile uuid DEFAULT NULL)
 RETURNS TABLE (
   id uuid, profile_id uuid, username text, step text, reason_code text, note text, moderator_profile_id uuid,
   created_at timestamptz, ends_at timestamptz, lifted_at timestamptz, appeal_text text, appealed_at timestamptz,
-  appeal_decision text, appeal_note text, appeal_decided_at timestamptz
+  appeal_decision text, appeal_note text, appeal_decided_at timestamptz, confirmed_by uuid, confirmed_at timestamptz,
+  closed_at timestamptz
 )
 LANGUAGE plpgsql
 STABLE
@@ -353,19 +546,20 @@ SET search_path = public
 AS $$
 DECLARE v_me uuid := public.current_profile_id();
 BEGIN
-  IF p_scope IN ('appeals', 'member') AND NOT public.has_permission('content.moderate'::public.app_permission) THEN
+  IF p_scope IN ('appeals', 'member', 'removals') AND NOT public.has_permission('content.moderate'::public.app_permission) THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
   RETURN QUERY
   SELECT a.id, a.profile_id, p.username, a.step, a.reason_code, a.note,
          CASE WHEN p_scope <> 'mine' THEN a.moderator_profile_id END,
          a.created_at, a.ends_at, a.lifted_at, a.appeal_text, a.appealed_at, a.appeal_decision, a.appeal_note,
-         a.appeal_decided_at
+         a.appeal_decided_at, CASE WHEN p_scope <> 'mine' THEN a.confirmed_by END, a.confirmed_at, a.closed_at
     FROM public.member_enforcement_actions a
     LEFT JOIN public.profiles p ON p.id = a.profile_id
-   WHERE (p_scope = 'mine' AND a.profile_id = v_me)
+   WHERE (p_scope = 'mine' AND a.profile_id = v_me AND a.confirmed_at IS NOT NULL)
       OR (p_scope = 'appeals' AND a.appealed_at IS NOT NULL AND a.appeal_decided_at IS NULL)
       OR (p_scope = 'member' AND a.profile_id = p_profile)
+      OR (p_scope = 'removals' AND a.step = 'removal' AND a.confirmed_at IS NULL AND a.lifted_at IS NULL)
    ORDER BY a.created_at DESC
    LIMIT 200;
 END;

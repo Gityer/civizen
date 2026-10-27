@@ -13,6 +13,7 @@ import { loadModerationActions, loadModerationQueue, type ModerationAction, type
 import { EnforcementActionsList } from '@/pages/moderation/EnforcementActionsList';
 import { ModerationActionsList } from '@/pages/moderation/ModerationActionsList';
 import { ModerationQueueList } from '@/pages/moderation/ModerationQueueList';
+import { PendingRemovalsList } from '@/pages/moderation/PendingRemovalsList';
 
 type Tab = 'mine' | 'queue' | 'appeals';
 
@@ -33,23 +34,26 @@ export default function Moderation() {
   const [appeals, setAppeals] = useState<ModerationAction[]>([]);
   const [account, setAccount] = useState<EnforcementAction[]>([]);
   const [accountAppeals, setAccountAppeals] = useState<EnforcementAction[]>([]);
+  const [removals, setRemovals] = useState<EnforcementAction[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [ownRows, queueRows, appealRows, accountRows, accountAppealRows] = await Promise.all([
+      const [ownRows, queueRows, appealRows, accountRows, accountAppealRows, removalRows] = await Promise.all([
         loadModerationActions('mine'),
         isModerator ? loadModerationQueue() : Promise.resolve([]),
         isModerator ? loadModerationActions('appeals') : Promise.resolve([]),
         loadEnforcementActions('mine'),
         isModerator ? loadEnforcementActions('appeals') : Promise.resolve([]),
+        isModerator ? loadEnforcementActions('removals') : Promise.resolve([]),
       ]);
       setMine(ownRows);
       setQueue(queueRows);
       setAppeals(appealRows);
       setAccount(accountRows);
       setAccountAppeals(accountAppealRows);
+      setRemovals(removalRows);
     } catch {
       // lists stay empty; the empty states say so
     } finally {
@@ -76,7 +80,7 @@ export default function Moderation() {
         />
         <Tabs value={tab} onValueChange={(value) => setParams({ tab: value }, { replace: true })}>
           <TabsList>
-            {isModerator ? <TabsTrigger value="queue">{t('moderation.tabs.queue')} {queue.length ? `(${queue.length})` : ''}</TabsTrigger> : null}
+            {isModerator ? <TabsTrigger value="queue">{t('moderation.tabs.queue')} {queue.length + removals.length ? `(${queue.length + removals.length})` : ''}</TabsTrigger> : null}
             {isModerator ? <TabsTrigger value="appeals">{t('moderation.tabs.appeals')} {appeals.length + accountAppeals.length ? `(${appeals.length + accountAppeals.length})` : ''}</TabsTrigger> : null}
             <TabsTrigger value="mine">{t('moderation.tabs.mine')}</TabsTrigger>
           </TabsList>
@@ -84,6 +88,11 @@ export default function Moderation() {
             <>
               {isModerator ? (
                 <TabsContent value="queue" className="pt-3">
+                  {removals.length ? (
+                    <div className="pb-4">
+                      <PendingRemovalsList actions={removals} viewerProfileId={profile?.id} onChanged={() => void load()} />
+                    </div>
+                  ) : null}
                   <ModerationQueueList items={queue} onChanged={() => void load()} />
                 </TabsContent>
               ) : null}
