@@ -7,6 +7,7 @@ export type ContributeWaiting = {
   ballotsOpen: number;
   challenges: number;
   knowledge: number;
+  positionItems: number;
 };
 
 const count = (value: unknown): number => (typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : 0);
@@ -19,6 +20,7 @@ export function parseContributeWaiting(raw: unknown): ContributeWaiting {
     ballotsOpen: count(row.ballots_open),
     challenges: count(row.challenges),
     knowledge: count(row.knowledge),
+    positionItems: count(row.position_items),
   };
 }
 
@@ -33,6 +35,7 @@ export const WAITING_ITEMS = [
   { field: 'actionsDue', path: '/contribute/matters?view=needs_action', labelKey: 'contribute.waiting.actionsDue' },
   { field: 'proposalsToSupport', path: '/governance', labelKey: 'contribute.waiting.proposalsToSupport' },
   { field: 'ballotsOpen', path: '/governance/voting', labelKey: 'contribute.waiting.ballotsOpen' },
+  { field: 'positionItems', path: '/organisation', labelKey: 'contribute.waiting.positionItems' },
 ] as const;
 
 /** Lane ids that show how many items are open in them. */

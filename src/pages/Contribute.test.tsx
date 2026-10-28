@@ -19,7 +19,7 @@ vi.mock('@/components/layout/AppLayout', () => ({
 
 vi.mock('@/lib/contribute-waiting', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/lib/contribute-waiting')>()),
-  loadContributeWaiting: () => Promise.resolve({ actionsDue: 2, proposalsToSupport: 0, ballotsOpen: 1, challenges: 3, knowledge: 0 }),
+  loadContributeWaiting: () => Promise.resolve({ actionsDue: 2, proposalsToSupport: 0, ballotsOpen: 1, challenges: 3, knowledge: 0, positionItems: 0 }),
 }));
 
 vi.mock('@/contexts/LanguageContext', () => ({

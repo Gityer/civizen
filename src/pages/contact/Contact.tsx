@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { contactEmail } from '@/lib/contact';
+import { ContactForm } from '@/pages/contact/ContactForm';
 
 const WEBSITE_URL = 'https://civizen.world';
 
@@ -69,11 +70,10 @@ export default function Contact() {
 
         <SectionCard icon={Mail} title={t('contact.email.title')} testId="contact-email">
           <p className="text-sm leading-6 text-muted-foreground">{t('contact.email.body')}</p>
+          <ContactForm />
           {email ? (
-            <a href={`mailto:${email}`} className={linkClass}>{email}</a>
-          ) : (
-            <p className="text-sm leading-6 text-muted-foreground">{t('contact.email.pending')}</p>
-          )}
+            <p className="text-sm text-muted-foreground">{t('contact.orWrite')} <a href={`mailto:${email}`} className={linkClass}>{email}</a></p>
+          ) : null}
         </SectionCard>
 
         {SECTIONS.map((section) => (
@@ -88,6 +88,10 @@ export default function Contact() {
         <SectionCard icon={AlertTriangle} title={t('contact.safety.title')} testId="contact-safety">
           <p className="text-sm leading-6 text-muted-foreground">{t('contact.safety.body')}</p>
         </SectionCard>
+
+        <p className="px-1 text-sm text-muted-foreground">
+          <Link to="/organisation" className={linkClass}>{t('contact.organisation')}</Link>
+        </p>
 
         <p className="flex items-center gap-2 px-1 text-sm text-muted-foreground">
           <Globe className="h-4 w-4" aria-hidden />

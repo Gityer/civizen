@@ -156,6 +156,19 @@ export const ASSISTANT_CAPABILITIES_PART_2: AssistantCapability[] = [
     sourceRefs: ['src/pages/settings/HelpSupport.tsx', 'src/pages/settings/help-support-links.ts'],
   },
   {
+    id: 'organisation_positions',
+    name: 'Organisation: units, positions and who is responsible',
+    status: 'implemented',
+    description:
+      'Responsibility in Civizen belongs to positions inside units (for example Member Support Coordinator, Data Protection Officer, Release Manager, Moderation Lead, Armenian and Russian Language Reviewers), not to individual people. Each position has a mandate, duties, a queue of open items (decisions with a recommended option, tasks, reviews, contact messages) and a journal. When the holder changes, the next holder finds every open item and the handover note. A vacant position is answered by the position above it, and at the top by the founder office. Contact messages sent from the Contact page go to the position for the chosen topic (general, privacy, safety, security, press).',
+    howTo: 'Open Organisation from the footer or Settings > Help and support. Holders open their position to take on items, resolve them and write handover notes.',
+    routes: ['/organisation', '/contact'],
+    roles: ['member', 'guest'],
+    relatedCapabilities: ['help_support'],
+    aliases: ['who is responsible', 'organisation chart', 'org chart', 'positions', 'contact staff', 'data protection officer', 'support team'],
+    sourceRefs: ['src/pages/organisation/Organisation.tsx', 'src/pages/organisation/PositionPage.tsx', 'src/lib/organisation.ts'],
+  },
+  {
     id: 'reading_preferences',
     name: 'Reading: text size, contrast and motion',
     status: 'implemented',

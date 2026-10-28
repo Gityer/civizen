@@ -3,6 +3,8 @@ import { Navigate, Route } from 'react-router-dom';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import {
   Contact,
+  Organisation,
+  OrganisationPosition,
   DevEconomicsVisual,
   Features,
   FundingAdmin,
@@ -14,6 +16,8 @@ import {
 export const appRoutes2 = (
   <>
       <Route path="/contact" element={<Contact />} />
+      <Route path="/organisation" element={<Organisation />} />
+      <Route path="/organisation/:positionKey" element={<OrganisationPosition />} />
       <Route
         path="/settings/admin/governance"
         element={

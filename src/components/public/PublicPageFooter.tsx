@@ -15,6 +15,7 @@ const FOOTER_LINKS = [
   { to: '/terms', labelKey: 'onboarding.footerTerms' },
   { to: '/privacy', labelKey: 'onboarding.footerPrivacy' },
   { to: '/download', labelKey: 'onboarding.footerDownload' },
+  { to: '/organisation', labelKey: 'organisation.title' },
   { to: '/contact', labelKey: 'onboarding.footerContact' },
 ] as const;
 
