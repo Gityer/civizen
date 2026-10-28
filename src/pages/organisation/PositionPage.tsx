@@ -104,7 +104,7 @@ export default function PositionPage() {
                 {detail.parentPositionKey ? (
                   <>
                     {t('organisation.reportsTo')}{' '}
-                    <Link to={`/organisation/${detail.parentPositionKey}`} className="text-primary underline-offset-2 hover:underline">{detail.parentTitle}</Link>
+                    <Link to={`/organisation/${detail.parentPositionKey}`} className="text-primary underline underline-offset-2">{detail.parentTitle}</Link>
                   </>
                 ) : t('organisation.reportsToFounder')}
                 {detail.contactTopic ? <> · {t('organisation.answersContactTopic', { topic: detail.contactTopic })}</> : null}
