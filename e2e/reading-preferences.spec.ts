@@ -41,6 +41,9 @@ test('reading preferences apply at once and persist on this device', async ({ pa
   await expect(page.locator('html')).toHaveAttribute('data-motion', 'reduce');
 
   await expect(page.getByTestId('reading-preferences')).toBeVisible({ timeout: 20_000 });
+  // reduced motion still fades opacity in (Framer Motion drops only movement): measure colours once it has settled
+  await page.waitForLoadState('networkidle').catch(() => undefined);
+  await page.waitForTimeout(800);
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
   const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
   expect(serious.map((v) => `${v.id}: ${v.nodes[0]?.target?.join(' ')}`)).toEqual([]);
