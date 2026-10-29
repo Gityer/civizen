@@ -8957,6 +8957,36 @@ isOneToOne: false
 "complete_matter_collaborative_work":
 { Args: { "p_allow_outstanding"?: boolean,"p_matter_id": string,"p_reason"?: string }; Returns: undefined
                            },
+"org_add_position_note":
+{ Args: { "p_position_key": string,"p_text": string }; Returns: undefined
+                           },
+"org_appoint_position_holder":
+{ Args: { "p_kind"?: string,"p_note"?: string,"p_position_key": string,"p_profile": string }; Returns: string
+                           },
+"org_can_appoint_position":
+{ Args: { "p_position_key": string }; Returns: boolean
+                           },
+"org_chart":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"org_end_position_term":
+{ Args: { "p_handover_note"?: string,"p_reason": string,"p_term_id": string }; Returns: undefined
+                           },
+"org_my_positions":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"org_open_position_item":
+{ Args: { "p_body"?: string,"p_due_at"?: string,"p_kind": string,"p_position_key": string,"p_priority"?: string,"p_recommendation"?: string,"p_source_ref"?: string,"p_source_type"?: string,"p_title": string }; Returns: string
+                           },
+"org_position_detail":
+{ Args: { "p_position_key": string }; Returns: Json
+                           },
+"org_update_position_item":
+{ Args: { "p_action": string,"p_item_id": string,"p_text"?: string }; Returns: undefined
+                           },
+"submit_contact_message":
+{ Args: { "p_email": string,"p_message": string,"p_name": string,"p_topic": string }; Returns: string
+                           },
 "contribute_waiting_for_me":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },

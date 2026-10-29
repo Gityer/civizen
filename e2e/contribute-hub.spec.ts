@@ -37,6 +37,7 @@ test('the Contribute hub shows what is waiting for the member, and lanes are lin
     ['actionsDue', 'actions_due', 'Matter actions due', '/contribute/matters?view=needs_action'],
     ['proposalsToSupport', 'proposals_to_support', 'Proposals to support', '/governance'],
     ['ballotsOpen', 'ballots_open', 'Open votes', '/governance/voting'],
+    ['positionItems', 'position_items', 'Open items in your positions', '/organisation'],
   ] as const;
   for (const [field, key, label, href] of items) {
     const link = strip.getByTestId(`contribute-waiting-${field}`);

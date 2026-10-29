@@ -1055,12 +1055,12 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.243",
     "appReleaseId": "20261026-v0.1.243",
     "androidVersionCode": 245,
-    "gitSha": "ef4558137365ce58e113f532ac65d315e0e0f342",
-    "generatedAt": "2026-10-27T20:24:42.404Z",
-    "sourceFingerprint": "aa6e37486535de9a9d01cd64abfd8526a6e22f6785e2f211239b28bca4284bc9",
+    "gitSha": "2d9ab71c24875c31834fa6ff08567d89d7b2aeba",
+    "generatedAt": "2026-10-28T07:55:22.717Z",
+    "sourceFingerprint": "ae302d386dc3086293f780f7efe84ed0c6f890ce1f8b2fa9cf3a76241bd17326",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 399
+    "chunkCount": 400
   },
   "capabilities": [
     {
@@ -1852,6 +1852,38 @@ var KNOWLEDGE_PACK = {
       "sourceRefs": [
         "src/pages/settings/HelpSupport.tsx",
         "src/pages/settings/help-support-links.ts"
+      ]
+    },
+    {
+      "id": "organisation_positions",
+      "name": "Organisation: units, positions and who is responsible",
+      "status": "implemented",
+      "description": "Responsibility in Civizen belongs to positions inside units (for example Member Support Coordinator, Data Protection Officer, Release Manager, Moderation Lead, Armenian and Russian Language Reviewers), not to individual people. Each position has a mandate, duties, a queue of open items (decisions with a recommended option, tasks, reviews, contact messages) and a journal. When the holder changes, the next holder finds every open item and the handover note. A vacant position is answered by the position above it, and at the top by the founder office. Contact messages sent from the Contact page go to the position for the chosen topic (general, privacy, safety, security, press).",
+      "howTo": "Open Organisation from the footer or Settings > Help and support. Holders open their position to take on items, resolve them and write handover notes.",
+      "routes": [
+        "/organisation",
+        "/contact"
+      ],
+      "roles": [
+        "member",
+        "guest"
+      ],
+      "relatedCapabilities": [
+        "help_support"
+      ],
+      "aliases": [
+        "who is responsible",
+        "organisation chart",
+        "org chart",
+        "positions",
+        "contact staff",
+        "data protection officer",
+        "support team"
+      ],
+      "sourceRefs": [
+        "src/pages/organisation/Organisation.tsx",
+        "src/pages/organisation/PositionPage.tsx",
+        "src/lib/organisation.ts"
       ]
     },
     {
@@ -3789,6 +3821,15 @@ var KNOWLEDGE_PACK = {
       "title": "Help and support",
       "path": "src/lib/assistant/catalog.ts",
       "text": "Help and support status=implemented. Settings page that gathers where to get help: Ask Civi in Messaging, the public Documents, Why Civizen Exists, the legal status notice, and the Terms. Open Settings > Help and support. Routes: /settings/help.",
+      "status": "implemented",
+      "priority": 3,
+      "kind": "capability"
+    },
+    {
+      "id": "capability:organisation_positions",
+      "title": "Organisation: units, positions and who is responsible",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": "Organisation: units, positions and who is responsible status=implemented. Responsibility in Civizen belongs to positions inside units (for example Member Support Coordinator, Data Protection Officer, Release Manager, Moderation Lead, Armenian and Russian Language Reviewers), not to individual people. Each position has a mandate, duties, a queue of open items (decisions with a recommended option, tasks, reviews, contact messages) and a journal. When the holder changes, the next holder finds every open item and the handover note. A vacant position is answered by the position above it, and at the top by the founder office. Contact messages sent from the Contact page go to the position for the chosen topic (general, privacy, safety, security, press). Open Organisation from the footer or Settings > Help and support. Holders open their position to take on items, resolve them and write handover notes. Routes: /organisation, /contact.",
       "status": "implemented",
       "priority": 3,
       "kind": "capability"

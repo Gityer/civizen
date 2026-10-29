@@ -4,8 +4,7 @@ export const m_messages_contact = {
     "subtitle": "How to reach the people who run Civizen, and where to go for each kind of question.",
     "email": {
       "title": "Write to us",
-      "body": "Questions about Civizen, privacy requests (a copy of your data, a correction or deletion) and anything the options below do not cover.",
-      "pending": "The contact address is being set up and will appear here. Until then, use the options below; signed-in members can download or delete their data in Settings › Privacy."
+      "body": "Questions about Civizen, privacy requests (a copy of your data, a correction or deletion) and anything the options below do not cover."
     },
     "decisions": {
       "title": "Moderation decisions",
@@ -31,6 +30,25 @@ export const m_messages_contact = {
       "title": "If someone is in danger",
       "body": "Civizen is not an emergency service and cannot send help. If you or someone else is in immediate danger, call your local emergency number (for example 112 in Europe or 911 in North America)."
     },
-    "website": "Project website"
+    "website": "Project website",
+    "orWrite": "Or write to",
+    "organisation": "Who answers each topic: see the organisation",
+    "form": {
+      "topic": "Topic",
+      "topics": {
+        "general": "General question",
+        "privacy": "Privacy and my data",
+        "safety": "Safety or harmful content",
+        "security": "Security problem",
+        "press": "Press and partners"
+      },
+      "name": "Your name (optional)",
+      "email": "Your e-mail, for the reply",
+      "message": "Your message",
+      "routing": "Your message goes to the position responsible for this topic, and stays with it if the person holding it changes.",
+      "send": "Send",
+      "sent": "Thank you. Your message reached the position responsible for this topic; they will reply by e-mail.",
+      "tooMany": "Too many messages from this address in the last hour. Please try again later."
+    }
   }
 };

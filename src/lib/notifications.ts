@@ -70,6 +70,11 @@ export function notificationRoute(notification: Pick<AppNotification, 'entityTyp
     case 'moderation_action':
     case 'member_enforcement_action':
       return '/moderation';
+    case 'org_position':
+    case 'org_position_item': {
+      const positionKey = typeof notification.metadata.position_key === 'string' ? notification.metadata.position_key : '';
+      return positionKey ? `/organisation/${positionKey}` : '/organisation';
+    }
     default:
       return null;
   }

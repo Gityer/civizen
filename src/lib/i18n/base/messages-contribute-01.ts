@@ -7,6 +7,7 @@ export const m_messages_contribute_01 = {
       "actionsDue": "Matter actions due: {count}",
       "proposalsToSupport": "Proposals to support: {count}",
       "ballotsOpen": "Open votes: {count}",
+      "positionItems": "Open items in your positions: {count}",
       "none": "Nothing is waiting for you right now."
     },
     "laneOpen": "Open now: {count}",
