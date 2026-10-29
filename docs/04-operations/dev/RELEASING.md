@@ -72,7 +72,7 @@ The hosted database receives `supabase/migrations/` only at release time, by han
 access (`REMOTE_DB_ACCESS.md`). The web bundle must never ship before the functions and policies it calls exist
 on production, so the order is always:
 
-1. Full backup first (`pg_dump` custom format, kept on the host under `~/civizen-db-backups/`).
+1. Full backup first: `scripts/db/backup-restore-drill.sh` on the host (see **Backups and the restore drill** below). It dumps, restores into a scratch database and checks every table's rows; use the dump only when it prints `DRILL OK`.
 2. Apply each new migration file in timestamp order, statement by statement (the same way
    `scripts/local-supabase/replay-migrations.sh` does locally), each file in its own transaction.
 3. Run the matching `supabase/tests/*_test.sql` checks against the local stack beforehand; after the apply,
@@ -82,6 +82,24 @@ on production, so the order is always:
 
 Record the applied range and the backup file name in the plan tracker
 (`docs/03-platform/product-design/product-inventory-and-implementation-plan-2026-10-07.md`, Section 10).
+
+### Backups and the restore drill
+
+`scripts/db/backup-restore-drill.sh` runs where it can `docker exec` into the database container (`CIVIZEN_DB_CONTAINER`; the default is the local stack's). In order:
+
+1. Dumps the database (custom format) into `CIVIZEN_BACKUP_DIR` and writes a `.sha256` next to the dump.
+2. Restores the dump into a scratch database.
+3. Compares the row count of every table in `public` and `auth`. A table that differs fails the drill, unless it is listed in `CIVIZEN_DRILL_VOLATILE` (tables written every minute, such as page views and sessions).
+4. Drops the scratch database and keeps the newest `CIVIZEN_BACKUP_KEEP` dumps (default 14).
+5. Hands the dump to `CIVIZEN_BACKUP_OFFSITE_CMD` when that is set (for example an rclone or scp command; the dump's path is appended).
+
+It exits non-zero on any failure, so a scheduler can alert on it. A negative run (one row written after the dump) reports `MISMATCH` and exits 1.
+
+What it does not cover yet (tracker row "(found) Backups"):
+
+- **Uploaded files.** Storage objects (avatars, verification images, attachments) live in the storage volume, not in the database dump. They need their own copy.
+- **Vault secrets and `cron` job definitions.** The scratch restore runs without the platform roles, so these are dumped but not verified. The restore reports about 50 warnings for platform-owned objects; the row counts decide.
+- **Schedule and off-site storage.** Both are host configuration: a daily timer running the drill, plus `CIVIZEN_BACKUP_OFFSITE_CMD` pointing at storage that is not this host.
 
 ## Release Flow
 

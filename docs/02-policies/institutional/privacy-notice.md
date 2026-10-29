@@ -46,6 +46,10 @@ Civizen is operated by the Mature Humanity initiative. Contact: the e-mail addre
   "/matters: 40 views today"). The count stores no IP address, account, cookie or device, so it cannot be traced to
   anyone. Staff use these totals, together with counts of sign-ups, ballots and Matters, to see whether people manage
   to take part. There are no third-party analytics or advertising trackers.
+- **Error reports.** When the app hits an unexpected error in your browser, it sends Civizen a short technical
+  report: the error message, the first lines of where it happened in the code, the kind of page (record numbers
+  removed, for example "/matters/:id") and the app version. It holds no IP address, account, cookie or device, and is
+  kept as daily counts for 30 days so staff can find and fix faults.
 - **Moderation.** Reports you make, the reason given, and moderators' decisions and appeals about content. The person
   you report is not told who reported them.
 

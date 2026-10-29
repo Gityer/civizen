@@ -4,6 +4,8 @@
 
 ## Current focus
 
+**Error reports and restore drill (2026-10-27):** browser errors now reach `record_client_error` (daily aggregate, no identifiers; staff card on Settings › Admin › Participation) unless `VITE_ERROR_REPORT_ENDPOINT` points elsewhere. `scripts/db/backup-restore-drill.sh` dumps, restores into a scratch DB and compares every table's rows; schedule, off-site copy and storage-file backup are ops (pending).
+
 **Rate limits per account (2026-10-27, TD4):** posts, comments, new conversations, messages and reports are counted per member in `rate_limit_events` by insert triggers; limits live in `rate_limits`; refusals are SQLSTATE PT429 (HTTP 429) and the app shows `rateLimitMessage` (`src/lib/rate-limit.ts`). Server work without a member is never counted. Reset locally with `DELETE FROM public.rate_limit_events;`. Sign-up per-address limit is production auth configuration (pending).
 
 **E2E in CI (2026-10-27, AyMe job jafe649b7):** the full Playwright suite runs in the CI `e2e` job against a local stack built from migrations + `scripts/local-supabase/seed-test-fixtures.sql` (now also `moderator_two`, a demo shared knowledge space and a public Matter; specs must not depend on rows other specs create); no dump or edge functions needed. `useBallotSignature` no longer lets the stored-signature load overwrite the fresh signing result, and only an envelope over the current receipt counts. `check-doc-paths.mjs` skips build-output folders (`public/downloads/`, `public/updates/bundles/`, `dist/`). Edge functions load supabase-js as `npm:` (not esm.sh). CI and migrations-replay run on Node 24 action majors and `.nvmrc`; the manual Android Channel Build workflow is still on v4 actions (pending). Each found issue has its own row in the v2 tracker.

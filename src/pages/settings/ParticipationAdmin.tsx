@@ -3,6 +3,7 @@ import { BarChart3 } from 'lucide-react';
 
 import { AppLayout } from '@/components/layout/AppLayout';
 import { AppPageHeader } from '@/components/layout/AppPageHeader';
+import { ClientErrorsCard } from '@/components/admin/ClientErrorsCard';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -96,6 +97,7 @@ export default function ParticipationAdmin() {
             </Card>
           </>
         ) : null}
+        <ClientErrorsCard />
       </div>
     </AppLayout>
   );
