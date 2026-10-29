@@ -94,6 +94,18 @@ jobs:
           cat vite.log
           exit 1
 
+      # The functions run with no provider secrets (no AI, SMTP, push or TURN keys): e2e/edge-functions.spec.ts checks
+      # that each one boots and keeps its access and input contracts.
+      - name: Serve edge functions
+        run: |
+          cd ~/civizen-local-supabase
+          nohup npx -y supabase functions serve > "$GITHUB_WORKSPACE/functions.log" 2>&1 &
+          for _ in $(seq 1 90); do grep -q "Serving functions" "$GITHUB_WORKSPACE/functions.log" && break; sleep 2; done
+          grep -q "Serving functions" "$GITHUB_WORKSPACE/functions.log" || { cat "$GITHUB_WORKSPACE/functions.log"; exit 1; }
+          eval "$(npx -y supabase status -o env | grep -E '^(API_URL|ANON_KEY)=')"
+          echo "CIVIZEN_E2E_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "CIVIZEN_E2E_ANON_KEY=$ANON_KEY" >> "$GITHUB_ENV"
+
       # `github` turns each failure into an annotation on the pull request; `list` keeps the readable log.
       - name: E2E
         run: npm run e2e -- --reporter=github,list
@@ -108,4 +120,5 @@ jobs:
           path: |
             test-results/
             vite.log
+            functions.log
           retention-days: 7
