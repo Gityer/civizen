@@ -6,7 +6,7 @@ import { ownProfileRingDisplay } from '@/lib/civizen-score-ring-display';
 import { scoreProgressCaption } from '@/lib/civizen-score-caption';
 import { type PillarId } from '@/lib/constants';
 import { toast } from 'sonner';
-import { rateLimitMessage } from '@/lib/rate-limit';
+import { writeRefusalMessage } from '@/lib/write-refusal';
 import { serializePostContent } from '@/lib/posts-html';
 import { buildCuratedStoryList, type CuratedStoryListItem } from '@/lib/development-story-curation';
 import { type Post } from '@/pages/home/home-shared';
@@ -294,7 +294,7 @@ export function useHomeContent({ endorsements, educationCount, verifiedEducation
           clearPostComposerDraft();
         } else {
           toast.error(t('home.couldNotCreatePost'), {
-            description: rateLimitMessage(error, t) ?? t('common.tryAgainMoment'),
+            description: writeRefusalMessage(error, t) ?? t('common.tryAgainMoment'),
           });
         }
         return;

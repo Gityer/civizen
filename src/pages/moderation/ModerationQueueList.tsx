@@ -20,6 +20,7 @@ import {
   type ModerationQueueItem,
   type ModerationReasonCode,
 } from '@/lib/moderation';
+import { EnforcementForm } from '@/pages/moderation/EnforcementForm';
 
 /** One open report group (all reports on the same item): claim, hide with a reason, or dismiss. */
 function QueueCard({ item, onDone }: { item: ModerationQueueItem; onDone: () => void }) {
@@ -69,7 +70,8 @@ function QueueCard({ item, onDone }: { item: ModerationQueueItem; onDone: () => 
         ))}
       </div>
       {item.targetKind === 'user' ? (
-        <p className="text-xs text-muted-foreground">{t('moderation.queue.userHint')}</p>
+        <EnforcementForm profileId={item.targetId} username={item.authorUsername}
+          initialReason={(item.reasonCodes.find(isReasonCode) as ModerationReasonCode | undefined) ?? 'other'} onDone={onDone} />
       ) : (
         <div className="grid gap-2 sm:grid-cols-[minmax(0,14rem)_1fr]">
           <Select value={reason} onValueChange={(value) => setReason(value as ModerationReasonCode)}>
@@ -103,6 +105,16 @@ function QueueCard({ item, onDone }: { item: ModerationQueueItem; onDone: () => 
           {t('moderation.queue.dismiss')}
         </Button>
       </div>
+      {item.targetKind !== 'user' && item.authorProfileId ? (
+        <details>
+          <summary className="cursor-pointer text-xs text-muted-foreground">
+            {item.authorUsername ? t('memberEnforcement.form.title', { username: item.authorUsername }) : t('memberEnforcement.form.titleNoName')}
+          </summary>
+          <div className="pt-2">
+            <EnforcementForm profileId={item.authorProfileId} username={item.authorUsername} initialReason={reason} onDone={onDone} />
+          </div>
+        </details>
+      ) : null}
     </Card>
   );
 }

@@ -6,7 +6,7 @@ export const MODERATION_TARGET_KINDS = ['post', 'post_comment', 'matter', 'matte
 export type ModerationTargetKind = (typeof MODERATION_TARGET_KINDS)[number];
 
 /** Same list as public.moderation_reason_codes(); the order is the order shown in the report dialog. */
-export const MODERATION_REASON_CODES = ['spam', 'harassment', 'hate', 'violence', 'sexual', 'misinformation', 'privacy', 'illegal', 'other'] as const;
+export const MODERATION_REASON_CODES = ['spam', 'harassment', 'hate', 'violence', 'sexual', 'child_safety', 'misinformation', 'privacy', 'illegal', 'other'] as const;
 export type ModerationReasonCode = (typeof MODERATION_REASON_CODES)[number];
 
 export type ModerationQueueItem = {

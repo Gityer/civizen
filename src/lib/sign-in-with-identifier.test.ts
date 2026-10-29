@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
+import { isSuspendedSignInError } from '@/lib/member-enforcement';
 
 import {
   INVALID_LOGIN_MESSAGE,
   SIGN_IN_WITH_IDENTIFIER_FUNCTION,
+  SUSPENDED_MESSAGE,
   TOO_MANY_ATTEMPTS_MESSAGE,
   isEmailIdentifier,
   signInWithIdentifier,
@@ -89,6 +91,20 @@ describe('signInWithIdentifier', () => {
     expect(rpc).not.toHaveBeenCalled();
     expect(signInWithPassword).not.toHaveBeenCalled();
     expect(setSession).not.toHaveBeenCalled();
+  });
+
+  it('reports a suspended account on 403 without a legacy retry', async () => {
+    const { client, rpc, signInWithPassword } = createClient({
+      invokeData: { error: 'user_banned' },
+      invokeError: httpError(403),
+    });
+
+    const result = await signInWithIdentifier(client as never, 'member', 'right-password');
+
+    expect(result.error?.message).toBe(SUSPENDED_MESSAGE);
+    expect(isSuspendedSignInError(result.error)).toBe(true);
+    expect(rpc).not.toHaveBeenCalled();
+    expect(signInWithPassword).not.toHaveBeenCalled();
   });
 
   it('falls back to the legacy lookup when the function is unreachable', async () => {

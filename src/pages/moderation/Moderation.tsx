@@ -8,9 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { permissionListHasAny } from '@/lib/access-control';
+import { loadEnforcementActions, type EnforcementAction } from '@/lib/member-enforcement';
 import { loadModerationActions, loadModerationQueue, type ModerationAction, type ModerationQueueItem } from '@/lib/moderation';
+import { EnforcementActionsList } from '@/pages/moderation/EnforcementActionsList';
 import { ModerationActionsList } from '@/pages/moderation/ModerationActionsList';
 import { ModerationQueueList } from '@/pages/moderation/ModerationQueueList';
+import { PendingRemovalsList } from '@/pages/moderation/PendingRemovalsList';
 
 type Tab = 'mine' | 'queue' | 'appeals';
 
@@ -29,19 +32,28 @@ export default function Moderation() {
   const [mine, setMine] = useState<ModerationAction[]>([]);
   const [queue, setQueue] = useState<ModerationQueueItem[]>([]);
   const [appeals, setAppeals] = useState<ModerationAction[]>([]);
+  const [account, setAccount] = useState<EnforcementAction[]>([]);
+  const [accountAppeals, setAccountAppeals] = useState<EnforcementAction[]>([]);
+  const [removals, setRemovals] = useState<EnforcementAction[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [ownRows, queueRows, appealRows] = await Promise.all([
+      const [ownRows, queueRows, appealRows, accountRows, accountAppealRows, removalRows] = await Promise.all([
         loadModerationActions('mine'),
         isModerator ? loadModerationQueue() : Promise.resolve([]),
         isModerator ? loadModerationActions('appeals') : Promise.resolve([]),
+        loadEnforcementActions('mine'),
+        isModerator ? loadEnforcementActions('appeals') : Promise.resolve([]),
+        isModerator ? loadEnforcementActions('removals') : Promise.resolve([]),
       ]);
       setMine(ownRows);
       setQueue(queueRows);
       setAppeals(appealRows);
+      setAccount(accountRows);
+      setAccountAppeals(accountAppealRows);
+      setRemovals(removalRows);
     } catch {
       // lists stay empty; the empty states say so
     } finally {
@@ -68,24 +80,35 @@ export default function Moderation() {
         />
         <Tabs value={tab} onValueChange={(value) => setParams({ tab: value }, { replace: true })}>
           <TabsList>
-            {isModerator ? <TabsTrigger value="queue">{t('moderation.tabs.queue')} {queue.length ? `(${queue.length})` : ''}</TabsTrigger> : null}
-            {isModerator ? <TabsTrigger value="appeals">{t('moderation.tabs.appeals')} {appeals.length ? `(${appeals.length})` : ''}</TabsTrigger> : null}
+            {isModerator ? <TabsTrigger value="queue">{t('moderation.tabs.queue')} {queue.length + removals.length ? `(${queue.length + removals.length})` : ''}</TabsTrigger> : null}
+            {isModerator ? <TabsTrigger value="appeals">{t('moderation.tabs.appeals')} {appeals.length + accountAppeals.length ? `(${appeals.length + accountAppeals.length})` : ''}</TabsTrigger> : null}
             <TabsTrigger value="mine">{t('moderation.tabs.mine')}</TabsTrigger>
           </TabsList>
           {loading ? <p className="pt-4 text-sm text-muted-foreground">{t('common.loading')}</p> : (
             <>
               {isModerator ? (
                 <TabsContent value="queue" className="pt-3">
+                  {removals.length ? (
+                    <div className="pb-4">
+                      <PendingRemovalsList actions={removals} viewerProfileId={profile?.id} onChanged={() => void load()} />
+                    </div>
+                  ) : null}
                   <ModerationQueueList items={queue} onChanged={() => void load()} />
                 </TabsContent>
               ) : null}
               {isModerator ? (
                 <TabsContent value="appeals" className="pt-3">
                   <ModerationActionsList actions={appeals} mode="appeals" viewerProfileId={profile?.id} onChanged={() => void load()} />
+                  <div className="pt-4">
+                    <EnforcementActionsList actions={accountAppeals} mode="appeals" viewerProfileId={profile?.id} onChanged={() => void load()} />
+                  </div>
                 </TabsContent>
               ) : null}
               <TabsContent value="mine" className="pt-3">
-                <ModerationActionsList actions={mine} mode="mine" onChanged={() => void load()} />
+                <EnforcementActionsList actions={account} mode="mine" onChanged={() => void load()} />
+                <div className="pt-4">
+                  <ModerationActionsList actions={mine} mode="mine" onChanged={() => void load()} />
+                </div>
               </TabsContent>
             </>
           )}

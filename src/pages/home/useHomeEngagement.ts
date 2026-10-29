@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { rateLimitMessage } from '@/lib/rate-limit';
+import { writeRefusalMessage } from '@/lib/write-refusal';
 import { type SocialProvider } from '@/lib/civizen-org-account';
 import { providerDisplayName, publishPostToSocial } from '@/lib/social-accounts';
 import { isRecordablePostId } from '@/lib/post-views';
@@ -194,7 +194,7 @@ export function useHomeEngagement({ posts, setPosts, setPostComments, setExpande
           });
         } else {
           toast.error(t('home.couldNotCreateComment'), {
-            description: rateLimitMessage(error, t) ?? t('common.tryAgainMoment'),
+            description: writeRefusalMessage(error, t) ?? t('common.tryAgainMoment'),
           });
         }
         return;

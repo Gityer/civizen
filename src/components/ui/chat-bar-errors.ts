@@ -1,10 +1,10 @@
 import { toast } from 'sonner';
-import { rateLimitMessage } from '@/lib/rate-limit';
+import { writeRefusalMessage } from '@/lib/write-refusal';
 
 type Translate = (key: string, vars?: Record<string, string | number>) => string;
 
 /**
- * The failure toast for a chat action: the rate-limit sentence when the server refused for that reason, otherwise
+ * The failure toast for a chat action: the refusal sentence (limit or moderation restriction) when the server gave one, otherwise
  * `withReasonKey` with the server's message when there is one, otherwise `failedKey`.
  */
 export function toastChatFailure(
@@ -14,5 +14,5 @@ export function toastChatFailure(
   withReasonKey?: string,
 ): void {
   const reason = error?.message?.trim();
-  toast.error(rateLimitMessage(error, t) ?? (withReasonKey && reason ? t(withReasonKey, { reason }) : t(failedKey)));
+  toast.error(writeRefusalMessage(error, t) ?? (withReasonKey && reason ? t(withReasonKey, { reason }) : t(failedKey)));
 }
