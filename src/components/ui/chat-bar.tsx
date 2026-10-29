@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+import { toastChatFailure } from '@/components/ui/chat-bar-errors';
 
 import { buildEncryptedAttachmentLine, encryptAttachmentBytes } from '@/lib/messaging-attachments-e2ee';
 import { openAttachmentUrlWith, threadSharedKeyFrom } from '@/lib/messaging-attachment-open';
@@ -1034,7 +1035,7 @@ export function ChatBar({
     setReportSubmitting(false);
     if (error) {
       console.error('ChatBar: report submit failed', error);
-      toast.error(tRef.current('chatBar.private.profile.reportSubmitFailed'));
+      toastChatFailure(error, tRef.current, 'chatBar.private.profile.reportSubmitFailed');
       return;
     }
     setReportDialogOpen(false);
@@ -2296,10 +2297,7 @@ export function ChatBar({
         .single();
 
       if (error || !inserted) {
-        const reason = error?.message?.trim();
-        toast.error(
-          reason ? t('chatBar.private.sendFailedWithReason', { reason }) : t('chatBar.private.sendFailed'),
-        );
+        toastChatFailure(error, t, 'chatBar.private.sendFailed', 'chatBar.private.sendFailedWithReason');
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === messageObj.id ? { ...msg, id: `failed-${msg.id}` } : msg
@@ -2760,10 +2758,7 @@ export function ChatBar({
         .single();
 
       if (error || !inserted) {
-        const reason = error?.message?.trim();
-        toast.error(
-          reason ? t('chatBar.private.sendFailedWithReason', { reason }) : t('chatBar.private.sendFailed'),
-        );
+        toastChatFailure(error, t, 'chatBar.private.sendFailed', 'chatBar.private.sendFailedWithReason');
         return;
       }
 
@@ -2892,7 +2887,7 @@ export function ChatBar({
     });
     if (error || !data) {
       console.error('ChatBar: open direct conversation failed', error);
-      toast.error(t('chatBar.private.openDmFailed'));
+      toastChatFailure(error, t, 'chatBar.private.openDmFailed');
       return;
     }
     const convId = data as string;
@@ -2911,10 +2906,7 @@ export function ChatBar({
     const { data, error } = await supabase.rpc('private_get_or_create_agent_conversation');
     if (error || data == null) {
       console.error('ChatBar: open Civi conversation failed', error);
-      const reason = error?.message?.trim();
-      toast.error(
-        reason ? t('chatBar.private.civiOpenFailedWithReason', { reason }) : t('chatBar.private.civiOpenFailed'),
-      );
+      toastChatFailure(error, t, 'chatBar.private.civiOpenFailed', 'chatBar.private.civiOpenFailedWithReason');
       return;
     }
     const convId = String(data);

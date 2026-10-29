@@ -27,3 +27,16 @@ Every decision is a `moderation_actions` row (reason, note, moderator, previous 
 Reason codes (same list in SQL `moderation_reason_codes()` and `MODERATION_REASON_CODES`): spam, harassment, hate, violence, sexual, misinformation, privacy, illegal, other.
 
 Tests: `supabase/tests/content_moderation_test.sql`, `src/lib/moderation.test.ts`, `e2e/content-moderation.spec.ts`. Migrations: `20261013110000_content_moderation.sql`, `20261013110100_get_matter_hides_moderated_comments.sql`.
+
+## Rate limits per account
+
+PM decision TD4 (Trust & Safety baseline 3.5). Starting values, kept in `rate_limits` so they can be reviewed without a code change: reports 20/day, posts 10/hour, comments 60/hour (posts, Matters and Solutions share one count), new conversations 20/day, messages 200/hour. Reopening an existing conversation does not count, and neither does reporting the same item again.
+
+- Every counted action is logged in `rate_limit_events` by a `BEFORE INSERT` trigger. Deleting a post does not give the quota back. Server work with no member in the request (service role, jobs, seeds) is never counted.
+- A refused write raises SQLSTATE `PT429`: PostgREST answers HTTP 429 with the action in `details` and the time it is allowed again in `hint`.
+- The app turns that into a sentence (`rateLimitMessage` in `src/lib/rate-limit.ts`, keys `rateLimit.*`); a refused action is never dropped silently.
+- Members cannot read or change `rate_limits` or `rate_limit_events`.
+- The sign-up limit per address (5/hour) is the auth server's configuration on production, not a migration.
+- Local stack: many e2e runs within an hour can reach a fixture's limit. `DELETE FROM public.rate_limit_events;` resets every count.
+
+Tests: `supabase/tests/account_action_rate_limits_test.sql`, `src/lib/rate-limit.test.ts`, `e2e/rate-limits.spec.ts`. Migration: `20261027100000_account_action_rate_limits.sql`.
