@@ -4,6 +4,8 @@
 
 ## Current focus
 
+**Planet first (owner directive 2026-10-29):** no country is first or default. Public structures of any country/region/city are integrated by mapping them to one planet-wide model of functions (next build), improving what exists; pilots go where members are. See `AGENTS.md` §3.
+
 **Organisation positions (2026-10-28):** responsibility belongs to positions (`org_positions` in units) with terms, a position-owned queue (`org_position_items`, decisions carry a recommendation) and journal (`org_position_log`); vacancy escalates via `org_position_answerers()` to the parent and then the founder office; `/organisation`, `/organisation/:key`; `/contact` form → `submit_contact_message` by topic. Pending owner-type questions go into a position's queue, not to the owner. Matters (2026-10-29): Member Support/Civic Operations Lead act for the Civizen org; community Matters open a triage item; escalation that would hit the silent party goes to Civic Operations Lead; initiator can escalate overdue Matters. See `docs/01-governance/roles-and-permissions/organisation-positions.md`.
 
 **Contribute hub D4 (2026-10-27):** `contribute_waiting_for_me()` (SECURITY DEFINER, counts only) feeds the "Waiting for you" strip and lane counts on `/contribute`; lane cards are `<Link>`s with related links.
