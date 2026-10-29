@@ -21,7 +21,7 @@
     "src/components/score/ScorePageSections.tsx": 446,
     "src/components/search/UnifiedSearchBlock.tsx": 531,
     "src/components/study/ConstitutionReader.tsx": 510,
-    "src/components/ui/chat-bar.tsx": 4843,
+    "src/components/ui/chat-bar.tsx": 4835,
     "src/components/ui/sidebar.tsx": 640,
     "src/contexts/AuthContext.tsx": 845,
     "src/lib/civic-voting/civic-voting.test.ts": 481,

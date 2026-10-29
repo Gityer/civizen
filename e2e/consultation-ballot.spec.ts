@@ -32,7 +32,14 @@ async function signIn(page: Page, email = EMAIL) {
 
 async function openLiveBallot(page: Page) {
   await page.goto('/governance/workspace');
-  await page.getByRole('button', { name: /Open ballot|Review my ballot/ }).first().click();
+  // The seeded consultation's card, not "the first ballot": participation-loop opens its own consultation meanwhile.
+  const openButton = page.getByRole('button', { name: /Open ballot|Review my ballot/ });
+  const card = page
+    .locator('div')
+    .filter({ has: page.getByText('A Single World Citizenship', { exact: true }) })
+    .filter({ has: openButton })
+    .last();
+  await card.getByRole('button', { name: /Open ballot|Review my ballot/ }).click();
   await page.waitForURL(/\/governance\/voting\//);
   const vote = page.getByTestId('consultation-vote');
   await expect(vote).toBeVisible();

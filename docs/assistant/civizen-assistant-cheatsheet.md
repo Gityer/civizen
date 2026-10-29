@@ -236,7 +236,7 @@ Person-to-person threads: **Hide chat** removes it from your inbox only; the oth
 
 ## Reporting and moderation
 
-Flag icon on any post (post menu), comment, Matter, Solutions comment, job listing or profile → choose a reason. Moderators (Moderation and Conduct domain) hide with a reason or dismiss; nothing is deleted. The author sees the reason and may appeal once at **Moderation** (`/moderation`); a different moderator decides. Rules: **Community Guidelines** (`/guidelines`). Private messages are reported from the chat.
+Flag icon on any post (post menu), comment, Matter, Solutions comment, job listing or profile → choose a reason. Moderators (Moderation and Conduct domain) hide with a reason or dismiss; nothing is deleted. The author sees the reason and may appeal once at **Moderation** (`/moderation`); a different moderator decides. Rules: **Community Guidelines** (`/guidelines`). Private messages are reported from the chat. To keep the network calm, each account has generous limits on how often it can post, comment, message, start conversations and report in a short time; when one is reached, Civizen says when you can continue.
 
 ## Profiles
 

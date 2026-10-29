@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
 
 const CIVIZEN_BUSINESS_NAME_NORMALIZED = 'civizen';
 const CIVIZEN_ORG_USERNAME = 'civizen';

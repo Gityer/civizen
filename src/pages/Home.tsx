@@ -3,6 +3,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { BadgeCheck, BadgeX, Landmark } from 'lucide-react';
 import { toast } from 'sonner';
+import { rateLimitMessage } from '@/lib/rate-limit';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { getPreparedRepostDraft } from '@/lib/prepared-repost-drafts';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -185,7 +186,7 @@ export default function Home() {
           } catch (error) {
             console.error('Error creating repost with thoughts:', error);
             toast.error(t('home.couldNotRepost'), {
-              description: t('common.tryAgainMoment'),
+              description: rateLimitMessage(error, t) ?? t('common.tryAgainMoment'),
             });
             throw error;
           }

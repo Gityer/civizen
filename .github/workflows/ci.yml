@@ -20,12 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -54,3 +54,58 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  # The Playwright specs in e2e/ against a local Supabase built from the migrations and the fixtures in
+  # scripts/local-supabase/seed-test-fixtures.sql (fictional people and records; never production data).
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Start local Supabase and replay migrations
+        run: scripts/local-supabase/up.sh
+
+      - name: Seed fixtures
+        run: docker exec -i supabase_db_civizen-local psql -U postgres -q -v ON_ERROR_STOP=1 < scripts/local-supabase/seed-test-fixtures.sql
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      # The workflow-level VITE_* placeholders would point the app at an invalid backend; the dev server gets the
+      # local stack's URL and anon key instead (the specs refuse to run against anything but localhost).
+      - name: Start the web app against the local stack
+        run: |
+          eval "$(cd ~/civizen-local-supabase && npx -y supabase status -o env | grep -E '^(API_URL|ANON_KEY)=')"
+          export VITE_SUPABASE_URL="$API_URL" VITE_SUPABASE_PUBLISHABLE_KEY="$ANON_KEY"
+          nohup npx vite --host 127.0.0.1 --port 8081 --strictPort > vite.log 2>&1 &
+          for _ in $(seq 1 60); do curl -sf -o /dev/null http://127.0.0.1:8081/ && exit 0; sleep 1; done
+          cat vite.log
+          exit 1
+
+      # `github` turns each failure into an annotation on the pull request; `list` keeps the readable log.
+      - name: E2E
+        run: npm run e2e -- --reporter=github,list
+        env:
+          CIVIZEN_E2E_BASE_URL: http://localhost:8081
+
+      - name: Upload traces
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: e2e-results
+          path: |
+            test-results/
+            vite.log
+          retention-days: 7

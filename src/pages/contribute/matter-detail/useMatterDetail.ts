@@ -9,6 +9,7 @@ import { buildBallIsWithCopy, deriveMatterStatus, formalActionsForContext, viewe
 import { addMatterComment, getMatterDetail, performCollaborationAction, performMatterFormalAction, searchMatterActors, uploadMatterFile, type MatterActorSuggestion, type MatterDetailBundle } from '@/lib/matters-api';
 import { listOwnedLinkedProfileIds } from '@/lib/opportunities-api';
 import { toast } from 'sonner';
+import { rateLimitMessage } from '@/lib/rate-limit';
 
 export function useMatterDetail() {
   const { matterId } = useParams<{ matterId: string }>();
@@ -171,7 +172,10 @@ export function useMatterDetail() {
       toast.success(tRef.current('contribute.matters.commentPosted'));
       await load();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : tRef.current('contribute.matters.actionFailed'));
+      toast.error(
+        rateLimitMessage(error, tRef.current) ??
+          (error instanceof Error ? error.message : tRef.current('contribute.matters.actionFailed')),
+      );
     } finally {
       setBusy(false);
     }

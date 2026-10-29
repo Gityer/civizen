@@ -80,6 +80,21 @@ describe('signed governance intents', () => {
     expect((await signatureSummaryFor(client, INTENT_SCOPES.consultationBallot, 'e2', 'p1')).status).toBe('unsigned');
   });
 
+  it('reads an envelope over another payload as unsigned when a matcher is given', async () => {
+    const { client } = fakeClient();
+    await recordSignedIntent(client, {
+      profile: { id: 'p1' },
+      scope: INTENT_SCOPES.consultationBallot,
+      targetId: 'e1',
+      payload: await ballotIntentPayload('e1', 'EARLIER'),
+    });
+    const { receipt_sha256: current } = await ballotIntentPayload('e1', 'CURRENT');
+    const summary = await signatureSummaryFor(client, INTENT_SCOPES.consultationBallot, 'e1', 'p1', (payload) => payload.receipt_sha256 === current);
+    expect(summary.status).toBe('unsigned');
+    const { receipt_sha256: earlier } = await ballotIntentPayload('e1', 'EARLIER');
+    expect((await signatureSummaryFor(client, INTENT_SCOPES.consultationBallot, 'e1', 'p1', (payload) => payload.receipt_sha256 === earlier)).status).toBe('verified');
+  });
+
   it('verifies a row whose timestamp comes back in the database form (+00:00, trimmed milliseconds)', async () => {
     const { client, intents } = fakeClient();
     await recordSignedIntent(client, {
