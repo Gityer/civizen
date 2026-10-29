@@ -828,7 +828,7 @@ SELECT v.position_key, v.kind, v.title, v.body, v.recommendation, v.priority, 'r
    'normal'),
   ('policy_counsel', 'decision', 'Set the minimum age to create an account',
    'Full sign-up asks for a date of birth but enforces no minimum and asks no parental consent; quick sign-up from a ballot asks no date. Ballots keep their own minimum age.',
-   'Recommended: 16. Why: 16 is the default age of digital consent under the EU GDPR (Art. 8) and works without a parental-consent flow, which Civizen does not have. A lower age would need verified parental consent first. Confirm against the law of each country Civizen serves (Armenia first) before enforcing; then apply it to both sign-up paths.',
+   'Recommended: 16. Why: 16 is the default age of digital consent under the EU GDPR (Art. 8) and works without a parental-consent flow, which Civizen does not have. A lower age would need verified parental consent first. Confirm it against the law of every jurisdiction members join from (where a local rule sets a higher age or requires parental consent, apply the stricter rule there) before enforcing; then apply it to both sign-up paths.',
    'high'),
   ('language_reviewer_hy', 'review', 'Review the Armenian moderation and enforcement texts',
    'Written in a cloud session, not by a native speaker: memberEnforcement.* and moderation.* in src/lib/i18n/curated/moderation.hy.ts, the Community Guidelines 0.2 (docs/02-policies/institutional/community-guidelines.hy.md), the contact page (contact.hy.ts), the Organisation pages (organisation.hy.ts) and the Reading settings texts.',
