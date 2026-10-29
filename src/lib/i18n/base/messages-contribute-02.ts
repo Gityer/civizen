@@ -115,6 +115,7 @@ export const m_messages_contribute_02 = {
         "person": "Person",
         "organization": "Organization"
       },
+      "escalate": {"title": "No answer yet?", "body": "The deadline for an answer has passed. You can pass this Matter to Civic Operations, who will follow it up with the responsible party or find someone else who can answer.", "note": "Anything they should know (optional)", "send": "Ask Civic Operations to follow up", "sent": "Passed to Civic Operations. You will be told what happens next.", "failed": "That did not work. Try again."},
       "currentAction": "Current action",
       "descriptionHeading": "Description",
       "links": {

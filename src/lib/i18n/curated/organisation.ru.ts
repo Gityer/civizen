@@ -60,6 +60,7 @@ export const organisationRu = {
       high: 'Высокий приоритет',
       claimedBy: 'Взял(а) в работу {name}',
       from: 'От',
+      openMatter: 'Открыть Вопрос',
       recommended: 'Рекомендуется',
       resolution: 'Решение',
       textPlaceholder: 'Заметка, чего вы ждёте, или итог',

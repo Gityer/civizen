@@ -8957,6 +8957,12 @@ isOneToOne: false
 "complete_matter_collaborative_work":
 { Args: { "p_allow_outstanding"?: boolean,"p_matter_id": string,"p_reason"?: string }; Returns: undefined
                            },
+"escalate_matter_to_civic_operations":
+{ Args: { "p_matter_id": string,"p_note"?: string }; Returns: string
+                           },
+"org_current_profile_acts_for_civizen":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
 "org_add_position_note":
 { Args: { "p_position_key": string,"p_text": string }; Returns: undefined
                            },

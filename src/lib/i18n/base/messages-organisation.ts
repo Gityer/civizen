@@ -61,6 +61,7 @@ export const m_messages_organisation = {
       "claimedBy": "Taken on by {name}",
       "from": "From",
       "recommended": "Recommended",
+      "openMatter": "Open the Matter",
       "resolution": "Resolution",
       "textPlaceholder": "Note, what you are waiting on, or the resolution",
       "release": "Release",

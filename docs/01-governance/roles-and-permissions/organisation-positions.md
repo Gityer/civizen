@@ -60,8 +60,16 @@ Civizen's AI agents (Civi, Matter agents, the Solutions council) should work the
 
 Not built yet: agent mandates and budgets as position-like records, and routing agent drafts into position queues.
 
+## Matters and positions
+
+Built 2026-10-29 (migration `20261029100000_matter_routing_positions.sql`, launch gaps 1 and 2):
+
+- **Civizen acts through positions.** Positions marked `acts_for_civizen` (Member Support, Civic Operations Lead), or whoever answers for them while vacant, represent the Civizen organisation on Matters (`current_profile_represents_actor`).
+- **Triage.** A Matter addressed to the Civizen organisation, or made its responsibility, opens a triage item in Member Support's queue, linked to the Matter.
+- **Escalation.** When an escalation step would notify the responsible lead or the manual queue and that is the party that did not answer, nobody, or Civizen itself, the Matter goes to Civic Operations Lead's queue instead, and the initiator is told. Response escalation now also has the manual-review step at 120 hours.
+- **The initiator** can pass a Matter with an overdue answer to Civic Operations from the Matter page (`escalate_matter_to_civic_operations`).
+
 ## Next
 
-- Route Matters addressed to "the Civizen community" to positions (Member Support first), and make stalled Matters escalate to a position instead of back to the same addressee.
 - Tie `content.moderate` to the Moderation and Conduct unit (trust and safety finding T12).
 - Term lengths and review dates per position.

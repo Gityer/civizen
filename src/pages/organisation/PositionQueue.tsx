@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/badge';
@@ -67,6 +68,11 @@ function ItemCard({ item, onChanged }: { item: PositionItem; onChanged: () => vo
         <p className="text-sm">
           {t('organisation.queue.from')}: {item.contact.name || '—'} · <a className="text-primary underline-offset-2 hover:underline" href={`mailto:${item.contact.email}`}>{item.contact.email}</a>
         </p>
+      ) : null}
+      {item.matterId ? (
+        <Link to={`/contribute/matters/${item.matterId}`} className="text-sm font-medium text-primary underline underline-offset-2">
+          {t('organisation.queue.openMatter')}
+        </Link>
       ) : null}
       {item.recommendation ? (
         <p className="rounded-lg border border-primary/30 bg-primary/5 p-2 text-sm" data-testid="position-item-recommendation">
