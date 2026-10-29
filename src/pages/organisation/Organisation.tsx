@@ -66,6 +66,9 @@ export default function Organisation() {
         ) : null}
 
         <p className="text-sm text-muted-foreground">{t('organisation.howItWorks')}</p>
+        <Link to="/organisation/public" className="inline-block text-sm font-medium text-primary underline underline-offset-2" data-testid="organisation-public-link">
+          {t('organisation.public.link')}
+        </Link>
 
         {units === null ? <p className="text-sm text-muted-foreground">{t('common.loading')}</p> : null}
         {units?.map((unit) => (

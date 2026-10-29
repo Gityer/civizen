@@ -100,6 +100,68 @@ export const m_messages_organisation = {
       "email_invalid": "Enter a valid e-mail address.",
       "message_length": "Write between 10 and 4000 characters.",
       "generic": "That did not work. Try again."
+    },
+    "public": {
+      "title": "Public functions",
+      "subtitle": "One model of what public bodies do, for the whole planet, and who does it where you live.",
+      "link": "Public functions: who is responsible for what, anywhere",
+      "howItWorks": "Every place on Earth performs the same public functions, such as roads, health, schools, safety and elections, through its own bodies. Civizen keeps one model of these functions and maps each place's existing bodies onto it. A Matter for a public authority goes to the body that performs the function where it happens. Where none is mapped yet, a Civizen liaison for that function finds the right office and delivers it.",
+      "planet": "Planet Earth",
+      "mappedBodies": "Mapped bodies: {count}",
+      "liaison": "Liaison",
+      "signInToPropose": "Sign in to suggest the public body that performs a function where you live.",
+      "groups": {
+        "places": "Places and infrastructure",
+        "health_social": "Health and social care",
+        "learning_culture": "Learning and culture",
+        "economy": "Economy, work and money",
+        "safety": "Safety and security",
+        "planet": "Planet and resources",
+        "governance_rights": "Government, justice and rights",
+        "civizen": "Civizen itself"
+      },
+      "finder": {
+        "title": "Who is responsible here?",
+        "function": "Public function",
+        "chooseFunction": "Choose a function",
+        "servesPlace": "Serves: {place}",
+        "deadline": "answers within {days} days",
+        "source": "Official source",
+        "noBody": "No public body is mapped for this function here yet. Until then this liaison answers:"
+      },
+      "propose": {
+        "title": "Suggest a public body",
+        "body": "Name the body that performs these functions in a place, and link an official page that shows it. The liaison for those functions checks the source before the body is used.",
+        "name": "Name of the body",
+        "functions": "Functions it performs there",
+        "channel": "How it receives requests",
+        "channels": {
+          "web_form": "Web form",
+          "email": "E-mail",
+          "service_request_api": "Service-request system (for example 311)",
+          "postal": "Post",
+          "phone": "Phone"
+        },
+        "channelAddress": "Address, link or number for requests",
+        "website": "Website (optional)",
+        "deadline": "Answer deadline in days, if set by law or policy (optional)",
+        "source": "Official source (https link)",
+        "notes": "Notes for the reviewer (optional)",
+        "send": "Send for review",
+        "sent": "Thank you. The liaison for these functions will check the source and add the body if it is right."
+      },
+      "review": {
+        "verify": "Verify",
+        "reject": "Reject"
+      },
+      "errors": {
+        "functions_required": "Choose at least one function.",
+        "source_required": "Add an official source that starts with https://.",
+        "not_authorized": "Only the liaison for these functions can review this body.",
+        "note_required": "Write a note about what you checked.",
+        "unknown_function": "Choose a function.",
+        "rate_limited": "You have sent many suggestions today. Try again tomorrow."
+      }
     }
   }
 };

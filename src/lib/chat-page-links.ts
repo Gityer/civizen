@@ -17,6 +17,7 @@ const EXTRA_PUBLIC_PATHS = [
   '/fund',
   '/governance',
   '/organisation',
+  '/organisation/public',
   '/partners',
   '/signup',
   '/why-this-exists',

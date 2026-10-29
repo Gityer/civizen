@@ -5,6 +5,7 @@ import {
   Contact,
   Organisation,
   OrganisationPosition,
+  PublicFunctions,
   DevEconomicsVisual,
   Features,
   FundingAdmin,
@@ -17,6 +18,7 @@ export const appRoutes2 = (
   <>
       <Route path="/contact" element={<Contact />} />
       <Route path="/organisation" element={<Organisation />} />
+      <Route path="/organisation/public" element={<PublicFunctions />} />
       <Route path="/organisation/:positionKey" element={<OrganisationPosition />} />
       <Route
         path="/settings/admin/governance"
