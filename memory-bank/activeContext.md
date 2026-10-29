@@ -4,6 +4,8 @@
 
 ## Current focus
 
+**Contribute hub D4 (2026-10-27):** `contribute_waiting_for_me()` (SECURITY DEFINER, counts only) feeds the "Waiting for you" strip and lane counts on `/contribute`; lane cards are `<Link>`s with related links.
+
 **Reading preferences (2026-10-27):** Settings › Reading (text size, high contrast, reduced motion) per device in `civizen-reading-v1`, applied in `main.tsx` before render as `html[data-text-size|data-contrast|data-motion]` (CSS in `index.css`); Framer Motion follows via `ReadingMotionConfig`. `eslint-plugin-jsx-a11y` waits for ESLint 10 support.
 
 **Contact page (2026-10-27):** `/contact` shows `VITE_CONTACT_EMAIL` (owner to provide; Release Manager sets it at the web build), routes each kind of question in the app, and carries the emergency note. Footer, Help and support and Civi link to it.

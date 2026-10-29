@@ -8957,6 +8957,9 @@ isOneToOne: false
 "complete_matter_collaborative_work":
 { Args: { "p_allow_outstanding"?: boolean,"p_matter_id": string,"p_reason"?: string }; Returns: undefined
                            },
+"contribute_waiting_for_me":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "consultation_eligibility_reason":
 { Args: { "p_election_id": string,"p_profile_id": string }; Returns: string
                            },
