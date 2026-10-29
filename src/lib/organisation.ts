@@ -41,6 +41,7 @@ export type PositionItem = {
   resolvedAt: string | null;
   createdAt: string;
   claimedBy: { profileId: string; username: string | null } | null;
+  matterId: string | null;
   contact: { name: string; email: string; topic: string } | null;
 };
 export type PositionLogEntry = { id: number; event: string; itemId: string | null; body: string; createdAt: string; actor: string | null };
@@ -119,6 +120,7 @@ function parseItem(i: Row): PositionItem {
     resolvedAt: strOrNull(i.resolved_at),
     createdAt: str(i.created_at),
     claimedBy: claimed ? { profileId: str(claimed.profile_id), username: strOrNull(claimed.username) } : null,
+    matterId: i.source_type === 'matter' ? strOrNull(i.source_ref) : null,
     contact: meta.email ? { name: str(meta.name), email: str(meta.email), topic: str(meta.topic) } : null,
   };
 }

@@ -60,6 +60,7 @@ export const organisationHy = {
       high: 'Բարձր առաջնահերթություն',
       claimedBy: 'Վերցրել է {name}',
       from: 'Ումից',
+      openMatter: 'Բացել հարցը',
       recommended: 'Առաջարկվում է',
       resolution: 'Լուծում',
       textPlaceholder: 'Նշում, ինչի եք սպասում, կամ լուծումը',

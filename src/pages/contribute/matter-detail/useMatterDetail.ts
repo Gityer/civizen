@@ -263,6 +263,6 @@ export function useMatterDetail() {
     setReopenReason, votingProposals, creatingProposal, canDraftVotingProposal, openVotingDraft, links,
     options, selectedOption, createVotingProposal, runAction, comment, setComment, replyTo,
     setReplyTo, mentionQuery, setMentionQuery, mentions, setMentions, mentionHits, setMentionHits,
-    file, setFile, hasResolution, hasOutcome, hasAi, rootComments, postComment,
+    file, setFile, hasResolution, hasOutcome, hasAi, rootComments, postComment, viewerIsInitiator,
   };
 }
