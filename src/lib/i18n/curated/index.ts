@@ -28,6 +28,8 @@ import { publicMattersHy } from './public-matters.hy';
 import { publicMattersRu } from './public-matters.ru';
 import { firstStepsHy } from './first-steps.hy';
 import { firstStepsRu } from './first-steps.ru';
+import { contactHy } from './contact.hy';
+import { contactRu } from './contact.ru';
 
 type Tree = Record<string, unknown>;
 
@@ -40,8 +42,8 @@ function mergeGroups(...groups: Tree[]): Tree {
 }
 
 export const curatedTranslations: Record<string, Tree> = {
-  hy: mergeGroups({ governanceDashboard: governanceDashboardHy, ...governanceHubHy }, civicVotingHy, participationLoopHy, { contribute: { matters: mattersHy } }, homeLandingHy, profileHy, profileLedgerHy, settingsHy, moderationHy, publicMattersHy, firstStepsHy, identityReviewHy, electionAdminHy, electionVerifyHy),
-  ru: mergeGroups({ governanceDashboard: governanceDashboardRu, ...governanceHubRu }, civicVotingRu, participationLoopRu, { contribute: { matters: mattersRu } }, homeLandingRu, profileRu, profileLedgerRu, settingsRu, moderationRu, publicMattersRu, firstStepsRu, identityReviewRu, electionAdminRu, electionVerifyRu),
+  hy: mergeGroups({ governanceDashboard: governanceDashboardHy, ...governanceHubHy }, civicVotingHy, participationLoopHy, { contribute: { matters: mattersHy } }, homeLandingHy, profileHy, profileLedgerHy, settingsHy, moderationHy, publicMattersHy, firstStepsHy, identityReviewHy, electionAdminHy, electionVerifyHy, contactHy),
+  ru: mergeGroups({ governanceDashboard: governanceDashboardRu, ...governanceHubRu }, civicVotingRu, participationLoopRu, { contribute: { matters: mattersRu } }, homeLandingRu, profileRu, profileLedgerRu, settingsRu, moderationRu, publicMattersRu, firstStepsRu, identityReviewRu, electionAdminRu, electionVerifyRu, contactRu),
 };
 
 /** Languages a person has reviewed; every other language is machine translation and is labelled so (Phase 8 step 8.2). */

@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Lock, MessageCircle, Scale, ScrollText } from 'lucide-react';
+import { BookOpen, FileText, Lock, Mail, MessageCircle, Scale, ScrollText } from 'lucide-react';
 
 /** Destinations listed on Settings > Help and support. */
 export const HELP_SUPPORT_LINKS = [
@@ -9,4 +9,5 @@ export const HELP_SUPPORT_LINKS = [
   { icon: ScrollText, labelKey: 'settings.helpTerms', descriptionKey: 'settings.helpTermsDescription', path: '/terms' },
   { icon: Lock, labelKey: 'settings.helpPrivacy', descriptionKey: 'settings.helpPrivacyDescription', path: '/privacy' },
   { icon: ScrollText, labelKey: 'moderation.report.guidelines', descriptionKey: 'settings.helpGuidelinesDescription', path: '/guidelines' },
+  { icon: Mail, labelKey: 'contact.title', descriptionKey: 'settings.helpContactDescription', path: '/contact' },
 ] as const;

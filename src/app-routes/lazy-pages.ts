@@ -62,6 +62,7 @@ export const AgreementCreate = lazyWithChunkReload(() => import('@/pages/Agreeme
 export const AgreementDetail = lazyWithChunkReload(() => import('@/pages/AgreementDetail'));
 export const Earnings = lazyWithChunkReload(() => import('@/pages/Earnings'));
 export const TermsOfUse = lazyWithChunkReload(() => import('@/pages/TermsOfUse'));
+export const Contact = lazyWithChunkReload(() => import('@/pages/contact/Contact'));
 export const Search = lazyWithChunkReload(() => import('@/pages/Search'));
 export const Profile = lazyWithChunkReload(() => import('@/pages/Profile'));
 export const ContributionsLedger = lazyWithChunkReload(() => import('@/pages/profile/ContributionsLedger'));

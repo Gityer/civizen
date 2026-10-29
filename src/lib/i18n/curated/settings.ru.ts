@@ -192,6 +192,7 @@ export const settingsRu = {
     helpPrivacy: 'Уведомление о конфиденциальности',
     helpPrivacyDescription: 'Что собирает Civizen, зачем и какой у вас выбор.',
     helpGuidelinesDescription: 'Чему здесь не место и как работают жалобы и апелляции.',
+    helpContactDescription: 'Как связаться с теми, кто ведёт Civizen, и куда обращаться с каждым видом вопросов.',
     accountTitle: 'Аккаунт',
     accountDescription: 'E-mail для входа, пароль и копия ваших данных',
     account: {

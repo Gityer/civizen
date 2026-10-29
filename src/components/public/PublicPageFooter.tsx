@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PUBLIC_JOBS_PATH } from '@/lib/public-jobs-path';
 
-const CONTACT_URL = 'https://civizen.world';
-
 const FOOTER_LINKS = [
   { to: '/why-this-exists', labelKey: 'onboarding.footerWhy' },
   { to: '/areas', labelKey: 'onboarding.footerAreas' },
@@ -17,6 +15,7 @@ const FOOTER_LINKS = [
   { to: '/terms', labelKey: 'onboarding.footerTerms' },
   { to: '/privacy', labelKey: 'onboarding.footerPrivacy' },
   { to: '/download', labelKey: 'onboarding.footerDownload' },
+  { to: '/contact', labelKey: 'onboarding.footerContact' },
 ] as const;
 
 export function PublicPageFooter() {
@@ -44,14 +43,6 @@ export function PublicPageFooter() {
               {t(item.labelKey)}
             </Link>
           ))}
-          <a
-            href={CONTACT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-foreground"
-          >
-            {t('onboarding.footerContact')}
-          </a>
         </nav>
       </div>
     </footer>

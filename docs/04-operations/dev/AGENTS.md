@@ -472,6 +472,10 @@ Do **not** start a Cursor `/loop` (a Cursor command, not an app route; docs-chec
 - Stop condition:
   - do not ship startup/bootstrap changes that remove or regress the fallback-to-stable path for Testing users
 
+## Contact page
+
+`/contact` (`src/pages/contact/Contact.tsx`) is the page the Privacy Notice names. Its e-mail address comes from `VITE_CONTACT_EMAIL` at build time (`src/lib/contact.ts`); when unset or malformed the page says the address is being set up. The rest of the page routes each kind of question in the app (Moderation, Report, Help and support, Privacy Notice) and says Civizen is not an emergency service.
+
 ## Error reporting
 
 `src/lib/error-reporting.ts` records render errors (crash boundary), uncaught window errors and unhandled rejections. It always logs to the console; when `VITE_ERROR_REPORT_ENDPOINT` is set it also POSTs a small JSON report (message, first stack lines, pathname without query, app version, release id, time) with `keepalive`, deduplicated per message for one minute. No user data is included. When `VITE_ERROR_REPORT_ENDPOINT` is unset, reports go to Civizen's own collector, `record_client_error`. It keeps daily counts per kind, message, page pattern (ids folded to `:id`) and release, with no account, IP address or device, and holds at most 1,000 distinct rows a day for 30 days. Staff read them on **Settings › Admin › Participation** (`client_error_summary`). Set the variable only to send reports to another collector instead.
