@@ -114,6 +114,43 @@
   }
 }
 
+/* Reading preferences (Settings › Reading): see src/lib/reading-preferences.ts */
+html[data-text-size="large"] { font-size: 112.5%; }
+html[data-text-size="larger"] { font-size: 125%; }
+
+html[data-contrast="high"] {
+  --foreground: 200 30% 4%;
+  --card-foreground: 200 30% 4%;
+  --popover-foreground: 200 30% 4%;
+  --muted-foreground: 200 20% 22%;
+  --secondary-foreground: 200 30% 6%;
+  --primary: 174 70% 22%;
+  --border: 200 20% 55%;
+  --input: 200 20% 45%;
+  --ring: 174 80% 20%;
+}
+html[data-contrast="high"].dark {
+  --foreground: 0 0% 100%;
+  --card-foreground: 0 0% 100%;
+  --popover-foreground: 0 0% 100%;
+  --muted-foreground: 200 10% 82%;
+  --secondary-foreground: 0 0% 100%;
+  --primary: 174 65% 62%;
+  --border: 200 15% 50%;
+  --input: 200 15% 55%;
+  --ring: 174 70% 65%;
+}
+html[data-contrast="high"] a { text-decoration-line: underline; text-underline-offset: 3px; }
+
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
 @layer base {
   * {
     @apply border-border;

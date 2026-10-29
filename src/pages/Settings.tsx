@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { ReadingPreferencesCard } from '@/components/settings/ReadingPreferencesCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -34,6 +35,7 @@ function canHoverOpen(): boolean {
 type PrimarySettingsRow =
   | { kind: 'language' }
   | { kind: 'appearance' }
+  | { kind: 'reading' }
   | { kind: 'nav'; item: SettingsNavItem };
 
 export default function Settings() {
@@ -151,12 +153,14 @@ export default function Settings() {
   const primaryRowLabel = (row: PrimarySettingsRow): string => {
     if (row.kind === 'language') return t('settings.languageTitle');
     if (row.kind === 'appearance') return t('settings.appearanceTitle');
+    if (row.kind === 'reading') return t('settings.readingTitle');
     return t(row.item.labelKey);
   };
 
   const primarySettingsRows: PrimarySettingsRow[] = [
     { kind: 'language' as const },
     { kind: 'appearance' as const },
+    { kind: 'reading' as const },
     ...visibleSettingsItems.map((item) => ({ kind: 'nav' as const, item })),
   ].sort((a, b) => primaryRowLabel(a).localeCompare(primaryRowLabel(b), language, { sensitivity: 'base' }));
 
@@ -300,6 +304,10 @@ export default function Settings() {
                   </Card>
                 </motion.div>
               );
+            }
+
+            if (row.kind === 'reading') {
+              return <motion.div key="reading" {...motionProps}><ReadingPreferencesCard /></motion.div>;
             }
 
             if (row.kind === 'appearance') {

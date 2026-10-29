@@ -1,4 +1,12 @@
 export const m_messages_settings_04 = {
+  "readingTitle": "Reading",
+  "readingDescription": "Text size, contrast and motion on this device",
+  "readingTextSize": "Text size",
+  "readingContrast": "Contrast",
+  "readingMotion": "Motion",
+  "readingTextSizes": { "default": "Default", "large": "Large", "larger": "Larger" },
+  "readingContrasts": { "standard": "Standard", "high": "High" },
+  "readingMotions": { "device": "Follow this device", "reduce": "Reduce" },
   "marketJobsAdminCardTitle": "Review Jobs postings",
   "marketJobsAdminCardDescription": "Every posting with its status and contact; mark reviewing, contacted, closed or spam."
 } as const;
