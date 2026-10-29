@@ -1084,7 +1084,7 @@ export default function Profile() {
               className={cn(
                 'group/bio relative w-full rounded-lg px-2 py-1.5 text-center text-sm transition-colors',
                 'hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                profile?.bio ? 'text-muted-foreground' : 'text-muted-foreground/70 italic',
+                profile?.bio ? 'text-muted-foreground' : 'text-muted-foreground italic',
               )}
               aria-label={profile?.bio ? t('profile.editBio') : t('profile.addBio')}
             >

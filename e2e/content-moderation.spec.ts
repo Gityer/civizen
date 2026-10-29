@@ -9,7 +9,7 @@ const PASSWORD = process.env.CIVIZEN_E2E_PASSWORD || 'civizen-local';
 const MEMBER = 'member@test.civizen.local';
 const AUTHOR = 'citizen@test.civizen.local';
 const MODERATOR = 'moderator@test.civizen.local';
-const SECOND_MODERATOR = process.env.CIVIZEN_E2E_FOUNDER_EMAIL || 'maturehumanity@gmail.com';
+const SECOND_MODERATOR = process.env.CIVIZEN_E2E_SECOND_MODERATOR_EMAIL || 'moderator_two@test.civizen.local';
 
 async function signedIn(browser: Browser, email: string): Promise<Page> {
   const context = await browser.newContext();

@@ -168,11 +168,21 @@ export async function verifyIntentRow(row: IntentRow): Promise<SignatureStatus> 
   }
 }
 
-/** Reads the latest intent for an action and verifies it here; `unavailable` when the store could not be read. */
-export async function signatureSummaryFor(client: IntentClient, scope: IntentScope, targetId: string, actorId?: string | null): Promise<SignatureSummary> {
+/**
+ * Reads the latest intent for an action and verifies it here; `unavailable` when the store could not be read.
+ * `matches` narrows it to an envelope over the expected payload, so an older envelope for the same target (an
+ * earlier, withdrawn ballot) reads as `unsigned` instead of vouching for the current one.
+ */
+export async function signatureSummaryFor(
+  client: IntentClient,
+  scope: IntentScope,
+  targetId: string,
+  actorId?: string | null,
+  matches?: (payload: Record<string, unknown>) => boolean,
+): Promise<SignatureSummary> {
   try {
     const row = await fetchLatestIntent(client, scope, targetId, actorId);
-    if (!row) return { status: 'unsigned', fingerprint: null, signedAt: null };
+    if (!row || (matches && !matches(row.payload))) return { status: 'unsigned', fingerprint: null, signedAt: null };
     return { status: await verifyIntentRow(row), fingerprint: formatCitizenSigningFingerprint(row.public_key), signedAt: row.client_created_at };
   } catch {
     return { status: 'unavailable', fingerprint: null, signedAt: null };
