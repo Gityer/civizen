@@ -3,42 +3,36 @@ import { Link } from 'react-router-dom';
 
 import { Card } from '@/components/ui/card';
 import { OutlinedField } from '@/components/ui/outlined-field';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { listGeoCountryCodes } from '@/lib/geo-locations';
 import { placeLabel, routePublicFunction, type PublicFunction, type PublicRoute } from '@/lib/public-functions';
+import { FunctionSelect } from '@/pages/organisation/public/FunctionSelect';
 import { MatterScopeFields } from '@/pages/contribute/matter-form/MatterScopeFields';
 import { EMPTY_MATTER_SCOPE, matterScopeForSubmit, matterScopeMissingKey, type MatterScopeValue } from '@/pages/contribute/matter-form/matter-scope';
 
 /** "Who is responsible here?": a function and a place resolve to the body that performs it, or to the liaison. */
 export function PublicRouteFinder({ functions }: { functions: PublicFunction[] }) {
   const { t, language } = useLanguage();
-  const [authorityId, setAuthorityId] = useState('');
+  const [functionKey, setFunctionKey] = useState('');
   const [scope, setScope] = useState<MatterScopeValue>(EMPTY_MATTER_SCOPE);
   const [route, setRoute] = useState<PublicRoute | null>(null);
   const countryOptions = useMemo(() => listGeoCountryCodes(language), [language]);
 
   useEffect(() => {
-    if (!authorityId || matterScopeMissingKey(scope)) {
+    if (!functionKey || matterScopeMissingKey(scope)) {
       setRoute(null);
       return;
     }
     let active = true;
-    void routePublicFunction(authorityId, matterScopeForSubmit(scope)).then((next) => { if (active) setRoute(next); }, () => undefined);
+    void routePublicFunction(functionKey, matterScopeForSubmit(scope)).then((next) => { if (active) setRoute(next); }, () => undefined);
     return () => { active = false; };
-  }, [authorityId, scope]);
+  }, [functionKey, scope]);
 
   return (
     <Card className="space-y-3 p-4" data-testid="public-route-finder">
       <h2 className="text-base font-semibold text-foreground">{t('organisation.public.finder.title')}</h2>
       <OutlinedField label={t('organisation.public.finder.function')}>
-        <Select value={authorityId || 'none'} onValueChange={(value) => setAuthorityId(value === 'none' ? '' : value)}>
-          <SelectTrigger aria-label={t('organisation.public.finder.function')} data-testid="public-route-function"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="none">{t('organisation.public.finder.chooseFunction')}</SelectItem>
-            {functions.map((fn) => <SelectItem key={fn.authorityId} value={fn.authorityId}>{fn.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <FunctionSelect functions={functions} value={functionKey} onChange={setFunctionKey} label={t('organisation.public.finder.function')} testId="public-route-function" />
       </OutlinedField>
       <MatterScopeFields value={scope} onChange={setScope} countryOptions={countryOptions} language={language} t={t} />
       {route ? (

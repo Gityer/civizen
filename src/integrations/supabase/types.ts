@@ -8973,10 +8973,10 @@ isOneToOne: false
 { Args: { "p_body_id": string,"p_decision": string,"p_note": string }; Returns: undefined
                            },
 "route_public_function":
-{ Args: { "p_authority_id": string,"p_country"?: string,"p_locality"?: string,"p_region"?: string,"p_scope_kind"?: string }; Returns: Json
+{ Args: { "p_function_key": string,"p_country"?: string,"p_locality"?: string,"p_region"?: string,"p_scope_kind"?: string }; Returns: Json
                            },
 "set_matter_public_route":
-{ Args: { "p_authority_id": string,"p_matter_id": string }; Returns: Json
+{ Args: { "p_function_key": string,"p_matter_id": string }; Returns: Json
                            },
 "org_add_position_note":
 { Args: { "p_position_key": string,"p_text": string }; Returns: undefined

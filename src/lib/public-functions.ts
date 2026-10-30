@@ -6,14 +6,18 @@ import { supabase } from '@/integrations/supabase/client';
  * source and verified by the function's Civizen liaison; a function and a place route to the most local verified body,
  * or to the liaison while none is mapped. No country is first.
  */
-export type FunctionGroup = 'governance_rights' | 'safety' | 'economy' | 'health_social' | 'learning_culture' | 'places' | 'planet' | 'civizen';
-export const FUNCTION_GROUPS: FunctionGroup[] = ['places', 'health_social', 'learning_culture', 'economy', 'safety', 'planet', 'governance_rights', 'civizen'];
+export type FunctionOrigin = 'cofog' | 'civizen_addition' | 'catch_all';
 
+/** A public function: a UN COFOG group, a marked Civizen addition, or a division's catch-all. */
 export type PublicFunction = {
-  authorityId: string;
+  functionKey: string;
   name: string;
-  responsibilities: string;
-  group: FunctionGroup;
+  description: string;
+  divisionCode: string;
+  divisionName: string;
+  cofogCode: string | null;
+  origin: FunctionOrigin;
+  keywords: string[];
   liaisonPositionKey: string | null;
   verifiedBodies: number;
 };
@@ -36,7 +40,7 @@ export type PublicBody = {
   sourceUrl: string;
 };
 
-export type PublicRoute = { authorityId: string; authorityName: string; liaisonPositionKey: string | null; liaisonTitle: string | null; body: PublicBody | null };
+export type PublicRoute = { functionKey: string; functionName: string; divisionCode: string; liaisonPositionKey: string | null; liaisonTitle: string | null; body: PublicBody | null };
 
 export const BODY_KINDS = ['international', 'legislature', 'executive', 'ministry', 'agency', 'court', 'independent',
   'regional_government', 'local_government', 'service_provider', 'other'] as const;
@@ -63,7 +67,7 @@ export function parseRoute(raw: unknown): PublicRoute | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Row;
   return {
-    authorityId: str(r.authority_id), authorityName: str(r.authority_name),
+    functionKey: str(r.function_key), functionName: str(r.function_name), divisionCode: str(r.division_code),
     liaisonPositionKey: strOrNull(r.liaison_position_key), liaisonTitle: strOrNull(r.liaison_title),
     body: parseBody((r.body as Row | null) ?? null),
   };
@@ -71,10 +75,28 @@ export function parseRoute(raw: unknown): PublicRoute | null {
 
 export function parseCatalog(raw: unknown): PublicFunction[] {
   return (Array.isArray(raw) ? (raw as Row[]) : []).map((r) => ({
-    authorityId: str(r.authority_id), name: str(r.name), responsibilities: str(r.responsibilities),
-    group: (str(r.function_group) || 'civizen') as FunctionGroup, liaisonPositionKey: strOrNull(r.liaison_position_key),
+    functionKey: str(r.function_key), name: str(r.name), description: str(r.description),
+    divisionCode: str(r.division_code), divisionName: str(r.division_name), cofogCode: strOrNull(r.cofog_code),
+    origin: (['cofog', 'civizen_addition', 'catch_all'].includes(str(r.origin)) ? r.origin : 'cofog') as FunctionOrigin,
+    keywords: Array.isArray(r.keywords) ? (r.keywords as unknown[]).map(str).filter(Boolean) : [],
+    liaisonPositionKey: strOrNull(r.liaison_position_key),
     verifiedBodies: typeof r.verified_bodies === 'number' ? r.verified_bodies : Number(r.verified_bodies) || 0,
   }));
+}
+
+/** The function whose keywords the text mentions most (whole words or phrases), or null. */
+export function suggestPublicFunction(title: string, body: string, functions: readonly PublicFunction[]): PublicFunction | null {
+  const text = ` ${`${title} ${body}`.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ')} `;
+  let best: PublicFunction | null = null;
+  let bestScore = 0;
+  for (const fn of functions) {
+    const score = fn.keywords.reduce((total, keyword) => (text.includes(` ${keyword.toLowerCase()} `) ? total + keyword.split(' ').length : total), 0);
+    if (score > bestScore) {
+      best = fn;
+      bestScore = score;
+    }
+  }
+  return best;
 }
 
 /** "Planet", or the place's codes from the widest to the narrowest. */
@@ -93,17 +115,17 @@ export async function loadFunctionCatalog(): Promise<PublicFunction[]> {
   return parseCatalog(data);
 }
 
-export async function routePublicFunction(authorityId: string, place: PublicPlace): Promise<PublicRoute | null> {
+export async function routePublicFunction(functionKey: string, place: PublicPlace): Promise<PublicRoute | null> {
   const { data, error } = await supabase.rpc('route_public_function', {
-    p_authority_id: authorityId, p_scope_kind: place.scopeKind, p_country: place.scopeCountryCode ?? undefined,
+    p_function_key: functionKey, p_scope_kind: place.scopeKind, p_country: place.scopeCountryCode ?? undefined,
     p_region: place.scopeRegionCode ?? undefined, p_locality: place.scopeLocalityCode ?? undefined,
   });
   fail(error);
   return parseRoute(data);
 }
 
-export async function setMatterPublicRoute(matterId: string, authorityId: string): Promise<PublicRoute | null> {
-  const { data, error } = await supabase.rpc('set_matter_public_route', { p_matter_id: matterId, p_authority_id: authorityId });
+export async function setMatterPublicRoute(matterId: string, functionKey: string): Promise<PublicRoute | null> {
+  const { data, error } = await supabase.rpc('set_matter_public_route', { p_matter_id: matterId, p_function_key: functionKey });
   fail(error);
   return parseRoute(data);
 }

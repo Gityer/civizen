@@ -70,10 +70,10 @@ export function ProposeBodyForm({ functions }: { functions: PublicFunction[] }) 
       <fieldset className="space-y-1">
         <legend className="text-sm font-medium text-foreground">{t('organisation.public.propose.functions')}</legend>
         <div className="grid max-h-56 gap-1 overflow-y-auto rounded-lg border border-border/60 p-2 sm:grid-cols-2">
-          {functions.map((fn) => (
-            <label key={fn.authorityId} className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={chosen.includes(fn.authorityId)}
-                onChange={(e) => setChosen((current) => (e.target.checked ? [...current, fn.authorityId] : current.filter((id) => id !== fn.authorityId)))} />
+          {functions.filter((fn) => fn.divisionCode !== 'civizen' && fn.divisionCode !== 'unsure').map((fn) => (
+            <label key={fn.functionKey} className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={chosen.includes(fn.functionKey)}
+                onChange={(e) => setChosen((current) => (e.target.checked ? [...current, fn.functionKey] : current.filter((id) => id !== fn.functionKey)))} />
               {fn.name}
             </label>
           ))}

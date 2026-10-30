@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { OutlinedField } from '@/components/ui/outlined-field';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { loadFunctionCatalog, routePublicFunction, type PublicFunction, type PublicRoute } from '@/lib/public-functions';
-import { categorizeSolutionIssue } from '@/lib/solution-categorize';
+import { loadFunctionCatalog, routePublicFunction, suggestPublicFunction, type PublicFunction, type PublicRoute } from '@/lib/public-functions';
+import { FunctionSelect } from '@/pages/organisation/public/FunctionSelect';
 import { matterScopeForSubmit, matterScopeMissingKey, type MatterScopeValue } from '@/pages/contribute/matter-form/matter-scope';
 
 /**
@@ -16,19 +15,19 @@ export function MatterPublicAuthorityField({ title, description, scope, value, o
   description: string;
   scope: MatterScopeValue;
   value: string;
-  onChange: (authorityId: string) => void;
+  onChange: (functionKey: string) => void;
 }) {
   const { t } = useLanguage();
   const [functions, setFunctions] = useState<PublicFunction[]>([]);
   const [route, setRoute] = useState<PublicRoute | null>(null);
 
   useEffect(() => {
-    void loadFunctionCatalog().then((rows) => setFunctions(rows.filter((row) => row.group !== 'civizen')), () => setFunctions([]));
+    void loadFunctionCatalog().then((rows) => setFunctions(rows.filter((row) => row.divisionCode !== 'civizen')), () => setFunctions([]));
   }, []);
   useEffect(() => {
     if (value || !functions.length) return;
-    const suggested = categorizeSolutionIssue(title, description).authority?.id;
-    if (suggested && functions.some((fn) => fn.authorityId === suggested)) onChange(suggested);
+    const suggested = suggestPublicFunction(title, description, functions);
+    if (suggested) onChange(suggested.functionKey);
   }, [functions, title, description, value, onChange]);
   useEffect(() => {
     if (!value || matterScopeMissingKey(scope)) {
@@ -43,13 +42,7 @@ export function MatterPublicAuthorityField({ title, description, scope, value, o
   return (
     <div className="space-y-1" data-testid="matter-public-authority">
       <OutlinedField label={t('contribute.matters.publicAuthority.function')}>
-        <Select value={value || 'none'} onValueChange={(next) => onChange(next === 'none' ? '' : next)}>
-          <SelectTrigger aria-label={t('contribute.matters.publicAuthority.function')} data-testid="matter-public-function"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="none">{t('organisation.public.finder.chooseFunction')}</SelectItem>
-            {functions.map((fn) => <SelectItem key={fn.authorityId} value={fn.authorityId}>{fn.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <FunctionSelect functions={functions} value={value} onChange={onChange} label={t('contribute.matters.publicAuthority.function')} testId="matter-public-function" />
       </OutlinedField>
       <p className="text-xs text-muted-foreground" data-testid="matter-public-route">
         {route?.body

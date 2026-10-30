@@ -1055,9 +1055,9 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.243",
     "appReleaseId": "20261026-v0.1.243",
     "androidVersionCode": 245,
-    "gitSha": "688e9b9e7fefe698dd7e483cde5b693a7362c2d4",
-    "generatedAt": "2026-10-29T19:34:00.925Z",
-    "sourceFingerprint": "670828d51f89750846ce23d7857bd2f104908885cbb8c4c5cd0257863056e334",
+    "gitSha": "4921e5865f0330b94337a6bca5944dda96ba4709",
+    "generatedAt": "2026-10-30T00:23:45.308Z",
+    "sourceFingerprint": "ef40fbf45fe8dff058ab6d16e725aed48f260046bd91950881688a56619b17f4",
     "knowledgeFormat": 1,
     "sourceCount": 28,
     "chunkCount": 401
@@ -1890,7 +1890,7 @@ var KNOWLEDGE_PACK = {
       "id": "public_functions",
       "name": "Public functions: who is responsible for what, anywhere",
       "status": "implemented",
-      "description": 'Civizen keeps one planet-wide model of public functions (roads, water, health, schools, safety, elections, courts and more) and maps the existing public bodies of any place onto it; no country is first. A Matter for "a public authority" goes to the body that performs the function where it happens (city, then region, then country, then planetary), or, where none is mapped yet, to a Civizen liaison for that function, who finds the right office and delivers it. Members can suggest the body for their place with an official source; the liaison checks it before it is used.',
+      "description": 'Civizen keeps one planet-wide model of public functions, based on the UN Classification of the Functions of Government (COFOG: general public services, defence, public order and safety, economic affairs, environmental protection, housing and community amenities, health, recreation and culture, education, social protection) with marked Civizen additions such as digital government and IT, data protection, elections and civil registration, and maps the existing public bodies of any place onto it; no country is first. A Matter for "a public authority" goes to the body that performs the function where it happens (city, then region, then country, then planetary), or, where none is mapped yet, to a Civizen liaison for that function, who finds the right office and delivers it. Members can suggest the body for their place with an official source; the liaison checks it before it is used.',
       "howTo": 'Open Organisation, then Public functions, to see who is responsible for a function in a place or to suggest a body. On the Matter form choose "A public authority".',
       "routes": [
         "/organisation/public",
@@ -3870,7 +3870,7 @@ var KNOWLEDGE_PACK = {
       "id": "capability:public_functions",
       "title": "Public functions: who is responsible for what, anywhere",
       "path": "src/lib/assistant/catalog.ts",
-      "text": 'Public functions: who is responsible for what, anywhere status=implemented. Civizen keeps one planet-wide model of public functions (roads, water, health, schools, safety, elections, courts and more) and maps the existing public bodies of any place onto it; no country is first. A Matter for "a public authority" goes to the body that performs the function where it happens (city, then region, then country, then planetary), or, where none is mapped yet, to a Civizen liaison for that function, who finds the right office and delivers it. Members can suggest the body for their place with an official source; the liaison checks it before it is used. Open Organisation, then Public functions, to see who is responsible for a function in a place or to suggest a body. On the Matter form choose "A public authority". Routes: /organisation/public, /contribute/matters/new.',
+      "text": 'Public functions: who is responsible for what, anywhere status=implemented. Civizen keeps one planet-wide model of public functions, based on the UN Classification of the Functions of Government (COFOG: general public services, defence, public order and safety, economic affairs, environmental protection, housing and community amenities, health, recreation and culture, education, social protection) with marked Civizen additions such as digital government and IT, data protection, elections and civil registration, and maps the existing public bodies of any place onto it; no country is first. A Matter for "a public authority" goes to the body that performs the function where it happens (city, then region, then country, then planetary), or, where none is mapped yet, to a Civizen liaison for that function, who finds the right office and delivers it. Members can suggest the body for their place with an official source; the liaison checks it before it is used. Open Organisation, then Public functions, to see who is responsible for a function in a place or to suggest a body. On the Matter form choose "A public authority". Routes: /organisation/public, /contribute/matters/new.',
       "status": "implemented",
       "priority": 3,
       "kind": "capability"

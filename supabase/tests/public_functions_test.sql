@@ -9,7 +9,7 @@ SELECT set_config('t.member_uid', (SELECT user_id::text FROM public.profiles WHE
 SELECT set_config('t.liaison_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'verified_member' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('t.liaison_pid', (SELECT id::text FROM public.profiles WHERE username = 'verified_member' AND deleted_at IS NULL LIMIT 1), true);
 UPDATE public.org_position_terms SET ended_at = now(), end_reason = 'test reset' WHERE ended_at IS NULL;
-INSERT INTO public.org_position_terms (position_key, profile_id) VALUES ('liaison_places', current_setting('t.liaison_pid')::uuid);
+INSERT INTO public.org_position_terms (position_key, profile_id) VALUES ('liaison_economic_affairs', current_setting('t.liaison_pid')::uuid);
 
 CREATE OR REPLACE FUNCTION pg_temp.act_as(p_uid text) RETURNS void LANGUAGE sql AS $$
   SELECT set_config('request.jwt.claims', json_build_object('sub', p_uid, 'role', 'authenticated')::text, true);
@@ -17,12 +17,28 @@ $$;
 CREATE TEMP TABLE t_ids (label text PRIMARY KEY, id uuid) ON COMMIT DROP;
 GRANT ALL ON t_ids TO authenticated;
 
--- every function is in a group and has a liaison that exists
+-- the model covers the 10 COFOG divisions, each with a catch-all and an existing liaison; every Solutions category
+-- points to a function; Civizen additions are marked as such
 DO $$
 BEGIN
-  IF EXISTS (SELECT 1 FROM public.solution_authorities a
-              WHERE a.function_group IS NULL OR NOT EXISTS (SELECT 1 FROM public.org_positions p WHERE p.position_key = a.liaison_position_key)) THEN
-    RAISE EXCEPTION 'every function needs a group and an existing liaison position';
+  IF (SELECT count(*) FROM public.public_function_divisions WHERE cofog_code IS NOT NULL) <> 10 THEN
+    RAISE EXCEPTION 'the model should cover the 10 COFOG divisions';
+  END IF;
+  IF EXISTS (SELECT 1 FROM public.public_function_divisions d WHERE d.cofog_code IS NOT NULL
+               AND NOT EXISTS (SELECT 1 FROM public.public_functions f WHERE f.division_code = d.division_code AND f.origin = 'catch_all')) THEN
+    RAISE EXCEPTION 'every division needs a catch-all so nothing falls outside';
+  END IF;
+  IF EXISTS (SELECT 1 FROM public.public_function_divisions d WHERE NOT EXISTS (SELECT 1 FROM public.org_positions p WHERE p.position_key = d.liaison_position_key)) THEN
+    RAISE EXCEPTION 'every division needs an existing liaison position';
+  END IF;
+  IF EXISTS (SELECT 1 FROM public.solution_authorities WHERE function_key IS NULL) THEN
+    RAISE EXCEPTION 'every Solutions category should point to a function';
+  END IF;
+  IF EXISTS (SELECT 1 FROM public.public_functions WHERE origin = 'cofog' AND cofog_code IS NULL) THEN
+    RAISE EXCEPTION 'functions taken from COFOG should carry their COFOG code';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM public.public_functions WHERE function_key = 'digital_government' AND origin = 'civizen_addition') THEN
+    RAISE EXCEPTION 'digital government and IT should be in the model';
   END IF;
 END $$;
 
@@ -35,11 +51,11 @@ INSERT INTO t_ids SELECT 'country', public.propose_public_body(jsonb_build_objec
   'answer_deadline_days', 30, 'source_url', 'https://gov.example.org/structure'));
 INSERT INTO t_ids SELECT 'city', public.propose_public_body(jsonb_build_object(
   'name', 'Testville Streets Department', 'kind', 'local_government', 'scope_kind', 'locality', 'scope_country_code', 'TL',
-  'scope_locality_code', 'Testville', 'functions', jsonb_build_array('transport', 'municipal'),
+  'scope_locality_code', 'Testville', 'functions', jsonb_build_array('transport', 'street_lighting'),
   'channel_kind', 'service_request_api', 'channel_address', 'https://311.example.org/requests', 'source_url', 'https://testville.example.org/departments'));
 INSERT INTO t_ids SELECT 'planet', public.propose_public_body(jsonb_build_object(
   'name', 'Test Planetary Health Body', 'kind', 'international', 'scope_kind', 'global',
-  'functions', jsonb_build_array('health'), 'channel_kind', 'email', 'channel_address', 'contact@health.example.org', 'source_url', 'https://health.example.org/about'));
+  'functions', jsonb_build_array('public_health'), 'channel_kind', 'email', 'channel_address', 'contact@health.example.org', 'source_url', 'https://health.example.org/about'));
 RESET ROLE;
 
 DO $$
@@ -61,7 +77,7 @@ BEGIN
   END;
   RESET ROLE;
   IF NOT v_failed THEN RAISE EXCEPTION 'a proposal without an https source should fail'; END IF;
-  IF NOT EXISTS (SELECT 1 FROM public.org_position_items WHERE position_key = 'liaison_places' AND source_type = 'public_body'
+  IF NOT EXISTS (SELECT 1 FROM public.org_position_items WHERE position_key = 'liaison_economic_affairs' AND source_type = 'public_body'
                    AND source_ref = v_city::text AND status = 'open') THEN
     RAISE EXCEPTION 'a proposal should open a review item for the liaison';
   END IF;
@@ -90,7 +106,7 @@ BEGIN
   SET LOCAL ROLE authenticated;
   PERFORM public.review_public_body(v_city, 'verified', 'Checked the city department page.');
   PERFORM public.review_public_body(v_country, 'verified', 'Checked the government structure page.');
-  -- the health body is not the Places liaison's to verify; the founder office answers for the vacant health liaison
+  -- the health body is not the Economic Affairs liaison's to verify; the founder office answers for the vacant Health liaison
   v_failed := false;
   BEGIN
     PERFORM public.review_public_body((SELECT id FROM t_ids WHERE label = 'planet'), 'verified', 'Checked the about page.');
@@ -110,10 +126,10 @@ BEGIN
   v_route := public.route_public_function('transport', 'locality', 'TL', NULL, 'Othertown');
   IF v_route -> 'body' ->> 'name' <> 'Testland Transport Ministry' THEN RAISE EXCEPTION 'elsewhere the country body should answer: %', v_route; END IF;
   v_route := public.route_public_function('transport', 'country', 'ZZ', NULL, NULL);
-  IF v_route -> 'body' <> 'null'::jsonb OR v_route ->> 'liaison_position_key' <> 'liaison_places' THEN
+  IF v_route -> 'body' <> 'null'::jsonb OR v_route ->> 'liaison_position_key' <> 'liaison_economic_affairs' THEN
     RAISE EXCEPTION 'an unmapped country should go to the liaison: %', v_route;
   END IF;
-  v_route := public.route_public_function('health', 'global', NULL, NULL, NULL);
+  v_route := public.route_public_function('public_health', 'global', NULL, NULL, NULL);
   IF v_route -> 'body' ->> 'name' <> 'Test Planetary Health Body' THEN RAISE EXCEPTION 'a planetary Matter should reach a planetary body: %', v_route; END IF;
 END $$;
 
@@ -138,7 +154,7 @@ BEGIN
   IF EXISTS (SELECT 1 FROM public.org_position_items WHERE position_key = 'member_support' AND source_ref = v_matter::text AND status = 'open') THEN
     RAISE EXCEPTION 'triage should close once the Matter is routed';
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM public.org_position_items WHERE position_key = 'liaison_places' AND source_ref = v_matter::text
+  IF NOT EXISTS (SELECT 1 FROM public.org_position_items WHERE position_key = 'liaison_economic_affairs' AND source_ref = v_matter::text
                    AND status = 'open' AND title LIKE 'Deliver to Testville Streets Department:%' AND body LIKE '%311.example.org%') THEN
     RAISE EXCEPTION 'the liaison should get a delivery item with the channel';
   END IF;
@@ -154,7 +170,7 @@ BEGIN
   SET LOCAL ROLE authenticated;
   v_failed := false;
   BEGIN
-    PERFORM public.set_matter_public_route(v_matter, 'health');
+    PERFORM public.set_matter_public_route(v_matter, 'public_health');
   EXCEPTION WHEN insufficient_privilege THEN v_failed := true;
   END;
   RESET ROLE;

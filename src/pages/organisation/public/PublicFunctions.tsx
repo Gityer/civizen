@@ -10,8 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { FUNCTION_GROUPS, loadFunctionCatalog, type PublicFunction } from '@/lib/public-functions';
-import { GROUP_KEYS } from '@/pages/organisation/public/groups';
+import { loadFunctionCatalog, type PublicFunction } from '@/lib/public-functions';
+import { DIVISION_KEYS, byDivision } from '@/pages/organisation/public/groups';
 import { ProposeBodyForm } from '@/pages/organisation/public/ProposeBodyForm';
 import { PublicRouteFinder } from '@/pages/organisation/public/PublicRouteFinder';
 
@@ -55,31 +55,31 @@ export default function PublicFunctions() {
         <p className="text-sm text-muted-foreground">{t('organisation.public.howItWorks')}</p>
         {functions === null ? <p className="text-sm text-muted-foreground">{t('common.loading')}</p> : null}
         {functions?.length ? <PublicRouteFinder functions={functions} /> : null}
-        {functions ? FUNCTION_GROUPS.map((group) => {
-          const rows = functions.filter((fn) => fn.group === group);
-          if (!rows.length) return null;
-          return (
-            <section key={group} className="space-y-2" data-testid={`public-group-${group}`}>
-              <h2 className="text-lg font-semibold text-foreground">{t(GROUP_KEYS[group])}</h2>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {rows.map((fn) => (
-                  <Card key={fn.authorityId} className="space-y-1 p-3">
-                    <p className="font-medium text-foreground">{fn.name}</p>
-                    <p className="text-xs text-muted-foreground">{fn.responsibilities}</p>
-                    <div className="flex flex-wrap items-center gap-2 text-xs">
-                      <Badge variant="outline" className="rounded-full">{t('organisation.public.mappedBodies', { count: fn.verifiedBodies })}</Badge>
-                      {fn.liaisonPositionKey ? (
-                        <Link to={`/organisation/${fn.liaisonPositionKey}`} className="text-primary underline underline-offset-2">
-                          {t('organisation.public.liaison')}
-                        </Link>
-                      ) : null}
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </section>
-          );
-        }) : null}
+        {functions ? byDivision(functions).map((group) => (
+          <section key={group.code} className="space-y-2" data-testid={`public-division-${group.code}`}>
+            <h2 className="text-lg font-semibold text-foreground">{DIVISION_KEYS[group.code] ? t(DIVISION_KEYS[group.code]) : group.name}</h2>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {group.functions.map((fn) => (
+                <Card key={fn.functionKey} className="space-y-1 p-3">
+                  <p className="font-medium text-foreground">{fn.name}</p>
+                  <p className="text-xs text-muted-foreground">{fn.description}</p>
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <Badge variant="secondary" className="rounded-full">
+                      {fn.origin === 'cofog' ? t('organisation.public.origin.cofog', { code: fn.cofogCode ?? '' })
+                        : fn.origin === 'civizen_addition' ? t('organisation.public.origin.civizen_addition') : t('organisation.public.origin.catch_all')}
+                    </Badge>
+                    <Badge variant="outline" className="rounded-full">{t('organisation.public.mappedBodies', { count: fn.verifiedBodies })}</Badge>
+                    {fn.liaisonPositionKey ? (
+                      <Link to={`/organisation/${fn.liaisonPositionKey}`} className="text-primary underline underline-offset-2">
+                        {t('organisation.public.liaison')}
+                      </Link>
+                    ) : null}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )) : null}
         {user && functions?.length ? <ProposeBodyForm functions={functions} /> : null}
         {!user ? <p className="text-sm text-muted-foreground">{t('organisation.public.signInToPropose')}</p> : null}
       </div>
