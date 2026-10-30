@@ -14,12 +14,12 @@ const DB = process.env.CIVIZEN_LOCAL_DB_CONTAINER || 'supabase_db_civizen-local'
 
 const FUNCTIONS = [
   'admin-create-user', 'language-pack', 'linked-account-switch', 'matter-agent-execute', 'messaging-agent-reply',
-  'notification-digest', 'push-dispatch', 'sign-in-with-identifier', 'social-accounts', 'social-oauth-callback',
+  'notification-digest', 'public-delivery-open311', 'push-dispatch', 'sign-in-with-identifier', 'social-accounts', 'social-oauth-callback',
   'solutions-agent-council', 'turn-credentials',
 ];
 /** Functions a signed-out caller must not be able to use. */
 const MEMBER_ONLY = [
-  'admin-create-user', 'linked-account-switch', 'messaging-agent-reply', 'notification-digest', 'push-dispatch',
+  'admin-create-user', 'linked-account-switch', 'messaging-agent-reply', 'notification-digest', 'public-delivery-open311', 'push-dispatch',
   'social-accounts', 'solutions-agent-council', 'turn-credentials',
 ];
 

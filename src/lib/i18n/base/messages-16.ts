@@ -206,6 +206,9 @@ export const m_messages_16 = {
     "moderation_enforcement": { "title": "A moderation decision about your account", "body": "Open Moderation to see the step, the reason and how long it lasts. You can appeal once; a different moderator will review it." },
     "moderation_enforcement_overturned": { "title": "Your appeal was accepted", "body": "The decision about your account was withdrawn." },
     "moderation_enforcement_upheld": { "title": "Your appeal was reviewed", "body": "A second moderator kept the decision about your account." },
+    "matter_public_delivered": { "title": "Your Matter was delivered", "body": "The public body's answer is due by the date shown on the Matter." },
+    "matter_public_answered": { "title": "A public body answered your Matter", "body": "Open the Matter to read the answer." },
+    "matter_public_overdue": { "title": "A public body has not answered in time", "body": "Civizen's Public Liaison is following it up." },
     "position_item": { "title": "A new item for your position", "body": "Open the position to read it and take it on." },
     "position_started": { "title": "You now hold a position", "body": "Open it to read its mandate, the handover notes and the open items." },
     "moderation_removal": { "title": "Your account will be closed", "body": "Two moderators decided to close your account in 30 days. Until then you can read and appeal once in Moderation; a moderator who did not take part decides." }

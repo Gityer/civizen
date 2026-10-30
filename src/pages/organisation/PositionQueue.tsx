@@ -18,6 +18,7 @@ import {
   type PositionItem,
 } from '@/lib/organisation';
 import { publicFunctionErrorKey, reviewPublicBody } from '@/lib/public-functions';
+import { approvePublicOffice, deliveryErrorKey } from '@/lib/public-delivery';
 
 const KIND_KEYS = {
   decision: 'organisation.queue.kinds.decision',
@@ -66,6 +67,19 @@ function ItemCard({ item, onChanged }: { item: PositionItem; onChanged: () => vo
     }
   };
 
+  const approveOffice = async () => {
+    setBusy(true);
+    try {
+      await approvePublicOffice(item.id, text);
+      setText('');
+      onChanged();
+    } catch (error) {
+      toast.error(t(deliveryErrorKey(error instanceof Error ? error.message : '')));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <Card className="space-y-2 p-4" data-testid={`position-item-${item.id}`}>
       <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -109,7 +123,9 @@ function ItemCard({ item, onChanged }: { item: PositionItem; onChanged: () => vo
             )}
             <Button type="button" size="sm" variant="outline" disabled={busy || !text.trim()} onClick={() => void run('note')}>{t('organisation.queue.note')}</Button>
             <Button type="button" size="sm" variant="outline" disabled={busy || !text.trim()} onClick={() => void run('wait')}>{t('organisation.queue.wait')}</Button>
-            {item.publicBodyId ? (
+            {item.officeRequest ? (
+              <Button type="button" size="sm" disabled={busy || !text.trim()} onClick={() => void approveOffice()} data-testid="position-item-approve-office">{t('organisation.public.body.approve')}</Button>
+            ) : item.publicBodyId ? (
               <>
                 <Button type="button" size="sm" disabled={busy || !text.trim()} onClick={() => void review('verified')} data-testid="position-item-verify">{t('organisation.public.review.verify')}</Button>
                 <Button type="button" size="sm" variant="ghost" disabled={busy || !text.trim()} onClick={() => void review('rejected')}>{t('organisation.public.review.reject')}</Button>

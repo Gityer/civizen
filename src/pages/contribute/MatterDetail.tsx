@@ -6,6 +6,7 @@ import { formatWhen } from '@/pages/contribute/matter-detail/matter-detail-share
 import { useMatterDetail } from '@/pages/contribute/matter-detail/useMatterDetail';
 import { MatterDetailBall } from '@/pages/contribute/matter-detail/MatterDetailBall';
 import { MatterEscalateCard } from '@/pages/contribute/matter-detail/MatterEscalateCard';
+import { MatterPublicStatusCard } from '@/pages/contribute/matter-detail/MatterPublicStatusCard';
 import { MatterDetailActions } from '@/pages/contribute/matter-detail/MatterDetailActions';
 import { MatterDetailOverview } from '@/pages/contribute/matter-detail/MatterDetailOverview';
 import { MatterDetailSections } from '@/pages/contribute/matter-detail/MatterDetailSections';
@@ -65,6 +66,7 @@ export default function MatterDetail() {
 
         <MatterDetailBall model={model} />
         <MatterEscalateCard model={model} />
+        <MatterPublicStatusCard matterId={matter.id} />
         <MatterDetailActions model={model} />
         <MatterDetailOverview model={model} />
         <MatterDetailSections model={model} />

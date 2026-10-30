@@ -8963,6 +8963,21 @@ isOneToOne: false
 "org_current_profile_acts_for_civizen":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
+"public_body_detail":
+{ Args: { "p_body_id": string }; Returns: Json
+                           },
+"public_coverage":
+{ Args: { "p_country"?: string,"p_locality"?: string,"p_region"?: string,"p_scope_kind"?: string }; Returns: Json
+                           },
+"record_public_answer":
+{ Args: { "p_delivery_id": string,"p_outcome": string,"p_summary": string }; Returns: undefined
+                           },
+"record_public_delivery":
+{ Args: { "p_matter_id": string,"p_reference": string }; Returns: string
+                           },
+"request_public_office":
+{ Args: { "p_body_id": string,"p_evidence_url": string,"p_note"?: string,"p_title": string }; Returns: string
+                           },
 "propose_public_body":
 { Args: { "payload": Json }; Returns: string
                            },
@@ -8977,6 +8992,15 @@ isOneToOne: false
                            },
 "set_matter_public_route":
 { Args: { "p_function_key": string,"p_matter_id": string }; Returns: Json
+                           },
+"approve_public_office":
+{ Args: { "p_item_id": string,"p_note": string }; Returns: string
+                           },
+"assign_matter_public_body":
+{ Args: { "p_body_id": string,"p_matter_id": string }; Returns: undefined
+                           },
+"matter_public_status":
+{ Args: { "p_matter_id": string }; Returns: Json
                            },
 "org_add_position_note":
 { Args: { "p_position_key": string,"p_text": string }; Returns: undefined

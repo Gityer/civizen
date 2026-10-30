@@ -43,6 +43,7 @@ export type PositionItem = {
   claimedBy: { profileId: string; username: string | null } | null;
   matterId: string | null;
   publicBodyId: string | null;
+  officeRequest: boolean;
   contact: { name: string; email: string; topic: string } | null;
 };
 export type PositionLogEntry = { id: number; event: string; itemId: string | null; body: string; createdAt: string; actor: string | null };
@@ -123,6 +124,7 @@ function parseItem(i: Row): PositionItem {
     claimedBy: claimed ? { profileId: str(claimed.profile_id), username: strOrNull(claimed.username) } : null,
     matterId: i.source_type === 'matter' ? strOrNull(i.source_ref) : null,
     publicBodyId: i.source_type === 'public_body' ? strOrNull(i.source_ref) : null,
+    officeRequest: i.source_type === 'office_request',
     contact: meta.email ? { name: str(meta.name), email: str(meta.email), topic: str(meta.topic) } : null,
   };
 }
