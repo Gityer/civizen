@@ -486,7 +486,7 @@ BEGIN
   END IF;
   v_route := public.route_public_function(p_function_key, v_matter.scope_kind, v_matter.scope_country_code,
                                           v_matter.scope_region_code, v_matter.scope_locality_code);
-  v_body := v_route -> 'body';
+  v_body := nullif(v_route -> 'body', 'null'::jsonb);
   v_liaison := coalesce(v_route ->> 'liaison_position_key', 'public_liaison_lead');
   UPDATE public.matters SET public_function_key = p_function_key, public_body_id = (v_body ->> 'id')::uuid WHERE id = p_matter_id;
   -- triage is no longer needed: the liaison for the function has it

@@ -176,6 +176,23 @@ BEGIN
   RESET ROLE;
   IF NOT v_failed THEN RAISE EXCEPTION 'only the initiator should route the Matter'; END IF;
 END $$;
+-- 5. where no body is mapped, the liaison is asked to find the responsible office
+SELECT pg_temp.act_as(current_setting('t.citizen_uid'));
+SET LOCAL ROLE authenticated;
+INSERT INTO t_ids SELECT 'unmapped', public.create_matter(jsonb_build_object(
+  'title', 'Public route test: no office mapped', 'description', 'Fictional Matter for the public-functions test.',
+  'matter_type', 'issue', 'visibility', 'public', 'addressee_kind', 'organization', 'addressee_profile_id', public.resolve_civizen_org_profile(),
+  'scope_kind', 'country', 'scope_country_code', 'ZZ', 'submit', true));
+SELECT public.set_matter_public_route((SELECT id FROM t_ids WHERE label = 'unmapped'), 'transport');
+RESET ROLE;
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM public.org_position_items WHERE position_key = 'liaison_economic_affairs'
+                   AND source_ref = (SELECT id FROM t_ids WHERE label = 'unmapped')::text
+                   AND title = 'Find the responsible office: Public route test: no office mapped') THEN
+    RAISE EXCEPTION 'with no body mapped, the liaison should be asked to find the office';
+  END IF;
+END $$;
 DO $$ BEGIN RAISE NOTICE 'ok: public functions'; END $$;
 
 ROLLBACK;
