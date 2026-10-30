@@ -1,9 +1,8 @@
 import { Capacitor } from '@capacitor/core';
 import { useAppUpdateRecheck } from '@/components/app/useAppUpdateRecheck';
-import { PLAY_STORE_URL, resolveAndroidInstallAction } from '@/lib/android-install-decision';
-import { ANDROID_INSTALL_PAGE_URL } from '@/lib/downloads';
-import { ApkUpdater, type ApkInstallInfo } from '@/lib/apk-updater-plugin';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { externalUrlForUpdate, useAndroidInstallAction } from '@/components/app/useAndroidInstallAction';
+import { ApkUpdater } from '@/lib/apk-updater-plugin';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import {
   AlertDialog,
@@ -214,18 +213,7 @@ export function AppUpdatePrompt() {
     [],
   );
   const shouldUseExternalApkPrompt = isAndroidNativeApp && allowsExternalAndroidApkUpdates;
-  // What Android itself says about the installed copy (its signing certificate and the store that installed it);
-  // null on older native shells, where the build-time signing flag decides.
-  const [installInfo, setInstallInfo] = useState<ApkInstallInfo | null>(null);
-  useEffect(() => {
-    if (!isAndroidNativeApp) return;
-    let cancelled = false;
-    ApkUpdater.getInstallInfo()
-      .then((info) => { if (!cancelled) setInstallInfo(info); })
-      .catch(() => { /* older native shell: keep the flag-based decision */ });
-    return () => { cancelled = true; };
-  }, [isAndroidNativeApp]);
-  const installAction = availableUpdate ? resolveAndroidInstallAction(availableUpdate.manifest, installInfo) : 'update';
+  const { installInfo, installAction } = useAndroidInstallAction(isAndroidNativeApp, availableUpdate?.manifest);
   const allowTestingChannel = permissionListHas(profile?.effective_permissions || [], 'updates.test');
 
   const checkForUpdates = useCallback(async () => {
@@ -316,15 +304,9 @@ export function AppUpdatePrompt() {
     if (updateLaunchLockRef.current) return;
     const update = availableUpdateRef.current ?? availableUpdate;
     if (!update) return;
-    const action = resolveAndroidInstallAction(update.manifest, installInfo);
-    // A copy installed from Google Play updates through Google Play (Play re-signs the app).
-    if (action === 'play') {
-      void ApkUpdater.openExternalUrl({ url: PLAY_STORE_URL });
-      return;
-    }
-    // Decision D10: an APK signed with another key cannot be installed over the installed app; send the member to the download page to reinstall once.
-    if (action === 'reinstall') {
-      void ApkUpdater.openExternalUrl({ url: ANDROID_INSTALL_PAGE_URL });
+    const externalUrl = externalUrlForUpdate(update.manifest, installInfo);
+    if (externalUrl) {
+      void ApkUpdater.openExternalUrl({ url: externalUrl });
       return;
     }
 
@@ -396,11 +378,8 @@ export function AppUpdatePrompt() {
               ),
               currentVersion: CURRENT_ANDROID_RELEASE_LABEL,
             })}
-            {installAction === 'reinstall' ? (
-              <span className="mt-3 block text-sm text-foreground" data-testid="app-update-reinstall">{t('appUpdate.reinstallSigned')}</span>
-            ) : null}
-            {installAction === 'play' ? (
-              <span className="mt-3 block text-sm text-foreground" data-testid="app-update-play">{t('appUpdate.updateViaPlay')}</span>
+            {installAction !== 'update' ? (
+              <span className="mt-3 block text-sm text-foreground" data-testid={`app-update-${installAction}`}>{t(installAction === 'play' ? 'appUpdate.updateViaPlay' : 'appUpdate.reinstallSigned')}</span>
             ) : null}
             {statusMessage ? (
               <span className="mt-3 block text-sm text-muted-foreground">{statusMessage}</span>
