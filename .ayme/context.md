@@ -35,6 +35,10 @@
 - Settle chat: Civizen keys for Aye
 - Rewrite this question in Armen's shape or settle it yourself: Docs follow the app: a check that fails when docs name a UI path, setting or command that no longer exists
 - Signed-in production check of civizen.world v0.1.242 in Aye's browser
+- Lead settle: Signed-in production check of civizen.world v0.1.242 in Aye's browser
+- Forum settle: Signed-in production check of civizen.world v0.1.242 in Aye's browser
+- Already answered: Signed-in production check of civizen.world v0.1.242 in Aye's browser
+- Settle chat: Civizen v0.1.243 live check
 
 ## Where the details live
 
