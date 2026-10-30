@@ -169,6 +169,19 @@ export const ASSISTANT_CAPABILITIES_PART_2: AssistantCapability[] = [
     sourceRefs: ['src/pages/organisation/Organisation.tsx', 'src/pages/organisation/PositionPage.tsx', 'src/lib/organisation.ts'],
   },
   {
+    id: 'public_functions',
+    name: 'Public functions: who is responsible for what, anywhere',
+    status: 'implemented',
+    description:
+      'Civizen keeps one planet-wide model of public functions, based on the UN Classification of the Functions of Government (COFOG: general public services, defence, public order and safety, economic affairs, environmental protection, housing and community amenities, health, recreation and culture, education, social protection) with marked Civizen additions such as digital government and IT, data protection, elections and civil registration, and maps the existing public bodies of any place onto it; no country is first. A Matter for "a public authority" goes to the body that performs the function where it happens (city, then region, then country, then planetary), or, where none is mapped yet, to a Civizen liaison for that function, who finds the right office and delivers it. Members can suggest the body for their place with an official source; the liaison checks it before it is used.',
+    howTo: 'Open Organisation, then Public functions, to see who is responsible for a function in a place or to suggest a body. On the Matter form choose "A public authority".',
+    routes: ['/organisation/public', '/contribute/matters/new'],
+    roles: ['member', 'guest'],
+    relatedCapabilities: ['organisation_positions'],
+    aliases: ['which government office', 'who do I contact', 'responsible authority', 'public body', 'department', 'ministry', 'city hall', '311'],
+    sourceRefs: ['src/pages/organisation/public/PublicFunctions.tsx', 'src/lib/public-functions.ts'],
+  },
+  {
     id: 'reading_preferences',
     name: 'Reading: text size, contrast and motion',
     status: 'implemented',

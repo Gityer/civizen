@@ -17,6 +17,7 @@ import {
   type ItemAction,
   type PositionItem,
 } from '@/lib/organisation';
+import { publicFunctionErrorKey, reviewPublicBody } from '@/lib/public-functions';
 
 const KIND_KEYS = {
   decision: 'organisation.queue.kinds.decision',
@@ -46,6 +47,20 @@ function ItemCard({ item, onChanged }: { item: PositionItem; onChanged: () => vo
       onChanged();
     } catch (error) {
       toast.error(t(organisationErrorKey(error instanceof Error ? error.message : '')));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const review = async (decision: 'verified' | 'rejected') => {
+    if (!item.publicBodyId) return;
+    setBusy(true);
+    try {
+      await reviewPublicBody(item.publicBodyId, decision, text);
+      setText('');
+      onChanged();
+    } catch (error) {
+      toast.error(t(publicFunctionErrorKey(error instanceof Error ? error.message : '')));
     } finally {
       setBusy(false);
     }
@@ -94,7 +109,14 @@ function ItemCard({ item, onChanged }: { item: PositionItem; onChanged: () => vo
             )}
             <Button type="button" size="sm" variant="outline" disabled={busy || !text.trim()} onClick={() => void run('note')}>{t('organisation.queue.note')}</Button>
             <Button type="button" size="sm" variant="outline" disabled={busy || !text.trim()} onClick={() => void run('wait')}>{t('organisation.queue.wait')}</Button>
-            <Button type="button" size="sm" disabled={busy || !text.trim()} onClick={() => void run('done')} data-testid="position-item-done">{t('organisation.queue.done')}</Button>
+            {item.publicBodyId ? (
+              <>
+                <Button type="button" size="sm" disabled={busy || !text.trim()} onClick={() => void review('verified')} data-testid="position-item-verify">{t('organisation.public.review.verify')}</Button>
+                <Button type="button" size="sm" variant="ghost" disabled={busy || !text.trim()} onClick={() => void review('rejected')}>{t('organisation.public.review.reject')}</Button>
+              </>
+            ) : (
+              <Button type="button" size="sm" disabled={busy || !text.trim()} onClick={() => void run('done')} data-testid="position-item-done">{t('organisation.queue.done')}</Button>
+            )}
             <Button type="button" size="sm" variant="ghost" disabled={busy || !text.trim()} onClick={() => void run('declined')}>{t('organisation.queue.decline')}</Button>
           </div>
         </div>

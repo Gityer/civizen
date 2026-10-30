@@ -31,6 +31,8 @@ import {
 } from '@/lib/matters-api';
 import { listGeoCountryCodes } from '@/lib/geo-locations';
 import { MatterScopeFields } from '@/pages/contribute/matter-form/MatterScopeFields';
+import { MatterPublicAuthorityField } from '@/pages/contribute/matter-form/MatterPublicAuthorityField';
+import { setMatterPublicRoute } from '@/lib/public-functions';
 import {
   EMPTY_MATTER_SCOPE,
   matterScopeForSubmit,
@@ -63,6 +65,7 @@ export default function MatterForm() {
   const [initiatorKind, setInitiatorKind] = useState<MatterActorKind>('person');
   const [initiatorProfileId, setInitiatorProfileId] = useState(profileId);
   const [addressee, setAddressee] = useState<MatterActorSuggestion | null>(null);
+  const [publicAuthorityId, setPublicAuthorityId] = useState<string | null>(null);
   const [addresseeQuery, setAddresseeQuery] = useState('');
   const [suggestions, setSuggestions] = useState<MatterActorSuggestion[]>([]);
   const [unitLabel, setUnitLabel] = useState('');
@@ -78,7 +81,8 @@ export default function MatterForm() {
 
   // The official Civizen organization stands for the community: a member can raise a Matter
   // without naming a person (step 2.1).
-  const addressCommunity = useCallback(async () => {
+  const addressCommunity = useCallback(async (publicAuthority = false) => {
+    setPublicAuthorityId(publicAuthority ? '' : null);
     const actor = await resolveOfficialCivizenMatterActor();
     if (actor) {
       setAddressee(actor);
@@ -127,6 +131,10 @@ export default function MatterForm() {
       toast.error(tRef.current('contribute.matters.recipientRequired'));
       return;
     }
+    if (publicAuthorityId === '') {
+      toast.error(tRef.current('contribute.matters.publicAuthority.required'));
+      return;
+    }
     const scopeMissing = matterScopeMissingKey(scope);
     if (scopeMissing) {
       toast.error(tRef.current(scopeMissing));
@@ -149,6 +157,7 @@ export default function MatterForm() {
         evidenceUrl: evidenceUrl.trim() || null,
         evidenceLabel: evidenceLabel.trim() || null,
       });
+      if (publicAuthorityId) await setMatterPublicRoute(id, publicAuthorityId);
       // The Matter exists from here on: a failed upload must not send the member back to resubmit a duplicate.
       let uploadFailed = false;
       if (file) {
@@ -170,6 +179,7 @@ export default function MatterForm() {
       setBusy(false);
     }
   }, [
+    publicAuthorityId,
     addressee,
     areaNodeId,
     description,
@@ -261,8 +271,8 @@ export default function MatterForm() {
           <OutlinedField label={t('contribute.matters.recipientLabel')} htmlFor="matter-recipient">
             {addressee ? (
               <div className="flex items-center justify-between gap-2 py-1">
-                <p className="text-sm text-foreground">{addressee.displayName}</p>
-                <Button type="button" variant="ghost" size="sm" onClick={() => setAddressee(null)}>
+                <p className="text-sm text-foreground">{publicAuthorityId !== null ? t('contribute.matters.publicAuthority.label') : addressee.displayName}</p>
+                <Button type="button" variant="ghost" size="sm" onClick={() => { setAddressee(null); setPublicAuthorityId(null); }}>
                   {t('common.edit')}
                 </Button>
               </div>
@@ -284,6 +294,9 @@ export default function MatterForm() {
                   data-testid="matter-recipient-community"
                 >
                   {t('contribute.matters.recipientCommunity')}
+                </Button>
+                <Button type="button" variant="outline" size="sm" className="ml-2 mt-2" onClick={() => void addressCommunity(true)} data-testid="matter-recipient-public">
+                  {t('contribute.matters.publicAuthority.label')}
                 </Button>
                 <p className="mt-1 text-xs text-muted-foreground">{t('contribute.matters.recipientCommunityHint')}</p>
                 {suggestions.length > 0 ? (
@@ -320,6 +333,9 @@ export default function MatterForm() {
             />
           </OutlinedField>
           <MatterScopeFields value={scope} onChange={setScope} countryOptions={countryOptions} language={language} t={t} />
+          {publicAuthorityId !== null ? (
+            <MatterPublicAuthorityField title={title} description={description} scope={scope} value={publicAuthorityId} onChange={setPublicAuthorityId} />
+          ) : null}
           <OutlinedField label={t('contribute.matters.areaLabel')}>
             <Select value={areaNodeId || 'none'} onValueChange={(value) => setAreaNodeId(value === 'none' ? '' : value)}>
               <SelectTrigger>

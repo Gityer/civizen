@@ -73,7 +73,7 @@ export function MatterScopeFields({
             });
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger aria-label={t('contribute.matters.scopeLabel')}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -93,7 +93,7 @@ export function MatterScopeFields({
               onChange({ ...value, scopeCountryCode: next === 'none' ? '' : next, scopeRegionCode: '', scopeLocalityCode: '' })
             }
           >
-            <SelectTrigger>
+            <SelectTrigger aria-label={t('contribute.matters.scopeCountryLabel')}>
               <SelectValue placeholder={t('contribute.matters.scopeCountryHint')} />
             </SelectTrigger>
             <SelectContent>
@@ -113,7 +113,7 @@ export function MatterScopeFields({
             value={value.scopeRegionCode || 'none'}
             onValueChange={(next) => onChange({ ...value, scopeRegionCode: next === 'none' ? '' : next, scopeLocalityCode: '' })}
           >
-            <SelectTrigger data-testid="matter-scope-region">
+            <SelectTrigger aria-label={t('contribute.matters.scopeRegionLabel')} data-testid="matter-scope-region">
               <SelectValue placeholder={t('contribute.matters.scopeRegionHint')} />
             </SelectTrigger>
             <SelectContent>
@@ -133,7 +133,7 @@ export function MatterScopeFields({
             value={value.scopeLocalityCode || 'none'}
             onValueChange={(next) => onChange({ ...value, scopeLocalityCode: next === 'none' ? '' : next })}
           >
-            <SelectTrigger data-testid="matter-scope-locality">
+            <SelectTrigger aria-label={t('contribute.matters.scopeLocalityLabel')} data-testid="matter-scope-locality">
               <SelectValue placeholder={t('contribute.matters.scopeLocalityHint')} />
             </SelectTrigger>
             <SelectContent>

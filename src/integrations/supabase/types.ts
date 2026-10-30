@@ -8963,6 +8963,21 @@ isOneToOne: false
 "org_current_profile_acts_for_civizen":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
+"propose_public_body":
+{ Args: { "payload": Json }; Returns: string
+                           },
+"public_function_catalog":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"review_public_body":
+{ Args: { "p_body_id": string,"p_decision": string,"p_note": string }; Returns: undefined
+                           },
+"route_public_function":
+{ Args: { "p_function_key": string,"p_country"?: string,"p_locality"?: string,"p_region"?: string,"p_scope_kind"?: string }; Returns: Json
+                           },
+"set_matter_public_route":
+{ Args: { "p_function_key": string,"p_matter_id": string }; Returns: Json
+                           },
 "org_add_position_note":
 { Args: { "p_position_key": string,"p_text": string }; Returns: undefined
                            },

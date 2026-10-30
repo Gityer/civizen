@@ -38,7 +38,7 @@ async function expectNoSeriousViolations(page: Page, label: string) {
 test.describe('accessibility of primary pages', () => {
   test('public pages', async ({ page }) => {
     test.setTimeout(120_000);
-    for (const path of ['/', '/login', '/signup', '/governance/voting', '/market', '/contact', '/organisation', '/organisation/data_protection_officer']) {
+    for (const path of ['/', '/login', '/signup', '/governance/voting', '/market', '/contact', '/organisation', '/organisation/data_protection_officer', '/organisation/public']) {
       await page.goto(path);
       await expectNoSeriousViolations(page, path);
     }

@@ -1055,12 +1055,12 @@ var KNOWLEDGE_PACK = {
     "appVersion": "0.1.244",
     "appReleaseId": "20261029-v0.1.244",
     "androidVersionCode": 246,
-    "gitSha": "a70cefe3220c335b1a43742ea346d3b8da004ffa",
-    "generatedAt": "2026-10-30T01:14:36.479Z",
-    "sourceFingerprint": "e14a74eea40fd3d6fe75f42d11d886ca5e07671b39336c4bb538405ea653eb26",
+    "gitSha": "2db9682400fe1cd8a86c3e34d6d26fc570cf613b",
+    "generatedAt": "2026-10-30T02:42:16.319Z",
+    "sourceFingerprint": "4f727f4109a3c9d3577d572f1929107a7a9527943530eadf6fe4c629ba8b214b",
     "knowledgeFormat": 1,
     "sourceCount": 28,
-    "chunkCount": 400
+    "chunkCount": 401
   },
   "capabilities": [
     {
@@ -1884,6 +1884,38 @@ var KNOWLEDGE_PACK = {
         "src/pages/organisation/Organisation.tsx",
         "src/pages/organisation/PositionPage.tsx",
         "src/lib/organisation.ts"
+      ]
+    },
+    {
+      "id": "public_functions",
+      "name": "Public functions: who is responsible for what, anywhere",
+      "status": "implemented",
+      "description": 'Civizen keeps one planet-wide model of public functions, based on the UN Classification of the Functions of Government (COFOG: general public services, defence, public order and safety, economic affairs, environmental protection, housing and community amenities, health, recreation and culture, education, social protection) with marked Civizen additions such as digital government and IT, data protection, elections and civil registration, and maps the existing public bodies of any place onto it; no country is first. A Matter for "a public authority" goes to the body that performs the function where it happens (city, then region, then country, then planetary), or, where none is mapped yet, to a Civizen liaison for that function, who finds the right office and delivers it. Members can suggest the body for their place with an official source; the liaison checks it before it is used.',
+      "howTo": 'Open Organisation, then Public functions, to see who is responsible for a function in a place or to suggest a body. On the Matter form choose "A public authority".',
+      "routes": [
+        "/organisation/public",
+        "/contribute/matters/new"
+      ],
+      "roles": [
+        "member",
+        "guest"
+      ],
+      "relatedCapabilities": [
+        "organisation_positions"
+      ],
+      "aliases": [
+        "which government office",
+        "who do I contact",
+        "responsible authority",
+        "public body",
+        "department",
+        "ministry",
+        "city hall",
+        "311"
+      ],
+      "sourceRefs": [
+        "src/pages/organisation/public/PublicFunctions.tsx",
+        "src/lib/public-functions.ts"
       ]
     },
     {
@@ -3830,6 +3862,15 @@ var KNOWLEDGE_PACK = {
       "title": "Organisation: units, positions and who is responsible",
       "path": "src/lib/assistant/catalog.ts",
       "text": "Organisation: units, positions and who is responsible status=implemented. Responsibility in Civizen belongs to positions inside units (for example Member Support Coordinator, Data Protection Officer, Release Manager, Moderation Lead, Armenian and Russian Language Reviewers), not to individual people. Each position has a mandate, duties, a queue of open items (decisions with a recommended option, tasks, reviews, contact messages) and a journal. When the holder changes, the next holder finds every open item and the handover note. A vacant position is answered by the position above it, and at the top by the founder office. Contact messages sent from the Contact page go to the position for the chosen topic (general, privacy, safety, security, press). Open Organisation from the footer or Settings > Help and support. Holders open their position to take on items, resolve them and write handover notes. Routes: /organisation, /contact.",
+      "status": "implemented",
+      "priority": 3,
+      "kind": "capability"
+    },
+    {
+      "id": "capability:public_functions",
+      "title": "Public functions: who is responsible for what, anywhere",
+      "path": "src/lib/assistant/catalog.ts",
+      "text": 'Public functions: who is responsible for what, anywhere status=implemented. Civizen keeps one planet-wide model of public functions, based on the UN Classification of the Functions of Government (COFOG: general public services, defence, public order and safety, economic affairs, environmental protection, housing and community amenities, health, recreation and culture, education, social protection) with marked Civizen additions such as digital government and IT, data protection, elections and civil registration, and maps the existing public bodies of any place onto it; no country is first. A Matter for "a public authority" goes to the body that performs the function where it happens (city, then region, then country, then planetary), or, where none is mapped yet, to a Civizen liaison for that function, who finds the right office and delivers it. Members can suggest the body for their place with an official source; the liaison checks it before it is used. Open Organisation, then Public functions, to see who is responsible for a function in a place or to suggest a body. On the Matter form choose "A public authority". Routes: /organisation/public, /contribute/matters/new.',
       "status": "implemented",
       "priority": 3,
       "kind": "capability"
