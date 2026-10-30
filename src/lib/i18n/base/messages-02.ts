@@ -126,7 +126,9 @@ export const m_messages_02 = {
     "permissionNeeded": "Android needs permission to install Civizen updates. Turn on Allow from this source, return here, then tap Update again.",
     "updateNow": "Update now",
     "later": "Later",
-    "reinstallSigned": "This update is signed with Civizen's release key, so it cannot be installed over the testing build you have. Uninstall Civizen, then install the new build from the download page. You only do this once.",
-    "openDownload": "Open download page"
+    "reinstallSigned": "This update is signed with a different key than the Civizen you have installed, so Android cannot install it over it. Uninstall Civizen, then install the new build from the download page. You only do this once.",
+    "openDownload": "Open download page",
+    "updateViaPlay": "This copy of Civizen was installed from Google Play, so it updates through Google Play. Open Google Play to update.",
+    "openPlay": "Open Google Play"
   },
 } as const;

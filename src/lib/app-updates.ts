@@ -14,6 +14,8 @@ export type AndroidUpdateManifest = {
   sha256?: string;
   /** Which key signed the APK; a release-signed update cannot be installed over a debug-signed app (decision D10). */
   signing?: 'debug' | 'release';
+  /** SHA-256 of the certificate that signed the APK (lowercase hex); the app compares it with the installed certificate. */
+  signingCertSha256?: string;
   /** Commit of the public repository the build was made from (v2 step A1). */
   sourceCommit?: string;
 };

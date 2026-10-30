@@ -9,9 +9,18 @@ export type ApkUpdaterOpenResult = {
   ok: boolean;
 };
 
+/** Who signed the installed app and which store installed it (read from Android, not from a build flag). */
+export type ApkInstallInfo = {
+  /** SHA-256 of each signing certificate, lowercase hex without separators. */
+  certSha256: string[];
+  /** Package name of the installing store (for example com.android.vending), or null for a sideload. */
+  installer: string | null;
+};
+
 export interface ApkUpdaterPlugin {
   downloadAndInstall(options: { url: string }): Promise<ApkUpdaterDownloadResult>;
   openExternalUrl(options: { url: string }): Promise<ApkUpdaterOpenResult>;
+  getInstallInfo(): Promise<ApkInstallInfo>;
 }
 
 export const ApkUpdater = registerPlugin<ApkUpdaterPlugin>('ApkUpdater', {
@@ -21,6 +30,9 @@ export const ApkUpdater = registerPlugin<ApkUpdaterPlugin>('ApkUpdater', {
     },
     async openExternalUrl() {
       throw new Error('External URL open is only available on Android sideload builds.');
+    },
+    async getInstallInfo() {
+      throw new Error('Install info is only available on Android builds.');
     },
   }),
 });

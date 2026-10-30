@@ -47,6 +47,13 @@ pipeline keeps the debug build and the `civizen-debug-*` names. Android cannot i
 debug-signed one: the app shows the reinstall notice once and the Download page says so. Play steps:
 `PLAY_STORE_LISTING.md`.
 
+The manifests also carry `signingCertSha256`, the SHA-256 of the certificate that signed the APK (read with
+`apksigner`, or `keytool` for v1 signatures). Before it offers an in-place update the app asks Android for the
+installed copy's real signing certificate and installer (`ApkUpdater.getInstallInfo`) and decides: a copy installed
+from Google Play is sent to Google Play; a certificate that differs from `signingCertSha256` gets the one-time
+uninstall-and-reinstall notice; otherwise the update installs in place. An older native shell, or a manifest without
+the field, falls back to the build-time `signing` flag. Logic and tests: `src/lib/android-install-decision.ts`.
+
 ## Web OTA on the Android shell (step 9.3)
 
 The release publishes `public/updates/web-android.json` and a deterministic zip of the web layer
