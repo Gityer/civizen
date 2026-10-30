@@ -11,6 +11,9 @@ import { spawnSync } from 'node:child_process';
 const STEPS = [
   { label: 'audit', cmd: 'npm', args: ['run', 'audit:ci'] },
   { label: 'assistant knowledge', cmd: 'npm', args: ['run', 'assistant:knowledge:check'] },
+  // Same gates as CI's validate job: a release that passes here must not fail lint or typecheck there (v0.1.246 did).
+  { label: 'lint', cmd: 'npm', args: ['run', 'lint'] },
+  { label: 'typecheck', cmd: 'npm', args: ['run', 'typecheck'] },
   { label: 'test', cmd: 'npm', args: ['test'] },
   { label: 'build', cmd: 'npm', args: ['run', 'build'] },
 ];
