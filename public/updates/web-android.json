@@ -4,9 +4,9 @@
   "bundleVersion": "0.1.247",
   "bundlePath": "/updates/bundles/civizen-web-0.1.247.zip",
   "bundleUrl": "https://civizen.world/updates/bundles/civizen-web-0.1.247.zip",
-  "bundleSha256": "4de8ac258217473838132123f36ab1a820b2954090a3a55b9d6955af74370ef1",
-  "bundleSize": 5097569,
+  "bundleSha256": "2565b0371a80c6918dbeabdd41d0d803e29e6f1947cd1b0fca46b13767f3a669",
+  "bundleSize": 5098472,
   "minNative": { "version": "0.1.247", "buildNumber": 249 },
   "mandatory": false,
-  "publishedAt": "2026-10-30T07:41:22Z"
+  "publishedAt": "2026-10-30T18:52:51Z"
 }
