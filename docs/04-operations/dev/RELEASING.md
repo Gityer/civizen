@@ -114,7 +114,7 @@ The production host runs `civizen-daily-backup.timer` (systemd, 03:30 UTC, `Pers
 
 #### Sign-up limit
 
-The auth service runs with `GOTRUE_RATE_LIMIT_SIGN_IN_SIGN_UPS=10` (default 30): at most 10 sign-ups or sign-ins per address (client IP) in 5 minutes. It lives in the host's Supabase `docker-compose.yml` (auth environment), with the previous file kept in `/home/ubuntu/civizen-edge-backups`. If members behind one shared address (an office, a mobile carrier) report being blocked, raise the number there and recreate the container with `docker compose up -d --no-deps auth`.
+The auth service runs with `GOTRUE_RATE_LIMIT_SIGN_IN_SIGN_UPS=300` (sign-ins and sign-ups per client address in 5 minutes), set in the host's Supabase `docker-compose.yml` (auth environment; earlier files in `/home/ubuntu/civizen-edge-backups`). It is deliberately high: auth sees one address for every password sign-in, because `sign-in-with-identifier` calls it from the functions container, and sign-ups reach it through nginx and Kong without a trusted client-IP header. A low value (10 was tried on 30 Oct) would lock every member out after a few sign-ins. Per-person limits live in `sign-in-with-identifier` (10 failures per identifier, 30 per caller IP, 15 minutes). A real per-address auth limit needs the client IP passed through (Kong trusted IPs plus `GOTRUE_RATE_LIMIT_HEADER`), tested on a copy of the stack first.
 
 #### Off-site copy options (no purchase made)
 
