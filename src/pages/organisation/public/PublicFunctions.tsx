@@ -14,6 +14,7 @@ import { loadFunctionCatalog, type PublicFunction } from '@/lib/public-functions
 import { DIVISION_KEYS, byDivision } from '@/pages/organisation/public/groups';
 import { ProposeBodyForm } from '@/pages/organisation/public/ProposeBodyForm';
 import { PublicRouteFinder } from '@/pages/organisation/public/PublicRouteFinder';
+import { PublicCoverage } from '@/pages/organisation/public/PublicCoverage';
 
 function PublicFunctionsShell({ children }: { hideNav?: boolean; children: React.ReactNode }) {
   return (
@@ -55,6 +56,7 @@ export default function PublicFunctions() {
         <p className="text-sm text-muted-foreground">{t('organisation.public.howItWorks')}</p>
         {functions === null ? <p className="text-sm text-muted-foreground">{t('common.loading')}</p> : null}
         {functions?.length ? <PublicRouteFinder functions={functions} /> : null}
+        {functions?.length ? <PublicCoverage /> : null}
         {functions ? byDivision(functions).map((group) => (
           <section key={group.code} className="space-y-2" data-testid={`public-division-${group.code}`}>
             <h2 className="text-lg font-semibold text-foreground">{DIVISION_KEYS[group.code] ? t(DIVISION_KEYS[group.code]) : group.name}</h2>

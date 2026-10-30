@@ -99,7 +99,9 @@ jobs:
       - name: Serve edge functions
         run: |
           cd ~/civizen-local-supabase
-          nohup npx -y supabase functions serve > "$GITHUB_WORKSPACE/functions.log" 2>&1 &
+          # test-only: lets public-delivery-open311 call the local mock city in e2e/public-open311.spec.ts
+          echo "OPEN311_ALLOW_PRIVATE_HTTP=1" > "$GITHUB_WORKSPACE/functions.env"
+          nohup npx -y supabase functions serve --env-file "$GITHUB_WORKSPACE/functions.env" > "$GITHUB_WORKSPACE/functions.log" 2>&1 &
           for _ in $(seq 1 90); do grep -q "Serving functions" "$GITHUB_WORKSPACE/functions.log" && break; sleep 2; done
           grep -q "Serving functions" "$GITHUB_WORKSPACE/functions.log" || { cat "$GITHUB_WORKSPACE/functions.log"; exit 1; }
           eval "$(npx -y supabase status -o env | grep -E '^(API_URL|ANON_KEY)=')"

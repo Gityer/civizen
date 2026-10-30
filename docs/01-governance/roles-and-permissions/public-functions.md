@@ -29,8 +29,17 @@ The model is reviewed like any other part of Civizen's governance: a function ca
 - **Matters.** On the Matter form, "A public authority" addresses the Matter to Civizen, suggests the function from the keywords in the text, and shows who will receive it. After submission, `set_matter_public_route` records the function and body on the Matter, closes Member Support's triage item and gives the liaison an item to deliver it through the body's official channel (or to find the right office first). Liaison positions act for Civizen on the Matter.
 - **Improving what exists.** Because every body is mapped onto the same functions, gaps (a function no body performs in a place), overlaps (several bodies claim it) and unclear responsibility become visible. That is the material for proposals to improve existing structures through Civizen's governance, rather than replacing them.
 
+## After routing
+
+Built 2026-10-30 (migration `20261030100000_public_delivery_offices_coverage.sql`):
+
+- **Delivery and answers.** Whoever works the division's liaison (or the body's office) records delivery on the Matter page, with the body's reference (`record_public_delivery`). The answer is due within the body's legal deadline, or 30 days when none is recorded. The answer is recorded with an outcome (resolved, answered, redirected, refused) and shown on the Matter (`record_public_answer`); the Matter's position items close with it. If the liaison mapped the body only after the Matter was raised, it attaches it first (`assign_matter_public_body`).
+- **Deadlines.** A daily job (`process_public_delivery_deadlines`, pg_cron `37 6 * * *`) marks answers overdue, tells the initiator, and gives the Public Liaison Lead an item that names the oversight body mapped for the place (the "Audit, ombudsman and anti-corruption" function) as the next step.
+- **Offices held by officials.** On a body's page (`/organisation/public/body/:id`), an official asks for their office's seat with evidence (`request_public_office`). The division's liaison approves it from the queue (`approve_public_office`): a position for the office is created under the liaison and the official is appointed. Matters routed to that body then go to the office's queue, and the delivery is recorded at once. Offices of public bodies never act for Civizen.
+- **Coverage.** For any place, `public_coverage` lists every function as covered, a gap (no body mapped) or an overlap (several bodies at the same level); `/organisation/public` shows it. This is the evidence for improving existing structures.
+- **City service-request systems.** A body whose channel is `service_request_api` stores `<endpoint>|<service code>` (Open311 GeoReport v2). The `public-delivery-open311` edge function submits the Matter there and records the city's request id as the reference; "Check the request's status" reads it back, and a closed request records its notes as the answer. Only https endpoints on public hosts are called; API keys per host come from `OPEN311_API_KEYS`. CI tests it against a local mock city with `OPEN311_ALLOW_PRIVATE_HTTP=1`, which must never be set in production.
+
 ## Not built yet
 
-- Delivery automation (for example Open311 service-request APIs) and tracking of the body's answer against its deadline beyond the liaison's queue.
-- Offices inside bodies held by real officials with verified accounts.
-- Overlap and gap reports per place.
+- Mapping real bodies: it needs official sources, which this environment cannot reach yet.
+- Locations on Matters (coordinates or street addresses): cities' service-request systems prefer them; the place's codes are sent as the address for now.

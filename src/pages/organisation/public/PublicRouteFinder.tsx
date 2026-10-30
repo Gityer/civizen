@@ -39,7 +39,7 @@ export function PublicRouteFinder({ functions }: { functions: PublicFunction[] }
         <div className="rounded-lg bg-muted/50 p-3 text-sm" data-testid="public-route-result">
           {route.body ? (
             <>
-              <p className="font-medium text-foreground">{route.body.name}</p>
+              <Link to={`/organisation/public/body/${route.body.id}`} className="font-medium text-primary underline underline-offset-2">{route.body.name}</Link>
               <p className="text-muted-foreground">
                 {t('organisation.public.finder.servesPlace', { place: placeLabel(route.body, t('organisation.public.planet')) })}
                 {route.body.answerDeadlineDays ? ` · ${t('organisation.public.finder.deadline', { days: route.body.answerDeadlineDays })}` : ''}
