@@ -129,6 +129,7 @@ export const m_messages_02 = {
     "reinstallSigned": "This update is signed with a different key than the Civizen you have installed, so Android cannot install it over it. Uninstall Civizen, then install the new build from the download page. You only do this once.",
     "openDownload": "Open download page",
     "updateViaPlay": "This copy of Civizen was installed from Google Play, so it updates through Google Play. Open Google Play to update.",
+    "installDidNotFinish": "The update did not install. If Android said it conflicts with the installed version, uninstall Civizen once and install it again from the download page; your account and content stay on the server.",
     "openPlay": "Open Google Play"
   },
 } as const;
