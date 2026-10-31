@@ -1,15 +1,15 @@
 {
   "platform": "android",
-  "version": "0.1.249",
-  "versionTag": "v0.1.249",
-  "buildNumber": 251,
-  "releaseId": "20261031-v0.1.249",
-  "downloadPath": "/downloads/civizen-android-release-20261031-v0.1.249.apk",
-  "downloadUrl": "https://civizen.world/downloads/civizen-android-release-20261031-v0.1.249.apk?v=20261031-v0.1.249",
-  "publishedAt": "2026-10-31T17:08:58Z",
-  "sha256": "3906cf8278e224f76eb996f05dd78e401726e49133c28c979a7f75e7fdbc21a3",
+  "version": "0.1.250",
+  "versionTag": "v0.1.250",
+  "buildNumber": 252,
+  "releaseId": "20261031-v0.1.250",
+  "downloadPath": "/downloads/civizen-android-release-20261031-v0.1.250.apk",
+  "downloadUrl": "https://civizen.world/downloads/civizen-android-release-20261031-v0.1.250.apk?v=20261031-v0.1.250",
+  "publishedAt": "2026-10-31T17:37:54Z",
+  "sha256": "d432f28d754f2437d4cdf42f7f671ed13a40a63dbdeb5f46e07788fe65385d8b",
   "signing": "release",
   "signingCertSha256": "e1150771942a36a841a4e27ba99fc110bb4f38a631eb3ef3a196e8b2339ec22e",
-  "sourceCommit": "c56fe0416ccbe5f3e04811e67b9ac4dac4b7e7af",
-  "notes": ["when an update didn't install, explain the one-time reinstall instead of hiding the prompt","stop reading the app's own signing certificate and installer (Play Protect \"Harmful app\")"]
+  "sourceCommit": "6586bc25f0bc6b57573ae937abf103e71cb6c26b",
+  "notes": ["web app manifest, so browsers offer to install Civizen as an app"]
 }
