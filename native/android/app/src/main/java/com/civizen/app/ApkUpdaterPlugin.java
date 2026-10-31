@@ -2,15 +2,11 @@ package com.civizen.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.content.pm.SigningInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import androidx.core.content.FileProvider;
-import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -22,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.MessageDigest;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -167,69 +162,6 @@ public class ApkUpdaterPlugin extends Plugin {
     } catch (Exception error) {
       call.reject("Could not open external url: " + error.getMessage(), error);
     }
-  }
-
-  /**
-   * Reports who signed the installed app and which store installed it, so the update prompt can tell a key mismatch
-   * (a debug build, or a Google Play copy that Play re-signed) from a normal in-place update.
-   * Resolves { certSha256: string[] (lowercase hex, one per signing certificate), installer: string | null }.
-   */
-  @PluginMethod
-  public void getInstallInfo(PluginCall call) {
-    Activity activity = getActivity();
-    if (activity == null) {
-      call.reject("Activity unavailable");
-      return;
-    }
-
-    try {
-      PackageManager packageManager = activity.getPackageManager();
-      String packageName = activity.getPackageName();
-      JSArray certificates = new JSArray();
-
-      Signature[] signatures;
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        PackageInfo info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES);
-        SigningInfo signingInfo = info.signingInfo;
-        signatures = signingInfo == null
-          ? new Signature[0]
-          : (signingInfo.hasMultipleSigners() ? signingInfo.getApkContentsSigners() : signingInfo.getSigningCertificateHistory());
-      } else {
-        @SuppressWarnings("deprecation")
-        PackageInfo info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
-        @SuppressWarnings("deprecation")
-        Signature[] legacy = info.signatures;
-        signatures = legacy == null ? new Signature[0] : legacy;
-      }
-      for (Signature signature : signatures) {
-        certificates.put(sha256Hex(signature.toByteArray()));
-      }
-
-      String installer;
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        installer = packageManager.getInstallSourceInfo(packageName).getInstallingPackageName();
-      } else {
-        @SuppressWarnings("deprecation")
-        String legacyInstaller = packageManager.getInstallerPackageName(packageName);
-        installer = legacyInstaller;
-      }
-
-      JSObject result = new JSObject();
-      result.put("certSha256", certificates);
-      result.put("installer", installer);
-      call.resolve(result);
-    } catch (Exception error) {
-      call.reject("Could not read the install info: " + error.getMessage(), error);
-    }
-  }
-
-  private static String sha256Hex(byte[] bytes) throws Exception {
-    byte[] digest = MessageDigest.getInstance("SHA-256").digest(bytes);
-    StringBuilder hex = new StringBuilder(digest.length * 2);
-    for (byte value : digest) {
-      hex.append(String.format("%02x", value));
-    }
-    return hex.toString();
   }
 
   private static HttpURLConnection openDownloadConnection(String downloadUrl) throws Exception {

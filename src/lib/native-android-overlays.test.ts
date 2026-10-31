@@ -24,11 +24,15 @@ describe('native Android overlays', () => {
     }
   });
 
-  it('let the update plugin report the installed signing certificate and installer, and the release script publish the new certificate', () => {
+  // v0.1.246-0.1.248 read the app's own signing certificate and installer; Google Play Protect then blocked the
+  // sideloaded update as "Harmful app" (31 Oct 2026). The plugin must not query package signatures or install sources.
+  it('keep the update plugin away from package-signature and installer queries, and the release script still publishing the certificate', () => {
     const plugin = readFileSync(join(OVERLAY_JAVA, 'ApkUpdaterPlugin.java'), 'utf8');
-    expect(plugin).toContain('public void getInstallInfo(PluginCall call)');
-    expect(plugin).toContain('GET_SIGNING_CERTIFICATES');
-    expect(plugin).toContain('getInstallSourceInfo');
+    expect(plugin).not.toContain('getInstallInfo');
+    expect(plugin).not.toContain('GET_SIGNING_CERTIFICATES');
+    expect(plugin).not.toContain('GET_SIGNATURES');
+    expect(plugin).not.toContain('getInstallSourceInfo');
+    expect(plugin).not.toContain('getInstallerPackageName');
     const script = readFileSync(join(process.cwd(), 'scripts/update-application.sh'), 'utf8');
     expect(script).toContain('"signingCertSha256": "$apk_cert_sha256"');
     expect(script).toContain("signingCertSha256: '$apk_cert_sha256'");
