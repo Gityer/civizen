@@ -3,6 +3,9 @@
 
 BEGIN;
 
+-- these cases test the requirement itself, which is off by default (20261101100000)
+UPDATE public.platform_flags SET enabled = true WHERE key = 'identity_verification_required';
+
 SELECT set_config('t.guest_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'guest' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('t.guest_pid', (SELECT id::text FROM public.profiles WHERE username = 'guest' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('t.member_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'member' AND deleted_at IS NULL LIMIT 1), true);

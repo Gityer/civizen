@@ -5,6 +5,9 @@
 
 BEGIN;
 
+-- these cases test the requirement itself, which is off by default (20261101100000)
+UPDATE public.platform_flags SET enabled = true WHERE key = 'identity_verification_required';
+
 SELECT set_config('test.election_id', (
   SELECT id::text FROM public.civic_elections WHERE metadata->>'consultation_key' = 'single-world-citizenship' LIMIT 1), true);
 SELECT set_config('test.member_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'member' AND deleted_at IS NULL LIMIT 1), true);

@@ -58,6 +58,11 @@ async function signedIn(browser: Browser, email: string): Promise<Page> {
   return page;
 }
 
+// The "verified before acting" requirement is off by default (20261101100000); this journey tests it switched on.
+const REQUIRE = (on: boolean) => sql(`UPDATE public.platform_flags SET enabled = ${on} WHERE key = 'identity_verification_required'`);
+test.beforeAll(() => { REQUIRE(true); });
+test.afterAll(() => { REQUIRE(false); });
+
 test('an unverified member verifies live, a reviewer approves, and the member votes', async ({ browser }) => {
   test.setTimeout(240_000);
   // every run starts unverified, with no case and no ballot

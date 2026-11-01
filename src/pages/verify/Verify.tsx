@@ -57,6 +57,7 @@ export default function Verify() {
   const { profile, refreshProfile } = useAuth();
   const [params] = useSearchParams();
   const next = safeNext(params.get('next'));
+  const reverify = params.get('reverify') === '1';
   const [start, setStart] = useState<LiveStart | null>(null);
   const [step, setStep] = useState<Step>('consent');
   const [consent, setConsent] = useState(false);
@@ -66,11 +67,11 @@ export default function Verify() {
   const begin = useCallback(async () => {
     setLoadError(false);
     try {
-      setStart(await startLiveVerification());
+      setStart(await startLiveVerification(reverify));
     } catch {
       setLoadError(true);
     }
-  }, []);
+  }, [reverify]);
   useEffect(() => { void begin(); }, [begin]);
 
   const send = async (capture: LiveCapture) => {
@@ -110,7 +111,9 @@ export default function Verify() {
   } else if (start.status === 'verified') {
     body = <StatusCard icon={<ShieldCheck className="h-5 w-5 text-primary" aria-hidden />} title={t('verify.verified.title')} body={t('verify.verified.body')} next={next} />;
   } else if (step === 'sent' || start.status !== 'draft') {
-    body = <StatusCard icon={<Clock className="h-5 w-5 text-primary" aria-hidden />} title={t('verify.sent.title')} body={t('verify.sent.body')} next={next} />;
+    const again = 'reverification' in start && start.reverification;
+    body = <StatusCard icon={<Clock className="h-5 w-5 text-primary" aria-hidden />} title={t(again ? 'verify.reverify.sentTitle' : 'verify.sent.title')}
+      body={t(again ? 'verify.reverify.sentBody' : 'verify.sent.body')} next={next} />;
   } else if (step === 'consent') {
     body = (
       <Card className="space-y-4 p-4" data-testid="verify-consent-step">

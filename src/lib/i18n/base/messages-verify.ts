@@ -67,6 +67,14 @@ export const m_messages_verify = {
       "title": "Your identity is verified",
       "body": "You can post, comment, message people, support and vote."
     },
+    "reverify": {
+      "link": "Verify",
+      "hint": "Check your identity again. You stay verified while it is reviewed, and also if it is not passed.",
+      "sentTitle": "Re-verification sent for review",
+      "sentBody": "A member of the identity team will check it. You stay verified meanwhile, and also if it is not passed.",
+      "pending": "Re-verification under review. You stay verified meanwhile.",
+      "notPassed": "Your last re-verification was not passed. You stay verified."
+    },
     "sent": {
       "title": "Sent for review",
       "body": "A member of the identity team will check it, usually within 48 hours. You will get a notification. Until then you can read everything."

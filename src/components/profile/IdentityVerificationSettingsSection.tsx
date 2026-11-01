@@ -34,6 +34,9 @@ export function IdentityVerificationSettingsSection() {
   const verified = Boolean(profile?.is_verified) || Boolean(state?.verified);
   const status = (verified ? 'approved' : state?.status ?? 'draft') as IdentityVerificationCaseStatus;
   const waiting = status === 'submitted' || status === 'in_review';
+  const pendingCase = state?.status === 'submitted' || state?.status === 'in_review';
+  const reverifyNote = verified && state?.reverification
+    ? (pendingCase ? 'verify.reverify.pending' : state.status === 'rejected' ? 'verify.reverify.notPassed' : null) : null;
 
   return (
     <Card className="space-y-4 rounded-3xl border-border/60 p-5 shadow-sm" data-build-key="editProfileIdentityVerification"
@@ -44,10 +47,15 @@ export function IdentityVerificationSettingsSection() {
           <Badge variant="outline" className={`rounded-full ${getVerificationCaseBadgeClassName(status)}`}>
             {t(verified ? 'governanceHub.identityVerification.badgeVerified' : getVerificationCaseStatusLabelKey(status))}
           </Badge>
+          {verified && !(state?.reverification && pendingCase) ? (
+            <Link to={verifyPath('/settings/profile', true)} title={t('verify.reverify.hint')} data-testid="identity-reverify-settings"
+              className="text-sm font-medium text-primary underline-offset-2 hover:underline">{t('verify.reverify.link')}</Link>
+          ) : null}
         </div>
         <p className="text-sm text-muted-foreground">
           {t(verified ? 'editProfile.identityVerification.verifiedBody' : waiting ? 'verify.sent.body' : 'verify.subtitle')}
         </p>
+        {reverifyNote ? <p className="text-sm text-muted-foreground" data-testid="identity-reverify-note">{t(reverifyNote)}</p> : null}
       </div>
       {!state && !failed && !verified ? (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

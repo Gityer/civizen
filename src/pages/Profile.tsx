@@ -20,7 +20,6 @@ import {
   BadgeCheck,
   Briefcase,
   Camera,
-  CheckCircle,
   GraduationCap,
   Info,
   Loader2,
@@ -55,6 +54,7 @@ import { SkillsDetailsDialog } from '@/components/profile/SkillsDetailsDialog';
 import { ExperienceDetailsDialog } from '@/components/profile/ExperienceDetailsDialog';
 import { ContributionsDetailsPanel } from '@/components/profile/ContributionsDetailsPanel';
 import { PerformanceDetailsPanel } from '@/components/profile/PerformanceDetailsPanel';
+import { VerifiedStatusReverify } from '@/components/profile/VerifiedStatusReverify';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import {
   ActivityByDomainSection,
@@ -1103,15 +1103,7 @@ export default function Profile() {
               {profile?.full_name || t('common.anonymousUser')}
               {profile?.username ? ` · @${profile.username}` : ''}
             </p>
-            {profile?.is_verified ? (
-              <span role="img"
-                className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground"
-                title={t('profile.verifiedMember')}
-                aria-label={t('profile.verifiedMember')}
-              >
-                <CheckCircle className="h-3.5 w-3.5" aria-hidden />
-              </span>
-            ) : null}
+            <VerifiedStatusReverify verified={Boolean(profile?.is_verified)} returnTo="/profile" />
           </div>
         </div>
 
