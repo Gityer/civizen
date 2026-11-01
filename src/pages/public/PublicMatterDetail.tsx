@@ -25,7 +25,9 @@ export default function PublicMatterDetail() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const [matter, setMatter] = useState<PublicMatter | null>(null);
-  const [state, setState] = useState<'loading' | 'ready' | 'missing'>('loading');
+  // 'failed' is a load error (network, server), not a missing Matter: it offers a retry instead of "not found".
+  const [state, setState] = useState<'loading' | 'ready' | 'missing' | 'failed'>('loading');
+  const [attempt, setAttempt] = useState(0);
 
   usePageMeta({ title: matter?.title ?? t('publicMatters.title'), description: matter?.description.slice(0, 160) ?? t('publicMatters.metaDescription') });
 
@@ -37,11 +39,11 @@ export default function PublicMatterDetail() {
         setMatter(row);
         setState(row ? 'ready' : 'missing');
       })
-      .catch(() => active && setState('missing'));
+      .catch(() => active && setState('failed'));
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, attempt]);
 
   if (user) return <Navigate to={`/contribute/matters/${id}`} replace />;
   const joinState = { from: { pathname: `/contribute/matters/${id}`, search: '' } };
@@ -54,6 +56,12 @@ export default function PublicMatterDetail() {
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">{t('publicMatters.notFound')}</p>
           <Button asChild variant="outline"><Link to="/matters">{t('publicMatters.title')}</Link></Button>
+        </div>
+      ) : null}
+      {state === 'failed' ? (
+        <div className="space-y-3" data-testid="public-matter-load-failed">
+          <p className="text-sm text-muted-foreground">{t('publicMatters.loadFailed')}</p>
+          <Button variant="outline" onClick={() => { setState('loading'); setAttempt((n) => n + 1); }}>{t('publicMatters.retry')}</Button>
         </div>
       ) : null}
       {matter ? (

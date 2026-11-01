@@ -21,9 +21,14 @@ test('a visitor reads a public Matter and returns to it after signing in', async
   const matterId = (await first.getAttribute('data-testid'))!.replace('public-matter-', '');
   await first.click();
   await expect(page).toHaveURL(new RegExp(`/matters/${matterId}$`));
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  // Wait for the Matter itself, not just any heading; a transient load error offers a retry instead of "not found".
+  const signIn = page.getByTestId('public-matter-sign-in');
+  const failed = page.getByTestId('public-matter-load-failed');
+  await expect(signIn.or(failed)).toBeVisible({ timeout: 20_000 });
+  if (await failed.isVisible()) await failed.getByRole('button').click();
+  await expect(signIn).toBeVisible({ timeout: 20_000 });
 
-  await page.getByTestId('public-matter-sign-in').click();
+  await signIn.click();
   await page.getByPlaceholder(/janesmith/).fill(MEMBER);
   await page.getByPlaceholder('••••••••').fill(PASSWORD);
   await page.getByRole('button', { name: 'Sign In' }).click();

@@ -90,6 +90,8 @@ export const m_messages_moderation = {
     "empty": "No public Matters match.",
     "more": "Show more",
     "notFound": "This Matter is not public or does not exist.",
+    "loadFailed": "This Matter could not be loaded. Please try again in a moment.",
+    "retry": "Try again",
     "raisedBy": "Raised by {initiator} for {addressee}",
     "joinPrompt": "Join Civizen to comment, support a proposal or help resolve this Matter. You will come back here after signing up.",
     "join": "Join to take part",

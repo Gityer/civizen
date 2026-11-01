@@ -47,6 +47,13 @@ pipeline keeps the debug build and the `civizen-debug-*` names. Android cannot i
 debug-signed one: the app shows the reinstall notice once and the Download page says so. Play steps:
 `PLAY_STORE_LISTING.md`.
 
+The manifests also carry `signingCertSha256`, the SHA-256 of the certificate that signed the APK (read with
+`apksigner`, or `keytool` for v1 signatures). Before it offers an in-place update the app asks Android for the
+installed copy's real signing certificate and installer (`ApkUpdater.getInstallInfo`) and decides: a copy installed
+from Google Play is sent to Google Play; a certificate that differs from `signingCertSha256` gets the one-time
+uninstall-and-reinstall notice; otherwise the update installs in place. An older native shell, or a manifest without
+the field, falls back to the build-time `signing` flag. Logic and tests: `src/lib/android-install-decision.ts`.
+
 ## Web OTA on the Android shell (step 9.3)
 
 The release publishes `public/updates/web-android.json` and a deterministic zip of the web layer
@@ -99,7 +106,27 @@ What it does not cover yet (tracker row "(found) Backups"):
 
 - **Uploaded files.** Storage objects (avatars, verification images, attachments) live in the storage volume, not in the database dump. They need their own copy.
 - **Vault secrets and `cron` job definitions.** The scratch restore runs without the platform roles, so these are dumped but not verified. The restore reports about 50 warnings for platform-owned objects; the row counts decide.
-- **Schedule and off-site storage.** Both are host configuration: a daily timer running the drill, plus `CIVIZEN_BACKUP_OFFSITE_CMD` pointing at storage that is not this host.
+- **Off-site storage.** `CIVIZEN_BACKUP_OFFSITE_CMD` pointing at storage that is not this host (not set yet; options below).
+
+#### Daily timer (installed 2026-10-30)
+
+The production host runs `civizen-daily-backup.timer` (systemd, 03:30 UTC, `Persistent=true`). It runs the drill through `/usr/local/sbin/civizen-daily-backup.sh` into `/home/ubuntu/civizen-daily-backups` and keeps the newest 7 dumps. On `DRILL OK` it writes `/var/lib/civizen-backup/last_ok` (UTC time); on any failure it writes `/var/lib/civizen-backup/ALERT` (time, exit code, log tail) and exits non-zero. The log of the last run is `/var/lib/civizen-backup/last.log`. Nothing watches these files by itself: whoever does the daily host check reads them, and an `ALERT` file, or a `last_ok` older than 36 hours, means the backup needs attention. The older pre-release dumps in `/home/ubuntu/civizen-db-backups` are separate and are not pruned by the timer.
+
+#### Sign-up limit
+
+The auth service runs with `GOTRUE_RATE_LIMIT_SIGN_IN_SIGN_UPS=300` (sign-ins and sign-ups per client address in 5 minutes), set in the host's Supabase `docker-compose.yml` (auth environment; earlier files in `/home/ubuntu/civizen-edge-backups`). It is deliberately high: auth sees one address for every password sign-in, because `sign-in-with-identifier` calls it from the functions container, and sign-ups reach it through nginx and Kong without a trusted client-IP header. A low value (10 was tried on 30 Oct) would lock every member out after a few sign-ins. Per-person limits live in `sign-in-with-identifier` (10 failures per identifier, 30 per caller IP, 15 minutes). A real per-address auth limit needs the client IP passed through (Kong trusted IPs plus `GOTRUE_RATE_LIMIT_HEADER`), tested on a copy of the stack first.
+
+#### Off-site copy options (no purchase made)
+
+The database dump is about 10 MB a day (70 MB for the 7 kept); uploaded files are in a separate, tiny volume. Any option stays within a few dollars a month.
+
+| Option | How | Cost per month | Note |
+| --- | --- | --- | --- |
+| A. Object storage bucket (Backblaze B2 or Cloudflare R2) | `CIVIZEN_BACKUP_OFFSITE_CMD="rclone copy"` to the bucket | about 0 to 1 USD at this size (both give 10 GB free) | Best fit: independent of the host and the provider, one rclone line. Needs an account and an access key. |
+| B. Second small server or VPS | `rsync` or `scp` over SSH | about 4 to 6 USD | Full control; one more machine to patch. |
+| C. Armen's own storage (a home machine or Google Drive) | `rclone` or `scp` to it | 0 | Free, but depends on that machine being on; weakest guarantee. |
+
+Recommended: A. Encrypt the dump before upload (`rclone crypt`), because it holds member data.
 
 ## Release Flow
 

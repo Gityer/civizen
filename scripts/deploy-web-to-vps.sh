@@ -53,6 +53,18 @@ if [[ ! -f "$DIST/index.html" ]]; then
   exit 1
 fi
 
+# Never put an older build over a newer live one. On 30 Oct a stale v0.1.246 dist from another worktree was deployed
+# over the live v0.1.247 and silently rolled back the website and both Android manifests.
+DIST_VERSION="$(node -p "require('${DIST}/updates/android-release.json').version" 2>/dev/null || true)"
+LIVE_VERSION="$(curl -fsS --max-time 15 "https://civizen.world/updates/android-release.json" 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{console.log(JSON.parse(s).version)}catch{console.log('')}})" || true)"
+if [[ -n "${DIST_VERSION}" && -n "${LIVE_VERSION}" ]] \
+  && [[ "$(printf '%s\n%s\n' "${LIVE_VERSION}" "${DIST_VERSION}" | sort -V | head -1)" != "${LIVE_VERSION}" ]] \
+  && [[ "${ALLOW_VERSION_ROLLBACK:-}" != "1" ]]; then
+  echo "dist is v${DIST_VERSION} but civizen.world serves v${LIVE_VERSION}: refusing to roll back (ALLOW_VERSION_ROLLBACK=1 for a deliberate rollback)." >&2
+  exit 1
+fi
+echo "Deploying v${DIST_VERSION:-unknown} over live v${LIVE_VERSION:-unknown}"
+
 echo "Packaging ${DIST} → ${TGZ}"
 tar -C "$DIST" -czf "$TGZ" .
 

@@ -15,6 +15,6 @@ if "$REPO_ROOT/scripts/local-supabase/replay-migrations.sh" >"$LOG" 2>&1; then
   count=$(grep -cE '^applied [0-9]{14}_' "$LOG" || true)
   [ "$count" -gt 0 ] && echo "[civizen] applied $count new migration(s) to the local database"
 else
-  echo "[civizen] local database sync FAILED - $(grep -m1 '^FAILED' "$LOG") (details: $LOG)" >&2
+  echo "[civizen] local database sync FAILED - $(grep -m1 -E '^(FAILED|CHANGED)' "$LOG") (details: $LOG)" >&2
 fi
 exit 0

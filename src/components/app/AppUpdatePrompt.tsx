@@ -1,9 +1,9 @@
 import { Capacitor } from '@capacitor/core';
 import { useAppUpdateRecheck } from '@/components/app/useAppUpdateRecheck';
-import { needsReinstallForSigning } from '@/lib/app-updates';
-import { ANDROID_INSTALL_PAGE_URL } from '@/lib/downloads';
+import { externalUrlForUpdate, useAndroidInstallAction } from '@/components/app/useAndroidInstallAction';
 import { ApkUpdater } from '@/lib/apk-updater-plugin';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ANDROID_INSTALL_PAGE_URL } from '@/lib/downloads';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import {
   AlertDialog,
@@ -44,7 +44,6 @@ const DISMISSED_ANDROID_KEYS: Record<AppUpdateChannel, string> = {
   testing: 'civizen-dismissed-android-testing',
 };
 const PENDING_ANDROID_RELEASE_KEY = 'civizen-pending-android-release';
-const UPDATE_INSTALL_GRACE_PERIOD_MS = 20 * 60 * 1000;
 const STORAGE_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 60;
 
 type PendingAndroidRelease = {
@@ -200,6 +199,7 @@ export function AppUpdatePrompt() {
   } | null>(null);
   const [isLaunchingUpdate, setIsLaunchingUpdate] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [previousAttemptFailed, setPreviousAttemptFailed] = useState(false);
   const updateLaunchLockRef = useRef(false);
   const releaseLaunchTimeoutRef = useRef<number | null>(null);
   const waitingForInstallPermissionRef = useRef(false);
@@ -214,6 +214,7 @@ export function AppUpdatePrompt() {
     [],
   );
   const shouldUseExternalApkPrompt = isAndroidNativeApp && allowsExternalAndroidApkUpdates;
+  const { installInfo, installAction } = useAndroidInstallAction(isAndroidNativeApp, availableUpdate?.manifest);
   const allowTestingChannel = permissionListHas(profile?.effective_permissions || [], 'updates.test');
 
   const checkForUpdates = useCallback(async () => {
@@ -230,19 +231,16 @@ export function AppUpdatePrompt() {
         return;
       }
 
+      // Back on the old version after starting this update: the install didn't finish, so offer the one-time reinstall.
       const pendingRelease = getPendingRelease();
-      if (pendingRelease) {
-        const stillInstallingSameRelease =
-          pendingRelease.channel === channel
-          && pendingRelease.releaseId === manifest.releaseId
-          && Date.now() - pendingRelease.startedAt < UPDATE_INSTALL_GRACE_PERIOD_MS;
-
-        if (stillInstallingSameRelease) {
-          setAvailableUpdate(null);
-          return;
-        }
-
-        clearPendingRelease();
+      const attemptFailed = Boolean(pendingRelease && pendingRelease.channel === channel
+        && pendingRelease.releaseId === manifest.releaseId && isAndroidUpdateAvailable(CURRENT_ANDROID_RELEASE, manifest));
+      if (pendingRelease) clearPendingRelease();
+      if (attemptFailed) {
+        clearAcknowledgedRelease(channel);
+        setPreviousAttemptFailed(true);
+        setAvailableUpdate({ manifest, channel });
+        return;
       }
 
       const dismissedReleaseId = getDismissedReleaseId(channel);
@@ -304,9 +302,9 @@ export function AppUpdatePrompt() {
     if (updateLaunchLockRef.current) return;
     const update = availableUpdateRef.current ?? availableUpdate;
     if (!update) return;
-    // Decision D10: a release-signed APK cannot be installed over the debug-signed testing app; send the member to the download page to reinstall once.
-    if (needsReinstallForSigning(update.manifest)) {
-      void ApkUpdater.openExternalUrl({ url: ANDROID_INSTALL_PAGE_URL });
+    const externalUrl = previousAttemptFailed ? ANDROID_INSTALL_PAGE_URL : externalUrlForUpdate(update.manifest, installInfo);
+    if (externalUrl) {
+      void ApkUpdater.openExternalUrl({ url: externalUrl });
       return;
     }
 
@@ -378,8 +376,10 @@ export function AppUpdatePrompt() {
               ),
               currentVersion: CURRENT_ANDROID_RELEASE_LABEL,
             })}
-            {needsReinstallForSigning(availableUpdate.manifest) ? (
-              <span className="mt-3 block text-sm text-foreground" data-testid="app-update-reinstall">{t('appUpdate.reinstallSigned')}</span>
+            {previousAttemptFailed ? (
+              <span className="mt-3 block text-sm text-foreground" data-testid="app-update-install-did-not-finish">{t('appUpdate.installDidNotFinish')}</span>
+            ) : installAction !== 'update' ? (
+              <span className="mt-3 block text-sm text-foreground" data-testid={`app-update-${installAction}`}>{t(installAction === 'play' ? 'appUpdate.updateViaPlay' : 'appUpdate.reinstallSigned')}</span>
             ) : null}
             {statusMessage ? (
               <span className="mt-3 block text-sm text-muted-foreground">{statusMessage}</span>
@@ -392,7 +392,7 @@ export function AppUpdatePrompt() {
             {t('appUpdate.later')}
           </AlertDialogCancel>
           <AlertDialogAction onClick={handleUpdate} disabled={isLaunchingUpdate}>
-            {isLaunchingUpdate ? t('appUpdate.downloading') : needsReinstallForSigning(availableUpdate.manifest) ? t('appUpdate.openDownload') : t('appUpdate.updateNow')}
+            {isLaunchingUpdate ? t('appUpdate.downloading') : installAction === 'play' ? t('appUpdate.openPlay') : installAction === 'reinstall' || previousAttemptFailed ? t('appUpdate.openDownload') : t('appUpdate.updateNow')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

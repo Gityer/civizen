@@ -121,6 +121,30 @@ release_notes_json() {
   node -e 'const lines = process.argv[1].split("\n").map((s) => s.trim()).filter(Boolean); process.stdout.write(JSON.stringify(lines))' "$lines"
 }
 
+# SHA-256 of the certificate that signed an APK (lowercase hex, no separators); empty when no tool can read it.
+# The app compares this with the certificate Android reports for the installed copy before it offers an in-place update.
+apk_signing_cert_sha256() {
+  local apk="$1" sdk build_tools signer digest=""
+  sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+  if [ -z "$sdk" ] && [ -f "$ANDROID_DIR/local.properties" ]; then
+    sdk="$(sed -n 's/^sdk.dir=//p' "$ANDROID_DIR/local.properties" | head -n 1)"
+  fi
+  signer=""
+  if [ -n "$sdk" ] && [ -d "$sdk/build-tools" ]; then
+    build_tools="$(ls -1 "$sdk/build-tools" 2>/dev/null | sort -V | tail -n 1)"
+    [ -n "$build_tools" ] && [ -x "$sdk/build-tools/$build_tools/apksigner" ] && signer="$sdk/build-tools/$build_tools/apksigner"
+  fi
+  if [ -z "$signer" ] && command -v apksigner >/dev/null 2>&1; then signer="$(command -v apksigner)"; fi
+  if [ -n "$signer" ]; then
+    digest="$("$signer" verify --print-certs "$apk" 2>/dev/null | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -n 1)"
+  fi
+  if [ -z "$digest" ] && command -v keytool >/dev/null 2>&1; then
+    # v1 (JAR) signature only; APKs signed with v2/v3 only carry no JAR certificate and fall through to empty.
+    digest="$(keytool -printcert -jarfile "$apk" 2>/dev/null | sed -n 's/^[[:space:]]*SHA256: //p' | head -n 1 | tr -d ':')"
+  fi
+  printf '%s' "$digest" | tr '[:upper:]' '[:lower:]' | tr -d ': '
+}
+
 write_update_manifest() {
   local channel="$1"
   local suffix
@@ -135,8 +159,10 @@ write_update_manifest() {
   local apk_path="/downloads/$apk_filename"
   local apk_url="https://civizen.world${apk_path}?v=${RELEASE_ID}"
   local apk_sha256=""
+  local apk_cert_sha256=""
   if [ -f "$APK_TARGET_DIR/$apk_filename" ]; then
     apk_sha256="$(sha256sum "$APK_TARGET_DIR/$apk_filename" | cut -d' ' -f1)"
+    apk_cert_sha256="$(apk_signing_cert_sha256 "$APK_TARGET_DIR/$apk_filename")"
   fi
   local notes_json
   notes_json="$(release_notes_json)"
@@ -159,6 +185,7 @@ write_update_manifest() {
   "publishedAt": "$published_at",
   "sha256": "$apk_sha256",
   "signing": "$BUILD_SIGNING",
+  "signingCertSha256": "$apk_cert_sha256",
   "sourceCommit": "$(git rev-parse HEAD)",
   "notes": $notes_json
 }
@@ -176,6 +203,7 @@ window.__CIVIZEN_ANDROID_UPDATE__ = {
   publishedAt: '$published_at',
   sha256: '$apk_sha256',
   signing: '$BUILD_SIGNING',
+  signingCertSha256: '$apk_cert_sha256',
   sourceCommit: '$(git rev-parse HEAD)',
   notes: $notes_json,
 };
