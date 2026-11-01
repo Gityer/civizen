@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { createSignedIdentityArtifactUrl, latestArtifactOfKind } from '@/lib/identity-verification';
+import { isVideoPath } from '@/lib/identity-live';
 import { isIdentityReviewOverdue, type IdentityReviewQueueItem } from '@/lib/identity-verification-queue';
 import { IdentityReviewHistory } from './IdentityReviewHistory';
+import { IdentityReviewLiveEvidence } from './IdentityReviewLiveEvidence';
 
 export type IdentityReviewCaseAction = 'claim' | 'release' | 'approve' | 'reject' | 'requestInfo';
 
@@ -30,11 +32,14 @@ function useArtifactPreview(item: IdentityReviewQueueItem) {
   return urls;
 }
 
-function ArtifactPreview({ url, label, missing }: { url: string | null; label: string; missing: string }) {
+function ArtifactPreview({ url, label, missing, video = false }: { url: string | null; label: string; missing: string; video?: boolean }) {
   return (
     <div className="space-y-2">
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      {url ? (
+      {url && video ? (
+        <video src={url} controls playsInline preload="metadata" aria-label={label} data-testid="identity-review-live-video"
+          className="max-h-64 w-full rounded-xl border bg-black object-contain" />
+      ) : url ? (
         <a href={url} target="_blank" rel="noreferrer" className="block">
           <img src={url} alt={label} className="max-h-48 w-full rounded-xl border bg-muted/30 object-contain" />
         </a>
@@ -63,6 +68,9 @@ export function IdentityReviewCaseCard({
   const preview = useArtifactPreview(item);
   const [showHistory, setShowHistory] = useState(false);
   const overdue = isIdentityReviewOverdue(item.ageHours);
+  const live = latestArtifactOfKind(item.artifacts, 'live_presence');
+  const document = latestArtifactOfKind(item.artifacts, 'supporting_document');
+  const liveIsVideo = isVideoPath(live?.storage_path);
   const mine = Boolean(selfId) && item.assignedTo === selfId;
   const displayName = item.fullName || item.username || t('common.anonymousUser');
   const age =
@@ -117,8 +125,11 @@ export function IdentityReviewCaseCard({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <ArtifactPreview url={preview.idUrl} label={t('governanceHub.stewardIdentity.idDocument')} missing={t('governanceHub.stewardIdentity.missingArtifact')} />
-        <ArtifactPreview url={preview.selfieUrl} label={t('governanceHub.stewardIdentity.selfie')} missing={t('governanceHub.stewardIdentity.missingArtifact')} />
+        <ArtifactPreview url={preview.selfieUrl} video={liveIsVideo}
+          label={liveIsVideo ? t('identityReview.live.recording') : t('governanceHub.stewardIdentity.selfie')}
+          missing={t('governanceHub.stewardIdentity.missingArtifact')} />
       </div>
+      <IdentityReviewLiveEvidence live={live} document={document} />
 
       <div>
         <Button type="button" size="sm" variant="link" className="h-auto px-0" aria-expanded={showHistory} onClick={() => setShowHistory((v) => !v)}>

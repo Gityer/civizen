@@ -60,6 +60,30 @@ export const m_messages_identity_review = {
       "duplicate_identity": "This identity is already verified on another account",
       "other": "Another reason"
     },
+    "live": {
+      "recording": "Live recording",
+      "noFlags": "No flags from the checks.",
+      "code": "Code to say",
+      "moves": "Moves asked",
+      "liveness": "Liveness on the device",
+      "faceMatch": "Face match on the device",
+      "passed": "passed",
+      "notPassed": "not passed",
+      "blinks": "{count} blinks",
+      "document": "Document",
+      "birth": "Date of birth (document)",
+      "expiry": "Valid until",
+      "howTo": "Watch the recording: the person says the code and makes the moves in order. Compare the face with the document photo. The device results are signals; you decide."
+    },
+    "flags": {
+      "birth_date_differs": "Birth date differs from the profile",
+      "under_16": "Under 16",
+      "name_differs": "Name differs from the profile",
+      "liveness_not_passed": "Liveness not passed",
+      "face_match_not_passed": "Face match not passed",
+      "challenge_mismatch": "Moves differ from the challenge",
+      "document_used_by_another_account": "Document used by another account"
+    },
     "member": {
       "infoRequestedTitle": "A reviewer asked for more information",
       "rejectedTitle": "Why your verification was not approved",

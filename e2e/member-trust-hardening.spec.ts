@@ -55,14 +55,15 @@ test('a member keeps ordinary edits and loses every privileged write', async ({ 
     const { data: userData } = await supabase.auth.getUser();
     const { data: profile } = await supabase
       .from('profiles')
-      .select('id, bio')
+      .select('id, bio, is_verified')
       .eq('user_id', userData.user?.id)
       .single();
     const profileId: string | null = profile?.id ?? null;
 
     const bio = await supabase.from('profiles').update({ bio: profile?.bio ?? null }).eq('id', profileId);
     const role = await supabase.from('profiles').update({ role: 'admin' }).eq('id', profileId);
-    const verified = await supabase.from('profiles').update({ is_verified: true }).eq('id', profileId);
+    // 'member' is a verified fixture: un-verifying itself is as privileged a write as verifying itself
+    const verified = await supabase.from('profiles').update({ is_verified: !profile?.is_verified }).eq('id', profileId);
     const eligibility = await supabase.from('profiles').update({ is_governance_eligible: true }).eq('id', profileId);
     const snapshot = await supabase.from('governance_eligibility_snapshots').upsert(
       {

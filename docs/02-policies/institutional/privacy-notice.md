@@ -30,8 +30,14 @@ Civizen is operated by the Mature Humanity initiative. Contact: the e-mail addre
 - **Account and profile.** Your sign-in e-mail or phone, username, name, photo, country and city (if you add them),
   language, and the voluntary profile you build (education, experience, skills, trainings, endorsements). Needed to
   run your account and show your public profile. You choose under Settings › Privacy what else other members see.
-- **Verification.** If you ask for identity verification, the ID photo and face photo you upload are stored for the
-  reviewer and the result (verified or not) is kept on your profile. They are not government identity checks.
+- **Identity verification.** Needed before you post, comment, message people, support or vote, so that each voice
+  belongs to one real person; optional when you sign up. With your consent, the photo of your document's identity
+  page, a short live recording (you read a code aloud and turn your head as asked) and the fields read from the
+  document's machine-readable lines are stored in private storage that only you and the identity reviewers can open.
+  The liveness and face-match checks run on your device; only their results are sent. The document number itself is
+  not stored: a keyed fingerprint of it is, so one document cannot verify two accounts. The decision (verified or not)
+  is kept on your profile. After the decision you can ask through the Contact page for the photo and recording to be
+  deleted. This is Civizen's own check, not a government identity check, and no outside provider receives your data.
 - **Participation.** Matters, comments, proposals, ballots, receipts, agreements, knowledge resources and the
   notifications about them. Public counts of ballots are published; your individual choice is never shown. A closed
   consultation keeps anonymous records.

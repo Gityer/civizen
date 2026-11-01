@@ -8,6 +8,7 @@ import { ConsultationApprovalPicker } from '@/pages/governance/civic-voting-elec
 import { ConsultationRankedPicker } from '@/pages/governance/civic-voting-election/ConsultationRankedPicker';
 import { formatReceipt } from '@/pages/governance/civic-voting-election/consultation-receipt';
 import { shortHash } from '@/lib/civic-voting/merkle';
+import { verifyPath } from '@/lib/identity-live';
 import type { useCivicVotingElection } from '@/pages/governance/civic-voting-election/useCivicVotingElection';
 
 type CivicVotingElectionModel = ReturnType<typeof useCivicVotingElection>;
@@ -173,6 +174,11 @@ export function CivicVotingConsultationVote({ model }: { model: CivicVotingElect
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3" data-testid="consultation-blocked">
           <p className="text-sm font-medium text-foreground">{t('civicBallot.notEligibleTitle')}</p>
           <p className="text-xs text-muted-foreground">{t(`civicBallot.reason.${eligibilityReason}`)}</p>
+          {eligibilityReason === 'verification_required' ? (
+            <Button asChild size="sm" className="mt-2 gap-2" data-testid="consultation-verify">
+              <Link to={verifyPath(`${location.pathname}${location.search}`)}><ShieldCheck className="h-4 w-4" aria-hidden />{t('verify.prompt.start')}</Link>
+            </Button>
+          ) : null}
         </div>
       ) : null}
       {advisoryNote}

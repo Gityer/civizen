@@ -67,6 +67,7 @@ export const Organisation = lazyWithChunkReload(() => import('@/pages/organisati
 export const OrganisationPosition = lazyWithChunkReload(() => import('@/pages/organisation/PositionPage'));
 export const PublicFunctions = lazyWithChunkReload(() => import('@/pages/organisation/public/PublicFunctions'));
 export const PublicBodyPage = lazyWithChunkReload(() => import('@/pages/organisation/public/PublicBodyPage'));
+export const Verify = lazyWithChunkReload(() => import('@/pages/verify/Verify'));
 export const Search = lazyWithChunkReload(() => import('@/pages/Search'));
 export const Profile = lazyWithChunkReload(() => import('@/pages/Profile'));
 export const ContributionsLedger = lazyWithChunkReload(() => import('@/pages/profile/ContributionsLedger'));

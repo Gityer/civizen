@@ -2,15 +2,13 @@ import { expect, test, type Page } from '@playwright/test';
 
 /**
  * The public consultation flow a member actually uses: sign in, open the live consultation,
- * cast, receive a receipt, check it is counted, withdraw. Decision D2: only a verified member's
- * ballot is counted (fixture `citizen`); an unverified member (fixture `member`) casts an
- * advisory ballot and is told so.
+ * cast, receive a receipt, check it is counted, withdraw. Voting needs a verified identity; the
+ * unverified path (stopped, verified live, then voting) is e2e/identity-verification.spec.ts.
  *
  * Needs the local stack with production-derived data (import-dump.sh): every account signs in
  * with the local password. Override with CIVIZEN_E2E_EMAIL / CIVIZEN_E2E_PASSWORD.
  */
 const EMAIL = process.env.CIVIZEN_E2E_EMAIL || 'citizen@test.civizen.local';
-const UNVERIFIED_EMAIL = process.env.CIVIZEN_E2E_UNVERIFIED_EMAIL || 'member@test.civizen.local';
 const PASSWORD = process.env.CIVIZEN_E2E_PASSWORD || 'civizen-local';
 
 async function assertLocalBackend(page: Page) {
@@ -77,21 +75,4 @@ test('verified member casts, gets a receipt, checks it, and withdraws', async ({
   await vote.getByRole('button', { name: 'Withdraw ballot' }).click();
   await expect(page.getByTestId('consultation-receipt')).toHaveCount(0);
   await expect(page.getByText('No countable ballots yet.')).toBeVisible();
-});
-
-test('unverified member casts an advisory ballot and is told how to make it count', async ({ page }) => {
-  await signIn(page, UNVERIFIED_EMAIL);
-  const vote = await openLiveBallot(page);
-  await expect(page.getByTestId('consultation-advisory')).toBeVisible();
-
-  await vote.getByRole('button', { name: 'Support', exact: true }).click();
-  const receipt = page.getByTestId('consultation-receipt');
-  await expect(receipt).toBeVisible();
-  await expect(receipt.getByText('Your advisory receipt')).toBeVisible();
-  await expect(receipt.getByRole('button', { name: /Check that my receipt is counted/ })).toHaveCount(0);
-  await expect(page.getByText('No countable ballots yet.')).toBeVisible();
-  await expect(page.getByText(/1 advisory from accounts not yet verified/)).toBeVisible();
-
-  await vote.getByRole('button', { name: 'Withdraw ballot' }).click();
-  await expect(page.getByTestId('consultation-receipt')).toHaveCount(0);
 });

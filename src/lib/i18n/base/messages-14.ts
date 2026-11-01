@@ -29,7 +29,7 @@ export const m_messages_14 = {
       "unavailable": "Public counts could not be loaded.",
       "validOnly": "Counts include valid ballots only. Individual choices stay private.",
       "verifiedSplit": "{verified} counted from verified members; {unverified} advisory from accounts not yet verified.",
-      "verifiedSplitHint": "Anyone can vote with a free account. Only ballots from members who completed identity verification are counted; the rest are recorded as advisory and counted once the voter is verified."
+      "verifiedSplitHint": "Voting needs a verified identity. Advisory ballots are those cast by accounts not yet verified before verification became required; they count once the voter is verified."
     },
     "proposals": {
       "title": "Proposals",

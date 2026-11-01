@@ -7,6 +7,7 @@ import {
   OrganisationPosition,
   PublicFunctions,
   PublicBodyPage,
+  Verify,
   DevEconomicsVisual,
   Features,
   FundingAdmin,
@@ -18,6 +19,7 @@ import {
 export const appRoutes2 = (
   <>
       <Route path="/contact" element={<Contact />} />
+      <Route path="/verify" element={<ProtectedRoute><Verify /></ProtectedRoute>} />
       <Route path="/organisation" element={<Organisation />} />
       <Route path="/organisation/public" element={<PublicFunctions />} />
       <Route path="/organisation/public/body/:bodyId" element={<PublicBodyPage />} />

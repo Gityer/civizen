@@ -35,7 +35,7 @@ export const m_messages_07 = {
       "badgeNotStarted": "Not started",
       "badgeFinishingUp": "Finishing setup",
       "verifiedBody": "Your identity is verified. You can keep building trust through endorsements and take part in governance when you meet the other eligibility checks.",
-      "noCaseBody": "You have not started verification yet. When you need it, open profile settings to upload an ID photo and a photo of your face.",
+      "noCaseBody": "You have not started verification yet. When you need it, open Verify now from profile settings: a document photo and a short live camera check.",
       "draftIncompleteBody": "Your verification draft still has checklist items to finish before reviewers can move forward.",
       "draftReadyBody": "Your ID and face photos look ready. Submit the case from your profile when you want reviewers to pick it up.",
       "underReviewBody": "Reviewers are evaluating your submission. You will see the outcome on your profile when the review is complete.",

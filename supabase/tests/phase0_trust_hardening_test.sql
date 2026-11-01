@@ -7,6 +7,8 @@ BEGIN;
 
 SELECT set_config('test.member_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'member' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('test.member_pid', (SELECT id::text FROM public.profiles WHERE username = 'member' AND deleted_at IS NULL LIMIT 1), true);
+-- the fixture member is verified for the e2e suite; this test needs an unverified member (rolled back)
+UPDATE public.profiles SET is_verified = false WHERE id = current_setting('test.member_pid')::uuid;
 SELECT set_config('test.moderator_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'moderator' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('test.moderator_pid', (SELECT id::text FROM public.profiles WHERE username = 'moderator' AND deleted_at IS NULL LIMIT 1), true);
 SELECT set_config('test.staff_uid', (SELECT user_id::text FROM public.profiles WHERE username = 'armen' AND deleted_at IS NULL LIMIT 1), true);

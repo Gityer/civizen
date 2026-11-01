@@ -68,6 +68,8 @@ test('a contact message reaches its position, and a holder hands over to the nex
     await holder.goto(`/organisation/${POSITION}`);
     const item = holder.getByTestId('position-queue').locator('[data-testid^="position-item-"]').filter({ hasText: stamp });
     await item.getByTestId('position-item-claim').click();
+    // the queue reloads after the claim; typing before that would be cleared
+    await expect(item.getByText('@certified')).toBeVisible();
     await item.getByRole('textbox').fill('Replied by e-mail with the link to the voting hub.');
     await item.getByTestId('position-item-done').click();
     await expect.poll(() => sql(`SELECT status FROM public.org_position_items WHERE metadata ->> 'email' = '${sender}'`)).toBe('done');

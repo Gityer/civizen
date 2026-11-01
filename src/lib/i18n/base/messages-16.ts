@@ -54,7 +54,7 @@ export const m_messages_16 = {
       "not_authenticated": "Sign in to vote.",
       "profile_unavailable": "Your profile is not available for voting.",
       "voter_blocked": "A governance sanction currently blocks your voting.",
-      "verification_required": "This vote needs a verified identity. Verify your profile first.",
+      "verification_required": "Voting needs a verified identity, so that every vote belongs to one real person. It takes a few minutes; you come back here after.",
       "age_unknown": "This vote has a minimum age. Add your date of birth to your profile first.",
       "under_age": "You are below the minimum age set for this vote.",
       "outside_scope": "This vote is limited to residents of its country. Check the country of residence on your profile.",

@@ -9032,6 +9032,21 @@ isOneToOne: false
 "submit_contact_message":
 { Args: { "p_email": string,"p_message": string,"p_name": string,"p_topic": string }; Returns: string
                            },
+"start_live_verification":
+{ Args: { "p_reverify"?: boolean }; Returns: Json
+                           },
+"submit_live_verification":
+{ Args: { "p_consent_version": string,"p_device_checks"?: Json,"p_document_path": string,"p_mrz": string,"p_video_path": string }; Returns: Json
+                           },
+"my_verification_state":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"parse_mrz":
+{ Args: { "p_mrz": string }; Returns: Json
+                           },
+"profile_identity_verified":
+{ Args: { "p_profile": string }; Returns: boolean
+                           },
 "contribute_waiting_for_me":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },

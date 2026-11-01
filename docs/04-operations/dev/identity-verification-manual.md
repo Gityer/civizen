@@ -1,18 +1,47 @@
-# Identity verification (manual ID + selfie)
+# Identity verification (in-house live check)
 
-**Status:** Implemented (Phase 2B manual review). Vendor liveness deferred.  
-**Member surface:** Settings → Edit Profile (`/settings/profile`)  
-**Reviewer surface:** Governance → Tools → Steward console → Identity verifications (`/governance/tools/steward`, `StewardConsoleIdentityVerification`)  
-**Storage:** private bucket `identity-verification`  
-**Schema:** existing `identity_verification_cases` / `artifacts` / `reviews`
+**Status:** Implemented (2026-10-30): in-house live verification, no outside provider. Replaces the ID photo + selfie upload.  
+**Member surface:** `/verify` (also from Settings › Edit Profile › Identity verification, and from the prompt shown when an action needs it)  
+**Reviewer surface:** Governance → Tools → Steward console → Identity verifications (`/governance/tools/steward`, `StewardConsoleIdentityVerification`); each submission also opens an item in the **Identity Verification Lead** position's queue (`/organisation/verification_lead`)  
+**Storage:** private bucket `identity-verification` (photos, PDF, `video/webm`, `video/mp4`; 25 MB per file)  
+**Schema:** `identity_verification_cases` / `artifacts` / `reviews`; migration `supabase/migrations/20261030120000_identity_verification_live.sql`; test `supabase/tests/identity_verification_live_test.sql`; e2e `e2e/identity-verification.spec.ts`
 
 ## Product rules
 
-- Not required at signup. Members verify only when they need stronger trust (high-stakes actions already lean on `profiles.is_verified`).
-- Flow: complete profile name/country/date of birth + username or phone → upload ID photo (`supporting_document`) → take/upload face photo (`live_presence`) → submit → staff approve/reject.
-- Approval inserts `identity_verification_reviews`; triggers set `profiles.is_verified`.
-- This is Civizen platform trust, not a government ID or passport claim.
-- Automated vendor liveness + face-match is a later phase on the same tables. Voting booth face gates remain simulators until that phase.
+- **Optional at sign-up, required before acting.** Reading needs no verification. Posting, commenting, reposting,
+  Matters and their comments and attachments, solutions, challenges, knowledge contributions, messages to people,
+  endorsements, job interests, voting proposals and support, ballots, governance votes, law contributions and
+  agreements need a verified identity. The trigger `verification_before_write` on each of those tables refuses an
+  unverified writer with SQLSTATE `PT403`, detail `verification_required` (hint: the action). Messages to Civizen's
+  system agents (Civi) stay open. A business account counts as verified through its verified owner.
+- **The app's answer:** any request refused that way raises the verification prompt (`VerificationPrompt`, mounted at
+  the app root, via `verificationAwareFetch` in the Supabase client): *Verify now* goes to `/verify?next=<page>` and
+  brings the member back. The consultation ballot page shows the reason and a *Verify now* button.
+- **Voting:** `consultation_eligibility_reason` returns `verification_required` for an unverified member; there are no
+  advisory ballots any more.
+- **The check** (`/verify`):
+  1. Consent (version `identity-live-2026-10-30`).
+  2. Photo of the document's identity page, plus its machine-readable lines (ICAO 9303 TD1, TD2 or TD3), checked as
+     the member types (`src/lib/mrz.ts`) and again on the server (`parse_mrz`), including check digits and expiry.
+  3. Live check: `start_live_verification()` issues a challenge (a 6-digit code and two head moves, valid 10 minutes).
+     The member reads the code aloud, makes the moves in order and blinks while the clip records. Liveness (head pose
+     against the member's own neutral pose, blinks by eye aspect ratio) and the face match between the clip and the
+     document photo run **on the device** with open-source models bundled in the app (`@vladmandic/face-api`, MIT,
+     `public/models/face-api`; `src/lib/face-checks.ts`). Only the results are sent.
+  4. `submit_live_verification(...)` checks the files are in the member's own folder for this case, records the
+     evidence and flags, and sends the case for review.
+- **Flags for the reviewer** (never a decision on their own; a modified device could report anything):
+  `birth_date_differs`, `under_16`, `name_differs`, `liveness_not_passed`, `face_match_not_passed`,
+  `challenge_mismatch` (the device tested other moves than the server asked), `document_used_by_another_account`
+  (keyed fingerprint of issuing state + document number; the number itself is not stored; key in
+  `civizen_private.identity_hash_key`). A flagged case opens as a high-priority item.
+- **Evidence is written only by the server functions;** members cannot insert, change or delete artifacts.
+- **The reviewer** watches the recording (the code said aloud, the moves in order), compares the face with the document
+  photo, reads the device results, the document fields and the flags (`IdentityReviewLiveEvidence`), then approves or
+  rejects with a reason. Approval sets `profiles.is_verified`, and the position item closes itself.
+- This is Civizen platform trust, not a government ID check.
+- **Not built yet:** automatic deletion of the photo and recording a set time after the decision (members can ask
+  through Contact meanwhile).
 
 - Case status changes only through the review functions; the one direct change is the owner submitting their own
   case (first time, or again after a rejection, revocation or information request). Nobody reviews, assigns or
@@ -45,7 +74,7 @@
 ## Ops notes
 
 - Migration: `supabase/migrations/20260907120000_identity_verification_storage.sql`
-- Path layout: `{profile_id}/{case_id}/{kind}-{uuid}.{ext}`
+- Path layout: `{profile_id}/{case_id}/document.{ext}` and `{profile_id}/{case_id}/live.{webm|mp4}`
 - Reviewers: staff or Identity Verification domain members (see Case management)
 - Migration for case management: `supabase/migrations/20261013160000_verification_case_management.sql`; test `supabase/tests/verification_case_management_test.sql`
 - Users admin verification toggle remains an emergency override without artifact review
