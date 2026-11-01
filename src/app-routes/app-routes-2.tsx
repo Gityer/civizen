@@ -22,6 +22,7 @@ export const appRoutes2 = (
       <Route path="/verify" element={<ProtectedRoute><Verify /></ProtectedRoute>} />
       <Route path="/organisation" element={<Organisation />} />
       <Route path="/organisation/public" element={<PublicFunctions />} />
+      <Route path="/organisation/functions" element={<Navigate to="/organisation/public" replace />} />
       <Route path="/organisation/public/body/:bodyId" element={<PublicBodyPage />} />
       <Route path="/organisation/:positionKey" element={<OrganisationPosition />} />
       <Route
