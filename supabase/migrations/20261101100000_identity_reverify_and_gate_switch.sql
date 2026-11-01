@@ -23,6 +23,9 @@ REVOKE ALL ON public.platform_flags FROM PUBLIC, anon, authenticated;
 GRANT SELECT ON public.platform_flags TO authenticated;
 DROP POLICY IF EXISTS platform_flags_read ON public.platform_flags;
 CREATE POLICY platform_flags_read ON public.platform_flags FOR SELECT TO authenticated USING (true);
+DROP TRIGGER IF EXISTS enforcement_suspension_guard ON public.platform_flags;
+CREATE TRIGGER enforcement_suspension_guard BEFORE INSERT OR UPDATE OR DELETE ON public.platform_flags
+  FOR EACH STATEMENT EXECUTE FUNCTION public.enforcement_suspension_guard();
 
 INSERT INTO public.platform_flags (key, enabled, note)
 VALUES ('identity_verification_required', false,
@@ -86,7 +89,8 @@ REVOKE ALL ON FUNCTION public.consultation_eligibility_reason(uuid, uuid) FROM P
 -- ---------------------------------------------------------------------------------------------
 -- The profile's is_verified is projected from the member's single case. A case marked as a re-verification
 -- (metadata.reverification = true, set only when the member was verified when it started) keeps the member verified
--- whatever its status, so starting, waiting for or failing a re-verification never un-verifies anyone.
+-- while it is in draft, submitted, in review or rejected, so starting, waiting for or failing a re-verification never
+-- un-verifies anyone. A revocation (by a reviewer or an admin override) sets the status to revoked and always wins.
 CREATE OR REPLACE FUNCTION public.project_profile_verification_state(target_profile_id uuid)
 RETURNS void AS $$
 DECLARE
@@ -105,7 +109,8 @@ BEGIN
 
   IF active_case.id IS NOT NULL THEN
     projected_verified := active_case.status = 'approved'::public.identity_verification_case_status
-      OR coalesce((active_case.metadata ->> 'reverification')::boolean, false);
+      OR (coalesce((active_case.metadata ->> 'reverification')::boolean, false)
+          AND active_case.status::text IN ('draft', 'submitted', 'in_review', 'rejected'));
   END IF;
 
   UPDATE public.profiles
@@ -135,6 +140,39 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 -- L6: the verification projection is a trigger helper, not a client API.
 REVOKE EXECUTE ON FUNCTION public.project_profile_verification_state(uuid) FROM PUBLIC, anon, authenticated;
+
+-- A reviewer can revoke a member whose verification stands on an earlier approval kept through a re-verification.
+CREATE OR REPLACE FUNCTION public.revoke_identity_verification(p_profile_id uuid, p_reason text)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_self uuid := public.current_profile_id();
+  v_case public.identity_verification_cases%ROWTYPE;
+BEGIN
+  IF v_self IS NULL OR NOT public.can_review_identity_verification_storage() THEN RAISE EXCEPTION 'not_authorized'; END IF;
+  IF char_length(trim(coalesce(p_reason, ''))) < 5 THEN RAISE EXCEPTION 'reason_required'; END IF;
+  SELECT * INTO v_case FROM public.identity_verification_cases WHERE profile_id = p_profile_id FOR UPDATE;
+  IF NOT FOUND THEN RAISE EXCEPTION 'case_not_found'; END IF;
+  IF v_case.status <> 'approved'
+     AND NOT (coalesce((v_case.metadata ->> 'reverification')::boolean, false)
+              AND v_case.status::text IN ('draft', 'submitted', 'in_review', 'rejected')) THEN
+    RAISE EXCEPTION 'case_not_approved';
+  END IF;
+  UPDATE public.identity_verification_cases SET metadata = coalesce(metadata, '{}'::jsonb) - 'reverification' WHERE id = v_case.id;
+  INSERT INTO public.identity_verification_reviews (case_id, reviewer_id, decision, notes)
+  VALUES (v_case.id, v_self, 'revoked', trim(p_reason));
+  PERFORM public.civic_notify_profiles(
+    ARRAY[p_profile_id], 'verification_revoked', 'Your identity verification was revoked',
+    'A reviewer revoked your verification. Open profile settings to see the reason and verify again.', 'profile', p_profile_id, '{}'::jsonb
+  );
+  RETURN jsonb_build_object('case_id', v_case.id, 'status', 'revoked');
+END;
+$$;
+REVOKE ALL ON FUNCTION public.revoke_identity_verification(uuid, text) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.revoke_identity_verification(uuid, text) TO authenticated;
 
 DROP FUNCTION IF EXISTS public.start_live_verification();
 CREATE OR REPLACE FUNCTION public.start_live_verification(p_reverify boolean DEFAULT false)

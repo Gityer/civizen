@@ -152,6 +152,33 @@ BEGIN
   RAISE NOTICE 'ok: a passed re-verification renews the verification';
 END $$;
 
+-- 5b. revoke always wins: after a rejected re-verification, a reviewer's revoke and an admin override un-verify
+DO $$
+DECLARE
+  v_start jsonb;
+BEGIN
+  v_start := pg_temp.check_in(current_setting('t.guest_uid'), current_setting('t.guest_pid'), true, 'TR1111111');
+  PERFORM pg_temp.decide((v_start ->> 'case_id')::uuid, 'rejected', 'selfie_unclear');
+  IF NOT pg_temp.verified(current_setting('t.guest_pid')) THEN RAISE EXCEPTION 'still verified after a rejected re-verification'; END IF;
+  PERFORM pg_temp.act_as(current_setting('t.founder_uid'));
+  SET LOCAL ROLE authenticated;
+  PERFORM public.revoke_identity_verification(current_setting('t.guest_pid')::uuid, 'Test revocation after re-verification.');
+  RESET ROLE;
+  IF pg_temp.verified(current_setting('t.guest_pid')) THEN RAISE EXCEPTION 'a revoke must un-verify even after a re-verification'; END IF;
+
+  -- verify again, re-verify (pending), then an admin override un-verifies
+  v_start := pg_temp.check_in(current_setting('t.guest_uid'), current_setting('t.guest_pid'), false, 'TR1111111');
+  PERFORM pg_temp.decide((v_start ->> 'case_id')::uuid, 'approved', NULL);
+  v_start := pg_temp.check_in(current_setting('t.guest_uid'), current_setting('t.guest_pid'), true, 'TR1111111');
+  IF NOT pg_temp.verified(current_setting('t.guest_pid')) THEN RAISE EXCEPTION 'verified while re-verifying'; END IF;
+  PERFORM pg_temp.act_as(current_setting('t.founder_uid'));
+  SET LOCAL ROLE authenticated;
+  PERFORM public.set_profile_verified_override(current_setting('t.guest_pid')::uuid, false, 'Test override after re-verification.');
+  RESET ROLE;
+  IF pg_temp.verified(current_setting('t.guest_pid')) THEN RAISE EXCEPTION 'an admin override must un-verify even during a re-verification'; END IF;
+  RAISE NOTICE 'ok: revoke and admin override always win';
+END $$;
+
 -- 6. asking to "re-verify" while not verified is an ordinary verification: a rejection leaves the member unverified
 DO $$
 DECLARE
