@@ -31,7 +31,8 @@ export const ASSISTANT_FAQ_PART_2: AssistantFaqItem[] = [
     id: 'who_can_vote',
     question: 'Who can vote?',
     answer:
-      'Any member with a verified identity can vote in an ordinary consultation at Home > Governance > Civic voting; a member who is not verified yet is offered the live identity check (Verify now) on the ballot page first. A consultation may additionally require a minimum age, or residence in one country, and an active governance sanction blocks voting. The server checks these rules, and the ballot page shows the reason when you cannot vote. Token ownership, financial support, or wealth alone never creates voting authority.',
+      'Any signed-in member with a free account can vote in an ordinary consultation at Home > Governance > Civic voting, but only ballots from members with a verified identity are counted; unverified ballots are recorded as advisory and counted once the voter is verified. A consultation may additionally require a verified identity, a minimum age, or residence in one country, and an active governance sanction blocks voting. The server checks these rules, and the ballot page shows the reason when you cannot vote. Token ownership, financial support, or wealth alone never creates voting authority.',
+    localizedAnswers: { hy: VOTING_FAQ_HY.who_can_vote, ru: VOTING_FAQ_RU.who_can_vote },
     aliases: ['voting rights', 'who votes', 'who is eligible to vote', 'voting eligibility'],
     capabilityIds: ['civic_voting'],
     sourceRefs: ['docs/02-policies/governance/civizen-community-governance-charter.md'],

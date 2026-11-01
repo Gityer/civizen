@@ -27,7 +27,7 @@ const ENGLISH_CASES: Array<[string, string, RegExp]> = [
   ['What is a receipt?', 'what_is_a_voting_receipt', /random code/],
   ['Where do I check my receipt?', 'how_do_i_know_my_vote_was_counted', /public list of counted receipts/],
   ["Why can't I vote?", 'why_cant_i_vote', /reason is shown under the voting buttons/],
-  ['Do I need to be verified to vote?', 'do_i_need_verification_to_vote', /Every vote needs a verified identity/],
+  ['Do I need to be verified to vote?', 'do_i_need_verification_to_vote', /only ballots from verified members are counted/],
   ['Can I vote without an account?', 'can_i_vote_without_account', /^No\./],
   ['Can I change my vote?', 'can_i_change_my_vote', /^Yes, while voting is open/],
   ['Can I withdraw my ballot?', 'can_i_change_my_vote', /Withdraw ballot/],
@@ -39,7 +39,7 @@ const ENGLISH_CASES: Array<[string, string, RegExp]> = [
   ['Does Civizen count ballots automatically?', 'what_happens_when_a_vote_closes', /final tally/],
   ['What is quorum?', 'what_are_quorum_and_pass_threshold', /minimum number of countable ballots/],
   ['Is voting binding?', 'is_voting_binding', /nonbinding/],
-  ['Who can vote?', 'who_can_vote', /verified identity/],
+  ['Who can vote?', 'who_can_vote', /free account/],
   ['Where are the public Matters?', 'where_are_public_matters', /Public Matters/],
   ['How do I raise a Matter for the whole community?', 'how_do_i_raise_a_matter_for_the_community', /Address it to the Civizen community/],
   ['How do I submit a proposal?', 'how_do_i_submit_a_proposal', /Create voting proposal/],
@@ -65,10 +65,13 @@ const ENGLISH_CASES: Array<[string, string, RegExp]> = [
 
 const ARMENIAN_CASES: Array<[string, string, RegExp]> = [
   ['Կարո՞ղ եմ տարբերակները դասակարգել', 'can_a_proposal_have_custom_options', /փուլային հաշվարկով/],
+  ['Ինչպե՞ս քվեարկել։', 'how_do_i_vote', /Քաղաքացիական քվեարկություն/],
   ['Ինչպե՞ս իմանալ, որ իմ ձայնը հաշվվել է։', 'how_do_i_know_my_vote_was_counted', /Ստուգել, որ իմ անդորրագիրը հաշվված է/],
   ['Ի՞նչ է անդորրագիրը։', 'what_is_a_voting_receipt', /պատահական կոդ/],
+  ['Ինչու՞ չեմ կարող քվեարկել։', 'why_cant_i_vote', /պատճառը նշված է/],
   ['Կարո՞ղ եմ փոխել իմ ձայնը։', 'can_i_change_my_vote', /^Այո/],
   ['Ո՞վ կարող է տեսնել, թե ինչպես եմ քվեարկել։', 'who_can_see_how_i_voted', /^Ոչ ոք/],
+  ['Ո՞վ կարող է քվեարկել։', 'who_can_vote', /անվճար հաշիվ/],
   ['Որտե՞ղ են հրապարակային Հարցերը։', 'where_are_public_matters', /Հրապարակային Հարցեր/],
   ['Ի՞նչ է քվորումը։', 'what_are_quorum_and_pass_threshold', /Քվորումը/],
   ['Ինչպես առաջարկ ներկայացնել?', 'how_do_i_submit_a_proposal', /Ստեղծել քվեարկության առաջարկ/],
@@ -79,10 +82,13 @@ const ARMENIAN_CASES: Array<[string, string, RegExp]> = [
 
 const RUSSIAN_CASES: Array<[string, string, RegExp]> = [
   ['Можно ли ранжировать варианты?', 'can_a_proposal_have_custom_options', /мгновенным вторым туром/],
+  ['Как проголосовать?', 'how_do_i_vote', /Гражданское голосование/],
   ['Как узнать, что мой голос учтён?', 'how_do_i_know_my_vote_was_counted', /Проверить, что моя квитанция учтена/],
   ['Что такое квитанция?', 'what_is_a_voting_receipt', /случайный код/],
+  ['Почему я не могу голосовать?', 'why_cant_i_vote', /причина показана/],
   ['Могу ли я изменить свой голос?', 'can_i_change_my_vote', /^Да, пока голосование открыто/],
   ['Кто видит, как я проголосовал?', 'who_can_see_how_i_voted', /^Никто\./],
+  ['Кто может голосовать?', 'who_can_vote', /бесплатным аккаунтом/],
   ['Где публичные Вопросы?', 'where_are_public_matters', /Публичные Вопросы/],
   ['Что происходит, когда голосование закрывается?', 'what_happens_when_a_vote_closes', /закрывается сама/],
   ['Что такое кворум?', 'what_are_quorum_and_pass_threshold', /Кворум/],
@@ -174,7 +180,7 @@ describe('Civi language handling', () => {
   });
 
   it('skips the model when the Armenian answer is hand-written and confidence is high', () => {
-    const prep = ask('Ի՞նչ է անդորրագիրը։');
+    const prep = ask('Ինչու՞ չեմ կարող քվեարկել։');
     expect(prep.skipLlm).toBe(true);
   });
 
