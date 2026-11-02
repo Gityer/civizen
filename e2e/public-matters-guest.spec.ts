@@ -6,6 +6,7 @@ import { expect, test } from '@playwright/test';
  */
 const MEMBER = process.env.CIVIZEN_E2E_MEMBER_EMAIL || 'member@test.civizen.local';
 const PASSWORD = process.env.CIVIZEN_E2E_PASSWORD || 'civizen-local';
+const FIXTURE_TITLE = 'Fixture: a shared reading corner for the neighbourhood';
 
 test('a visitor reads a public Matter and returns to it after signing in', async ({ page }) => {
   test.setTimeout(90_000);
@@ -16,7 +17,11 @@ test('a visitor reads a public Matter and returns to it after signing in', async
   });
   expect(url, 'e2e must run against the local Supabase stack, never production').toMatch(/localhost|127\.0\.0\.1/);
 
-  const first = page.locator('[data-testid^="public-matter-"]').first();
+  // The seeded fixture Matter (scripts/local-supabase/seed-test-fixtures.sql), found by title: "the first card" is the
+  // newest Matter, which specs running in parallel may still be changing.
+  await page.getByRole('textbox', { name: /search/i }).fill(FIXTURE_TITLE);
+  await page.getByRole('textbox', { name: /search/i }).press('Enter');
+  const first = page.locator('[data-testid^="public-matter-"]', { hasText: FIXTURE_TITLE }).first();
   await expect(first).toBeVisible({ timeout: 20_000 });
   const matterId = (await first.getAttribute('data-testid'))!.replace('public-matter-', '');
   await first.click();
