@@ -1,15 +1,15 @@
 {
   "platform": "android",
-  "version": "0.1.252",
-  "versionTag": "v0.1.252",
-  "buildNumber": 254,
-  "releaseId": "20261101-v0.1.252",
-  "downloadPath": "/downloads/civizen-android-release-20261101-v0.1.252.apk",
-  "downloadUrl": "https://civizen.world/downloads/civizen-android-release-20261101-v0.1.252.apk?v=20261101-v0.1.252",
-  "publishedAt": "2026-11-01T11:08:36Z",
-  "sha256": "c1de4e35312deec96956b07946b42b0d783d21f5a7f4d20985ae35a377417d25",
+  "version": "0.1.253",
+  "versionTag": "v0.1.253",
+  "buildNumber": 255,
+  "releaseId": "20261101-v0.1.253",
+  "downloadPath": "/downloads/civizen-android-release-20261101-v0.1.253.apk",
+  "downloadUrl": "https://civizen.world/downloads/civizen-android-release-20261101-v0.1.253.apk?v=20261101-v0.1.253",
+  "publishedAt": "2026-11-02T05:24:56Z",
+  "sha256": "8fc2505fab953310a8d61bd376eaf9068e6b85a545c7112e378a3da15aa7469c",
   "signing": "release",
   "signingCertSha256": "e1150771942a36a841a4e27ba99fc110bb4f38a631eb3ef3a196e8b2339ec22e",
-  "sourceCommit": "c495d56b414d24ab4463ad22683472a776929cae",
-  "notes": ["/organisation/functions redirects to the functions page"]
+  "sourceCommit": "7b3fd270ad573c71b354d2585e5f2ce6480e45f9",
+  "notes": ["moderator conflicts, chat report excerpts, evidence overwrite (T8, T9, T10) (#18)"]
 }
