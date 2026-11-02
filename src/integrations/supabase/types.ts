@@ -10306,6 +10306,9 @@ isOneToOne: false
 "moderation_notify":
 { Args: { "p_action": string,"p_body": string,"p_profile": string,"p_title": string,"p_type": string }; Returns: undefined
                            },
+"moderation_review_message_report":
+{ Args: { "p_note"?: string | null,"p_report_id": string,"p_status": string }; Returns: undefined
+                           },
 "moderation_queue":
 { Args: Record<PropertyKey, never>; Returns: {
               "author_profile_id": string,"author_username": string,"claimed_by": string,"claimed_by_username": string,"excerpt": string,"first_reported_at": string,"last_reported_at": string,"reason_codes": (string)[],"report_count": number,"report_ids": (string)[],"target_id": string,"target_kind": string
@@ -10745,6 +10748,9 @@ isOneToOne: false
                            },
 "report_content":
 { Args: { "p_details"?: string,"p_reason_code": string,"p_target_id": string,"p_target_kind": string }; Returns: string
+                           },
+"report_private_conversation":
+{ Args: { "p_conversation_id": string,"p_excerpt"?: string | null,"p_message_id": string | null,"p_reason": string }; Returns: string
                            },
 "request_agreement_review":
 { Args: { "p_agreement_id": string }; Returns: undefined

@@ -122,6 +122,7 @@ export const m_messages_settings_01 = {
     "messagingReportsSearchPlaceholder": "Search reports by user, reason, or message context",
     "messagingReportsFilteredEmpty": "No reports match the selected filters.",
     "messagingReportsMessageContextLabel": "Message report context",
+    "messagingReportsExcerptFromReporter": "Excerpt supplied by the reporter (encrypted message, not checked by the server)",
     "messagingReportsOpenInConversation": "Open in conversation",
     "messagingReportsQuickReviewLabel": "Quick review {current}/{total}",
     "messagingReportsPrevious": "Previous",

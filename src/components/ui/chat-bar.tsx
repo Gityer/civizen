@@ -1011,26 +1011,15 @@ export function ChatBar({
     const targetMessage = reportTargetMessageId
       ? messages.find((message) => message.id === reportTargetMessageId) ?? null
       : null;
-    const reportContext: Json = targetMessage
-      ? {
-          source: 'private_message',
-          conversation_id: selectedConversationId,
-          message_id: targetMessage.id,
-          message_created_at: targetMessage.created_at,
-          message_sender_id: targetMessage.sender_id,
-          message_excerpt: (targetMessage.content || '').slice(0, 300),
-        }
-      : {
-          source: 'private_contact',
-          conversation_id: selectedConversationId,
-        };
+    if (!selectedConversationId) return;
     setReportSubmitting(true);
-    const { error } = await supabase.from('reports').insert({
-      reporter_id: profile.id,
-      reported_user_id: threadMemberProfileId,
-      reason,
-      status: 'pending',
-      report_context: reportContext,
+    // The server checks the conversation and message and reads the excerpt itself; the decrypted text is sent only for
+    // end-to-end encrypted messages, and is then marked as supplied by the reporter.
+    const { error } = await supabase.rpc('report_private_conversation', {
+      p_conversation_id: selectedConversationId,
+      p_message_id: targetMessage?.id ?? null,
+      p_reason: reason,
+      p_excerpt: targetMessage ? (targetMessage.content || '').slice(0, 300) : null,
     });
     setReportSubmitting(false);
     if (error) {

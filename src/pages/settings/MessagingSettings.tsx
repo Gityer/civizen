@@ -114,8 +114,8 @@ export default function MessagingSettings() {
         .select(
           'id, reason, status, admin_notes, report_context, created_at, resolved_at, reporter:profiles!reports_reporter_id_fkey(full_name, username), reported:profiles!reports_reported_user_id_fkey(full_name, username)',
         )
-        // Message reports only; reports on posts, comments, Matters, listings and profiles are in /moderation.
-        .eq('report_context->>source', 'private_message')
+        // Message and contact reports only; reports on posts, comments, Matters, listings and profiles are in /moderation.
+        .in('report_context->>source', ['private_message', 'private_contact'])
         .order('created_at', { ascending: false })
         .limit(100);
       setReportsLoading(false);
@@ -210,14 +210,12 @@ export default function MessagingSettings() {
     const nextStatus = patch.status ?? moderationReports.find((r) => r.id === reportId)?.status ?? 'pending';
     const resolvedAt =
       nextStatus === 'resolved' || nextStatus === 'dismissed' ? new Date().toISOString() : null;
-    const { error } = await supabase
-      .from('reports')
-      .update({
-        status: nextStatus,
-        admin_notes: patch.admin_notes ?? moderationReports.find((r) => r.id === reportId)?.admin_notes ?? null,
-        resolved_at: resolvedAt,
-      })
-      .eq('id', reportId);
+    // Reports change only through the server function, which also refuses reports about or by the reviewer.
+    const { error } = await supabase.rpc('moderation_review_message_report', {
+      p_report_id: reportId,
+      p_status: nextStatus,
+      p_note: patch.admin_notes ?? moderationReports.find((r) => r.id === reportId)?.admin_notes ?? null,
+    });
     setReportSavingId(null);
     if (error) {
       toast.error(t('settings.messagingReportsSaveFailed'));
@@ -516,6 +514,9 @@ export default function MessagingSettings() {
                             {String(row.report_context?.message_id ?? '')}
                             {typeof row.report_context?.message_excerpt === 'string'
                               ? ` • ${String(row.report_context.message_excerpt)}`
+                              : ''}
+                            {row.report_context?.excerpt_source === 'reporter'
+                              ? ` • ${t('settings.messagingReportsExcerptFromReporter')}`
                               : ''}
                           </div>
                         ) : null}

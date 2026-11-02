@@ -122,6 +122,13 @@ and inserts emergency events; T3 direct approval of an emergency request; T8 mod
 themselves; T9 forged message-report excerpt; T10 owner replaces evidence after submission; a report flood
 (100 reports from one account). Each must fail after its fix.
 
+Status 2026-11-02: all seven cases are in the test matrix and fail as required. T1-T3 are covered by
+`supabase/tests/insider_and_privacy_bypasses_test.sql`; T8, T9, T10 (file overwrite) and the flood by
+`supabase/tests/trust_safety_abuse_test.sql` after migration `20261102100000_moderation_conflicts_and_message_reports`.
+Still open from T8: claims and dismissals are recorded on the report row (`claimed_by`, `decided_by`) but not in
+`moderation_actions`. Still open from T10: owners can delete their files (kept for account deletion and erasure), and
+files are kept until the account is deleted.
+
 ## 5. Decisions for Armen
 
 | # | Decision | Recommended | Alternative |

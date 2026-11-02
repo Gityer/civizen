@@ -34,6 +34,13 @@ account and never production writes.
 | Own row only via `my_profile()`; export holds own data | — | ✅ 🤖 account-export | ✅ | ✅ | ✅ |
 | Privileged self-writes refused (role, verified flags, eligibility, Story defacement) | — | ✅ 🤖 member-trust-hardening | ⏳ | ⏳ | — |
 | Identity-verification files: owner and reviewers only | — | ⏳ (policy read ✅) | ⏳ | ⏳ | ⏳ |
+| T1 reviewer approves own identity case by direct update | — | — | — | ✅ refused (sql insider_and_privacy_bypasses) | ✅ refused |
+| T2 member reads or inserts emergency-access audit events | — | ✅ refused (sql insider_and_privacy_bypasses) | ✅ | ✅ | — |
+| T3 staff approves an emergency request by direct update | — | — | — | — | ✅ refused (sql insider_and_privacy_bypasses) |
+| T8 moderator claims, dismisses or sees in the queue a report about own content; direct report update | — | — | — | ✅ refused (sql trust_safety_abuse) | ✅ refused |
+| T9 chat report with a made-up excerpt; direct insert; own message; non-member | — | ✅ refused (sql trust_safety_abuse) | ✅ | ✅ | — |
+| T10 owner overwrites verification evidence after submitting | — | ✅ refused (sql trust_safety_abuse) | ✅ | — | — |
+| Report flood: 100 reports from one account | — | ✅ stopped by the report limit (sql trust_safety_abuse) | ✅ | — | — |
 | Private message attachments: conversation members only | — | ⏳ (policy read ✅) | ⏳ | ⏳ | ⏳ |
 | Edge functions return no private fields; sign-in does not reveal whether an account exists | ✅ code review | ✅ | ✅ | ✅ | ✅ |
 
@@ -105,6 +112,8 @@ EN, HY and RU are curated (hand-written) for the participation loop; DE comes fr
 
 | Date (UTC) | Commit | What | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| 2026-11-02 | 289711c3 (before fix) | T&S abuse probe on the local stack: T8 claim/dismiss of a report about own post, direct report update; T9 direct chat report with a made-up excerpt; T10 evidence overwrite; flood | ⛔ T8, T9 and T10 (file overwrite) succeeded; flood stopped after 19 by the report limit; T1-T3 already refused | probe SQL (PM scratch), job j8b93c65b |
+| 2026-11-02 | fix branch | Same cases after migration 20261102100000 | ✅ all refused; flood stopped after 18 | sql `trust_safety_abuse` passed |
 | 2026-10-13 | 76f09be | Column-privilege audit of `profiles`, views, SECURITY DEFINER functions, storage policies, realtime publication (local) | Column rules hold; no view or realtime path; phone lookup and business e-mail lookup bypass found | `privacy-audit*.sql` (QA scratch), job jf374edf6 |
 | 2026-10-13 | 76f09be | Phone lookup bypass reproduced as `member` against `citizen` (rolled back) | ⛔ returns username + full name for a submitted number; a 300-number sweep finds it | `phone-oracle-proof.sql`, job jf374edf6 |
 | 2026-10-13 | production | Read-only: private columns selectable by members, table-wide SELECT, phone function grant, profiles with phone | 0 private columns, no table SELECT; phone function executable by members; 0 of 31 profiles carry a phone (no exposure yet) | read-only transaction, counts only |

@@ -31,6 +31,9 @@ Local stack only for writes; production is read-only.
 - [ ] Report → queue → hide with reason → author sees the reason → one appeal → a different moderator decides →
       restore puts the item back exactly (e2e content-moderation).
 - [ ] Hidden content invisible to other members in feed, Matter comments, Matter list and job board.
+- [ ] Abuse cases refused (sql `insider_and_privacy_bypasses` T1-T3, `trust_safety_abuse` T8-T10 and report flood):
+      self-verification, emergency log and approval, moderator conflicts, direct report writes, made-up chat
+      excerpts, evidence overwrite after submitting, 100 reports from one account.
 - [ ] Community Guidelines `/guidelines` linked from the report dialog, in EN/HY/RU.
 
 ## First visit and participation loop
