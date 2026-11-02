@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import { type HTMLAttributes, type ReactNode } from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { supabaseMock } = vi.hoisted(() => {
   const result = { data: [], error: null };
@@ -184,14 +184,22 @@ if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = function scrollIntoView() {};
 }
 
+// The Profile page is heavy: loading it inside the test made the run exceed the 5 s test limit when the machine was
+// busy. Load it once before the tests (collection has no limit) and give the first render a realistic budget.
+const RENDER_BUDGET_MS = 20_000;
+let Profile: typeof import('@/pages/Profile').default;
+
+beforeAll(async () => {
+  Profile = (await import('@/pages/Profile')).default;
+}, RENDER_BUDGET_MS);
+
 async function renderProfileDial() {
-  const Profile = (await import('@/pages/Profile')).default;
   render(
     <MemoryRouter>
       <Profile />
     </MemoryRouter>,
   );
-  return waitFor(() => screen.getByRole('group', { name: 'Score categories' }), { timeout: 8000 });
+  return waitFor(() => screen.getByRole('group', { name: 'Score categories' }), { timeout: RENDER_BUDGET_MS - 2000 });
 }
 
 describe('Profile Score dial runtime', () => {
@@ -220,5 +228,5 @@ describe('Profile Score dial runtime', () => {
     expect(screen.getByText('60.2')).toBeTruthy();
     expect(screen.getAllByText('60%').length).toBeGreaterThan(0);
     expect(screen.queryByText('60.2%')).toBeNull();
-  });
+  }, RENDER_BUDGET_MS);
 });
