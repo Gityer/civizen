@@ -163,6 +163,36 @@ EXCEPTION WHEN insufficient_privilege THEN
   RAISE NOTICE 'ok: T8 reviewer cannot decide a message report about themselves';
 END $$;
 
+-- ---- T8: every claim and dismissal is recorded, readable by staff only, not writable by anyone --------------------
+RESET ROLE;
+INSERT INTO public.posts (id, author_id, content) VALUES ('7d000000-0000-4000-8000-000000000002', current_setting('t.citizen_pid')::uuid, 'Citizen post');
+INSERT INTO public.reports (id, reporter_id, reason, status, target_kind, target_id, reason_code, reported_user_id)
+VALUES ('7d000000-0000-4000-8000-0000000000a3', current_setting('t.member_pid')::uuid, 'spam', 'pending', 'post',
+        '7d000000-0000-4000-8000-000000000002', 'spam', current_setting('t.citizen_pid')::uuid);
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claims', json_build_object('sub', current_setting('t.mod_uid'), 'role', 'authenticated')::text, true);
+DO $$
+BEGIN
+  PERFORM public.moderation_claim('post', '7d000000-0000-4000-8000-000000000002');
+  PERFORM public.moderation_dismiss('post', '7d000000-0000-4000-8000-000000000002', 'not spam');
+  IF (SELECT array_agg(event ORDER BY created_at, event) FROM public.moderation_report_events
+       WHERE report_id = '7d000000-0000-4000-8000-0000000000a3') IS DISTINCT FROM ARRAY['claimed', 'dismissed'] THEN
+    RAISE EXCEPTION 'claim and dismissal not recorded';
+  END IF;
+  BEGIN
+    DELETE FROM public.moderation_report_events WHERE report_id = '7d000000-0000-4000-8000-0000000000a3';
+    IF FOUND THEN RAISE EXCEPTION 'moderator deleted a report event'; END IF;
+  EXCEPTION WHEN insufficient_privilege THEN NULL;
+  END;
+  RAISE NOTICE 'ok: T8 claims and dismissals recorded';
+END $$;
+SELECT set_config('request.jwt.claims', json_build_object('sub', current_setting('t.member_uid'), 'role', 'authenticated')::text, true);
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM public.moderation_report_events) THEN RAISE EXCEPTION 'member can read report events'; END IF;
+  RAISE NOTICE 'ok: T8 report events hidden from members';
+END $$;
+
 -- ---- report flood: one account cannot file 100 reports ------------------------------------------------------------
 RESET ROLE;
 -- fixture rows only: skip the posting rate limit for the 100 target posts
